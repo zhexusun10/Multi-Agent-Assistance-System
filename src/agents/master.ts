@@ -14,11 +14,29 @@ import {
 
 type WorkerEvent = Extract<MasterEvent, { type: "agent_result" | "agent_error" }>;
 type WakeEvent = WorkerEvent | ExternalRuntimeEvent;
-type GraphEvent = { type: "dispatch"; assignments: Assignment[] } |
+type GraphEvent = { type: "dispatch"; assignments: Assignment[] } | { type: "runtime_consumed" } |
   Extract<MasterEvent, { type: "master_answer" | "runtime_answer" }>;
 type MasterInput =
-  | { kind: "user"; query: string; runningAgentStatus: string | null }
+  | { kind: "user"; query: string; runningAgentStatus: string | null;
+      runtimeEvents: Array<{ event: WakeEvent; eventKey?: string }> }
   | { kind: "runtime"; event: WakeEvent; eventKey?: string };
+type SessionJob = { run: () => Promise<void> };
+type SessionQueue = {
+  users: SessionJob[];
+  runtime: SessionJob[];
+  running: boolean;
+  activeRuntime?: { controller: AbortController; item: PendingRuntime };
+};
+type PendingRuntime = {
+  event: WakeEvent;
+  eventKey?: string;
+  persisted: Promise<void>;
+  status: "pending" | "steered" | "completed";
+  answerReady: boolean;
+  resolve: () => void;
+  reject: (error: unknown) => void;
+  retry: () => void;
+};
 class EventQueue<T> implements AsyncIterable<T> {
   private items: T[] = [];
   private waiter?: (item: IteratorResult<T>) => void;
@@ -85,7 +103,8 @@ export function createMaster(
   if (!model.bindTools) throw new Error("The master model must support tool calling");
 
   const routingModel = model.bindTools([createSpawnAgentTool()]);
-  const sessionTails = new Map<string, Promise<void>>();
+  const sessionQueues = new Map<string, SessionQueue>();
+  const pendingRuntime = new Map<string, Set<PendingRuntime>>();
   const activePairs = new Map<string, Promise<void>>();
   const subscribers = new Map<string, Set<EventQueue<SequencedEvent>>>();
 
@@ -142,18 +161,47 @@ export function createMaster(
     return new HumanMessage(status ? `${query}\n\n${status}` : query);
   }
 
-  async function withSessionLock<T>(sessionId: string, work: () => Promise<T>): Promise<T> {
-    const previous = sessionTails.get(sessionId) ?? Promise.resolve();
-    let release!: () => void;
-    const current = new Promise<void>((resolve) => { release = resolve; });
-    const tail = previous.then(() => current);
-    sessionTails.set(sessionId, tail);
-    await previous;
+  function isSteered(item: PendingRuntime): boolean {
+    return item.status === "steered";
+  }
+
+  function removePending(sessionId: string, item: PendingRuntime): void {
+    const pending = pendingRuntime.get(sessionId);
+    pending?.delete(item);
+    if (!pending?.size) pendingRuntime.delete(sessionId);
+  }
+
+  function sessionQueue(sessionId: string): SessionQueue {
+    let queue = sessionQueues.get(sessionId);
+    if (!queue) {
+      queue = { users: [], runtime: [], running: false };
+      sessionQueues.set(sessionId, queue);
+    }
+    return queue;
+  }
+
+  function enqueueSession(sessionId: string, kind: "user" | "runtime", work: () => Promise<void>): Promise<void> {
+    const queue = sessionQueue(sessionId);
+    const finished = new Promise<void>((resolve, reject) => {
+      queue[kind === "user" ? "users" : "runtime"].push({
+        run: async () => {
+          try { await work(); resolve(); }
+          catch (error) { reject(error); }
+        },
+      });
+    });
+    if (!queue.running) void drainSession(sessionId, queue);
+    return finished;
+  }
+
+  async function drainSession(sessionId: string, queue: SessionQueue): Promise<void> {
+    queue.running = true;
     try {
-      return await work();
+      let job: SessionJob | undefined;
+      while ((job = queue.users.shift() ?? queue.runtime.shift())) await job.run();
     } finally {
-      release();
-      if (sessionTails.get(sessionId) === tail) sessionTails.delete(sessionId);
+      queue.running = false;
+      if (!queue.users.length && !queue.runtime.length) sessionQueues.delete(sessionId);
     }
   }
 
@@ -167,7 +215,12 @@ export function createMaster(
     routeCall: Annotation<AIMessage | null>(),
     answerMessage: Annotation<AIMessage | null>(),
     alreadyProcessed: Annotation<boolean>(),
+    alreadySteered: Annotation<boolean>(),
     processedRuntime: Annotation<Record<string, string>>({
+      reducer: (left, right) => ({ ...left, ...right }),
+      default: () => ({}),
+    }),
+    steeredRuntime: Annotation<Record<string, boolean>>({
       reducer: (left, right) => ({ ...left, ...right }),
       default: () => ({}),
     }),
@@ -176,18 +229,24 @@ export function createMaster(
   const masterGraph = new StateGraph(MasterState)
     .addNode("master", async (state, config) => {
       if (state.input.kind === "runtime") {
+        if (state.input.eventKey && state.steeredRuntime[state.input.eventKey]) {
+          return { assignments: null, routeCall: null, answerMessage: null, alreadySteered: true };
+        }
         const previous = state.input.eventKey && state.processedRuntime[state.input.eventKey];
         if (previous !== undefined) {
-          return { assignments: null, routeCall: null, answerMessage: new AIMessage(previous), alreadyProcessed: true };
+          return { assignments: null, routeCall: null, answerMessage: new AIMessage(previous),
+            alreadyProcessed: true, alreadySteered: false };
         }
-        const response = await model.invoke([...state.messages, runtimeMessage(state.input.event)]);
+        const response = await model.invoke([...state.messages, runtimeMessage(state.input.event)], config);
         if (!(response instanceof AIMessage)) throw new Error("master returned an invalid runtime answer");
-        return { assignments: null, routeCall: null, answerMessage: response, alreadyProcessed: false };
+        return { assignments: null, routeCall: null, answerMessage: response,
+          alreadyProcessed: false, alreadySteered: false };
       }
       const response = await routingModel.invoke([
         ...state.messages,
+        ...state.input.runtimeEvents.map(({ event }) => runtimeMessage(event)),
         currentQueryMessage(state.input.query, state.input.runningAgentStatus),
-      ]);
+      ], config);
       if (!(response instanceof AIMessage)) throw new Error("master returned an invalid response");
       if (!response.tool_calls?.length) {
         return { assignments: null, routeCall: null, answerMessage: response };
@@ -201,6 +260,10 @@ export function createMaster(
     })
     .addNode("answer", async (state, config) => {
       if (state.input.kind === "runtime") {
+        if (state.alreadySteered) {
+          config.writer?.({ type: "runtime_consumed" } satisfies GraphEvent);
+          return {};
+        }
         const response = state.answerMessage;
         if (!(response instanceof AIMessage)) throw new Error("runtime answer is missing");
         config.writer?.({ type: "runtime_answer", answer: response.text } satisfies GraphEvent);
@@ -227,14 +290,21 @@ export function createMaster(
       }
       const response = recordedCall && success
         ? await model.invoke([
-          ...state.messages, currentQueryMessage(query, runningAgentStatus), recordedCall, success,
-        ])
+          ...state.messages, ...state.input.runtimeEvents.map(({ event }) => runtimeMessage(event)),
+          currentQueryMessage(query, runningAgentStatus), recordedCall, success,
+        ], config)
         : state.answerMessage;
       if (!(response instanceof AIMessage)) throw new Error("master answer is missing");
       config.writer?.({ type: "master_answer", answer: response.text } satisfies GraphEvent);
       return {
-        messages: [new HumanMessage(query), ...(recordedCall && success ? [recordedCall, success] : []), response],
+        messages: [
+          ...state.input.runtimeEvents.map(({ event }) => runtimeMessage(event)), new HumanMessage(query),
+          ...(recordedCall && success ? [recordedCall, success] : []), response,
+        ],
         answerMessage: response,
+        steeredRuntime: Object.fromEntries(state.input.runtimeEvents
+          .filter(({ eventKey }) => eventKey !== undefined)
+          .map(({ eventKey }) => [eventKey!, true])),
       };
     })
     .addEdge(START, "master")
@@ -245,32 +315,69 @@ export function createMaster(
   function scheduleRuntimeEvent(sessionId: string, event: WakeEvent, eventKey?: string): {
     persisted: Promise<void>; finished: Promise<void>;
   } {
-    let resolvePersisted!: () => void;
-    let rejectPersisted!: (error: unknown) => void;
-    const persisted = new Promise<void>((resolve, reject) => {
-      resolvePersisted = resolve;
-      rejectPersisted = reject;
+    const persisted = publish(sessionId, event, eventKey ? `event:${eventKey}` : undefined);
+    let resolveFinished!: () => void;
+    let rejectFinished!: (error: unknown) => void;
+    const finished = new Promise<void>((resolve, reject) => {
+      resolveFinished = resolve;
+      rejectFinished = reject;
     });
-    const finished = withSessionLock(sessionId, async () => {
+    const item: PendingRuntime = {
+      event, eventKey, persisted, status: "pending", answerReady: false, resolve: resolveFinished,
+      reject: rejectFinished, retry: () => {},
+    };
+    const pending = pendingRuntime.get(sessionId) ?? new Set<PendingRuntime>();
+    pending.add(item);
+    pendingRuntime.set(sessionId, pending);
+    const process = async () => {
+      if (item.status !== "pending") return;
+      const controller = new AbortController();
+      sessionQueue(sessionId).activeRuntime = { controller, item };
       try {
-        await publish(sessionId, event, eventKey ? `event:${eventKey}` : undefined);
-        resolvePersisted();
+        await persisted;
         let answer: string | undefined;
+        let consumed = false;
         for await (const chunk of await masterGraph.stream(
           { input: { kind: "runtime", event, eventKey } },
-          { configurable: { thread_id: sessionId }, streamMode: "custom", durability: "sync" },
+          { configurable: { thread_id: sessionId }, streamMode: "custom", durability: "sync", signal: controller.signal },
         )) {
           const graphEvent = chunk as GraphEvent;
-          if (graphEvent.type === "runtime_answer") answer = graphEvent.answer;
+          if (graphEvent.type === "runtime_answer") {
+            answer = graphEvent.answer;
+            item.answerReady = true;
+          }
+          if (graphEvent.type === "runtime_consumed") consumed = true;
+        }
+        if (isSteered(item)) return;
+        if (consumed) {
+          item.status = "completed";
+          removePending(sessionId, item);
+          resolveFinished();
+          return;
         }
         if (answer === undefined) throw new Error("Runtime answer is missing");
         await publish(sessionId, { type: "runtime_answer", answer }, eventKey ? `answer:${eventKey}` : undefined);
+        item.status = "completed";
+        removePending(sessionId, item);
+        resolveFinished();
       } catch (error) {
-        rejectPersisted(error);
+        if (isSteered(item)) return;
+        item.status = "completed";
+        removePending(sessionId, item);
+        rejectFinished(error);
         console.error("Runtime event handling failed", error);
         await publish(sessionId, { type: "error", detail: "Runtime event handling failed" });
+      } finally {
+        const queue = sessionQueue(sessionId);
+        if (queue.activeRuntime?.controller === controller) queue.activeRuntime = undefined;
       }
-    });
+    };
+    item.retry = () => {
+      void enqueueSession(sessionId, "runtime", process).catch((error) => {
+        console.error("Runtime event scheduling failed", error);
+      });
+    };
+    item.retry();
     return { persisted, finished };
   }
 
@@ -354,13 +461,23 @@ export function createMaster(
     const events = new EventQueue<MasterEvent>();
     events.push({ type: "session", session_id: sessionId });
 
+    const steered = [...(pendingRuntime.get(sessionId) ?? [])]
+      .filter((item) => item.status === "pending" && !item.answerReady);
+    for (const item of steered) item.status = "steered";
+    const active = sessionQueue(sessionId).activeRuntime;
+    if (active && steered.includes(active.item)) active.controller.abort();
+
     void (async () => {
       try {
-        await withSessionLock(sessionId, async () => {
+        await enqueueSession(sessionId, "user", async () => {
+          await Promise.all(steered.map((item) => item.persisted));
           let answer: string | undefined;
           let spawnedAgents: AgentId[] = [];
           for await (const chunk of await masterGraph.stream(
-            { input: { kind: "user", query, runningAgentStatus: await runningAgentStatus(sessionId) } },
+            { input: {
+              kind: "user", query, runningAgentStatus: await runningAgentStatus(sessionId),
+              runtimeEvents: steered.map(({ event, eventKey }) => ({ event, eventKey })),
+            } },
             { configurable: { thread_id: sessionId }, streamMode: "custom", durability: "sync" },
           )) {
             const event = chunk as GraphEvent;
@@ -375,8 +492,17 @@ export function createMaster(
           }
           if (answer === undefined) throw new Error("master did not answer");
           events.push({ type: "done", session_id: sessionId, answer, spawned_agents: spawnedAgents });
+          for (const item of steered) {
+            item.status = "completed";
+            removePending(sessionId, item);
+            item.resolve();
+          }
         });
       } catch (error) {
+        for (const item of steered) {
+          item.status = "pending";
+          item.retry();
+        }
         console.error("Master run failed", error);
         events.push({ type: "error", detail: "Master run failed" });
       } finally {

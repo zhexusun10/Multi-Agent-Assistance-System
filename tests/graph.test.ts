@@ -2,8 +2,11 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { AIMessage, HumanMessage, ToolMessage } from "@langchain/core/messages";
 import type { BaseChatModel } from "@langchain/core/language_models/chat_models";
+import { MemorySaver } from "@langchain/langgraph";
+import { MemoryAgentTaskStore } from "../src/agent-task-store.js";
 import { createMaster, createSpawnAgentTool } from "../src/agents/master.js";
 import type { AgentRegistry } from "../src/agents/registry.js";
+import { MemorySessionEventStore } from "../src/session-store.js";
 import { spawnInputSchema, type MasterEvent } from "../src/types.js";
 
 function unusedWorkers(): AgentRegistry {
@@ -240,6 +243,87 @@ test("external runtime events wake master without a user query", async () => {
     type: "runtime_answer", answer: "runtime answer",
   });
   await updates.return();
+});
+
+test("a new query steers an active runtime answer and includes queued runtime events", async () => {
+  let runtimeStarted!: () => void;
+  const started = new Promise<void>((resolve) => { runtimeStarted = resolve; });
+  const userInputs: string[][] = [];
+  let runtimeCalls = 0;
+  const model = {
+    bindTools: () => ({ invoke: async (messages: Array<{ content: unknown }>) => {
+      userInputs.push(messages.map(({ content }) => String(content)));
+      return new AIMessage("query answer");
+    } }),
+    invoke: async () => {
+      runtimeCalls++;
+      runtimeStarted();
+      return new Promise<AIMessage>(() => {});
+    },
+  } as unknown as BaseChatModel;
+  const master = createMaster(model, unusedWorkers());
+  const firstEvent = { type: "runtime_event" as const, name: "a_finished", payload: { value: 1 } };
+  const secondEvent = { type: "runtime_event" as const, name: "b_finished", payload: { value: 2 } };
+  const delivered = master.receiveRuntimeEvent("steer", firstEvent, "task-a");
+  await started;
+  await master.acceptRuntimeEvent("steer", secondEvent);
+
+  const reply = await collect(master.stream("urgent question", "steer"));
+  await delivered;
+  await master.receiveRuntimeEvent("steer", firstEvent, "task-a");
+  assert.deepEqual(reply, [
+    { type: "session", session_id: "steer" },
+    { type: "master_answer", answer: "query answer" },
+    { type: "done", session_id: "steer", answer: "query answer", spawned_agents: [] },
+  ]);
+  assert.equal(runtimeCalls, 1);
+  assert.deepEqual(userInputs[0].slice(-3), [
+    'Runtime event a_finished: {"value":1}',
+    'Runtime event b_finished: {"value":2}',
+    "urgent question",
+  ]);
+  const updates = master.subscribe("steer");
+  assert.deepEqual((await updates.next()).value?.event, firstEvent);
+  assert.deepEqual((await updates.next()).value?.event, secondEvent);
+  await updates.return();
+
+  await collect(master.stream("follow-up", "steer"));
+  assert.equal(userInputs[1].filter((text) => text.includes("a_finished")).length, 1);
+  assert.equal(userInputs[1].filter((text) => text.includes("b_finished")).length, 1);
+});
+
+test("an agent result steered into a query is delivered once", async () => {
+  let runtimeStarted!: () => void;
+  const started = new Promise<void>((resolve) => { runtimeStarted = resolve; });
+  const inputs: string[][] = [];
+  let routes = 0;
+  const model = {
+    bindTools: () => ({ invoke: async (messages: Array<{ content: unknown }>) => {
+      inputs.push(messages.map(({ content }) => String(content)));
+      if (++routes === 1) return new AIMessage({ content: "", tool_calls: [{
+        name: "spawn_agent", id: "agent_a", args: { assignments: [{ agent: "a", prompt: "task" }] },
+      }] });
+      return new AIMessage("steered answer");
+    } }),
+    invoke: async (messages: Array<HumanMessage | AIMessage | ToolMessage>) => {
+      if (messages.at(-1) instanceof ToolMessage) return new AIMessage("initial answer");
+      runtimeStarted();
+      return new Promise<AIMessage>(() => {});
+    },
+  } as unknown as BaseChatModel;
+  const events = new MemorySessionEventStore();
+  const tasks = new MemoryAgentTaskStore();
+  const master = createMaster(model, { ...unusedWorkers(), a: async () => "A result" }, {
+    checkpointer: new MemorySaver(), events, tasks,
+  });
+  await collect(master.stream("start", "worker-steer"));
+  await started;
+  await collect(master.stream("new question", "worker-steer"));
+  await master.waitForTaskIdle();
+  assert.deepEqual((await events.list("worker-steer", 0)).map(({ event }) => event.type), ["agent_result"]);
+  assert.equal(inputs[1].at(-2)?.includes("A result"), true);
+  assert.equal(inputs[1].at(-1), "new question");
+  assert.deepEqual(await tasks.activeAgents("worker-steer"), []);
 });
 
 test("worker failure is delivered as a runtime event and wakes master", async () => {

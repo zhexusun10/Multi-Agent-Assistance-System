@@ -38,7 +38,7 @@ flowchart LR
 
 `master` 的图实例在 TypeScript 服务启动时创建，并在服务运行期间持续接收用户请求和 Runtime 事件。每次请求都先由 `master` 决定是否分配任务；分配记录写入 PostgreSQL 后，当前 session 的相应 Agent 开始处理。通信方向是 master 分配任务给子 Agent、子 Agent 完成后发送 Runtime 事件；子 Agent 之间没有通信通道。分配成功后，master 再调用一次模型回答用户，随后 `/api/query` 的 SSE 发送 `done` 并关闭。此时子 Agent 可以继续运行，但 master 不等待、不轮询，也不再消耗模型推理资源。每个子 Agent 完成或失败时，Runtime 事件会自动触发 master 的一次新执行，产生 `runtime_answer`。外部系统也可通过 `/api/runtime/events` 发送事件。查询完成得很快时，子 Agent 的事件也会在 `done` 之后处理。
 
-`master` 使用 PostgreSQL 版 LangGraph checkpointer 按 `session_id` 保存对话历史。同一会话的用户请求和 Runtime 事件依次处理；上一轮的子 Agent 仍在运行时，新 query 已可进入 master。Runtime 事件处理后，事件内容和 master 的回答都会写入历史，供之后的调用使用。如果新 query 先于事件处理，则当时看不到该结果。不同会话互相隔离并可并发处理。子 Agent 只读取自己在该 session 的历史及新分配的任务文本，不读取 master 或其他 Agent 的历史。
+`master` 使用 PostgreSQL 版 LangGraph checkpointer 按 `session_id` 保存对话历史。同一会话的图执行依次进行，但用户 query 的调度优先于等待中的 Runtime 事件。若 Runtime 正在调用 master，新 query 会中止该次调用，并把尚未处理的 Runtime 事件追加到新 query 的模型上下文中；用户 query 仍是最后一条输入。此时 `/api/query` 返回吸收这些事件后的 `master_answer`，`/api/events` 保留原始事件，不再为已吸收的事件单独发送 `runtime_answer`。这一消费状态写入 checkpoint，任务重投时不会让 master 重复处理。若 Runtime 回答已生成，新 query 会在该轮 checkpoint 完成后读取它。上一轮的子 Agent 仍在运行时，新 query 也可进入 master。不同会话互相隔离并可并发处理。子 Agent 只读取自己在该 session 的历史及新分配的任务文本，不读取 master 或其他 Agent 的历史。
 
 图服务启动时会把上次运行中断的子 Agent 任务放回队列，并继续处理未完成任务和未投递结果。若停机发生在模型调用中，该任务会从本次 Agent 节点重新执行；已写入 checkpoint 的任务结果按任务 ID 去重，不会重复加入 Agent 上下文。
 
@@ -78,33 +78,43 @@ tests/                  图流程与 API 契约测试
    pip install -r requirements.txt
    ```
 
-2. 配置模型。可参考 `.env.example`；按所选 provider 设置模型标识和密钥：
+2. 从环境变量模板创建本地配置，并填写所选模型的密钥：
 
    ```bash
-   export CHAT_MODEL="openai:gpt-4.1-mini"
-   export OPENAI_API_KEY="你的密钥"
+   cp .env.example .env
+   # 编辑 .env，填写 OPENAI_API_KEY（或所选 provider 的密钥）。
+   set -a; source .env; set +a
    ```
 
-   已安装 OpenAI、Anthropic 和 Google GenAI 的 provider SDK。例如可改为 `CHAT_MODEL="anthropic:<模型名>"` 并设置 `ANTHROPIC_API_KEY`，或改为 `CHAT_MODEL="google-genai:<模型名>"` 并设置 `GOOGLE_API_KEY`。`OPENAI_BASE_URL` 仅在 `CHAT_MODEL` 使用 `openai:` 前缀时生效，可连接遵循 OpenAI 接口的服务。更多 provider 可按 [LangChain 模型文档](https://docs.langchain.com/oss/javascript/concepts/providers-and-models#one-api-for-any-model) 安装对应集成包，再设置 `CHAT_MODEL`。
+   `.env` 已被 Git 忽略；每个新终端都需要执行 `set -a; source .env; set +a`。已安装 OpenAI、Anthropic 和 Google GenAI 的 provider SDK。例如可改为 `CHAT_MODEL="anthropic:<模型名>"` 并设置 `ANTHROPIC_API_KEY`，或改为 `CHAT_MODEL="google-genai:<模型名>"` 并设置 `GOOGLE_API_KEY`。`OPENAI_BASE_URL` 仅在 `CHAT_MODEL` 使用 `openai:` 前缀时生效，可连接遵循 OpenAI 接口的服务。更多 provider 可按 [LangChain 模型文档](https://docs.langchain.com/oss/javascript/concepts/providers-and-models#one-api-for-any-model) 安装对应集成包，再设置 `CHAT_MODEL`。
 
-3. 启动图服务：
+3. 启动 PostgreSQL，并创建模板中使用的角色、开发库和测试库（已有时跳过创建）：
 
    ```bash
-   # 先启动 PostgreSQL，并创建 multi_agent_assistance 数据库。
-   export DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:5432/multi_agent_assistance"
+   # 以下命令适用于已有 PostgreSQL 管理权限的本机账号。
+   psql -d postgres -c 'CREATE ROLE multi_agent_assistance LOGIN'
+   psql -d postgres -c 'CREATE DATABASE multi_agent_assistance OWNER multi_agent_assistance'
+   psql -d postgres -c 'CREATE DATABASE multi_agent_assistance_test OWNER multi_agent_assistance'
+   ```
+
+   模板中的连接地址适用于允许本机连接的 PostgreSQL。若服务器要求密码，请给该角色设置密码，并在本地 `.env` 的两个 URL 中填写。`DATABASE_URL` 的账号需要建表权限。
+
+4. 启动图服务：
+
+   ```bash
    npm run dev:graph
    ```
 
-   `DATABASE_URL` 必填，数据库账号需要建表权限。图服务会自动初始化 LangGraph checkpoint、任务和会话事件表；数据库不可用时启动失败，`/health` 也会报告不可用。
+   图服务会自动初始化 LangGraph checkpoint、任务和会话事件表；数据库不可用时启动失败，`/health` 也会报告不可用。
 
-4. 在另一个终端启动 FastAPI：
+5. 在另一个终端启动 FastAPI：
 
    ```bash
    source .venv/bin/activate
    uvicorn api.main:app --reload --host 127.0.0.1 --port 8000
    ```
 
-5. 发送请求：
+6. 发送请求：
 
    ```bash
    curl -N -X POST http://127.0.0.1:8000/api/query \
@@ -131,7 +141,7 @@ data: {"type":"done","session_id":"会话 ID","answer":"master 的回答","spawn
 curl -N "http://127.0.0.1:8000/api/events?session_id=会话ID"
 ```
 
-子 Agent 完成后，此流依次收到带递增 `id` 的 `agent_result` 和 `runtime_answer`；失败时收到 `agent_error` 和后续回答。重连时传入 `after=上次收到的事件ID`，或使用 SSE 的 `Last-Event-ID` 请求头，可从 PostgreSQL 重放遗漏的事件，包括图服务重启前的事件。没有事件时，订阅连接异步等待，不触发模型调用。
+子 Agent 完成后，此流通常依次收到带递增 `id` 的 `agent_result` 和 `runtime_answer`；失败时收到 `agent_error` 和后续回答。若新的 query 抢占了 Runtime 回答，该事件由 query 的 `master_answer` 一并处理，因此此流只有原始 Agent 事件。重连时传入 `after=上次收到的事件ID`，或使用 SSE 的 `Last-Event-ID` 请求头，可从 PostgreSQL 重放遗漏的事件，包括图服务重启前的事件。没有事件时，订阅连接异步等待，不触发模型调用。
 
 外部 Runtime 事件可通过以下接口唤醒 master：
 
@@ -141,7 +151,7 @@ curl -X POST http://127.0.0.1:8000/api/runtime/events \
   -d '{"session_id":"会话ID","name":"build_finished","payload":{"ok":true}}'
 ```
 
-事件写入 PostgreSQL 后接口返回 `202`，无需等待 master 推理；事件及后续的 `runtime_answer` 出现在 `/api/events`。如果 `master` 直接回答且没有调用 `spawn_agent`，当前请求仍只有 `session`、`master_answer` 和 `done`；运行出错时发送 `error` 事件。
+事件写入 PostgreSQL 后接口返回 `202`，无需等待 master 推理；事件及未被新 query 吸收时的 `runtime_answer` 出现在 `/api/events`。如果 `master` 直接回答且没有调用 `spawn_agent`，当前请求仍只有 `session`、`master_answer` 和 `done`；运行出错时发送 `error` 事件。
 
 继续同一会话时，在下一次请求中带回 `session_id`：
 
@@ -170,8 +180,7 @@ npm run typecheck
 npm test
 npm run build
 python3 -m unittest discover -s tests -p 'test_*.py'
-# 有测试数据库时，再执行 PostgreSQL 持久化集成测试：
-TEST_DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:5432/multi_agent_assistance_test" npm test
+# 加载 .env 后，npm test 也会运行 PostgreSQL 持久化集成测试。
 ```
 
 图流程测试使用模拟模型，不需要 API 密钥。真实模型的端到端调用需要先配置模型凭据。
