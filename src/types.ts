@@ -16,7 +16,10 @@ export const spawnInputSchema = z.object({
   ),
 });
 
-export const querySchema = z.object({ query: z.string().trim().min(1) });
+export const querySchema = z.object({
+  query: z.string().trim().min(1),
+  session_id: z.string().trim().min(1).max(128).optional(),
+});
 
 export interface AgentResult {
   agent: AgentId;
@@ -30,7 +33,9 @@ export const agentResultsSchema = z.array(z.object({
   output: z.string(),
 }));
 
-export interface QueryResult {
-  answer: string;
-  agents: AgentResult[];
-}
+export type MasterEvent =
+  | { type: "session"; session_id: string }
+  | { type: "master_answer"; answer: string }
+  | { type: "agent_result"; result: AgentResult }
+  | { type: "done"; session_id: string; answer: string; agents: AgentResult[] }
+  | { type: "error"; detail: string };

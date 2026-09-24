@@ -1,11 +1,13 @@
 import { createServer } from "node:http";
+import { randomUUID } from "node:crypto";
 import { createAgentRegistry } from "./agents/registry.js";
 import { createMaster } from "./agents/master.js";
 import { createModel } from "./model.js";
 import { querySchema } from "./types.js";
 
 const model = await createModel();
-const runMaster = createMaster(model, createAgentRegistry(model));
+// Reuse one compiled master graph while the service is running.
+const master = createMaster(model, createAgentRegistry(model));
 const host = process.env.GRAPH_HOST || "127.0.0.1";
 const port = Number(process.env.GRAPH_PORT || 3001);
 
@@ -34,9 +36,25 @@ const server = createServer(async (request, response) => {
     }
     const parsed = querySchema.safeParse(body);
     if (!parsed.success) return send(422, { detail: parsed.error.flatten() });
-    return send(200, await runMaster(parsed.data.query));
+    const sessionId = parsed.data.session_id ?? randomUUID();
+    response.writeHead(200, {
+      "content-type": "text/event-stream; charset=utf-8",
+      "cache-control": "no-cache",
+      connection: "keep-alive",
+      "x-accel-buffering": "no",
+    });
+    for await (const event of master.stream(parsed.data.query, sessionId)) {
+      if (!response.destroyed) {
+        response.write(`event: ${event.type}\ndata: ${JSON.stringify(event)}\n\n`);
+      }
+    }
+    if (!response.destroyed) response.end();
   } catch (error) {
     console.error(error);
+    if (response.headersSent) {
+      if (!response.destroyed) response.end();
+      return;
+    }
     return send(500, { detail: "Graph execution failed" });
   }
 });
