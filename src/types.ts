@@ -33,9 +33,19 @@ export const agentResultsSchema = z.array(z.object({
   output: z.string(),
 }));
 
+export const runtimeEventSchema = z.object({
+  session_id: z.string().trim().min(1).max(128),
+  name: z.string().trim().min(1),
+  payload: z.unknown(),
+});
+export type ExternalRuntimeEvent = { type: "runtime_event"; name: string; payload: unknown };
+
 export type MasterEvent =
   | { type: "session"; session_id: string }
   | { type: "master_answer"; answer: string }
+  | ExternalRuntimeEvent
   | { type: "agent_result"; result: AgentResult }
-  | { type: "done"; session_id: string; answer: string; agents: AgentResult[] }
+  | { type: "agent_error"; agent: AgentId; prompt: string; detail: string }
+  | { type: "runtime_answer"; answer: string }
+  | { type: "done"; session_id: string; answer: string; spawned_agents: AgentId[] }
   | { type: "error"; detail: string };

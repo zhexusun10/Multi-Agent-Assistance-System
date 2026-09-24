@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import { createAgentRegistry } from "./agents/registry.js";
 import { createMaster } from "./agents/master.js";
 import { createModel } from "./model.js";
-import { querySchema } from "./types.js";
+import { querySchema, runtimeEventSchema } from "./types.js";
 
 const model = await createModel();
 // Reuse one compiled master graph while the service is running.
@@ -20,7 +20,30 @@ const server = createServer(async (request, response) => {
   if (request.method === "GET" && request.url === "/health") {
     return send(200, { status: "ok" });
   }
-  if (request.method !== "POST" || request.url !== "/run") {
+  const url = new URL(request.url ?? "/", `http://${request.headers.host ?? "localhost"}`);
+  if (request.method === "GET" && url.pathname === "/events") {
+    const sessionId = url.searchParams.get("session_id")?.trim();
+    const lastId = request.headers["last-event-id"];
+    const cursor = url.searchParams.get("after") ?? (Array.isArray(lastId) ? lastId[0] : lastId) ?? "0";
+    const after = Number(cursor);
+    if (!sessionId || sessionId.length > 128 || !Number.isSafeInteger(after) || after < 0) {
+      return send(422, { detail: "Invalid session_id or event cursor" });
+    }
+    response.writeHead(200, {
+      "content-type": "text/event-stream; charset=utf-8",
+      "cache-control": "no-cache",
+      connection: "keep-alive",
+      "x-accel-buffering": "no",
+    });
+    const controller = new AbortController();
+    response.on("close", () => controller.abort());
+    for await (const { id, event } of master.subscribe(sessionId, after, controller.signal)) {
+      if (!response.destroyed) response.write(`id: ${id}\nevent: ${event.type}\ndata: ${JSON.stringify(event)}\n\n`);
+    }
+    if (!response.destroyed) response.end();
+    return;
+  }
+  if (request.method !== "POST" || (url.pathname !== "/run" && url.pathname !== "/runtime/events")) {
     return send(404, { detail: "Not found" });
   }
 
@@ -33,6 +56,13 @@ const server = createServer(async (request, response) => {
     } catch (error) {
       if (error instanceof SyntaxError) return send(400, { detail: "Invalid JSON" });
       throw error;
+    }
+    if (url.pathname === "/runtime/events") {
+      const parsedEvent = runtimeEventSchema.safeParse(body);
+      if (!parsedEvent.success) return send(422, { detail: parsedEvent.error.flatten() });
+      const { session_id, name, payload } = parsedEvent.data;
+      void master.receiveRuntimeEvent(session_id, { type: "runtime_event", name, payload });
+      return send(202, { status: "accepted", session_id });
     }
     const parsed = querySchema.safeParse(body);
     if (!parsed.success) return send(422, { detail: parsed.error.flatten() });

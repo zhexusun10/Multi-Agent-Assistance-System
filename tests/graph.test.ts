@@ -4,38 +4,26 @@ import { AIMessage, HumanMessage, ToolMessage } from "@langchain/core/messages";
 import type { BaseChatModel } from "@langchain/core/language_models/chat_models";
 import { createMaster, createSpawnAgentTool } from "../src/agents/master.js";
 import type { AgentRegistry } from "../src/agents/registry.js";
-import { spawnInputSchema } from "../src/types.js";
+import { spawnInputSchema, type MasterEvent } from "../src/types.js";
 
 function unusedWorkers(): AgentRegistry {
   const unexpected = async () => { throw new Error("worker should not run"); };
   return { a: unexpected, b: unexpected, c: unexpected, d: unexpected };
 }
 
-test("spawn_agent runs selected workers with isolated inputs", async () => {
-  const calls: string[] = [];
-  const registry: AgentRegistry = {
-    ...unusedWorkers(),
-    a: async (prompt) => { calls.push(`a:${prompt}`); return "A result"; },
-    b: async (prompt) => { calls.push(`b:${prompt}`); return "B result"; },
-  };
-  const result = await createSpawnAgentTool(registry).invoke({
-    assignments: [{ agent: "a", prompt: "task A" }, { agent: "b", prompt: "task B" }],
-  });
+async function collect(stream: AsyncGenerator<MasterEvent>): Promise<MasterEvent[]> {
+  const events: MasterEvent[] = [];
+  for await (const event of stream) events.push(event);
+  return events;
+}
 
-  assert.deepEqual(calls, ["a:task A", "b:task B"]);
-  assert.deepEqual(JSON.parse(String(result)), [
-    { agent: "a", prompt: "task A", output: "A result" },
-    { agent: "b", prompt: "task B", output: "B result" },
-  ]);
-});
-
-test("spawn_agent starts selected workers concurrently", async () => {
+test("spawn_agent returns success before workers finish and keeps inputs isolated", async () => {
   const started: string[] = [];
   let releaseA!: (value: string) => void;
   let releaseB!: (value: string) => void;
   let signalBoth!: () => void;
   const bothStarted = new Promise<void>((resolve) => { signalBoth = resolve; });
-  const run = (agent: string) => async (prompt: string) => {
+  const run = (agent: "a" | "b") => async (prompt: string) => {
     started.push(`${agent}:${prompt}`);
     if (started.length === 2) signalBoth();
     return new Promise<string>((resolve) => {
@@ -43,16 +31,19 @@ test("spawn_agent starts selected workers concurrently", async () => {
       else releaseB = resolve;
     });
   };
+  const received: MasterEvent[] = [];
   const registry: AgentRegistry = { ...unusedWorkers(), a: run("a"), b: run("b") };
-
-  const pending = createSpawnAgentTool(registry).invoke({
+  const result = await createSpawnAgentTool(registry, (event) => received.push(event)).invoke({
     assignments: [{ agent: "a", prompt: "only A" }, { agent: "b", prompt: "only B" }],
   });
+  assert.deepEqual(JSON.parse(String(result)), { status: "spawned", agents: ["a", "b"] });
   await bothStarted;
-  assert.deepEqual(started, ["a:only A", "b:only B"]);
+  assert.deepEqual(new Set(started), new Set(["a:only A", "b:only B"]));
   releaseA("A done");
   releaseB("B done");
-  assert.equal(JSON.parse(String(await pending)).length, 2);
+  // The worker graph reports each completion through a separate callback.
+  while (received.length < 2) await new Promise((resolve) => setImmediate(resolve));
+  assert.deepEqual(new Set(received.map((event) => event.type)), new Set(["agent_result"]));
 });
 
 test("spawn input rejects repeated workers and blank assignments", () => {
@@ -65,22 +56,37 @@ test("spawn input rejects repeated workers and blank assignments", () => {
 });
 
 test("master can answer directly without spawning workers", async () => {
+  let calls = 0;
   const model = {
-    bindTools: () => ({ invoke: async () => new AIMessage("direct answer") }),
+    bindTools: () => ({ invoke: async () => { calls++; return new AIMessage("direct answer"); } }),
     invoke: async () => { throw new Error("second model call should not happen"); },
   } as unknown as BaseChatModel;
-  const events = [];
-  for await (const event of createMaster(model, unusedWorkers()).stream("question", "session-a")) {
-    events.push(event);
-  }
-  assert.deepEqual(events, [
+  const master = createMaster(model, unusedWorkers());
+  assert.deepEqual(await collect(master.stream("question", "session-a")), [
     { type: "session", session_id: "session-a" },
     { type: "master_answer", answer: "direct answer" },
-    { type: "done", session_id: "session-a", answer: "direct answer", agents: [] },
+    { type: "done", session_id: "session-a", answer: "direct answer", spawned_agents: [] },
   ]);
+  assert.equal(calls, 1);
 });
 
-test("master answer streams before a background worker finishes", async () => {
+test("an idle event subscription does not invoke the model", async () => {
+  let calls = 0;
+  const model = {
+    bindTools: () => ({ invoke: async () => { calls++; return new AIMessage("answer"); } }),
+    invoke: async () => { calls++; return new AIMessage("answer"); },
+  } as unknown as BaseChatModel;
+  const master = createMaster(model, unusedWorkers());
+  const controller = new AbortController();
+  const updates = master.subscribe("idle", 0, controller.signal);
+  const next = updates.next();
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(calls, 0);
+  controller.abort();
+  assert.equal((await next).done, true);
+});
+
+test("spawn success reaches the one follow-up model call; the query ends before the worker", async () => {
   let releaseWorker!: (value: string) => void;
   let signalWorkerStarted!: () => void;
   const workerStarted = new Promise<void>((resolve) => { signalWorkerStarted = resolve; });
@@ -91,225 +97,149 @@ test("master answer streams before a background worker finishes", async () => {
       signalWorkerStarted();
     }),
   };
+  const modelInputs: Array<Array<HumanMessage | AIMessage | ToolMessage>> = [];
   const model = {
     bindTools: () => ({ invoke: async () => new AIMessage({ content: "", tool_calls: [{
       name: "spawn_agent", id: "call_1",
       args: { assignments: [{ agent: "a", prompt: "worker task" }] },
     }] }) }),
     invoke: async (messages: Array<HumanMessage | AIMessage | ToolMessage>) => {
-      assert.equal(messages.at(-1)?.content, "user question");
-      assert.equal(messages.some((message) => message instanceof ToolMessage), false);
-      return new AIMessage("master answer");
+      modelInputs.push(messages);
+      return new AIMessage(modelInputs.length === 1 ? "master answer" : "worker follow-up");
     },
   } as unknown as BaseChatModel;
-  const stream = createMaster(model, registry).stream("user question", "session-b");
-
-  assert.deepEqual((await stream.next()).value, { type: "session", session_id: "session-b" });
-  assert.deepEqual((await stream.next()).value, { type: "master_answer", answer: "master answer" });
+  const master = createMaster(model, registry);
+  const first = await collect(master.stream("user question", "session-b"));
+  assert.deepEqual(first, [
+    { type: "session", session_id: "session-b" },
+    { type: "master_answer", answer: "master answer" },
+    { type: "done", session_id: "session-b", answer: "master answer", spawned_agents: ["a"] },
+  ]);
+  assert.equal(modelInputs.length, 1);
+  assert.equal(modelInputs[0].at(-1) instanceof ToolMessage, true);
+  assert.deepEqual(JSON.parse(String(modelInputs[0].at(-1)?.content)), {
+    status: "spawned", agents: ["a"],
+  });
   await workerStarted;
   releaseWorker("worker answer");
-  assert.deepEqual((await stream.next()).value, {
+
+  const updates = master.subscribe("session-b");
+  assert.deepEqual((await updates.next()).value?.event, {
     type: "agent_result",
     result: { agent: "a", prompt: "worker task", output: "worker answer" },
   });
-  assert.deepEqual((await stream.next()).value, {
-    type: "done", session_id: "session-b", answer: "master answer",
-    agents: [{ agent: "a", prompt: "worker task", output: "worker answer" }],
+  assert.deepEqual((await updates.next()).value?.event, {
+    type: "runtime_answer", answer: "worker follow-up",
   });
-  assert.equal((await stream.next()).done, true);
+  await updates.return();
+  assert.equal(modelInputs.length, 2);
+  assert.match(String(modelInputs[1].at(-1)?.content), /worker answer/);
 });
 
-test("worker results are emitted after master answer even if workers finish first", async () => {
-  let releaseAnswer!: (value: AIMessage) => void;
-  let signalAnswerStarted!: () => void;
-  const answerStarted = new Promise<void>((resolve) => { signalAnswerStarted = resolve; });
-  const registry: AgentRegistry = { ...unusedWorkers(), a: async () => "quick result" };
+test("a fast worker still wakes master after query done, and event cursors replay only new events", async () => {
   const model = {
     bindTools: () => ({ invoke: async () => new AIMessage({ content: "", tool_calls: [{
-      name: "spawn_agent", id: "call_1",
+      name: "spawn_agent", id: "call_fast",
       args: { assignments: [{ agent: "a", prompt: "quick task" }] },
     }] }) }),
-    invoke: async () => {
-      signalAnswerStarted();
-      return new Promise<AIMessage>((resolve) => { releaseAnswer = resolve; });
-    },
+    invoke: async (messages: Array<HumanMessage | AIMessage | ToolMessage>) =>
+      new AIMessage(messages.at(-1) instanceof ToolMessage ? "initial" : "on result"),
   } as unknown as BaseChatModel;
-  const stream = createMaster(model, registry).stream("question", "session-c");
-
-  assert.equal((await stream.next()).value?.type, "session");
-  const nextEvent = stream.next();
-  await answerStarted;
-  releaseAnswer(new AIMessage("late master answer"));
-  assert.deepEqual((await nextEvent).value, { type: "master_answer", answer: "late master answer" });
-  assert.equal((await stream.next()).value?.type, "agent_result");
-  assert.equal((await stream.next()).value?.type, "done");
+  const master = createMaster(model, { ...unusedWorkers(), a: async () => "quick result" });
+  const initial = await collect(master.stream("question", "fast"));
+  assert.equal(initial.at(-1)?.type, "done");
+  const updates = master.subscribe("fast");
+  const first = (await updates.next()).value!;
+  assert.equal(first.id, 1);
+  assert.equal(first.event.type, "agent_result");
+  const second = (await updates.next()).value!;
+  assert.equal(second.id, 2);
+  assert.deepEqual(second.event, { type: "runtime_answer", answer: "on result" });
+  await updates.return();
+  const replay = master.subscribe("fast", 1);
+  assert.deepEqual((await replay.next()).value, second);
+  await replay.return();
 });
 
-test("LangGraph runtime starts selected subagents concurrently", async () => {
-  const started: string[] = [];
-  let releaseA!: (value: string) => void;
-  let releaseB!: (value: string) => void;
-  let signalBothStarted!: () => void;
-  const bothStarted = new Promise<void>((resolve) => { signalBothStarted = resolve; });
-  const runner = (agent: "a" | "b") => async (prompt: string) => {
-    started.push(`${agent}:${prompt}`);
-    if (started.length === 2) signalBothStarted();
-    return new Promise<string>((resolve) => {
-      if (agent === "a") releaseA = resolve;
-      else releaseB = resolve;
-    });
-  };
-  const registry: AgentRegistry = { ...unusedWorkers(), a: runner("a"), b: runner("b") };
-  const model = {
-    bindTools: () => ({ invoke: async () => new AIMessage({ content: "", tool_calls: [{
-      name: "spawn_agent", id: "call_parallel",
-      args: { assignments: [
-        { agent: "a", prompt: "task A" },
-        { agent: "b", prompt: "task B" },
-      ] },
-    }] }) }),
-    invoke: async () => new AIMessage("master continues"),
-  } as unknown as BaseChatModel;
-  const stream = createMaster(model, registry).stream("question", "parallel");
-  assert.equal((await stream.next()).value?.type, "session");
-  assert.deepEqual((await stream.next()).value, { type: "master_answer", answer: "master continues" });
-  await bothStarted;
-  assert.deepEqual(new Set(started), new Set(["a:task A", "b:task B"]));
-  releaseA("A done");
-  releaseB("B done");
-  const remaining = [];
-  for await (const event of stream) remaining.push(event);
-  assert.equal(remaining.filter((event) => event.type === "agent_result").length, 2);
-  assert.equal(remaining.at(-1)?.type, "done");
-});
-
-test("master remembers returned worker results by session; workers see only assigned tasks", async () => {
-  const routingInputs: Array<Array<HumanMessage | AIMessage | ToolMessage>> = [];
-  const workerInputs: string[] = [];
-  let calls = 0;
-  const registry: AgentRegistry = {
-    ...unusedWorkers(),
-    a: async (prompt) => { workerInputs.push(prompt); return `result for ${prompt}`; },
-  };
-  const model = {
-    bindTools: () => ({ invoke: async (messages: Array<HumanMessage | AIMessage | ToolMessage>) => {
-      routingInputs.push(messages);
-      calls += 1;
-      return new AIMessage({ content: "", tool_calls: [{
-        name: "spawn_agent", id: `call_${calls}`,
-        args: { assignments: [{ agent: "a", prompt: `task ${calls}` }] },
-      }] });
-    } }),
-    invoke: async () => new AIMessage(`answer ${calls}`),
-  } as unknown as BaseChatModel;
-  const master = createMaster(model, registry);
-  for await (const _event of master.stream("first", "same")) { /* consume */ }
-  for await (const _event of master.stream("second", "same")) { /* consume */ }
-  for await (const _event of master.stream("separate", "other")) { /* consume */ }
-
-  assert.equal(routingInputs[0].length, 1);
-  assert.equal(routingInputs[1].some((message) => message instanceof ToolMessage), true);
-  assert.equal(routingInputs[1].filter((message) => message instanceof HumanMessage).length, 2);
-  assert.equal(routingInputs[2].length, 1);
-  assert.deepEqual(workerInputs, ["task 1", "task 2", "task 3"]);
-});
-
-test("same-session master handles a new query while an earlier worker runs", async () => {
+test("new user messages run while a worker is pending and receive its current status", async () => {
   let releaseWorker!: (value: string) => void;
   let signalWorkerStarted!: () => void;
   const workerStarted = new Promise<void>((resolve) => { signalWorkerStarted = resolve; });
-  let routes = 0;
-  const routingInputs: Array<Array<HumanMessage | AIMessage | ToolMessage>> = [];
-  const registry: AgentRegistry = {
-    ...unusedWorkers(),
-    a: async () => new Promise<string>((resolve) => {
-      releaseWorker = resolve;
-      signalWorkerStarted();
-    }),
-  };
-  const model = {
-    bindTools: () => ({ invoke: async (messages: Array<HumanMessage | AIMessage | ToolMessage>) => {
-      routingInputs.push(messages);
-      routes += 1;
-      if (routes === 1) return new AIMessage({ content: "", tool_calls: [{
-        name: "spawn_agent", id: "call_1",
-        args: { assignments: [{ agent: "a", prompt: "first task" }] },
-      }] });
-      return new AIMessage("second answer");
-    } }),
-    invoke: async () => new AIMessage("first answer"),
-  } as unknown as BaseChatModel;
-  const master = createMaster(model, registry);
-  const first = master.stream("first", "shared");
-  await first.next();
-  assert.equal((await first.next()).value?.type, "master_answer");
-  await workerStarted;
-
-  const second = master.stream("second", "shared");
-  assert.equal((await second.next()).value?.type, "session");
-  assert.deepEqual((await second.next()).value, { type: "master_answer", answer: "second answer" });
-  assert.equal((await second.next()).value?.type, "done");
-  assert.equal(routes, 2);
-  assert.equal(routingInputs[1].some((message) => message instanceof ToolMessage), false);
-
-  releaseWorker("first result");
-  for await (const _event of first) { /* consume */ }
-
-  const third = master.stream("third", "shared");
-  for await (const _event of third) { /* consume */ }
-  assert.equal(routingInputs[2].some((message) => message instanceof ToolMessage), true);
-});
-
-test("new query context ends with the agents still running in that session", async () => {
-  let releaseA!: (value: string) => void;
-  let releaseD!: (value: string) => void;
-  let signalBothStarted!: () => void;
-  let started = 0;
-  const bothStarted = new Promise<void>((resolve) => { signalBothStarted = resolve; });
-  const worker = (agent: "a" | "d") => async () => {
-    started += 1;
-    if (started === 2) signalBothStarted();
-    return new Promise<string>((resolve) => {
-      if (agent === "a") releaseA = resolve;
-      else releaseD = resolve;
-    });
-  };
-  const registry: AgentRegistry = { ...unusedWorkers(), a: worker("a"), d: worker("d") };
   const contexts: Array<Array<HumanMessage | AIMessage | ToolMessage>> = [];
   let routes = 0;
   const model = {
     bindTools: () => ({ invoke: async (messages: Array<HumanMessage | AIMessage | ToolMessage>) => {
       contexts.push(messages);
-      routes += 1;
+      routes++;
       if (routes === 1) return new AIMessage({ content: "", tool_calls: [{
-        name: "spawn_agent", id: "call_ad",
-        args: { assignments: [
-          { agent: "a", prompt: "task A" },
-          { agent: "d", prompt: "task D" },
-        ] },
+        name: "spawn_agent", id: "call_pending",
+        args: { assignments: [{ agent: "a", prompt: "slow task" }] },
       }] });
-      return new AIMessage(`answer ${routes}`);
+      return new AIMessage("second answer");
     } }),
-    invoke: async () => new AIMessage("first answer"),
+    invoke: async () => new AIMessage("answer"),
   } as unknown as BaseChatModel;
-  const master = createMaster(model, registry);
-  const first = master.stream("first", "shared");
-  assert.equal((await first.next()).value?.type, "session");
-  assert.equal((await first.next()).value?.type, "master_answer");
-  await bothStarted;
+  const master = createMaster(model, {
+    ...unusedWorkers(),
+    a: async () => new Promise<string>((resolve) => {
+      releaseWorker = resolve;
+      signalWorkerStarted();
+    }),
+  });
+  await collect(master.stream("first", "shared"));
+  await workerStarted;
+  assert.equal((await collect(master.stream("second", "shared")))[1].type, "master_answer");
+  assert.equal(contexts[1].at(-1)?.content, "second\n\nSub agent A is still running");
+  releaseWorker("result");
+  const updates = master.subscribe("shared");
+  assert.equal((await updates.next()).value?.event.type, "agent_result");
+  assert.equal((await updates.next()).value?.event.type, "runtime_answer");
+  await updates.return();
+  await collect(master.stream("third", "shared"));
+  assert.equal(contexts[2].at(-1)?.content, "third");
+  assert.equal(contexts[2].some((message) => String(message.content).includes("result")), true);
+});
 
-  for await (const _event of master.stream("second", "shared")) { /* consume */ }
-  assert.equal(contexts[1].at(-1)?.content,
-    "second\n\nSub agents A and D are still running");
+test("external runtime events wake master without a user query", async () => {
+  const model = {
+    bindTools: () => ({ invoke: async () => new AIMessage("user answer") }),
+    invoke: async (messages: Array<HumanMessage | AIMessage | ToolMessage>) => {
+      assert.match(String(messages.at(-1)?.content), /build_finished/);
+      return new AIMessage("runtime answer");
+    },
+  } as unknown as BaseChatModel;
+  const master = createMaster(model, unusedWorkers());
+  await collect(master.stream("start", "external"));
+  await master.receiveRuntimeEvent("external", {
+    type: "runtime_event", name: "build_finished", payload: { ok: true },
+  });
+  const updates = master.subscribe("external");
+  assert.deepEqual((await updates.next()).value?.event, {
+    type: "runtime_event", name: "build_finished", payload: { ok: true },
+  });
+  assert.deepEqual((await updates.next()).value?.event, {
+    type: "runtime_answer", answer: "runtime answer",
+  });
+  await updates.return();
+});
 
-  releaseA("A done");
-  assert.equal((await first.next()).value?.type, "agent_result");
-  for await (const _event of master.stream("third", "shared")) { /* consume */ }
-  assert.equal(contexts[2].at(-1)?.content,
-    "third\n\nSub agent D is still running");
-
-  releaseD("D done");
-  for await (const _event of first) { /* consume */ }
-  for await (const _event of master.stream("fourth", "shared")) { /* consume */ }
-  assert.equal(contexts[3].at(-1)?.content, "fourth");
+test("worker failure is delivered as a runtime event and wakes master", async () => {
+  const model = {
+    bindTools: () => ({ invoke: async () => new AIMessage({ content: "", tool_calls: [{
+      name: "spawn_agent", id: "call_error",
+      args: { assignments: [{ agent: "a", prompt: "bad task" }] },
+    }] }) }),
+    invoke: async (messages: Array<HumanMessage | AIMessage | ToolMessage>) =>
+      new AIMessage(messages.at(-1) instanceof ToolMessage ? "started" : "handled failure"),
+  } as unknown as BaseChatModel;
+  const master = createMaster(model, { ...unusedWorkers(), a: async () => { throw new Error("failed"); } });
+  await collect(master.stream("question", "failure"));
+  const updates = master.subscribe("failure");
+  assert.deepEqual((await updates.next()).value?.event, {
+    type: "agent_error", agent: "a", prompt: "bad task", detail: "failed",
+  });
+  assert.deepEqual((await updates.next()).value?.event, {
+    type: "runtime_answer", answer: "handled failure",
+  });
+  await updates.return();
 });

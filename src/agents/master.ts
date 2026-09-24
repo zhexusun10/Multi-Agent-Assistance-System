@@ -4,10 +4,19 @@ import type { BaseChatModel } from "@langchain/core/language_models/chat_models"
 import { tool } from "@langchain/core/tools";
 import { Annotation, END, MemorySaver, Send, START, StateGraph } from "@langchain/langgraph";
 import type { AgentRegistry } from "./registry.js";
-import { spawnInputSchema, type AgentId, type AgentResult, type Assignment, type MasterEvent } from "../types.js";
+import {
+  spawnInputSchema, type AgentId, type AgentResult, type Assignment,
+  type ExternalRuntimeEvent, type MasterEvent,
+} from "../types.js";
 
-type DispatchEvent = { type: "dispatch"; assignments: Assignment[]; routeCall: AIMessage };
-type RuntimeEvent = DispatchEvent | Extract<MasterEvent, { type: "master_answer" | "agent_result" }>;
+type WorkerEvent = Extract<MasterEvent, { type: "agent_result" | "agent_error" }>;
+type WakeEvent = WorkerEvent | ExternalRuntimeEvent;
+type GraphEvent = { type: "dispatch"; assignments: Assignment[] } |
+  Extract<MasterEvent, { type: "master_answer" | "runtime_answer" }>;
+type MasterInput =
+  | { kind: "user"; query: string; runningAgentStatus: string | null }
+  | { kind: "runtime"; event: WakeEvent };
+export type SequencedEvent = { id: number; event: MasterEvent };
 
 class EventQueue<T> implements AsyncIterable<T> {
   private items: T[] = [];
@@ -50,8 +59,15 @@ function createWorkerRuntime(registry: AgentRegistry) {
     .addNode("dispatch", () => ({}))
     .addNode("worker", async (state, config) => {
       const { agent, prompt } = state.assignment;
-      const result: AgentResult = { agent, prompt, output: await registry[agent](prompt) };
-      config.writer?.({ type: "agent_result", result } satisfies MasterEvent);
+      try {
+        const result: AgentResult = { agent, prompt, output: await registry[agent](prompt) };
+        config.writer?.({ type: "agent_result", result } satisfies WorkerEvent);
+      } catch (error) {
+        config.writer?.({
+          type: "agent_error", agent, prompt,
+          detail: error instanceof Error ? error.message : String(error),
+        } satisfies WorkerEvent);
+      }
       return {};
     })
     .addEdge(START, "dispatch")
@@ -61,29 +77,41 @@ function createWorkerRuntime(registry: AgentRegistry) {
     .addEdge("worker", END)
     .compile();
 
-  return async (assignments: Assignment[], onResult: (result: AgentResult) => void = () => {}) => {
-    const results: AgentResult[] = [];
+  return async (assignments: Assignment[], onEvent: (event: WorkerEvent) => void): Promise<void> => {
     for await (const chunk of await graph.stream({ assignments }, { streamMode: "custom" })) {
-      const event = chunk as RuntimeEvent;
-      if (event.type === "agent_result") {
-        results.push(event.result);
-        onResult(event.result);
-      }
+      const event = chunk as WorkerEvent;
+      if (event.type === "agent_result" || event.type === "agent_error") onEvent(event);
     }
-    return results;
   };
 }
 
-export function createSpawnAgentTool(registry: AgentRegistry) {
+function spawnSuccess(assignments: Assignment[]): string {
+  return JSON.stringify({ status: "spawned", agents: assignments.map(({ agent }) => agent) });
+}
+
+export function createSpawnAgentTool(registry: AgentRegistry, onEvent: (event: WorkerEvent) => void = () => {}) {
   const runWorkers = createWorkerRuntime(registry);
   return tool(
-    async ({ assignments }) => JSON.stringify(await runWorkers(assignments)),
+    async ({ assignments }) => {
+      void runWorkers(assignments, onEvent).catch((error) => console.error("Worker runtime failed", error));
+      return spawnSuccess(assignments);
+    },
     {
       name: "spawn_agent",
       description: "Dispatch one or more tasks to agents a, b, c, or d, with a separate prompt for each selected agent.",
       schema: spawnInputSchema,
     },
   );
+}
+
+function runtimeMessage(event: WakeEvent): HumanMessage {
+  if (event.type === "agent_result") {
+    return new HumanMessage(`Runtime event: agent ${event.result.agent} completed. Result: ${JSON.stringify(event.result)}`);
+  }
+  if (event.type === "agent_error") {
+    return new HumanMessage(`Runtime event: agent ${event.agent} failed. Details: ${JSON.stringify(event)}`);
+  }
+  return new HumanMessage(`Runtime event ${event.name}: ${JSON.stringify(event.payload)}`);
 }
 
 export function createMaster(model: BaseChatModel, registry: AgentRegistry) {
@@ -93,6 +121,37 @@ export function createMaster(model: BaseChatModel, registry: AgentRegistry) {
   const runWorkers = createWorkerRuntime(registry);
   const sessionTails = new Map<string, Promise<void>>();
   const activeAgents = new Map<string, Map<AgentId, number>>();
+  const eventHistory = new Map<string, SequencedEvent[]>();
+  const subscribers = new Map<string, Set<EventQueue<SequencedEvent>>>();
+
+  function publish(sessionId: string, event: MasterEvent): void {
+    const history = eventHistory.get(sessionId) ?? [];
+    const entry = { id: history.length + 1, event };
+    history.push(entry);
+    eventHistory.set(sessionId, history);
+    for (const subscriber of subscribers.get(sessionId) ?? []) subscriber.push(entry);
+  }
+
+  async function* subscribe(sessionId: string, after = 0, signal?: AbortSignal): AsyncGenerator<SequencedEvent> {
+    const queue = new EventQueue<SequencedEvent>();
+    const abort = () => queue.close();
+    signal?.addEventListener("abort", abort, { once: true });
+    if (signal?.aborted) queue.close();
+    const listeners = subscribers.get(sessionId) ?? new Set<EventQueue<SequencedEvent>>();
+    listeners.add(queue);
+    subscribers.set(sessionId, listeners);
+    for (const entry of eventHistory.get(sessionId) ?? []) {
+      if (entry.id > after) queue.push(entry);
+    }
+    try {
+      for await (const entry of queue) yield entry;
+    } finally {
+      signal?.removeEventListener("abort", abort);
+      listeners.delete(queue);
+      if (!listeners.size) subscribers.delete(sessionId);
+      queue.close();
+    }
+  }
 
   function addActiveAgent(sessionId: string, agent: AgentId): void {
     const agents = activeAgents.get(sessionId) ?? new Map<AgentId, number>();
@@ -142,8 +201,7 @@ export function createMaster(model: BaseChatModel, registry: AgentRegistry) {
   }
 
   const MasterState = Annotation.Root({
-    query: Annotation<string>(),
-    runningAgentStatus: Annotation<string | null>(),
+    input: Annotation<MasterInput>(),
     messages: Annotation<Array<HumanMessage | AIMessage | ToolMessage>>({
       reducer: (left, right) => left.concat(right),
       default: () => [],
@@ -155,9 +213,14 @@ export function createMaster(model: BaseChatModel, registry: AgentRegistry) {
 
   const masterGraph = new StateGraph(MasterState)
     .addNode("master", async (state, config) => {
+      if (state.input.kind === "runtime") {
+        const response = await model.invoke([...state.messages, runtimeMessage(state.input.event)]);
+        if (!(response instanceof AIMessage)) throw new Error("master returned an invalid runtime answer");
+        return { assignments: null, routeCall: null, answerMessage: response };
+      }
       const response = await routingModel.invoke([
         ...state.messages,
-        currentQueryMessage(state.query, state.runningAgentStatus),
+        currentQueryMessage(state.input.query, state.input.runningAgentStatus),
       ]);
       if (!(response instanceof AIMessage)) throw new Error("master returned an invalid response");
       if (!response.tool_calls?.length) {
@@ -167,42 +230,63 @@ export function createMaster(model: BaseChatModel, registry: AgentRegistry) {
         throw new Error("master may call spawn_agent only once per query");
       }
       const { assignments } = spawnInputSchema.parse(response.tool_calls[0].args);
-      config.writer?.({ type: "dispatch", assignments, routeCall: response } satisfies DispatchEvent);
+      config.writer?.({ type: "dispatch", assignments } satisfies GraphEvent);
       return { assignments, routeCall: response, answerMessage: null };
     })
     .addNode("answer", async (state, config) => {
-      const response = state.assignments
+      if (state.input.kind === "runtime") {
+        const response = state.answerMessage;
+        if (!(response instanceof AIMessage)) throw new Error("runtime answer is missing");
+        config.writer?.({ type: "runtime_answer", answer: response.text } satisfies GraphEvent);
+        return { messages: [runtimeMessage(state.input.event), response], answerMessage: response };
+      }
+
+      const { query, runningAgentStatus } = state.input;
+      let recordedCall: AIMessage | undefined;
+      let success: ToolMessage | undefined;
+      if (state.assignments && state.routeCall) {
+        const call = state.routeCall.tool_calls?.[0];
+        if (!call) throw new Error("spawn_agent call is missing");
+        const callId = call.id ?? randomUUID();
+        recordedCall = call.id ? state.routeCall : new AIMessage({
+          content: state.routeCall.content, tool_calls: [{ ...call, id: callId }],
+        });
+        success = new ToolMessage({
+          name: "spawn_agent", tool_call_id: callId, content: spawnSuccess(state.assignments),
+        });
+      }
+      const response = recordedCall && success
         ? await model.invoke([
-          ...state.messages,
-          currentQueryMessage(state.query, state.runningAgentStatus),
+          ...state.messages, currentQueryMessage(query, runningAgentStatus), recordedCall, success,
         ])
         : state.answerMessage;
       if (!(response instanceof AIMessage)) throw new Error("master answer is missing");
-      config.writer?.({ type: "master_answer", answer: response.text } satisfies MasterEvent);
-      return { messages: [new HumanMessage(state.query), response], answerMessage: response };
+      config.writer?.({ type: "master_answer", answer: response.text } satisfies GraphEvent);
+      return {
+        messages: [new HumanMessage(query), ...(recordedCall && success ? [recordedCall, success] : []), response],
+        answerMessage: response,
+      };
     })
     .addEdge(START, "master")
     .addEdge("master", "answer")
     .addEdge("answer", END)
     .compile({ checkpointer: new MemorySaver() });
 
-  async function receiveResults(sessionId: string, routeCall: AIMessage, agents: AgentResult[]) {
-    const call = routeCall.tool_calls?.[0];
-    if (!call) throw new Error("spawn_agent call is missing");
-    const callId = call.id ?? randomUUID();
-    const recordedCall = call.id
-      ? routeCall
-      : new AIMessage({ content: routeCall.content, tool_calls: [{ ...call, id: callId }] });
+  async function receiveRuntimeEvent(sessionId: string, event: WakeEvent): Promise<void> {
     await withSessionLock(sessionId, async () => {
-      await masterGraph.updateState(
-        { configurable: { thread_id: sessionId } },
-        { messages: [recordedCall, new ToolMessage({
-          name: "spawn_agent",
-          tool_call_id: callId,
-          content: JSON.stringify(agents),
-        })] },
-        "answer",
-      );
+      publish(sessionId, event);
+      try {
+        for await (const chunk of await masterGraph.stream(
+          { input: { kind: "runtime", event } },
+          { configurable: { thread_id: sessionId }, streamMode: "custom" },
+        )) {
+          const graphEvent = chunk as GraphEvent;
+          if (graphEvent.type === "runtime_answer") publish(sessionId, graphEvent);
+        }
+      } catch (error) {
+        console.error("Runtime event handling failed", error);
+        publish(sessionId, { type: "error", detail: "Runtime event handling failed" });
+      }
     });
   }
 
@@ -211,55 +295,42 @@ export function createMaster(model: BaseChatModel, registry: AgentRegistry) {
     events.push({ type: "session", session_id: sessionId });
 
     void (async () => {
-      let answer: string | undefined;
-      let masterComplete = false;
-      let routeCall: AIMessage | undefined;
-      let workerTask: Promise<{ agents: AgentResult[] } | { error: unknown }> | undefined;
-      const buffered: AgentResult[] = [];
-
-      const receiveAgent = (result: AgentResult) => {
-        if (!masterComplete) buffered.push(result);
-        else events.push({ type: "agent_result", result });
-      };
-
       try {
         await withSessionLock(sessionId, async () => {
+          let answer: string | undefined;
+          let spawnedAgents: AgentId[] = [];
           for await (const chunk of await masterGraph.stream(
-            { query, runningAgentStatus: runningAgentStatus(sessionId) },
+            { input: { kind: "user", query, runningAgentStatus: runningAgentStatus(sessionId) } },
             { configurable: { thread_id: sessionId }, streamMode: "custom" },
           )) {
-            const event = chunk as RuntimeEvent;
+            const event = chunk as GraphEvent;
             if (event.type === "dispatch") {
-              routeCall = event.routeCall;
-              const pending = new Set(event.assignments.map(({ agent }) => agent));
-              for (const agent of pending) addActiveAgent(sessionId, agent);
-              workerTask = runWorkers(event.assignments, (result) => {
-                if (pending.delete(result.agent)) removeActiveAgent(sessionId, result.agent);
-                receiveAgent(result);
-              })
-                .finally(() => {
-                  for (const agent of pending) removeActiveAgent(sessionId, agent);
-                })
-                .then((agents) => ({ agents }), (error) => ({ error }));
+              spawnedAgents = event.assignments.map(({ agent }) => agent);
+              const pending = new Set(spawnedAgents);
+              for (const agent of spawnedAgents) addActiveAgent(sessionId, agent);
+              void runWorkers(event.assignments, (workerEvent) => {
+                const agent = workerEvent.type === "agent_result" ? workerEvent.result.agent : workerEvent.agent;
+                if (pending.delete(agent)) removeActiveAgent(sessionId, agent);
+                void receiveRuntimeEvent(sessionId, workerEvent);
+              }).catch((error) => {
+                console.error("Worker runtime failed", error);
+                for (const assignment of event.assignments) {
+                  if (!pending.delete(assignment.agent)) continue;
+                  removeActiveAgent(sessionId, assignment.agent);
+                  void receiveRuntimeEvent(sessionId, {
+                    type: "agent_error", agent: assignment.agent, prompt: assignment.prompt,
+                    detail: "Worker runtime failed",
+                  });
+                }
+              });
             } else if (event.type === "master_answer") {
               answer = event.answer;
               events.push(event);
             }
           }
+          if (answer === undefined) throw new Error("master did not answer");
+          events.push({ type: "done", session_id: sessionId, answer, spawned_agents: spawnedAgents });
         });
-
-        if (answer === undefined) throw new Error("master did not answer");
-        masterComplete = true;
-        for (const result of buffered) events.push({ type: "agent_result", result });
-        buffered.length = 0;
-        let agents: AgentResult[] = [];
-        if (workerTask && routeCall) {
-          const result = await workerTask;
-          if ("error" in result) throw result.error;
-          agents = result.agents;
-          await receiveResults(sessionId, routeCall, agents);
-        }
-        events.push({ type: "done", session_id: sessionId, answer, agents });
       } catch (error) {
         console.error("Master run failed", error);
         events.push({ type: "error", detail: "Master run failed" });
@@ -271,5 +342,5 @@ export function createMaster(model: BaseChatModel, registry: AgentRegistry) {
     for await (const event of events) yield event;
   }
 
-  return { stream };
+  return { stream, subscribe, receiveRuntimeEvent };
 }
