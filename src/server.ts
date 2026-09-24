@@ -1,13 +1,27 @@
 import { createServer } from "node:http";
 import { randomUUID } from "node:crypto";
+import pg from "pg";
+import { PostgresSaver } from "@langchain/langgraph-checkpoint-postgres";
+import { PostgresAgentTaskStore } from "./agent-task-store.js";
 import { createAgentRegistry } from "./agents/registry.js";
 import { createMaster } from "./agents/master.js";
 import { createModel } from "./model.js";
+import { PostgresSessionEventStore } from "./session-store.js";
 import { querySchema, runtimeEventSchema } from "./types.js";
 
+const databaseUrl = process.env.DATABASE_URL;
+if (!databaseUrl) throw new Error("DATABASE_URL is required for PostgreSQL session storage");
+const pool = new pg.Pool({ connectionString: databaseUrl });
+const checkpointer = new PostgresSaver(pool);
+const events = new PostgresSessionEventStore(pool);
+const tasks = new PostgresAgentTaskStore(pool);
+await checkpointer.setup();
+await events.setup();
+await tasks.setup();
 const model = await createModel();
 // Reuse one compiled master graph while the service is running.
-const master = createMaster(model, createAgentRegistry(model));
+const master = createMaster(model, createAgentRegistry(model, checkpointer), { checkpointer, events, tasks });
+await master.resumePendingTasks();
 const host = process.env.GRAPH_HOST || "127.0.0.1";
 const port = Number(process.env.GRAPH_PORT || 3001);
 
@@ -18,7 +32,12 @@ const server = createServer(async (request, response) => {
   };
 
   if (request.method === "GET" && request.url === "/health") {
-    return send(200, { status: "ok" });
+    try {
+      await pool.query("SELECT 1");
+      return send(200, { status: "ok" });
+    } catch {
+      return send(503, { detail: "PostgreSQL unavailable" });
+    }
   }
   const url = new URL(request.url ?? "/", `http://${request.headers.host ?? "localhost"}`);
   if (request.method === "GET" && url.pathname === "/events") {
@@ -37,8 +56,16 @@ const server = createServer(async (request, response) => {
     });
     const controller = new AbortController();
     response.on("close", () => controller.abort());
-    for await (const { id, event } of master.subscribe(sessionId, after, controller.signal)) {
-      if (!response.destroyed) response.write(`id: ${id}\nevent: ${event.type}\ndata: ${JSON.stringify(event)}\n\n`);
+    try {
+      for await (const { id, event } of master.subscribe(sessionId, after, controller.signal)) {
+        if (!response.destroyed) response.write(`id: ${id}\nevent: ${event.type}\ndata: ${JSON.stringify(event)}\n\n`);
+      }
+    } catch (error) {
+      console.error("Session event subscription failed", error);
+      if (!response.destroyed) {
+        const event = { type: "error", detail: "Session event subscription failed" };
+        response.write(`event: error\ndata: ${JSON.stringify(event)}\n\n`);
+      }
     }
     if (!response.destroyed) response.end();
     return;
@@ -61,7 +88,7 @@ const server = createServer(async (request, response) => {
       const parsedEvent = runtimeEventSchema.safeParse(body);
       if (!parsedEvent.success) return send(422, { detail: parsedEvent.error.flatten() });
       const { session_id, name, payload } = parsedEvent.data;
-      void master.receiveRuntimeEvent(session_id, { type: "runtime_event", name, payload });
+      await master.acceptRuntimeEvent(session_id, { type: "runtime_event", name, payload });
       return send(202, { status: "accepted", session_id });
     }
     const parsed = querySchema.safeParse(body);

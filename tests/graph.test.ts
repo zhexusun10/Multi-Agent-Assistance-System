@@ -17,33 +17,11 @@ async function collect(stream: AsyncGenerator<MasterEvent>): Promise<MasterEvent
   return events;
 }
 
-test("spawn_agent returns success before workers finish and keeps inputs isolated", async () => {
-  const started: string[] = [];
-  let releaseA!: (value: string) => void;
-  let releaseB!: (value: string) => void;
-  let signalBoth!: () => void;
-  const bothStarted = new Promise<void>((resolve) => { signalBoth = resolve; });
-  const run = (agent: "a" | "b") => async (prompt: string) => {
-    started.push(`${agent}:${prompt}`);
-    if (started.length === 2) signalBoth();
-    return new Promise<string>((resolve) => {
-      if (agent === "a") releaseA = resolve;
-      else releaseB = resolve;
-    });
-  };
-  const received: MasterEvent[] = [];
-  const registry: AgentRegistry = { ...unusedWorkers(), a: run("a"), b: run("b") };
-  const result = await createSpawnAgentTool(registry, (event) => received.push(event)).invoke({
+test("spawn_agent describes assignments to existing session agents", async () => {
+  const result = await createSpawnAgentTool().invoke({
     assignments: [{ agent: "a", prompt: "only A" }, { agent: "b", prompt: "only B" }],
   });
   assert.deepEqual(JSON.parse(String(result)), { status: "spawned", agents: ["a", "b"] });
-  await bothStarted;
-  assert.deepEqual(new Set(started), new Set(["a:only A", "b:only B"]));
-  releaseA("A done");
-  releaseB("B done");
-  // The worker graph reports each completion through a separate callback.
-  while (received.length < 2) await new Promise((resolve) => setImmediate(resolve));
-  assert.deepEqual(new Set(received.map((event) => event.type)), new Set(["agent_result"]));
 });
 
 test("spawn input rejects repeated workers and blank assignments", () => {
@@ -198,6 +176,47 @@ test("new user messages run while a worker is pending and receive its current st
   await collect(master.stream("third", "shared"));
   assert.equal(contexts[2].at(-1)?.content, "third");
   assert.equal(contexts[2].some((message) => String(message.content).includes("result")), true);
+});
+
+test("a session reuses one agent and runs its assignments in order", async () => {
+  let releaseFirst!: (value: string) => void;
+  let signalFirst!: () => void;
+  const firstStarted = new Promise<void>((resolve) => { signalFirst = resolve; });
+  const started: string[] = [];
+  let routes = 0;
+  const model = {
+    bindTools: () => ({ invoke: async () => {
+      routes++;
+      return new AIMessage({ content: "", tool_calls: [{
+        name: "spawn_agent", id: `call_${routes}`,
+        args: { assignments: [{ agent: "a", prompt: routes === 1 ? "first" : "second" }] },
+      }] });
+    } }),
+    invoke: async (messages: Array<HumanMessage | AIMessage | ToolMessage>) =>
+      new AIMessage(messages.at(-1) instanceof ToolMessage ? "dispatched" : "received"),
+  } as unknown as BaseChatModel;
+  const registry: AgentRegistry = {
+    ...unusedWorkers(),
+    a: async (prompt) => {
+      started.push(prompt);
+      if (prompt === "first") {
+        signalFirst();
+        return new Promise<string>((resolve) => { releaseFirst = resolve; });
+      }
+      return "second result";
+    },
+  };
+  const master = createMaster(model, registry);
+  await collect(master.stream("query one", "same-agent"));
+  await firstStarted;
+  await collect(master.stream("query two", "same-agent"));
+  assert.deepEqual(started, ["first"]);
+  releaseFirst("first result");
+  const updates = master.subscribe("same-agent");
+  for (let i = 0; i < 4; i++) await updates.next();
+  await updates.return();
+  await master.waitForTaskIdle();
+  assert.deepEqual(started, ["first", "second"]);
 });
 
 test("external runtime events wake master without a user query", async () => {
