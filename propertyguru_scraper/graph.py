@@ -102,8 +102,8 @@ def iter_listing_batches(engine, batch_size=500, limit=None):
     emitted = 0
     columns = [Property.listing_id] + [getattr(Property, f) for f in LISTING_FIELDS] + [
         Property.project_id, Property.agent_id, Property.district_code,
-        Property.nearest_mrt, func.coalesce(Agent.name, Property.agent_name).label("agent_name"),
-        func.coalesce(Agent.agency_name, Property.agency_name).label("agency_name"),
+        Property.nearest_mrt, func.coalesce(Property.agent_name, Agent.name).label("agent_name"),
+        func.coalesce(Property.agency_name, Agent.agency_name).label("agency_name"),
     ]
     while limit is None or emitted < limit:
         size = min(batch_size, limit - emitted) if limit is not None else batch_size

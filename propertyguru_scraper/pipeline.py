@@ -79,7 +79,8 @@ class IngestionPipeline:
                 stats.total_errors += 1
                 if progress_callback:
                     progress_callback(current_page, total_pages_known, 0, stats)
-                if site_total_pages and current_page >= site_total_pages:
+                if (site_total_pages and current_page >= site_total_pages) or (max_pages is None and not site_total_pages):
+                    # Without pagination, an empty/failed page cannot establish a next page.
                     break
                 current_page += 1
                 continue
@@ -118,7 +119,7 @@ class IngestionPipeline:
                         except Exception:
                             logger.exception("Detail enrichment failed for %s", c["listing_id"])
                             stats.total_errors += 1
-                    elif u and u in details_map:
+                    elif u:
                         logger.warning("Detail fetch returned no data for %s", u)
                         stats.total_errors += 1
 
@@ -146,7 +147,8 @@ class IngestionPipeline:
 
                 # 2. Extract Agent Record
                 ag = PropertyCleaner.extract_agent_record(c)
-                if ag:
+                if ag and c.get("detail_fetched"):
+                    # A card-only replay must not downgrade an enriched shared Agent.
                     agents_batch.append(ag)
 
                 # 3. Extract Separated Images

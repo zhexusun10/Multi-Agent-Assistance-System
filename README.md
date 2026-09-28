@@ -184,7 +184,7 @@ python3 propertyguru_scraper/main.py run --type sale --pages 1
 python3 propertyguru_scraper/main.py stats
 ```
 
-`PROPERTYGURU_DATABASE_URL` 指向**专用** `propertyguru` 库，不能与上面的 `DATABASE_URL`（LangGraph 的 `multi_agent_assistance` checkpoint/任务/事件库）混用；`init-db` 创建/更新表结构但**不创建库**。若 PostgreSQL TCP 连接要求密码，为专用角色设置密码后仅在本地 `.env` 的 URL 中填写，不改 `.env.example` 为真实凭据。已有 `.env` 不要覆盖。两个 Python 依赖文件分别服务 FastAPI 和爬虫；同时运行时两个都安装。
+`PROPERTYGURU_DATABASE_URL` 指向**专用** `propertyguru` 库，不能与上面的 `DATABASE_URL`（LangGraph 的 `multi_agent_assistance` checkpoint/任务/事件库）混用；`init-db` 创建表，并补齐已有 `properties` 表缺失的可空列及索引，但**不创建库**，也不迁移旧列类型/约束或其他旧表。若 PostgreSQL TCP 连接要求密码，为专用角色设置密码后仅在本地 `.env` 的 URL 中填写，不改 `.env.example` 为真实凭据。已有 `.env` 不要覆盖。两个 Python 依赖文件分别服务 FastAPI 和爬虫；同时运行时两个都安装。
 
 可选 Neo4j 只保存从**已提交 PostgreSQL 数据**重建的房源图投影，不参与入库事务。`.env` 中设置 `NEO4J_URI`、`NEO4J_USER`、`NEO4J_PASSWORD`、`NEO4J_DATABASE`（示例见 `.env.example`）；Compose 需显式读取根目录 `.env`，而 Python CLI 需先 `source` 它：
 
@@ -205,7 +205,7 @@ RETURN l.listing_id AS listing_id, l.title AS title, l.price AS price
 ORDER BY listing_id LIMIT 10;
 ```
 
-`sync-graph` 从 PG 回填，不会抓取，可反复运行；`--sync-graph` 只在成功抓取入库后执行，Neo4j 失败不会回滚已提交的 PG 数据，修复连接后重新执行 `sync-graph`。删除的 PG 行不会自动删除图节点；Neo4j 是可重建投影，不是新的数据源。Docker `down` 不删除数据卷，修改 `.env` 中的密码不会重设已初始化 Neo4j 的账号密码。更多限制见爬虫 README。
+`sync-graph` 从 PG 回填，不会抓取，可反复运行；`--sync-graph` 只在成功抓取入库后执行，Neo4j 失败不会回滚已提交的 PG 数据，修复连接后重新执行 `sync-graph`。删除的 PG 行不会自动删除图节点；Neo4j 是可重建投影，不是新的数据源。Docker `down` 不删除数据卷，修改 `.env` 中的密码不会重设已初始化 Neo4j 的账号密码。无分页信息的空页/失败页会终止 `--all-pages` 并报告错误；成功详情更新会清除旧详情图片行，卡片重跑不会覆盖已保存的 Agent 档案。详情页省略的 agent/project 等字段仍按未知数据保留旧值，不能视作确认删除。更多限制见爬虫 README。
 
 ## 后续职责划分
 

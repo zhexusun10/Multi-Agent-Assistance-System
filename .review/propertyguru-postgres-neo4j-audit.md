@@ -1,5 +1,16 @@
 # Independent PropertyGuru PostgreSQL + local Neo4j audit
 
+## Remediation (after independent audit)
+
+- Fixed #1: card-only crawls no longer upsert shared `agents`; graph prefers the listing's protected agent/agency values. Added card-only and optional PG replay/graph assertions.
+- Fixed #2: on a successful detail fetch with an image payload, obsolete `DETAIL_PAGE` URLs are removed in the same PG transaction; homepage rows and failed/card-only detail runs are untouched. Optional PG tests cover replacement, empty gallery and replay.
+- #3 is an **unresolved data-policy limitation**, not safe to fix by clearing all nulls: the cleaner falls back to card data and absent detail keys do not prove removal. Missing agent/project/address fields retain old values; graph links may remain until verified/manual correction. Documented rather than deleting potentially valid data.
+- Fixed #4 for legacy `properties` tables missing nullable model columns/indexes; `init-db` remains idempotent. Optional PG regression uses an isolated minimal legacy schema. It is **not** a full migration system: mismatched existing types/constraints and incomplete other tables still require manual migration.
+- Fixed #5: `--all-pages` stops with errors on empty/failed pages without pagination, and missing detail-map URLs count as errors; offline regressions added. A valid but incorrect pagination total is still trusted.
+- #6 is a **configuration-only caveat**: Compose now requires an explicit `NEO4J_PASSWORD` (minimum eight characters on initial Neo4j setup); the CLI's standalone default is not a supported Compose setup. Persisted-volume password rotation remains manual.
+
+Verification after fixes: `PYTHONPATH=propertyguru_scraper python3 -m pytest propertyguru_scraper/tests -q` **17 passed, 3 skipped** (PG integration skipped: no `PROPERTYGURU_TEST_DATABASE_URL`); `python3 -m unittest discover -s tests -p 'test_*.py'` **7 passed**. `npm run build` and `npm test` remain blocked by missing `node_modules` (`pg`/LangChain/node types and `tsx`); no install attempted. No live PropertyGuru request, PostgreSQL/Neo4j mutation or Bolt connection was made. Optional PG migration/replay/rollback tests and real Neo4j Cypher/relationship cleanup remain unverified without isolated test services. Full graph sync still does not delete nodes for removed PG listings, and cursor 0 still excludes nonpositive listing IDs (normal source IDs are positive).
+
 Reviewed HEAD `a450b39` (feature snapshots `74b2127`, `02b1717`, `bf146e7`), the requested scraper files/tests, root README and `.env.example`. No production files or databases were changed; no PropertyGuru request or Bolt/PG connection was made.
 
 ## Findings (priority order)
