@@ -58,10 +58,12 @@ conda activate workshop
 ```
 
 ### 2. 数据库配置
-本地 PostgreSQL 已就绪并启动，默认连接：
-- 地址：`localhost:5432`
-- 数据库名：`propertyguru`
-- 用户：`jerry`（免密）
+爬虫数据库独立于根项目 LangGraph 数据库：仅使用 `PROPERTYGURU_DATABASE_URL`，不读取根项目的 `DATABASE_URL` 或普通 `PG*` 环境变量。未设置 URL 时，使用专属 `PROPERTYGURU_PGUSER`（默认 `jerry`）、`PROPERTYGURU_PGPASSWORD`（默认空）、`PROPERTYGURU_PGHOST`（默认 `localhost`）、`PROPERTYGURU_PGPORT`（默认 `5432`）、`PROPERTYGURU_PGDATABASE`（默认 `propertyguru`）。数据库和角色需事先创建，`init-db` 创建表和索引，并补齐已知旧版属性列；账号需有建表权限。
+
+例如：
+```bash
+export PROPERTYGURU_DATABASE_URL='postgresql://jerry@localhost:5432/propertyguru'
+```
 
 初始化数据库表与索引：
 ```bash
@@ -106,8 +108,30 @@ python main.py export --type rent --format json --output rent_listings.json --li
 
 ### 4. 运行单元测试
 ```bash
-PYTHONPATH=. pytest tests/test_cleaner.py
+PYTHONPATH=. pytest tests/
+# 可选：在独立测试库中使用临时 schema 验证真实 PostgreSQL 幂等与回滚
+PROPERTYGURU_TEST_DATABASE_URL='postgresql://jerry@localhost:5432/propertyguru_test' PYTHONPATH=. pytest tests/test_persistence.py
 ```
+
+---
+
+## 可选本地 Neo4j 知识图谱投影
+
+PostgreSQL `properties` / `agents` 是唯一数据源；Neo4j 仅存放可重建的房源投影，**不参与 PostgreSQL 入库事务**。先安装 `pip install -r propertyguru_scraper/requirements.txt`（在此目录下则用 `-r requirements.txt`），执行 `init-db` 并完成 PostgreSQL 入库。图谱只读现有 PostgreSQL 数据，不会触发抓取：
+
+```bash
+cd propertyguru_scraper
+export NEO4J_USER=neo4j NEO4J_PASSWORD='choose-a-local-password'
+docker compose up -d                   # compose.yaml 仅启动 Neo4j
+export NEO4J_URI=bolt://localhost:7687 NEO4J_DATABASE=neo4j
+python main.py sync-graph               # 全量遍历、分批写入；可安全重跑
+python main.py sync-graph --limit 100 --batch-size 25
+python main.py run --pages 5 --sync-graph # 抓取成功写入 PG 后才同步已有 PG 行
+```
+
+`NEO4J_URI` 默认 `bolt://localhost:7687`、`NEO4J_USER` 默认 `neo4j`、`NEO4J_PASSWORD` 默认 `password`、`NEO4J_DATABASE` 默认 `neo4j`；compose 与 CLI 的密码必须一致。建议在本机设置非默认密码，数据卷会持久化；首次启动可能需要稍等服务就绪。`sync-graph` 无需重新抓取，`--limit` 限制本次读取的最小 listing_id 顺序记录数，`--batch-size` 控制每次 Neo4j 事务数量。生产同步不要设置 limit；变更 PG 行后重跑即可更新房源属性及四条关系。删除的 PG 房源目前不会自动从 Neo4j 删除；如需完整重建，可清空此专用图数据库后全量同步。`--sync-graph` 同步整个已有 PG 表（不限于本次抓取），失败返回非零状态，但已提交的 PG 写入不会回滚；修复 Neo4j 后单独重跑 `sync-graph` 即可。
+
+图模型：`(:Listing {listing_id})-[:IN_PROJECT]->(:Project {project_id})`、`-[:LISTED_BY]->(:Agent {agent_id})`、`-[:IN_DISTRICT]->(:District {district_code})`、`-[:NEAR_MRT]->(:MRT {name})`。缺失 ID/空地铁站不创建共享节点；房源只包含价格、类型、面积、邮编、URL 等有限白名单字段。**不复制电话、证照、原始 JSON、图片或详细住址**。换边时旧边删除，失联的维度节点可能保留；约束和 MERGE 防止重复节点。
 
 ---
 
