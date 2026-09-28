@@ -58,10 +58,12 @@ conda activate workshop
 ```
 
 ### 2. 数据库配置
-本地 PostgreSQL 已就绪并启动，默认连接：
-- 地址：`localhost:5432`
-- 数据库名：`propertyguru`
-- 用户：`jerry`（免密）
+爬虫数据库独立于根项目 LangGraph 数据库：仅使用 `PROPERTYGURU_DATABASE_URL`，不读取根项目的 `DATABASE_URL` 或普通 `PG*` 环境变量。未设置 URL 时，使用专属 `PROPERTYGURU_PGUSER`（默认 `jerry`）、`PROPERTYGURU_PGPASSWORD`（默认空）、`PROPERTYGURU_PGHOST`（默认 `localhost`）、`PROPERTYGURU_PGPORT`（默认 `5432`）、`PROPERTYGURU_PGDATABASE`（默认 `propertyguru`）。数据库和角色需事先创建，`init-db` 创建表和索引，并补齐已知旧版属性列；账号需有建表权限。
+
+例如：
+```bash
+export PROPERTYGURU_DATABASE_URL='postgresql://jerry@localhost:5432/propertyguru'
+```
 
 初始化数据库表与索引：
 ```bash
@@ -106,7 +108,9 @@ python main.py export --type rent --format json --output rent_listings.json --li
 
 ### 4. 运行单元测试
 ```bash
-PYTHONPATH=. pytest tests/test_cleaner.py
+PYTHONPATH=. pytest tests/
+# 可选：在独立测试库中使用临时 schema 验证真实 PostgreSQL 幂等与回滚
+PROPERTYGURU_TEST_DATABASE_URL='postgresql://jerry@localhost:5432/propertyguru_test' PYTHONPATH=. pytest tests/test_persistence.py
 ```
 
 ---

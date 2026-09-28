@@ -5,6 +5,7 @@ from rich.console import Console
 from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, BarColumn, TextColumn, TimeRemainingColumn
 from rich.panel import Panel
+from sqlalchemy.engine import make_url
 
 from config import config
 from database import init_db, get_stats, SessionLocal
@@ -54,7 +55,7 @@ def handle_run(args):
         f"Fetch Details       : [cyan]{'Yes (Exact Address, Agent Profile, Separated Images)' if fetch_details else 'No'}[/cyan]\n"
         f"Fetch Price History : [cyan]{'Yes (URA / HDB Transactions)' if fetch_price_history else 'No'}[/cyan]\n"
         f"Concurrency         : [cyan]{args.concurrency} worker threads[/cyan]\n"
-        f"Database            : [cyan]{config.DATABASE_URL}[/cyan]",
+        f"Database            : [cyan]{make_url(config.DATABASE_URL).render_as_string(hide_password=True)}[/cyan]",
         border_style="blue"
     ))
 
@@ -65,6 +66,7 @@ def handle_run(args):
     overall_agents = 0
     overall_tx = 0
     overall_images = 0
+    overall_errors = 0
 
     for l_type in types_to_crawl:
         console.print(f"\n[bold yellow]>>> Starting crawl for category: {l_type.upper()} (Districts={', '.join(districts) if districts else 'ALL'})[/bold yellow]")
@@ -115,6 +117,7 @@ def handle_run(args):
                 progress_callback=progress_hook
             )
 
+            overall_errors += stats.total_errors
             overall_upserted += stats.total_upserted
             overall_agents += stats.total_agents_saved
             overall_tx += stats.total_price_history_saved
@@ -129,6 +132,10 @@ def handle_run(args):
             f"Homepage Images={stats.total_homepage_images}, "
             f"Detail Images={stats.total_detail_images}[/bold green]"
         )
+
+    if overall_errors:
+        console.print(f"[bold red]Crawl completed with {overall_errors} error(s); check logs.[/bold red]")
+        raise SystemExit(1)
 
     console.print(
         f"\n[bold green]★ All tasks finished! "
