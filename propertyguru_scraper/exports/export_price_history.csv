@@ -1,0 +1,1666 @@
+id,project_id,project_name,contract_date,price,psf,building,floor_level,size_sqft,bedrooms,transaction_type,property_type,district_code,postal_code
+1,8,Avalon,2020-07-17,2170000.0,1867.0,Blk 25,07,1163.0,2,sales,Condominium,D10,259986
+2,8,Avalon,2020-01-23,2180000.0,1875.0,Blk 25,08,1163.0,2,sales,Condominium,D10,259986
+3,8,Avalon,2018-12-27,2130000.0,1832.0,Blk 25,09,1163.0,2,sales,Condominium,D10,259986
+4,8,Avalon,2017-09-22,1670000.0,1743.0,Blk 23,04,958.0,2,sales,Condominium,D10,259985
+5,8,Avalon,2017-03-03,1850000.0,1591.0,Blk 25,05,1163.0,2,sales,Condominium,D10,259986
+6,8,Avalon,2016-01-26,1690000.0,1454.0,Blk 25,07,1163.0,2,sales,Condominium,D10,259986
+7,8,Avalon,2012-11-19,2080000.0,1725.0,Blk 23,05,1206.0,2,sales,Condominium,D10,259985
+8,8,Avalon,2012-08-28,2000000.0,1720.0,Blk 25,03,1163.0,2,sales,Condominium,D10,259986
+9,8,Avalon,2012-04-10,1750000.0,1626.0,Blk 23,01,1076.0,2,sales,Condominium,D10,259985
+10,8,Avalon,2011-08-25,2050200.0,1701.0,Blk 23,02,1206.0,2,sales,Condominium,D10,259985
+11,8,Avalon,2011-06-22,1918950.0,1651.0,Blk 25,05,1163.0,2,sales,Condominium,D10,259986
+12,8,Avalon,2011-05-30,2035250.0,1751.0,Blk 25,07,1163.0,2,sales,Condominium,D10,259986
+13,8,Avalon,2010-05-07,1617500.0,1503.0,Blk 23,01,1076.0,2,sales,Condominium,D10,259985
+14,8,Avalon,2010-02-12,1860000.0,1600.0,Blk 25,09,1163.0,2,sales,Condominium,D10,259986
+15,8,Avalon,2010-01-17,1802650.0,1551.0,Blk 25,08,1163.0,2,sales,Condominium,D10,259986
+16,8,Avalon,2009-02-09,1480000.0,1273.0,Blk 25,08,1163.0,2,sales,Condominium,D10,259986
+17,8,Avalon,2007-07-03,1924765.0,1656.0,Blk 25,05,1163.0,2,sales,Condominium,D10,259986
+18,8,Avalon,2007-06-29,1520000.0,1412.0,Blk 23,01,1076.0,2,sales,Condominium,D10,259985
+19,8,Avalon,2007-06-25,1942210.0,1671.0,Blk 25,07,1163.0,2,sales,Condominium,D10,259986
+20,8,Avalon,2006-09-01,1250000.0,1075.0,Blk 25,08,1163.0,2,sales,Condominium,D10,259986
+21,8,Avalon,2006-06-05,1163000.0,1000.0,Blk 25,03,1163.0,2,sales,Condominium,D10,259986
+22,8,Avalon,2006-05-29,1132000.0,855.0,Blk 25,01,1324.0,2,sales,Condominium,D10,259986
+24,8,Avalon,2006-05-24,1035000.0,962.0,Blk 23,01,1076.0,2,sales,Condominium,D10,259985
+23,8,Avalon,2006-05-24,1260000.0,1045.0,Blk 23,03,1206.0,2,sales,Condominium,D10,259985
+25,8,Avalon,2006-05-18,1190000.0,987.0,Blk 23,04,1206.0,2,sales,Condominium,D10,259985
+959,73,The Raintree,2026-04-16,1800000.0,1578.0,Blk 81,02,1141.0,2,sales,Condominium,D21,587850
+960,73,The Raintree,2026-04-14,1500000.0,1584.0,Blk 91,04,947.0,2,sales,Condominium,D21,587845
+961,73,The Raintree,2024-12-27,1675000.0,1468.0,Blk 81,04,1141.0,2,sales,Condominium,D21,587850
+962,73,The Raintree,2024-08-14,1448000.0,1387.0,Blk 81,01,1044.0,2,sales,Condominium,D21,587850
+963,73,The Raintree,2024-08-02,1400000.0,1512.0,Blk 83,05,926.0,2,sales,Condominium,D21,587849
+964,73,The Raintree,2024-07-19,1360000.0,1469.0,Blk 99,05,926.0,2,sales,Condominium,D21,587841
+965,73,The Raintree,2021-09-06,1250000.0,1350.0,Blk 81,05,926.0,2,sales,Condominium,D21,587850
+966,73,The Raintree,2021-05-19,1150000.0,1214.0,Blk 91,04,947.0,2,sales,Condominium,D21,587845
+967,73,The Raintree,2021-03-25,1080000.0,1167.0,Blk 99,05,926.0,2,sales,Condominium,D21,587841
+968,73,The Raintree,2020-12-04,1260000.0,1045.0,Blk 93,01,1206.0,2,sales,Condominium,D21,587844
+969,73,The Raintree,2019-05-16,1100000.0,1188.0,Blk 99,06,926.0,2,sales,Condominium,D21,587841
+970,73,The Raintree,2019-04-24,1230000.0,1078.0,Blk 81,04,1141.0,2,sales,Condominium,D21,587850
+971,73,The Raintree,2018-06-28,1033000.0,989.0,Blk 81,01,1044.0,2,sales,Condominium,D21,587850
+972,73,The Raintree,2018-02-08,1100000.0,1161.0,Blk 91,04,947.0,2,sales,Condominium,D21,587845
+973,73,The Raintree,2017-03-03,1080000.0,1140.0,Blk 91,08,947.0,2,sales,Condominium,D21,587845
+974,73,The Raintree,2016-05-20,1025000.0,1107.0,Blk 81,04,926.0,2,sales,Condominium,D21,587850
+975,73,The Raintree,2015-06-25,1150000.0,1008.0,Blk 91,01,1141.0,2,sales,Condominium,D21,587845
+976,73,The Raintree,2015-04-24,1140000.0,1204.0,Blk 91,10,947.0,2,sales,Condominium,D21,587845
+977,73,The Raintree,2013-12-04,1080000.0,1167.0,Blk 81,05,926.0,2,sales,Condominium,D21,587850
+978,73,The Raintree,2013-04-15,1088000.0,1175.0,Blk 99,06,926.0,2,sales,Condominium,D21,587841
+979,73,The Raintree,2012-10-18,1168000.0,969.0,Blk 93,01,1206.0,2,sales,Condominium,D21,587844
+980,73,The Raintree,2012-03-30,950000.0,1003.0,Blk 91,02,947.0,2,sales,Condominium,D21,587845
+981,73,The Raintree,2011-05-27,1165000.0,1021.0,Blk 81,02,1141.0,2,sales,Condominium,D21,587850
+982,73,The Raintree,2011-04-13,1048000.0,1106.0,Blk 91,10,947.0,2,sales,Condominium,D21,587845
+983,73,The Raintree,2011-04-07,1150000.0,1008.0,Blk 81,04,1141.0,2,sales,Condominium,D21,587850
+76,89,The Metropolitan Condominium,2024-02-07,1388000.0,1791.0,Blk 6,14,775.0,1,sales,Condominium,D03,158746
+77,89,The Metropolitan Condominium,2023-09-12,1340000.0,1729.0,Blk 6,13,775.0,1,sales,Condominium,D03,158746
+78,89,The Metropolitan Condominium,2023-06-23,1350000.0,1742.0,Blk 6,09,775.0,1,sales,Condominium,D03,158746
+79,89,The Metropolitan Condominium,2021-08-05,1180000.0,1523.0,Blk 6,11,775.0,1,sales,Condominium,D03,158746
+80,89,The Metropolitan Condominium,2021-02-18,1080000.0,1394.0,Blk 6,06,775.0,1,sales,Condominium,D03,158746
+81,89,The Metropolitan Condominium,2018-08-20,1100000.0,1419.0,Blk 6,23,775.0,1,sales,Condominium,D03,158746
+82,89,The Metropolitan Condominium,2017-09-28,1020000.0,1316.0,Blk 6,16,775.0,1,sales,Condominium,D03,158746
+83,89,The Metropolitan Condominium,2017-05-19,950000.0,1226.0,Blk 6,03,775.0,1,sales,Condominium,D03,158746
+84,89,The Metropolitan Condominium,2015-08-14,1068000.0,1378.0,Blk 6,05,775.0,1,sales,Condominium,D03,158746
+85,89,The Metropolitan Condominium,2015-06-11,1100000.0,1419.0,Blk 6,12,775.0,1,sales,Condominium,D03,158746
+86,89,The Metropolitan Condominium,2014-05-06,1180000.0,1523.0,Blk 6,20,775.0,1,sales,Condominium,D03,158746
+87,89,The Metropolitan Condominium,2013-11-26,1100000.0,1419.0,Blk 6,06,775.0,1,sales,Condominium,D03,158746
+88,89,The Metropolitan Condominium,2012-07-06,1150000.0,1484.0,Blk 6,19,775.0,1,sales,Condominium,D03,158746
+89,89,The Metropolitan Condominium,2011-04-14,1040000.0,1342.0,Blk 6,09,775.0,1,sales,Condominium,D03,158746
+90,89,The Metropolitan Condominium,2010-09-08,1015000.0,1310.0,Blk 6,21,775.0,1,sales,Condominium,D03,158746
+91,89,The Metropolitan Condominium,2009-11-30,920000.0,1187.0,Blk 6,23,775.0,1,sales,Condominium,D03,158746
+92,89,The Metropolitan Condominium,2009-09-02,850000.0,1097.0,Blk 6,14,775.0,1,sales,Condominium,D03,158746
+93,89,The Metropolitan Condominium,2009-08-21,880000.0,1135.0,Blk 6,16,775.0,1,sales,Condominium,D03,158746
+94,89,The Metropolitan Condominium,2009-08-14,870000.0,1123.0,Blk 6,21,775.0,1,sales,Condominium,D03,158746
+95,89,The Metropolitan Condominium,2009-08-07,780000.0,1006.0,Blk 6,03,775.0,1,sales,Condominium,D03,158746
+96,89,The Metropolitan Condominium,2009-07-16,800000.0,1032.0,Blk 6,23,775.0,1,sales,Condominium,D03,158746
+97,89,The Metropolitan Condominium,2009-07-03,780000.0,1006.0,Blk 6,20,775.0,1,sales,Condominium,D03,158746
+98,89,The Metropolitan Condominium,2009-06-12,700000.0,903.0,Blk 6,04,775.0,1,sales,Condominium,D03,158746
+99,89,The Metropolitan Condominium,2009-06-05,736250.0,950.0,Blk 6,15,775.0,1,sales,Condominium,D03,158746
+100,89,The Metropolitan Condominium,2009-05-19,720750.0,930.0,Blk 6,12,775.0,1,sales,Condominium,D03,158746
+101,96,The Stellar,2010-03-29,680000.0,1108.0,Blk 14,02,614.0,0,sales,Condominium,D05,127298
+102,96,The Stellar,2009-02-26,490000.0,799.0,Blk 14,02,614.0,0,sales,Condominium,D05,127298
+103,96,The Stellar,2008-09-26,590000.0,962.0,Blk 14,02,614.0,0,sales,Condominium,D05,127298
+104,96,The Stellar,2006-03-09,408000.0,665.0,Blk 14,02,614.0,0,sales,Condominium,D05,127298
+105,96,The Stellar,2006-03-06,407576.0,664.0,Blk 14,02,614.0,0,sales,Condominium,D05,127298
+106,101,The Infiniti,2026-07-21,1930000.0,1520.0,Blk 39G,06,1270.0,2,sales,Condominium,D05,127718
+107,101,The Infiniti,2026-05-11,1570000.0,1716.0,Blk 39E,04,915.0,2,sales,Condominium,D05,127716
+108,101,The Infiniti,2026-01-26,2200000.0,1732.0,Blk 39E,08,1270.0,2,sales,Condominium,D05,127716
+109,101,The Infiniti,2025-06-02,1570000.0,1716.0,Blk 39E,05,915.0,2,sales,Condominium,D05,127716
+110,101,The Infiniti,2025-03-18,1600000.0,1728.0,Blk 39G,12,926.0,2,sales,Condominium,D05,127718
+111,101,The Infiniti,2024-10-17,1540000.0,1683.0,Blk 39E,07,915.0,2,sales,Condominium,D05,127716
+112,101,The Infiniti,2023-07-31,1418000.0,1550.0,Blk 39F,11,915.0,2,sales,Condominium,D05,127717
+113,101,The Infiniti,2022-11-18,1260000.0,1377.0,Blk 39D,06,915.0,2,sales,Condominium,D05,127715
+114,101,The Infiniti,2022-09-08,1200000.0,1327.0,Blk 39B,10,904.0,2,sales,Condominium,D05,127713
+115,101,The Infiniti,2022-07-22,1590000.0,1252.0,Blk 39A,04,1270.0,2,sales,Condominium,D05,127712
+116,101,The Infiniti,2022-06-10,1760000.0,1386.0,Blk 39B,12,1270.0,2,sales,Condominium,D05,127713
+117,101,The Infiniti,2022-04-25,1550000.0,1220.0,Blk 39A,10,1270.0,2,sales,Condominium,D05,127712
+118,101,The Infiniti,2022-03-09,1280000.0,1399.0,Blk 39D,11,915.0,2,sales,Condominium,D05,127715
+119,101,The Infiniti,2022-02-15,1638000.0,1290.0,Blk 39A,11,1270.0,2,sales,Condominium,D05,127712
+120,101,The Infiniti,2021-09-17,1300888.0,1197.0,Blk 39D,01,1087.0,2,sales,Condominium,D05,127715
+121,101,The Infiniti,2021-09-14,1168000.0,1277.0,Blk 39F,02,915.0,2,sales,Condominium,D05,127717
+122,101,The Infiniti,2021-06-25,1200000.0,1312.0,Blk 39D,02,915.0,2,sales,Condominium,D05,127715
+123,101,The Infiniti,2021-04-15,1170000.0,1279.0,Blk 39D,05,915.0,2,sales,Condominium,D05,127715
+124,101,The Infiniti,2021-01-28,1438000.0,1132.0,Blk 39E,08,1270.0,2,sales,Condominium,D05,127716
+125,101,The Infiniti,2021-01-20,1130000.0,1221.0,Blk 39G,12,926.0,2,sales,Condominium,D05,127718
+126,101,The Infiniti,2020-12-01,1200000.0,945.0,Blk 39F,03,1270.0,2,sales,Condominium,D05,127717
+127,101,The Infiniti,2020-11-09,1378000.0,1085.0,Blk 39D,08,1270.0,2,sales,Condominium,D05,127715
+128,101,The Infiniti,2020-11-03,1080000.0,1194.0,Blk 39B,09,904.0,2,sales,Condominium,D05,127713
+129,101,The Infiniti,2020-10-19,1305560.0,1028.0,Blk 39D,03,1270.0,2,sales,Condominium,D05,127715
+130,101,The Infiniti,2020-10-12,1300000.0,1023.0,Blk 39E,07,1270.0,2,sales,Condominium,D05,127716
+156,109,ClementiWoods Condominium,2009-06-11,500000.0,654.0,Blk 80,01,764.0,0,sales,Condominium,D05,126816
+157,109,ClementiWoods Condominium,2007-02-26,474903.0,621.0,Blk 80,01,764.0,0,sales,Condominium,D05,126816
+158,109,ClementiWoods Condominium,2007-02-26,478800.0,627.0,Blk 80,01,764.0,0,sales,Condominium,D05,126816
+1864,132,Valley Park,2026-02-13,1648888.0,2070.0,Blk 483,03,797.0,1,sales,Condominium,D10,248368
+1865,132,Valley Park,2024-12-09,1590000.0,2080.0,Blk 483,10,764.0,1,sales,Condominium,D10,248368
+1866,132,Valley Park,2024-08-19,1630000.0,2103.0,Blk 483,07,775.0,1,sales,Condominium,D10,248368
+1867,132,Valley Park,2024-05-27,1470000.0,1951.0,Blk 483,03,753.0,1,sales,Condominium,D10,248368
+1868,132,Valley Park,2023-10-02,1500000.0,1883.0,Blk 483,03,797.0,1,sales,Condominium,D10,248368
+1869,132,Valley Park,2023-08-01,1450000.0,1897.0,Blk 483,13,764.0,1,sales,Condominium,D10,248368
+1870,132,Valley Park,2022-08-02,1530000.0,2002.0,Blk 483,07,764.0,1,sales,Condominium,D10,248368
+1871,132,Valley Park,2022-04-07,1582888.0,1935.0,Blk 483,07,818.0,1,sales,Condominium,D10,248368
+1872,132,Valley Park,2021-11-05,1465000.0,1791.0,Blk 483,11,818.0,1,sales,Condominium,D10,248368
+1873,132,Valley Park,2021-06-16,1590000.0,1846.0,Blk 483,06,861.0,1,sales,Condominium,D10,248368
+1874,132,Valley Park,2021-05-18,1507000.0,1750.0,Blk 483,07,861.0,1,sales,Condominium,D10,248368
+1875,132,Valley Park,2021-04-16,1500000.0,1742.0,Blk 483,12,861.0,1,sales,Condominium,D10,248368
+1876,132,Valley Park,2021-02-02,1480000.0,1719.0,Blk 483,10,861.0,1,sales,Condominium,D10,248368
+1877,132,Valley Park,2020-12-11,1500000.0,1742.0,Blk 483,13,861.0,1,sales,Condominium,D10,248368
+1878,132,Valley Park,2020-10-23,1480000.0,1719.0,Blk 483,04,861.0,1,sales,Condominium,D10,248368
+1879,132,Valley Park,2020-07-07,1375000.0,1799.0,Blk 483,07,764.0,1,sales,Condominium,D10,248368
+1880,132,Valley Park,2020-01-28,1480000.0,1809.0,Blk 483,12,818.0,1,sales,Condominium,D10,248368
+1881,132,Valley Park,2018-03-20,1300000.0,1632.0,Blk 483,03,797.0,1,sales,Condominium,D10,248368
+1882,132,Valley Park,2018-02-12,1300000.0,1701.0,Blk 483,14,764.0,1,sales,Condominium,D10,248368
+1883,132,Valley Park,2018-02-06,1240000.0,1557.0,Blk 483,02,797.0,1,sales,Condominium,D10,248368
+1884,132,Valley Park,2018-01-19,1215000.0,1613.0,Blk 483,05,753.0,1,sales,Condominium,D10,248368
+1885,132,Valley Park,2017-10-31,1200000.0,1507.0,Blk 483,02,797.0,1,sales,Condominium,D10,248368
+1886,132,Valley Park,2017-10-19,1280000.0,1486.0,Blk 483,08,861.0,1,sales,Condominium,D10,248368
+1887,132,Valley Park,2017-10-17,1280000.0,1486.0,Blk 483,04,861.0,1,sales,Condominium,D10,248368
+1888,132,Valley Park,2017-09-04,1155000.0,1412.0,Blk 483,09,818.0,1,sales,Condominium,D10,248368
+795,154,Heritage View,2026-08-24,1505000.0,1554.0,Blk 8,11,969.0,2,sales,Condominium,D05,138679
+796,154,Heritage View,2026-06-17,1500000.0,1548.0,Blk 10,08,969.0,2,sales,Condominium,D05,138680
+797,154,Heritage View,2026-02-23,1550000.0,1600.0,Blk 10,09,969.0,2,sales,Condominium,D05,138680
+798,154,Heritage View,2025-10-16,1500000.0,1548.0,Blk 8,11,969.0,2,sales,Condominium,D05,138679
+799,154,Heritage View,2025-10-08,1490000.0,1538.0,Blk 6,11,969.0,2,sales,Condominium,D05,138678
+800,154,Heritage View,2025-06-30,1480000.0,1528.0,Blk 10,09,969.0,2,sales,Condominium,D05,138680
+801,154,Heritage View,2025-04-25,1528888.0,1578.0,Blk 10,09,969.0,2,sales,Condominium,D05,138680
+802,154,Heritage View,2025-03-27,1500000.0,1548.0,Blk 6,05,969.0,2,sales,Condominium,D05,138678
+803,154,Heritage View,2025-01-27,1500000.0,1548.0,Blk 6,11,969.0,2,sales,Condominium,D05,138678
+804,154,Heritage View,2024-08-02,1490000.0,1538.0,Blk 8,07,969.0,2,sales,Condominium,D05,138679
+805,154,Heritage View,2024-06-24,1450000.0,1497.0,Blk 8,10,969.0,2,sales,Condominium,D05,138679
+806,154,Heritage View,2023-12-04,1430000.0,1476.0,Blk 8,09,969.0,2,sales,Condominium,D05,138679
+807,154,Heritage View,2023-06-26,1370000.0,1414.0,Blk 6,09,969.0,2,sales,Condominium,D05,138678
+808,154,Heritage View,2023-05-18,1345000.0,1388.0,Blk 10,08,969.0,2,sales,Condominium,D05,138680
+809,154,Heritage View,2022-12-27,1480000.0,1528.0,Blk 8,09,969.0,2,sales,Condominium,D05,138679
+810,154,Heritage View,2022-11-28,1270000.0,1311.0,Blk 10,06,969.0,2,sales,Condominium,D05,138680
+811,154,Heritage View,2022-09-15,1310000.0,1352.0,Blk 10,10,969.0,2,sales,Condominium,D05,138680
+812,154,Heritage View,2022-06-15,1275000.0,1316.0,Blk 10,09,969.0,2,sales,Condominium,D05,138680
+813,154,Heritage View,2022-03-18,1234000.0,1274.0,Blk 10,11,969.0,2,sales,Condominium,D05,138680
+814,154,Heritage View,2022-03-04,1268000.0,1309.0,Blk 6,10,969.0,2,sales,Condominium,D05,138678
+815,154,Heritage View,2021-12-16,1228000.0,1268.0,Blk 8,04,969.0,2,sales,Condominium,D05,138679
+816,154,Heritage View,2021-11-16,1235000.0,1275.0,Blk 10,08,969.0,2,sales,Condominium,D05,138680
+817,154,Heritage View,2021-11-11,1242000.0,1282.0,Blk 8,13,969.0,2,sales,Condominium,D05,138679
+818,154,Heritage View,2021-09-28,1172000.0,1210.0,Blk 8,08,969.0,2,sales,Condominium,D05,138679
+819,154,Heritage View,2021-09-02,1223000.0,1262.0,Blk 10,14,969.0,2,sales,Condominium,D05,138680
+703,178,Dover Parkview,2024-10-10,1200000.0,987.0,Blk 30,01,1216.0,1,sales,Condominium,D05,138687
+704,178,Dover Parkview,2015-06-05,978000.0,811.0,Blk 38,01,1206.0,1,sales,Condominium,D05,138684
+705,178,Dover Parkview,2012-02-28,880000.0,723.0,Blk 30,01,1216.0,1,sales,Condominium,D05,138687
+706,178,Dover Parkview,2010-11-16,960000.0,789.0,Blk 30,01,1216.0,1,sales,Condominium,D05,138687
+707,178,Dover Parkview,2010-06-03,800000.0,664.0,Blk 32,01,1206.0,1,sales,Condominium,D05,138686
+708,178,Dover Parkview,2009-06-30,680000.0,564.0,Blk 38,01,1206.0,1,sales,Condominium,D05,138684
+709,178,Dover Parkview,2006-09-20,410000.0,337.0,Blk 30,01,1216.0,1,sales,Condominium,D05,138687
+710,178,Dover Parkview,2002-05-20,400000.0,329.0,Blk 36,01,1216.0,1,sales,Condominium,D05,138685
+711,178,Dover Parkview,2000-04-17,620000.0,514.0,Blk 32,01,1206.0,1,sales,Condominium,D05,138686
+712,178,Dover Parkview,2000-01-01,610000.0,502.0,Blk 30,01,1216.0,1,sales,Condominium,D05,138687
+713,178,Dover Parkview,1999-09-01,605000.0,493.0,Blk 30,01,1227.0,1,sales,Condominium,D05,138687
+714,178,Dover Parkview,1999-06-01,578000.0,475.0,Blk 30,01,1216.0,1,sales,Condominium,D05,138687
+715,178,Dover Parkview,1997-04-14,680000.0,564.0,Blk 38,01,1206.0,1,sales,Condominium,D05,138684
+716,178,Dover Parkview,1995-11-17,680000.0,559.0,Blk 36,01,1216.0,1,sales,Condominium,D05,138685
+717,178,Dover Parkview,1995-10-27,701408.0,577.0,Blk 32,01,1216.0,1,sales,Condominium,D05,138686
+1680,195,The Anchorage,2025-07-08,2670000.0,2157.0,Blk 370F,14,1238.0,1,sales,Condominium,D03,159959
+1681,195,The Anchorage,2025-01-23,2490000.0,2012.0,Blk 370D,10,1238.0,1,sales,Condominium,D03,159957
+1682,195,The Anchorage,2024-03-13,2380000.0,1923.0,Blk 370D,04,1238.0,1,sales,Condominium,D03,159957
+1683,195,The Anchorage,2022-06-03,2175000.0,1757.0,Blk 370D,08,1238.0,1,sales,Condominium,D03,159957
+1684,195,The Anchorage,2022-04-21,1530000.0,1692.0,Blk 370,02,904.0,1,sales,Condominium,D03,159953
+1685,195,The Anchorage,2021-01-21,1760000.0,1422.0,Blk 370D,05,1238.0,1,sales,Condominium,D03,159957
+1686,195,The Anchorage,2020-06-11,1280000.0,1450.0,Blk 370,03,883.0,1,sales,Condominium,D03,159953
+1687,195,The Anchorage,2019-11-29,1850000.0,1495.0,Blk 370D,09,1238.0,1,sales,Condominium,D03,159957
+1688,195,The Anchorage,2018-05-18,1700000.0,1373.0,Blk 370D,08,1238.0,1,sales,Condominium,D03,159957
+1689,195,The Anchorage,2017-11-17,1530000.0,1236.0,Blk 370F,08,1238.0,1,sales,Condominium,D03,159959
+1690,195,The Anchorage,2017-10-12,1570000.0,1268.0,Blk 370D,08,1238.0,1,sales,Condominium,D03,159957
+1691,195,The Anchorage,2017-09-11,1590000.0,1284.0,Blk 370D,11,1238.0,1,sales,Condominium,D03,159957
+1692,195,The Anchorage,2017-09-07,1570000.0,1268.0,Blk 370D,10,1238.0,1,sales,Condominium,D03,159957
+1693,195,The Anchorage,2016-12-27,1560000.0,1260.0,Blk 370D,09,1238.0,1,sales,Condominium,D03,159957
+1694,195,The Anchorage,2016-07-01,1100000.0,1246.0,Blk 370,04,883.0,1,sales,Condominium,D03,159953
+1695,195,The Anchorage,2015-07-21,1413888.0,1142.0,Blk 370F,07,1238.0,1,sales,Condominium,D03,159959
+1696,195,The Anchorage,2014-03-26,1100000.0,1246.0,Blk 370,04,883.0,1,sales,Condominium,D03,159953
+1697,195,The Anchorage,2012-07-24,1090000.0,1235.0,Blk 370,05,883.0,1,sales,Condominium,D03,159953
+1698,195,The Anchorage,2012-06-20,1528000.0,1234.0,Blk 370D,12,1238.0,1,sales,Condominium,D03,159957
+1699,195,The Anchorage,2012-05-28,1280000.0,1034.0,Blk 370,02,1238.0,1,sales,Condominium,D03,159953
+1700,195,The Anchorage,2012-04-30,1200000.0,969.0,Blk 370,02,1238.0,1,sales,Condominium,D03,159953
+1701,195,The Anchorage,2012-04-20,1050000.0,1190.0,Blk 370,05,883.0,1,sales,Condominium,D03,159953
+1702,195,The Anchorage,2012-04-05,1450000.0,1171.0,Blk 370D,03,1238.0,1,sales,Condominium,D03,159957
+1703,195,The Anchorage,2012-03-12,1465000.0,1183.0,Blk 370F,08,1238.0,1,sales,Condominium,D03,159959
+1704,195,The Anchorage,2012-03-08,1468000.0,1186.0,Blk 370D,10,1238.0,1,sales,Condominium,D03,159957
+678,224,Belmond Green,2026-07-20,2880000.0,2703.0,Blk 15C,10,1066.0,2,sales,Condominium,D10,259818
+679,224,Belmond Green,2026-04-06,3500000.0,2756.0,Blk 15D,10,1270.0,2,sales,Condominium,D10,259819
+680,224,Belmond Green,2025-12-19,2880000.0,2730.0,Blk 15,08,1055.0,2,sales,Condominium,D10,259801
+681,224,Belmond Green,2025-10-14,3438000.0,2707.0,Blk 15B,12,1270.0,2,sales,Condominium,D10,259817
+682,224,Belmond Green,2025-09-23,2650000.0,2487.0,Blk 15C,02,1066.0,2,sales,Condominium,D10,259818
+683,224,Belmond Green,2025-04-01,2450000.0,2501.0,Blk 15A,06,980.0,2,sales,Condominium,D10,259816
+684,224,Belmond Green,2024-05-17,2638000.0,2723.0,Blk 15D,08,969.0,2,sales,Condominium,D10,259819
+685,224,Belmond Green,2024-02-26,3370000.0,2653.0,Blk 15D,05,1270.0,2,sales,Condominium,D10,259819
+686,224,Belmond Green,2023-05-03,3229000.0,2542.0,Blk 15B,09,1270.0,2,sales,Condominium,D10,259817
+687,224,Belmond Green,2022-11-04,2350000.0,2205.0,Blk 15C,03,1066.0,2,sales,Condominium,D10,259818
+688,224,Belmond Green,2022-06-14,2300000.0,2180.0,Blk 15,12,1055.0,2,sales,Condominium,D10,259801
+689,224,Belmond Green,2021-10-14,2000000.0,2088.0,Blk 15B,05,958.0,2,sales,Condominium,D10,259817
+690,224,Belmond Green,2021-08-19,2630000.0,2071.0,Blk 15B,02,1270.0,2,sales,Condominium,D10,259817
+691,224,Belmond Green,2021-08-10,2320000.0,2177.0,Blk 15A,04,1066.0,2,sales,Condominium,D10,259816
+692,224,Belmond Green,2021-07-01,2228000.0,2070.0,Blk 15C,06,1076.0,2,sales,Condominium,D10,259818
+693,224,Belmond Green,2021-06-22,1850000.0,1931.0,Blk 15B,09,958.0,2,sales,Condominium,D10,259817
+694,224,Belmond Green,2021-03-31,2250000.0,2090.0,Blk 15C,09,1076.0,2,sales,Condominium,D10,259818
+695,224,Belmond Green,2021-01-21,1995000.0,2059.0,Blk 15D,08,969.0,2,sales,Condominium,D10,259819
+696,224,Belmond Green,2020-10-05,2105000.0,1657.0,Blk 15D,01,1270.0,2,sales,Condominium,D10,259819
+697,224,Belmond Green,2019-11-20,2000000.0,2042.0,Blk 15A,12,980.0,2,sales,Condominium,D10,259816
+698,224,Belmond Green,2019-07-05,2380000.0,1874.0,Blk 15D,06,1270.0,2,sales,Condominium,D10,259819
+699,224,Belmond Green,2019-02-08,2060000.0,2103.0,Blk 15A,07,980.0,2,sales,Condominium,D10,259816
+700,224,Belmond Green,2018-03-28,2050000.0,1924.0,Blk 15A,07,1066.0,2,sales,Condominium,D10,259816
+701,224,Belmond Green,2018-03-16,1780000.0,1817.0,Blk 15A,08,980.0,2,sales,Condominium,D10,259816
+702,224,Belmond Green,2018-01-19,2410000.0,1897.0,Blk 15D,08,1270.0,2,sales,Condominium,D10,259819
+1009,292,Tanglin Park,2025-12-02,2600000.0,2516.0,Blk 5C,02,1033.0,2,sales,Condominium,D10,248479
+1010,292,Tanglin Park,2025-11-25,2660000.0,2399.0,Blk 5C,01,1109.0,2,sales,Condominium,D10,248479
+1011,292,Tanglin Park,2025-09-01,2680000.0,2621.0,Blk 1C,04,1023.0,2,sales,Condominium,D10,248469
+1012,292,Tanglin Park,2025-08-28,2650000.0,2564.0,Blk 5C,03,1033.0,2,sales,Condominium,D10,248479
+1013,292,Tanglin Park,2025-01-13,2650000.0,2564.0,Blk 1C,03,1033.0,2,sales,Condominium,D10,248469
+1014,292,Tanglin Park,2024-07-26,2550000.0,2468.0,Blk 5C,02,1033.0,2,sales,Condominium,D10,248479
+1015,292,Tanglin Park,2024-07-19,2600000.0,2323.0,Blk 3,01,1119.0,2,sales,Condominium,D10,248471
+1016,292,Tanglin Park,2023-08-30,2438000.0,2384.0,Blk 5C,02,1023.0,2,sales,Condominium,D10,248479
+1017,292,Tanglin Park,2023-07-03,2450000.0,2396.0,Blk 5C,04,1023.0,2,sales,Condominium,D10,248479
+1018,292,Tanglin Park,2023-06-13,2595000.0,2341.0,Blk 5C,01,1109.0,2,sales,Condominium,D10,248479
+1019,292,Tanglin Park,2023-04-03,2200000.0,2151.0,Blk 3,03,1023.0,2,sales,Condominium,D10,248471
+1020,292,Tanglin Park,2023-01-30,2400000.0,2323.0,Blk 3,03,1033.0,2,sales,Condominium,D10,248471
+1021,292,Tanglin Park,2022-04-28,2320000.0,2269.0,Blk 3,04,1023.0,2,sales,Condominium,D10,248471
+1022,292,Tanglin Park,2021-11-11,2438000.0,2178.0,Blk 3,01,1119.0,2,sales,Condominium,D10,248471
+1023,292,Tanglin Park,2021-10-11,2150000.0,2081.0,Blk 1C,03,1033.0,2,sales,Condominium,D10,248469
+1024,292,Tanglin Park,2021-09-02,2150000.0,2081.0,Blk 3,04,1033.0,2,sales,Condominium,D10,248471
+1025,292,Tanglin Park,2021-04-23,2038000.0,1993.0,Blk 3,02,1023.0,2,sales,Condominium,D10,248471
+1026,292,Tanglin Park,2021-03-22,2050000.0,2005.0,Blk 1C,04,1023.0,2,sales,Condominium,D10,248469
+1027,292,Tanglin Park,2021-02-10,1900000.0,1839.0,Blk 3,03,1033.0,2,sales,Condominium,D10,248471
+1028,292,Tanglin Park,2020-11-10,2060000.0,1840.0,Blk 3,01,1119.0,2,sales,Condominium,D10,248471
+1029,292,Tanglin Park,2018-04-15,2060000.0,1994.0,Blk 3,02,1033.0,2,sales,Condominium,D10,248471
+1030,292,Tanglin Park,2018-02-09,1950000.0,1887.0,Blk 1C,02,1033.0,2,sales,Condominium,D10,248469
+1031,292,Tanglin Park,2017-11-13,1950000.0,1742.0,Blk 3,01,1119.0,2,sales,Condominium,D10,248471
+1032,292,Tanglin Park,2017-08-01,1780000.0,1741.0,Blk 5C,04,1023.0,2,sales,Condominium,D10,248479
+1033,292,Tanglin Park,2015-11-02,1980000.0,1916.0,Blk 5C,02,1033.0,2,sales,Condominium,D10,248479
+1551,294,Quinterra,2022-07-15,1700000.0,1436.0,Blk 359,09,1184.0,2,sales,Apartment,D10,278636
+1552,294,Quinterra,2017-12-13,1270000.0,1073.0,Blk 359,11,1184.0,2,sales,Apartment,D10,278636
+1553,294,Quinterra,2017-03-23,1350000.0,1140.0,Blk 359,09,1184.0,2,sales,Apartment,D10,278636
+1554,294,Quinterra,2014-05-08,1400000.0,1182.0,Blk 359,06,1184.0,2,sales,Apartment,D10,278636
+1555,294,Quinterra,2009-07-27,1050000.0,887.0,Blk 359,05,1184.0,2,sales,Apartment,D10,278636
+1556,294,Quinterra,2009-06-24,1100000.0,929.0,Blk 359,07,1184.0,2,sales,Apartment,D10,278636
+1557,294,Quinterra,2007-07-11,1018240.0,860.0,Blk 359,07,1184.0,2,sales,Apartment,D10,278636
+1558,294,Quinterra,2007-05-25,990000.0,836.0,Blk 359,10,1184.0,2,sales,Apartment,D10,278636
+1559,294,Quinterra,2007-04-02,843000.0,712.0,Blk 359,11,1184.0,2,sales,Apartment,D10,278636
+1560,294,Quinterra,2007-03-01,828000.0,699.0,Blk 359,09,1184.0,2,sales,Apartment,D10,278636
+1561,294,Quinterra,2007-02-23,828400.0,700.0,Blk 359,05,1184.0,2,sales,Apartment,D10,278636
+1562,294,Quinterra,2007-02-05,796000.0,672.0,Blk 359,07,1184.0,2,sales,Apartment,D10,278636
+1563,294,Quinterra,2007-02-05,822000.0,694.0,Blk 359,06,1184.0,2,sales,Apartment,D10,278636
+1564,294,Quinterra,2007-02-02,861200.0,727.0,Blk 359,08,1184.0,2,sales,Apartment,D10,278636
+1565,294,Quinterra,2006-07-28,588000.0,552.0,Blk 359,12,1066.0,2,sales,Apartment,D10,278636
+1164,311,Tanglin Regency,2026-08-17,1370000.0,1958.0,Blk 383,09,700.0,2,sales,Condominium,D10,247966
+1165,311,Tanglin Regency,2026-07-15,1545000.0,1750.0,Blk 383,12,883.0,2,sales,Condominium,D10,247966
+1166,311,Tanglin Regency,2026-07-06,1400000.0,1429.0,Blk 383,10,980.0,2,sales,Condominium,D10,247966
+1167,311,Tanglin Regency,2026-06-04,1338000.0,1883.0,Blk 381,04,710.0,2,sales,Condominium,D10,247965
+1168,311,Tanglin Regency,2026-04-24,1480000.0,1528.0,Blk 381,01,969.0,2,sales,Condominium,D10,247965
+1169,311,Tanglin Regency,2025-10-08,1460000.0,1717.0,Blk 383,05,850.0,2,sales,Condominium,D10,247966
+1170,311,Tanglin Regency,2025-10-07,1460000.0,1717.0,Blk 383,09,850.0,2,sales,Condominium,D10,247966
+1171,311,Tanglin Regency,2025-08-04,1420000.0,1670.0,Blk 381,04,850.0,2,sales,Condominium,D10,247965
+1172,311,Tanglin Regency,2025-07-17,1468888.0,1685.0,Blk 381,16,872.0,2,sales,Condominium,D10,247965
+1173,311,Tanglin Regency,2025-03-21,1480000.0,1697.0,Blk 383,16,872.0,2,sales,Condominium,D10,247966
+1174,311,Tanglin Regency,2025-03-20,1680000.0,1715.0,Blk 381,13,980.0,2,sales,Condominium,D10,247965
+1175,311,Tanglin Regency,2024-12-05,1250000.0,1787.0,Blk 381,09,700.0,2,sales,Condominium,D10,247965
+1176,311,Tanglin Regency,2024-08-22,1800000.0,1724.0,Blk 383,05,1044.0,2,sales,Condominium,D10,247966
+1177,311,Tanglin Regency,2024-02-15,1380000.0,1623.0,Blk 383,04,850.0,2,sales,Condominium,D10,247966
+1178,311,Tanglin Regency,2024-02-05,1450000.0,1705.0,Blk 381,06,850.0,2,sales,Condominium,D10,247965
+1179,311,Tanglin Regency,2024-01-05,1390000.0,1635.0,Blk 381,03,850.0,2,sales,Condominium,D10,247965
+1180,311,Tanglin Regency,2023-11-14,1390000.0,1635.0,Blk 383,02,850.0,2,sales,Condominium,D10,247966
+1181,311,Tanglin Regency,2023-09-28,1450000.0,1643.0,Blk 381,10,883.0,2,sales,Condominium,D10,247965
+1182,311,Tanglin Regency,2023-07-13,1760000.0,1686.0,Blk 381,05,1044.0,2,sales,Condominium,D10,247965
+1183,311,Tanglin Regency,2023-06-12,1660000.0,1695.0,Blk 383,12,980.0,2,sales,Condominium,D10,247966
+1184,311,Tanglin Regency,2023-06-01,1580000.0,1631.0,Blk 383,16,969.0,2,sales,Condominium,D10,247966
+1185,311,Tanglin Regency,2023-05-02,1210000.0,1703.0,Blk 381,04,710.0,2,sales,Condominium,D10,247965
+1186,311,Tanglin Regency,2023-01-09,1380000.0,1623.0,Blk 383,04,850.0,2,sales,Condominium,D10,247966
+1187,311,Tanglin Regency,2022-09-28,1710000.0,1638.0,Blk 381,06,1044.0,2,sales,Condominium,D10,247965
+1188,311,Tanglin Regency,2022-09-12,1200000.0,1689.0,Blk 381,08,710.0,2,sales,Condominium,D10,247965
+451,356,The Teneriffe,2012-06-25,2400000.0,835.0,Blk 208,-1,2874.0,3,sales,Terrace House,D10,275887
+452,356,The Teneriffe,2007-11-02,2500000.0,870.0,Blk 208,-1,2874.0,3,sales,Terrace House,D10,275887
+453,356,The Teneriffe,2007-02-07,1560000.0,543.0,Blk 208,-1,2874.0,3,sales,Terrace House,D10,275887
+1189,360,Springdale Condo,2026-05-15,1558888.0,1684.0,Blk 45,08,926.0,2,sales,Condominium,D21,587978
+1190,360,Springdale Condo,2026-01-26,1520000.0,1642.0,Blk 49,09,926.0,2,sales,Condominium,D21,587976
+1191,360,Springdale Condo,2025-09-02,1515000.0,1637.0,Blk 51,05,926.0,2,sales,Condominium,D21,587975
+1192,360,Springdale Condo,2025-03-24,1570000.0,1696.0,Blk 51,06,926.0,2,sales,Condominium,D21,587975
+1193,360,Springdale Condo,2025-02-26,1520000.0,1642.0,Blk 49,07,926.0,2,sales,Condominium,D21,587976
+1194,360,Springdale Condo,2024-09-30,1448000.0,1564.0,Blk 51,10,926.0,2,sales,Condominium,D21,587975
+1195,360,Springdale Condo,2023-12-07,1518000.0,1640.0,Blk 45,05,926.0,2,sales,Condominium,D21,587978
+1196,360,Springdale Condo,2022-12-19,1238000.0,1337.0,Blk 47,05,926.0,2,sales,Condominium,D21,587977
+1197,360,Springdale Condo,2022-09-22,1330000.0,1437.0,Blk 51,04,926.0,2,sales,Condominium,D21,587975
+1198,360,Springdale Condo,2022-09-01,1228000.0,1327.0,Blk 51,05,926.0,2,sales,Condominium,D21,587975
+1199,360,Springdale Condo,2021-07-01,1180000.0,1275.0,Blk 47,10,926.0,2,sales,Condominium,D21,587977
+1200,360,Springdale Condo,2021-05-06,1160000.0,1253.0,Blk 45,07,926.0,2,sales,Condominium,D21,587978
+1201,360,Springdale Condo,2020-10-08,1068000.0,1154.0,Blk 49,03,926.0,2,sales,Condominium,D21,587976
+1202,360,Springdale Condo,2020-08-26,1150000.0,1242.0,Blk 51,06,926.0,2,sales,Condominium,D21,587975
+1203,360,Springdale Condo,2020-08-17,1090000.0,1177.0,Blk 51,05,926.0,2,sales,Condominium,D21,587975
+1204,360,Springdale Condo,2020-06-17,1035000.0,1118.0,Blk 47,03,926.0,2,sales,Condominium,D21,587977
+1205,360,Springdale Condo,2019-11-12,1120000.0,1210.0,Blk 45,06,926.0,2,sales,Condominium,D21,587978
+1206,360,Springdale Condo,2019-10-08,1010000.0,1091.0,Blk 49,03,926.0,2,sales,Condominium,D21,587976
+1207,360,Springdale Condo,2019-07-16,1090000.0,1177.0,Blk 45,07,926.0,2,sales,Condominium,D21,587978
+1208,360,Springdale Condo,2019-04-29,1080000.0,1167.0,Blk 45,09,926.0,2,sales,Condominium,D21,587978
+1209,360,Springdale Condo,2018-08-10,1060000.0,1145.0,Blk 47,07,926.0,2,sales,Condominium,D21,587977
+1210,360,Springdale Condo,2018-06-18,960000.0,1037.0,Blk 47,10,926.0,2,sales,Condominium,D21,587977
+1211,360,Springdale Condo,2018-06-18,1100000.0,1188.0,Blk 45,06,926.0,2,sales,Condominium,D21,587978
+1212,360,Springdale Condo,2018-05-21,1080000.0,1167.0,Blk 51,03,926.0,2,sales,Condominium,D21,587975
+1213,360,Springdale Condo,2018-03-27,1060000.0,1145.0,Blk 45,05,926.0,2,sales,Condominium,D21,587978
+1807,371,Southaven II,1999-05-09,1280000.0,561.0,Blk 31,07,2282.0,0,sales,Condominium,D21,587967
+1837,425,Ridgewood Condominium,2017-12-15,5700000.0,1645.0,Blk 8,-1,3466.0,0,sales,Semi-Detached House,D10,278392
+1838,425,Ridgewood Condominium,1995-05-01,760000.0,1054.0,Blk 5,-1,721.0,0,sales,Condominium,D10,276696
+845,439,Harbour View Towers,2011-01-13,800000.0,991.0,Blk 21,02,807.0,1,sales,Condominium,D04,109258
+653,483,One-North Residences,2026-06-24,1260000.0,1171.0,Blk 9,08,1076.0,1,sales,Apartment,D05,138643
+654,483,One-North Residences,2026-06-02,880000.0,1486.0,Blk 7,05,592.0,1,sales,Apartment,D05,138642
+655,483,One-North Residences,2026-05-04,915000.0,1546.0,Blk 7,10,592.0,1,sales,Apartment,D05,138642
+656,483,One-North Residences,2026-03-10,905000.0,1475.0,Blk 7,12,614.0,1,sales,Apartment,D05,138642
+657,483,One-North Residences,2025-10-02,1350000.0,1254.0,Blk 9,08,1076.0,1,sales,Apartment,D05,138643
+658,483,One-North Residences,2025-08-07,1180000.0,1958.0,Blk 9,04,603.0,1,sales,Apartment,D05,138643
+659,483,One-North Residences,2025-06-25,920000.0,1554.0,Blk 7,10,592.0,1,sales,Apartment,D05,138642
+660,483,One-North Residences,2025-04-25,918000.0,1551.0,Blk 7,06,592.0,1,sales,Apartment,D05,138642
+661,483,One-North Residences,2025-03-27,920000.0,1554.0,Blk 7,05,592.0,1,sales,Apartment,D05,138642
+662,483,One-North Residences,2025-01-21,1400000.0,1301.0,Blk 9,06,1076.0,1,sales,Apartment,D05,138643
+663,483,One-North Residences,2024-11-05,1040000.0,1695.0,Blk 9,05,614.0,1,sales,Apartment,D05,138643
+664,483,One-North Residences,2024-11-04,1230000.0,1284.0,Blk 9,06,958.0,1,sales,Apartment,D05,138643
+665,483,One-North Residences,2024-10-22,947000.0,1600.0,Blk 7,07,592.0,1,sales,Apartment,D05,138642
+666,483,One-North Residences,2024-07-25,1022500.0,1250.0,Blk 7,01,818.0,1,sales,Apartment,D05,138642
+667,483,One-North Residences,2024-07-17,960000.0,1565.0,Blk 9,04,614.0,1,sales,Apartment,D05,138643
+668,483,One-North Residences,2024-05-02,1569000.0,1375.0,Blk 9,01,1141.0,1,sales,Apartment,D05,138643
+669,483,One-North Residences,2024-03-18,1450000.0,1347.0,Blk 9,06,1076.0,1,sales,Apartment,D05,138643
+670,483,One-North Residences,2024-03-14,955000.0,1613.0,Blk 7,14,592.0,1,sales,Apartment,D05,138642
+671,483,One-North Residences,2023-12-28,1403000.0,1303.0,Blk 9,08,1076.0,1,sales,Apartment,D05,138643
+672,483,One-North Residences,2023-11-24,950000.0,1839.0,Blk 9,05,517.0,1,sales,Apartment,D05,138643
+673,483,One-North Residences,2023-11-09,940000.0,1588.0,Blk 7,13,592.0,1,sales,Apartment,D05,138642
+674,483,One-North Residences,2023-11-06,923500.0,1560.0,Blk 7,10,592.0,1,sales,Apartment,D05,138642
+675,483,One-North Residences,2023-08-11,970000.0,1700.0,Blk 9,05,570.0,1,sales,Apartment,D05,138643
+676,483,One-North Residences,2023-06-13,930000.0,1516.0,Blk 7,08,614.0,1,sales,Apartment,D05,138642
+677,483,One-North Residences,2023-04-24,1330000.0,1188.0,Blk 7,01,1119.0,1,sales,Apartment,D05,138642
+1495,493,The Merasaga,2022-04-20,7488891.0,2114.0,Blk 16,-1,3541.0,0,sales,Semi-Detached House,D10,278097
+353,498,The Landmark,2026-08-13,1100000.0,2222.0,Blk 173,11,495.0,1,sales,Condominium,D03,169878
+354,498,The Landmark,2026-03-30,1060000.0,2141.0,Blk 173,03,495.0,1,sales,Condominium,D03,169878
+355,498,The Landmark,2025-09-26,1093000.0,2207.0,Blk 173,17,495.0,1,sales,Condominium,D03,169878
+356,498,The Landmark,2025-05-16,1030000.0,2080.0,Blk 173,02,495.0,1,sales,Condominium,D03,169878
+357,498,The Landmark,2024-06-21,1515000.0,3060.0,Blk 173,37,495.0,1,sales,Condominium,D03,169878
+358,498,The Landmark,2024-06-16,1481000.0,2866.0,Blk 173,39,517.0,1,sales,Condominium,D03,169878
+359,498,The Landmark,2024-05-26,1476000.0,2857.0,Blk 173,38,517.0,1,sales,Condominium,D03,169878
+360,498,The Landmark,2024-05-24,1535000.0,3100.0,Blk 173,39,495.0,1,sales,Condominium,D03,169878
+361,498,The Landmark,2024-05-13,1531000.0,3092.0,Blk 173,38,495.0,1,sales,Condominium,D03,169878
+362,498,The Landmark,2024-05-09,1512000.0,3054.0,Blk 173,36,495.0,1,sales,Condominium,D03,169878
+363,498,The Landmark,2024-04-27,1432000.0,2892.0,Blk 173,39,495.0,1,sales,Condominium,D03,169878
+364,498,The Landmark,2024-04-20,1475000.0,2855.0,Blk 173,37,517.0,1,sales,Condominium,D03,169878
+365,498,The Landmark,2024-04-04,1502922.0,3035.0,Blk 173,35,495.0,1,sales,Condominium,D03,169878
+366,498,The Landmark,2024-03-27,1439480.0,2907.0,Blk 173,39,495.0,1,sales,Condominium,D03,169878
+367,498,The Landmark,2024-03-22,1435085.0,2898.0,Blk 173,30,495.0,1,sales,Condominium,D03,169878
+368,498,The Landmark,2024-02-24,1450000.0,2928.0,Blk 173,33,495.0,1,sales,Condominium,D03,169878
+369,498,The Landmark,2024-02-17,1472640.0,2850.0,Blk 173,36,517.0,1,sales,Condominium,D03,169878
+370,498,The Landmark,2024-01-27,1430400.0,2889.0,Blk 173,38,495.0,1,sales,Condominium,D03,169878
+371,498,The Landmark,2023-12-25,1436608.0,2901.0,Blk 173,29,495.0,1,sales,Condominium,D03,169878
+372,498,The Landmark,2023-12-13,1412601.0,2853.0,Blk 173,36,495.0,1,sales,Condominium,D03,169878
+373,498,The Landmark,2023-12-09,1430847.0,2890.0,Blk 173,38,495.0,1,sales,Condominium,D03,169878
+374,498,The Landmark,2023-12-05,1414195.0,2856.0,Blk 173,27,495.0,1,sales,Condominium,D03,169878
+375,498,The Landmark,2023-11-19,1449600.0,2928.0,Blk 173,32,495.0,1,sales,Condominium,D03,169878
+376,498,The Landmark,2023-11-02,1420000.0,2868.0,Blk 173,37,495.0,1,sales,Condominium,D03,169878
+377,498,The Landmark,2023-10-24,1463490.0,2833.0,Blk 173,35,517.0,1,sales,Condominium,D03,169878
+323,511,Beverly Hill,2021-08-02,7000000.0,2078.0,Blk 61,02,3369.0,3,sales,Condominium,D10,249570
+324,511,Beverly Hill,2016-05-27,4900000.0,1396.0,Blk 61,02,3509.0,3,sales,Condominium,D10,249570
+325,511,Beverly Hill,2009-07-22,5100000.0,1514.0,Blk 61,02,3369.0,3,sales,Condominium,D10,249570
+1224,531,One Tree Hill Residence,2015-03-18,8800000.0,3414.0,Blk 32,-1,2573.0,0,sales,Semi-Detached House,D10,249160
+1225,531,One Tree Hill Residence,2012-04-02,21000000.0,2005.0,Blk 32,-1,10473.0,0,sales,Detached House,D10,249160
+793,570,Southaven I,2006-08-14,1550000.0,282.0,Blk 43,09,5490.0,0,sales,Condominium,D21,587973
+794,570,Southaven I,2005-07-29,767600.0,140.0,Blk 43,09,5490.0,0,sales,Condominium,D21,587973
+1632,586,Mount Faber Lodge,2022-10-21,1750000.0,1594.0,Blk 27,B1,1098.0,2,sales,Condominium,D04,099200
+1633,586,Mount Faber Lodge,2017-05-23,1380000.0,1176.0,Blk 27,05,1173.0,2,sales,Condominium,D04,099200
+1634,586,Mount Faber Lodge,2014-05-28,1770000.0,1509.0,Blk 27,05,1173.0,2,sales,Condominium,D04,099200
+1635,586,Mount Faber Lodge,2010-12-15,1400000.0,1193.0,Blk 27,05,1173.0,2,sales,Condominium,D04,099200
+1636,586,Mount Faber Lodge,2010-06-11,1325000.0,1207.0,Blk 27,B1,1098.0,2,sales,Condominium,D04,099200
+1637,586,Mount Faber Lodge,2009-12-17,1250000.0,1065.0,Blk 27,05,1173.0,2,sales,Condominium,D04,099200
+1638,586,Mount Faber Lodge,2007-08-06,1200000.0,1093.0,Blk 27,B1,1098.0,2,sales,Condominium,D04,099200
+1639,586,Mount Faber Lodge,2007-07-26,1480000.0,1261.0,Blk 27,05,1173.0,2,sales,Condominium,D04,099200
+1640,586,Mount Faber Lodge,2007-05-15,1100000.0,938.0,Blk 27,05,1173.0,2,sales,Condominium,D04,099200
+1641,586,Mount Faber Lodge,2007-04-03,902000.0,769.0,Blk 27,05,1173.0,2,sales,Condominium,D04,099200
+1642,586,Mount Faber Lodge,2006-10-30,698000.0,636.0,Blk 27,B1,1098.0,2,sales,Condominium,D04,099200
+1643,586,Mount Faber Lodge,2006-06-20,700000.0,565.0,Blk 27,05,1238.0,2,sales,Condominium,D04,099200
+1644,586,Mount Faber Lodge,2005-04-25,590000.0,503.0,Blk 27,05,1173.0,2,sales,Condominium,D04,099200
+1645,586,Mount Faber Lodge,2004-05-04,595000.0,507.0,Blk 27,05,1173.0,2,sales,Condominium,D04,099200
+1646,586,Mount Faber Lodge,2002-12-30,675000.0,575.0,Blk 27,05,1173.0,2,sales,Condominium,D04,099200
+1647,586,Mount Faber Lodge,2001-11-01,680000.0,549.0,Blk 27,05,1238.0,2,sales,Condominium,D04,099200
+1648,586,Mount Faber Lodge,2000-08-31,738000.0,629.0,Blk 27,05,1173.0,2,sales,Condominium,D04,099200
+1649,586,Mount Faber Lodge,1999-11-01,668000.0,608.0,Blk 27,B1,1098.0,2,sales,Condominium,D04,099200
+1650,586,Mount Faber Lodge,1999-08-11,680000.0,580.0,Blk 27,05,1173.0,2,sales,Condominium,D04,099200
+1651,586,Mount Faber Lodge,1999-06-16,620000.0,565.0,Blk 27,B1,1098.0,2,sales,Condominium,D04,099200
+1652,586,Mount Faber Lodge,1999-02-26,620000.0,528.0,Blk 27,05,1173.0,2,sales,Condominium,D04,099200
+1653,586,Mount Faber Lodge,1998-07-01,593000.0,505.0,Blk 27,05,1173.0,2,sales,Condominium,D04,099200
+1654,586,Mount Faber Lodge,1998-04-29,660000.0,563.0,Blk 27,05,1173.0,2,sales,Condominium,D04,099200
+1655,586,Mount Faber Lodge,1996-05-09,965000.0,822.0,Blk 27,05,1173.0,2,sales,Condominium,D04,099200
+1656,586,Mount Faber Lodge,1996-02-02,772000.0,658.0,Blk 27,05,1173.0,2,sales,Condominium,D04,099200
+1677,681,Sutton Place,2010-05-10,4500000.0,1560.0,Blk 28,04,2885.0,0,sales,Condominium,D10,268831
+1678,681,Sutton Place,2007-05-23,3250000.0,1127.0,Blk 28,04,2885.0,0,sales,Condominium,D10,268831
+1679,681,Sutton Place,2001-10-01,1810000.0,627.0,Blk 28,02,2885.0,0,sales,Condominium,D10,268831
+298,745,Reflections at Keppel Bay,2026-07-02,2200000.0,2004.0,Blk 33,35,1098.0,2,sales,Condominium,D04,098419
+299,745,Reflections at Keppel Bay,2026-06-17,1840000.0,1692.0,Blk 31,04,1087.0,2,sales,Condominium,D04,098418
+300,745,Reflections at Keppel Bay,2026-06-12,1688888.0,1585.0,Blk 3,07,1066.0,2,sales,Condominium,D04,098403
+301,745,Reflections at Keppel Bay,2026-05-22,1960000.0,1751.0,Blk 5,03,1119.0,2,sales,Condominium,D04,098404
+302,745,Reflections at Keppel Bay,2026-04-08,1720000.0,1700.0,Blk 29,10,1012.0,2,sales,Condominium,D04,098417
+303,745,Reflections at Keppel Bay,2026-04-07,1818000.0,1624.0,Blk 5,07,1119.0,2,sales,Condominium,D04,098404
+304,745,Reflections at Keppel Bay,2026-03-19,1830000.0,1809.0,Blk 23,08,1012.0,2,sales,Condominium,D04,098414
+305,745,Reflections at Keppel Bay,2026-01-07,1650000.0,2100.0,Blk 25,13,786.0,2,sales,Condominium,D04,098415
+306,745,Reflections at Keppel Bay,2025-12-29,1875000.0,1691.0,Blk 31,05,1109.0,2,sales,Condominium,D04,098418
+307,745,Reflections at Keppel Bay,2025-12-15,1730000.0,1640.0,Blk 1,02,1055.0,2,sales,Condominium,D04,098402
+308,745,Reflections at Keppel Bay,2025-12-11,2110000.0,1620.0,Blk 8,06,1302.0,2,sales,Condominium,D04,098406
+309,745,Reflections at Keppel Bay,2025-12-02,2170000.0,1738.0,Blk 31,08,1249.0,2,sales,Condominium,D04,098418
+310,745,Reflections at Keppel Bay,2025-11-28,1520000.0,1722.0,Blk 31,05,883.0,2,sales,Condominium,D04,098418
+311,745,Reflections at Keppel Bay,2025-10-31,1750000.0,1626.0,Blk 5,07,1076.0,2,sales,Condominium,D04,098404
+312,745,Reflections at Keppel Bay,2025-10-28,1850000.0,1653.0,Blk 19,03,1119.0,2,sales,Condominium,D04,098412
+313,745,Reflections at Keppel Bay,2025-10-15,1850000.0,1521.0,Blk 8,05,1216.0,2,sales,Condominium,D04,098406
+314,745,Reflections at Keppel Bay,2025-09-24,1950000.0,1662.0,Blk 15,01,1173.0,2,sales,Condominium,D04,098410
+315,745,Reflections at Keppel Bay,2025-09-15,1880000.0,1782.0,Blk 15,06,1055.0,2,sales,Condominium,D04,098410
+316,745,Reflections at Keppel Bay,2025-08-29,2328000.0,1703.0,Blk 23,28,1367.0,2,sales,Condominium,D04,098414
+317,745,Reflections at Keppel Bay,2025-06-09,2225000.0,1862.0,Blk 27,12,1195.0,2,sales,Condominium,D04,098416
+318,745,Reflections at Keppel Bay,2025-05-29,1730000.0,1710.0,Blk 23,03,1012.0,2,sales,Condominium,D04,098414
+319,745,Reflections at Keppel Bay,2025-04-21,2000000.0,1736.0,Blk 1,07,1152.0,2,sales,Condominium,D04,098402
+320,745,Reflections at Keppel Bay,2025-04-17,1600000.0,1749.0,Blk 33,26,915.0,2,sales,Condominium,D04,098419
+321,745,Reflections at Keppel Bay,2025-04-11,2150000.0,1651.0,Blk 8,01,1302.0,2,sales,Condominium,D04,098406
+322,745,Reflections at Keppel Bay,2025-04-08,1928000.0,1722.0,Blk 11,03,1119.0,2,sales,Condominium,D04,098408
+1089,756,Botannia,2026-08-07,1620000.0,1792.0,Blk 29B,03,904.0,2,sales,Condominium,D05,127724
+1090,756,Botannia,2026-07-06,1480000.0,1786.0,Blk 29B,02,829.0,2,sales,Condominium,D05,127724
+1091,756,Botannia,2026-06-24,1650000.0,1533.0,Blk 31A,01,1076.0,2,sales,Condominium,D05,127725
+1092,756,Botannia,2026-04-16,1598000.0,1767.0,Blk 29B,08,904.0,2,sales,Condominium,D05,127724
+1093,756,Botannia,2026-02-19,1608000.0,1778.0,Blk 31,06,904.0,2,sales,Condominium,D05,127649
+1094,756,Botannia,2025-03-13,1560000.0,1725.0,Blk 29,03,904.0,2,sales,Condominium,D05,127647
+1095,756,Botannia,2024-08-08,1520000.0,1681.0,Blk 31,07,904.0,2,sales,Condominium,D05,127649
+1096,756,Botannia,2023-07-27,1400000.0,1689.0,Blk 29B,11,829.0,2,sales,Condominium,D05,127724
+1097,756,Botannia,2022-08-12,1380000.0,1282.0,Blk 31A,01,1076.0,2,sales,Condominium,D05,127725
+1098,756,Botannia,2022-07-19,1380000.0,1526.0,Blk 29B,07,904.0,2,sales,Condominium,D05,127724
+1099,756,Botannia,2021-09-14,1249000.0,1507.0,Blk 31A,12,829.0,2,sales,Condominium,D05,127725
+1100,756,Botannia,2021-07-08,1240000.0,1496.0,Blk 31,12,829.0,2,sales,Condominium,D05,127649
+1101,756,Botannia,2021-04-08,1250000.0,1161.0,Blk 29,01,1076.0,2,sales,Condominium,D05,127647
+1102,756,Botannia,2020-11-06,1140000.0,1261.0,Blk 31,07,904.0,2,sales,Condominium,D05,127649
+1103,756,Botannia,2020-07-20,1138000.0,1259.0,Blk 29B,09,904.0,2,sales,Condominium,D05,127724
+1104,756,Botannia,2018-05-14,1080000.0,1303.0,Blk 31A,12,829.0,2,sales,Condominium,D05,127725
+1105,756,Botannia,2018-04-23,1150000.0,1272.0,Blk 31A,06,904.0,2,sales,Condominium,D05,127725
+1106,756,Botannia,2018-04-04,1620000.0,1394.0,Blk 31,12,1163.0,2,sales,Condominium,D05,127649
+1107,756,Botannia,2018-01-30,1050000.0,1190.0,Blk 29B,04,883.0,2,sales,Condominium,D05,127724
+1108,756,Botannia,2017-12-05,1090000.0,1177.0,Blk 29B,10,926.0,2,sales,Condominium,D05,127724
+1109,756,Botannia,2017-07-28,1230000.0,1143.0,Blk 29B,01,1076.0,2,sales,Condominium,D05,127724
+1110,756,Botannia,2017-05-30,1124000.0,1044.0,Blk 31A,01,1076.0,2,sales,Condominium,D05,127725
+1111,756,Botannia,2017-03-02,1060000.0,1296.0,Blk 29,11,818.0,2,sales,Condominium,D05,127647
+1112,756,Botannia,2016-10-17,1080000.0,1286.0,Blk 31A,05,840.0,2,sales,Condominium,D05,127725
+1113,756,Botannia,2016-02-04,1090000.0,1206.0,Blk 31,07,904.0,2,sales,Condominium,D05,127649
+455,775,Lien Towers,2012-10-16,9500000.0,1882.0,Blk 21,09,5048.0,4,sales,Apartment,D10,249476
+456,775,Lien Towers,2009-09-02,5200000.0,1030.0,Blk 21,03,5048.0,4,sales,Apartment,D10,249476
+457,775,Lien Towers,2008-08-15,6280000.0,1244.0,Blk 21,08,5048.0,4,sales,Apartment,D10,249476
+458,775,Lien Towers,2007-07-06,5800000.0,1149.0,Blk 21,09,5048.0,4,sales,Apartment,D10,249476
+459,775,Lien Towers,2007-05-04,5000000.0,990.0,Blk 21,07,5048.0,4,sales,Apartment,D10,249476
+460,775,Lien Towers,2007-05-03,5000000.0,990.0,Blk 21,10,5048.0,4,sales,Apartment,D10,249476
+461,775,Lien Towers,2007-04-03,4700000.0,931.0,Blk 21,09,5048.0,4,sales,Apartment,D10,249476
+462,775,Lien Towers,2007-02-07,4350000.0,862.0,Blk 21,07,5048.0,4,sales,Apartment,D10,249476
+463,775,Lien Towers,2006-07-21,2900000.0,574.0,Blk 21,04,5048.0,4,sales,Apartment,D10,249476
+464,775,Lien Towers,2006-05-10,2500000.0,495.0,Blk 21,04,5048.0,4,sales,Apartment,D10,249476
+465,775,Lien Towers,2006-05-09,3100000.0,614.0,Blk 21,08,5048.0,4,sales,Apartment,D10,249476
+466,775,Lien Towers,2006-04-29,2900000.0,574.0,Blk 21,05,5048.0,4,sales,Apartment,D10,249476
+467,775,Lien Towers,2005-12-16,2400000.0,475.0,Blk 21,03,5048.0,4,sales,Apartment,D10,249476
+468,775,Lien Towers,2005-11-14,2550000.0,505.0,Blk 21,03,5048.0,4,sales,Apartment,D10,249476
+469,775,Lien Towers,2005-09-16,2300000.0,456.0,Blk 21,06,5048.0,4,sales,Apartment,D10,249476
+470,775,Lien Towers,2005-02-14,2330000.0,462.0,Blk 21,12,5048.0,4,sales,Apartment,D10,249476
+471,775,Lien Towers,2004-03-18,2450000.0,485.0,Blk 21,08,5048.0,4,sales,Apartment,D10,249476
+472,775,Lien Towers,2003-05-21,2200000.0,436.0,Blk 21,11,5048.0,4,sales,Apartment,D10,249476
+473,775,Lien Towers,2002-10-09,2250000.0,446.0,Blk 21,08,5048.0,4,sales,Apartment,D10,249476
+474,775,Lien Towers,2002-05-20,2280000.0,452.0,Blk 21,11,5048.0,4,sales,Apartment,D10,249476
+475,775,Lien Towers,1999-04-01,2200000.0,436.0,Blk 21,06,5048.0,4,sales,Apartment,D10,249476
+476,775,Lien Towers,1999-02-12,2100000.0,416.0,Blk 21,03,5048.0,4,sales,Apartment,D10,249476
+477,775,Lien Towers,1997-07-07,3800000.0,753.0,Blk 21,10,5048.0,4,sales,Apartment,D10,249476
+1428,918,Sentosa Cove,2026-01-22,17800000.0,2124.0,Blk 8,-1,8374.0,0,sales,Detached House,D04,098345
+1429,918,Sentosa Cove,2023-05-12,20000000.0,2268.0,Blk 6,-1,8816.0,0,sales,Detached House,D04,098274
+1430,918,Sentosa Cove,2022-03-22,18400000.0,2057.0,Blk 4,-1,8934.0,0,sales,Detached House,D04,098077
+1431,918,Sentosa Cove,2021-05-20,12900128.0,1540.0,Blk 8,-1,8374.0,0,sales,Detached House,D04,098345
+1432,918,Sentosa Cove,2021-02-05,15000000.0,1514.0,Blk 12,-1,9903.0,0,sales,Detached House,D04,098161
+1433,918,Sentosa Cove,2020-12-08,14000000.0,1565.0,Blk 4,-1,8934.0,0,sales,Detached House,D04,098077
+1434,918,Sentosa Cove,2017-04-17,16800000.0,1797.0,Blk 3,-1,9343.0,0,sales,Detached House,D04,098212
+1435,918,Sentosa Cove,2016-07-26,16500000.0,1871.0,Blk 6,-1,8816.0,0,sales,Detached House,D04,098274
+1436,918,Sentosa Cove,2013-05-23,24800000.0,2952.0,Blk 30,-1,8396.0,0,sales,Detached House,D04,098501
+1437,918,Sentosa Cove,2012-11-15,17000000.0,2535.0,Blk 145,-1,6706.0,0,sales,Detached House,D04,098543
+1438,918,Sentosa Cove,2012-10-05,32500000.0,3214.0,Blk 73,-1,10107.0,0,sales,Detached House,D04,098387
+1439,918,Sentosa Cove,2011-10-13,21000000.0,2143.0,Blk 12,-1,9795.0,0,sales,Detached House,D04,098093
+1440,918,Sentosa Cove,2011-05-23,16000000.0,1789.0,Blk 4,-1,8934.0,0,sales,Detached House,D04,098077
+1441,918,Sentosa Cove,2011-02-14,18500000.0,2202.0,Blk 30,-1,8396.0,0,sales,Detached House,D04,098501
+1442,918,Sentosa Cove,2010-05-31,14500000.0,2162.0,Blk 145,-1,6706.0,0,sales,Detached House,D04,098543
+1443,918,Sentosa Cove,2010-02-10,13680000.0,2016.0,Blk 36,-1,6781.0,0,sales,Detached House,D04,098272
+1444,918,Sentosa Cove,2009-08-03,9000000.0,1326.0,Blk 36,-1,6781.0,0,sales,Detached House,D04,098272
+768,951,Eng Kong Green,2025-11-28,1230000.0,1465.0,Blk 39,01,840.0,2,sales,Condominium,D21,599429
+769,951,Eng Kong Green,2025-11-12,1350000.0,1608.0,Blk 37,04,840.0,2,sales,Condominium,D21,599428
+770,951,Eng Kong Green,2024-09-17,1260000.0,1501.0,Blk 39,03,840.0,2,sales,Condominium,D21,599429
+771,951,Eng Kong Green,2024-04-02,1250000.0,1489.0,Blk 39,02,840.0,2,sales,Condominium,D21,599429
+772,951,Eng Kong Green,2024-03-15,1160000.0,1382.0,Blk 39,04,840.0,2,sales,Condominium,D21,599429
+773,951,Eng Kong Green,2022-07-29,1220000.0,1453.0,Blk 37,03,840.0,2,sales,Condominium,D21,599428
+774,951,Eng Kong Green,2022-01-24,1100000.0,1310.0,Blk 37,04,840.0,2,sales,Condominium,D21,599428
+775,951,Eng Kong Green,2021-11-26,1150000.0,1370.0,Blk 39,01,840.0,2,sales,Condominium,D21,599429
+776,951,Eng Kong Green,2017-05-09,750000.0,893.0,Blk 39,01,840.0,2,sales,Condominium,D21,599429
+777,951,Eng Kong Green,2017-02-06,750000.0,893.0,Blk 37,02,840.0,2,sales,Condominium,D21,599428
+778,951,Eng Kong Green,2015-10-22,880000.0,1048.0,Blk 37,01,840.0,2,sales,Condominium,D21,599428
+779,951,Eng Kong Green,2014-10-13,838888.0,999.0,Blk 37,02,840.0,2,sales,Condominium,D21,599428
+780,951,Eng Kong Green,2012-10-17,870000.0,1036.0,Blk 37,04,840.0,2,sales,Condominium,D21,599428
+781,951,Eng Kong Green,2010-11-10,642000.0,765.0,Blk 37,01,840.0,2,sales,Condominium,D21,599428
+782,951,Eng Kong Green,2010-09-14,640000.0,762.0,Blk 37,01,840.0,2,sales,Condominium,D21,599428
+783,951,Eng Kong Green,2010-08-16,690000.0,822.0,Blk 39,01,840.0,2,sales,Condominium,D21,599429
+784,951,Eng Kong Green,2007-07-13,500000.0,596.0,Blk 37,01,840.0,2,sales,Condominium,D21,599428
+785,951,Eng Kong Green,2006-05-02,440000.0,524.0,Blk 39,02,840.0,2,sales,Condominium,D21,599429
+786,951,Eng Kong Green,2006-04-04,436000.0,519.0,Blk 37,04,840.0,2,sales,Condominium,D21,599428
+787,951,Eng Kong Green,2004-05-19,430000.0,512.0,Blk 37,03,840.0,2,sales,Condominium,D21,599428
+788,951,Eng Kong Green,2003-05-25,430000.0,512.0,Blk 39,01,840.0,2,sales,Condominium,D21,599429
+789,951,Eng Kong Green,2002-11-27,480000.0,572.0,Blk 37,02,840.0,2,sales,Condominium,D21,599428
+790,951,Eng Kong Green,2002-03-05,465000.0,554.0,Blk 39,02,840.0,2,sales,Condominium,D21,599429
+791,951,Eng Kong Green,2001-12-05,450000.0,536.0,Blk 37,01,840.0,2,sales,Condominium,D21,599428
+792,951,Eng Kong Green,2001-04-26,460000.0,548.0,Blk 37,01,840.0,2,sales,Condominium,D21,599428
+884,954,Greenbank Park,2026-03-03,6550000.0,1618.0,Blk 28,-1,4047.0,4,sales,Semi-Detached House,D21,589389
+885,954,Greenbank Park,2024-04-19,10180000.0,2557.0,Blk 29,-1,3972.0,4,sales,Semi-Detached House,D21,589390
+886,954,Greenbank Park,2023-12-15,9100000.0,2248.0,Blk 16,-1,4047.0,4,sales,Semi-Detached House,D21,589377
+887,954,Greenbank Park,2022-04-14,9900900.0,2487.0,Blk 29,-1,3972.0,4,sales,Semi-Detached House,D21,589390
+888,954,Greenbank Park,2021-03-29,4750000.0,1196.0,Blk 23,-1,3972.0,4,sales,Semi-Detached House,D21,589384
+889,954,Greenbank Park,2020-08-24,5600000.0,1383.0,Blk 10,-1,4047.0,4,sales,Semi-Detached House,D21,589371
+890,954,Greenbank Park,2020-01-17,4000000.0,927.0,Blk 42,-1,4306.0,4,sales,Semi-Detached House,D21,589403
+891,954,Greenbank Park,2019-05-08,4200000.0,1037.0,Blk 16,-1,4047.0,4,sales,Semi-Detached House,D21,589377
+892,954,Greenbank Park,2019-02-15,4580000.0,1131.0,Blk 26,-1,4047.0,4,sales,Semi-Detached House,D21,589387
+893,954,Greenbank Park,2018-05-03,4500000.0,1112.0,Blk 14,-1,4047.0,4,sales,Semi-Detached House,D21,589375
+894,954,Greenbank Park,2018-04-06,6020000.0,1521.0,Blk 3,-1,3950.0,4,sales,Semi-Detached House,D21,589364
+895,954,Greenbank Park,2017-06-22,6300000.0,1582.0,Blk 29,-1,3972.0,4,sales,Semi-Detached House,D21,589390
+896,954,Greenbank Park,2015-02-16,5000000.0,1256.0,Blk 29,-1,3972.0,4,sales,Semi-Detached House,D21,589390
+897,954,Greenbank Park,2011-11-25,5000000.0,1263.0,Blk 3,-1,3950.0,4,sales,Semi-Detached House,D21,589364
+898,954,Greenbank Park,2011-06-27,4600000.0,1066.0,Blk 42,-1,4306.0,4,sales,Semi-Detached House,D21,589403
+899,954,Greenbank Park,2011-05-09,4000000.0,988.0,Blk 4,-1,4047.0,4,sales,Semi-Detached House,D21,589365
+900,954,Greenbank Park,2011-03-18,4500000.0,1111.0,Blk 22,-1,4047.0,4,sales,Semi-Detached House,D21,589383
+901,954,Greenbank Park,2010-02-09,3300000.0,815.0,Blk 20,-1,4047.0,4,sales,Semi-Detached House,D21,589381
+902,954,Greenbank Park,2010-01-11,3650000.0,902.0,Blk 10,-1,4047.0,4,sales,Semi-Detached House,D21,589371
+903,954,Greenbank Park,2008-06-18,2835000.0,712.0,Blk 31,-1,3983.0,4,sales,Semi-Detached House,D21,589392
+904,954,Greenbank Park,2008-02-24,3180000.0,801.0,Blk 15,-1,3961.0,4,sales,Semi-Detached House,D21,589376
+905,954,Greenbank Park,2007-10-29,3800000.0,957.0,Blk 17,-1,3972.0,4,sales,Semi-Detached House,D21,589378
+906,954,Greenbank Park,2007-09-10,3800000.0,939.0,Blk 26,-1,4047.0,4,sales,Semi-Detached House,D21,589387
+907,954,Greenbank Park,2007-04-26,2750000.0,679.0,Blk 26,-1,4047.0,4,sales,Semi-Detached House,D21,589387
+908,954,Greenbank Park,2007-04-18,2770000.0,913.0,Blk 1,-1,3035.0,4,sales,Semi-Detached House,D21,589362
+1812,960,The Parc Condominium,2026-02-19,1250000.0,1873.0,Blk 7,08,667.0,1,sales,Condominium,D05,127159
+1813,960,The Parc Condominium,2025-02-21,1180000.0,1768.0,Blk 7,06,667.0,1,sales,Condominium,D05,127159
+1814,960,The Parc Condominium,2025-01-27,1030000.0,1543.0,Blk 7,12,667.0,1,sales,Condominium,D05,127159
+1815,960,The Parc Condominium,2024-02-26,1080000.0,1618.0,Blk 7,03,667.0,1,sales,Condominium,D05,127159
+1816,960,The Parc Condominium,2023-06-12,1103000.0,1653.0,Blk 7,18,667.0,1,sales,Condominium,D05,127159
+1817,960,The Parc Condominium,2021-10-04,992000.0,1486.0,Blk 7,20,667.0,1,sales,Condominium,D05,127159
+1818,960,The Parc Condominium,2020-06-16,910000.0,1364.0,Blk 7,08,667.0,1,sales,Condominium,D05,127159
+1819,960,The Parc Condominium,2020-05-28,886000.0,1328.0,Blk 7,08,667.0,1,sales,Condominium,D05,127159
+1820,960,The Parc Condominium,2019-09-19,918000.0,1376.0,Blk 7,02,667.0,1,sales,Condominium,D05,127159
+1821,960,The Parc Condominium,2018-08-27,912000.0,1367.0,Blk 7,14,667.0,1,sales,Condominium,D05,127159
+1822,960,The Parc Condominium,2017-08-24,860000.0,1289.0,Blk 7,02,667.0,1,sales,Condominium,D05,127159
+1823,960,The Parc Condominium,2015-02-23,898000.0,1346.0,Blk 7,05,667.0,1,sales,Condominium,D05,127159
+1824,960,The Parc Condominium,2013-04-09,950000.0,1424.0,Blk 7,02,667.0,1,sales,Condominium,D05,127159
+1825,960,The Parc Condominium,2013-01-22,920000.0,1379.0,Blk 7,12,667.0,1,sales,Condominium,D05,127159
+1826,960,The Parc Condominium,2012-06-18,880000.0,1319.0,Blk 7,11,667.0,1,sales,Condominium,D05,127159
+1827,960,The Parc Condominium,2012-03-16,880000.0,1319.0,Blk 7,13,667.0,1,sales,Condominium,D05,127159
+1828,960,The Parc Condominium,2012-01-20,828000.0,1241.0,Blk 7,19,667.0,1,sales,Condominium,D05,127159
+1829,960,The Parc Condominium,2011-05-23,928000.0,1026.0,Blk 7,01,904.0,1,sales,Condominium,D05,127159
+1830,960,The Parc Condominium,2010-12-03,797000.0,1194.0,Blk 7,14,667.0,1,sales,Condominium,D05,127159
+1831,960,The Parc Condominium,2010-09-29,800000.0,1199.0,Blk 7,15,667.0,1,sales,Condominium,D05,127159
+1832,960,The Parc Condominium,2010-09-02,830000.0,1244.0,Blk 7,18,667.0,1,sales,Condominium,D05,127159
+1833,960,The Parc Condominium,2010-04-20,770000.0,1154.0,Blk 7,06,667.0,1,sales,Condominium,D05,127159
+1834,960,The Parc Condominium,2010-04-16,800400.0,1199.0,Blk 7,24,667.0,1,sales,Condominium,D05,127159
+1835,960,The Parc Condominium,2010-04-15,750000.0,829.0,Blk 7,01,904.0,1,sales,Condominium,D05,127159
+1836,960,The Parc Condominium,2010-03-26,678000.0,1016.0,Blk 7,04,667.0,1,sales,Condominium,D05,127159
+450,1083,Warner Court,2009-05-15,2700000.0,581.0,Blk 110,06,4650.0,0,sales,Apartment,D10,278966
+1732,1272,Floridian,2026-07-30,2035000.0,2424.0,Blk 965,04,840.0,2,sales,Condominium,D21,589662
+1733,1272,Floridian,2025-11-25,2420000.0,2498.0,Blk 965,10,969.0,2,sales,Condominium,D21,589662
+1734,1272,Floridian,2025-10-17,2143000.0,2458.0,Blk 965,09,872.0,2,sales,Condominium,D21,589662
+1736,1272,Floridian,2025-07-14,2380000.0,2541.0,Blk 977,10,936.0,2,sales,Condominium,D21,589626
+1735,1272,Floridian,2025-07-14,2242800.0,2423.0,Blk 977,05,926.0,2,sales,Condominium,D21,589626
+1737,1272,Floridian,2025-04-30,2300000.0,2401.0,Blk 977,10,958.0,2,sales,Condominium,D21,589626
+1738,1272,Floridian,2024-03-22,2080000.0,2221.0,Blk 965,02,936.0,2,sales,Condominium,D21,589662
+1739,1272,Floridian,2024-03-07,2180000.0,2328.0,Blk 975,10,936.0,2,sales,Condominium,D21,589649
+1740,1272,Floridian,2023-06-21,2060000.0,2252.0,Blk 965,04,915.0,2,sales,Condominium,D21,589662
+1741,1272,Floridian,2023-03-22,2050000.0,2189.0,Blk 973,06,936.0,2,sales,Condominium,D21,589648
+1742,1272,Floridian,2022-10-04,2100000.0,2192.0,Blk 975,09,958.0,2,sales,Condominium,D21,589649
+1743,1272,Floridian,2022-07-29,2100000.0,2168.0,Blk 965,10,969.0,2,sales,Condominium,D21,589662
+1744,1272,Floridian,2022-06-24,1750000.0,2084.0,Blk 965,05,840.0,2,sales,Condominium,D21,589662
+1745,1272,Floridian,2022-04-06,2010000.0,2098.0,Blk 973,09,958.0,2,sales,Condominium,D21,589648
+1746,1272,Floridian,2021-11-17,2030000.0,2095.0,Blk 975,09,969.0,2,sales,Condominium,D21,589649
+1747,1272,Floridian,2021-08-12,1680000.0,1927.0,Blk 965,03,872.0,2,sales,Condominium,D21,589662
+1748,1272,Floridian,2021-04-21,1780000.0,1901.0,Blk 965,06,936.0,2,sales,Condominium,D21,589662
+1749,1272,Floridian,2021-02-15,1758000.0,1877.0,Blk 977,10,936.0,2,sales,Condominium,D21,589626
+1750,1272,Floridian,2021-02-01,1760000.0,1837.0,Blk 975,10,958.0,2,sales,Condominium,D21,589649
+1751,1272,Floridian,2020-11-13,1695000.0,1810.0,Blk 975,10,936.0,2,sales,Condominium,D21,589649
+1752,1272,Floridian,2020-11-12,1680000.0,1754.0,Blk 977,04,958.0,2,sales,Condominium,D21,589626
+1753,1272,Floridian,2020-11-05,1605000.0,1796.0,Blk 965,06,893.0,2,sales,Condominium,D21,589662
+1754,1272,Floridian,2020-10-20,1720000.0,1775.0,Blk 965,03,969.0,2,sales,Condominium,D21,589662
+1755,1272,Floridian,2020-09-17,1680000.0,1754.0,Blk 977,04,958.0,2,sales,Condominium,D21,589626
+1756,1272,Floridian,2020-08-12,1720000.0,1837.0,Blk 973,03,936.0,2,sales,Condominium,D21,589648
+820,1365,The Trizon,2025-10-14,2230000.0,2204.0,Blk 8,08,1012.0,2,sales,Condominium,D10,276698
+821,1365,The Trizon,2025-10-01,2928000.0,2176.0,Blk 2,15,1345.0,2,sales,Condominium,D10,276693
+822,1365,The Trizon,2025-06-23,2610000.0,2184.0,Blk 8,13,1195.0,2,sales,Condominium,D10,276698
+823,1365,The Trizon,2025-02-28,2330000.0,2232.0,Blk 8,20,1044.0,2,sales,Condominium,D10,276698
+824,1365,The Trizon,2024-06-12,2220000.0,2194.0,Blk 8,04,1012.0,2,sales,Condominium,D10,276698
+825,1365,The Trizon,2024-05-03,2198000.0,2172.0,Blk 8,21,1012.0,2,sales,Condominium,D10,276698
+826,1365,The Trizon,2024-02-28,2270000.0,2174.0,Blk 8,17,1044.0,2,sales,Condominium,D10,276698
+827,1365,The Trizon,2023-11-03,2230000.0,2136.0,Blk 8,05,1044.0,2,sales,Condominium,D10,276698
+828,1365,The Trizon,2023-08-07,2100888.0,2076.0,Blk 8,13,1012.0,2,sales,Condominium,D10,276698
+829,1365,The Trizon,2023-07-20,2280000.0,2253.0,Blk 8,16,1012.0,2,sales,Condominium,D10,276698
+830,1365,The Trizon,2023-04-26,2500000.0,2092.0,Blk 8,20,1195.0,2,sales,Condominium,D10,276698
+831,1365,The Trizon,2023-04-10,2180000.0,2088.0,Blk 8,15,1044.0,2,sales,Condominium,D10,276698
+832,1365,The Trizon,2022-08-22,2728000.0,2044.0,Blk 8,02,1335.0,2,sales,Condominium,D10,276698
+833,1365,The Trizon,2022-08-05,2000000.0,1916.0,Blk 8,08,1044.0,2,sales,Condominium,D10,276698
+834,1365,The Trizon,2021-11-26,2600000.0,1932.0,Blk 2,19,1345.0,2,sales,Condominium,D10,276693
+835,1365,The Trizon,2021-11-22,1820000.0,1799.0,Blk 8,04,1012.0,2,sales,Condominium,D10,276698
+836,1365,The Trizon,2021-10-29,1830000.0,1809.0,Blk 8,08,1012.0,2,sales,Condominium,D10,276698
+837,1365,The Trizon,2021-10-04,1920000.0,1839.0,Blk 8,16,1044.0,2,sales,Condominium,D10,276698
+838,1365,The Trizon,2021-08-17,1838000.0,1817.0,Blk 8,10,1012.0,2,sales,Condominium,D10,276698
+839,1365,The Trizon,2021-05-19,1850000.0,1828.0,Blk 8,08,1012.0,2,sales,Condominium,D10,276698
+840,1365,The Trizon,2021-05-10,2068000.0,1731.0,Blk 8,11,1195.0,2,sales,Condominium,D10,276698
+841,1365,The Trizon,2021-04-28,2050000.0,1716.0,Blk 8,13,1195.0,2,sales,Condominium,D10,276698
+842,1365,The Trizon,2021-04-27,1850000.0,1772.0,Blk 8,10,1044.0,2,sales,Condominium,D10,276698
+843,1365,The Trizon,2021-03-25,1846000.0,1768.0,Blk 8,19,1044.0,2,sales,Condominium,D10,276698
+844,1365,The Trizon,2021-03-18,1780000.0,1705.0,Blk 8,07,1044.0,2,sales,Condominium,D10,276698
+428,1382,Sui Generis,2026-08-17,4150000.0,2641.0,Blk 19,09,1572.0,3,sales,Condominium,D10,259916
+429,1382,Sui Generis,2026-01-20,4150009.0,2641.0,Blk 19,10,1572.0,3,sales,Condominium,D10,259916
+430,1382,Sui Generis,2025-05-02,3900000.0,2223.0,Blk 21,05,1755.0,3,sales,Condominium,D10,259918
+431,1382,Sui Generis,2024-10-25,3918000.0,2233.0,Blk 21,04,1755.0,3,sales,Condominium,D10,259918
+432,1382,Sui Generis,2023-08-28,3600000.0,2291.0,Blk 19,08,1572.0,3,sales,Condominium,D10,259916
+433,1382,Sui Generis,2023-03-07,3630000.0,2310.0,Blk 19,02,1572.0,3,sales,Condominium,D10,259916
+434,1382,Sui Generis,2019-04-29,3250000.0,1852.0,Blk 21,02,1755.0,3,sales,Condominium,D10,259918
+435,1382,Sui Generis,2018-05-08,3412812.0,2172.0,Blk 19,04,1572.0,3,sales,Condominium,D10,259916
+436,1382,Sui Generis,2017-11-13,3000000.0,1909.0,Blk 19,07,1572.0,3,sales,Condominium,D10,259916
+437,1382,Sui Generis,2013-04-29,3020000.0,1922.0,Blk 19,02,1572.0,3,sales,Condominium,D10,259916
+438,1382,Sui Generis,2008-04-21,4767842.0,2717.0,Blk 21,05,1755.0,3,sales,Condominium,D10,259918
+439,1382,Sui Generis,2007-12-26,3458400.0,2201.0,Blk 19,02,1572.0,3,sales,Condominium,D10,259916
+440,1382,Sui Generis,2007-12-14,3728790.0,1991.0,Blk 19,01,1873.0,3,sales,Condominium,D10,259916
+441,1382,Sui Generis,2007-11-27,4522433.0,2578.0,Blk 21,02,1755.0,3,sales,Condominium,D10,259918
+442,1382,Sui Generis,2007-11-12,3781236.0,2406.0,Blk 19,08,1572.0,3,sales,Condominium,D10,259916
+443,1382,Sui Generis,2007-11-09,3611236.0,2298.0,Blk 19,05,1572.0,3,sales,Condominium,D10,259916
+444,1382,Sui Generis,2007-10-24,3496807.0,2225.0,Blk 19,07,1572.0,3,sales,Condominium,D10,259916
+445,1382,Sui Generis,2007-10-19,3411617.0,2171.0,Blk 19,04,1572.0,3,sales,Condominium,D10,259916
+446,1382,Sui Generis,2007-10-11,4087945.0,2330.0,Blk 21,03,1755.0,3,sales,Condominium,D10,259918
+448,1382,Sui Generis,2007-10-10,4641024.0,2645.0,Blk 21,06,1755.0,3,sales,Condominium,D10,259918
+447,1382,Sui Generis,2007-10-10,3461503.0,2203.0,Blk 19,03,1572.0,3,sales,Condominium,D10,259916
+449,1382,Sui Generis,2007-10-05,4179390.0,2382.0,Blk 21,04,1755.0,3,sales,Condominium,D10,259918
+326,1535,The Mercury,2025-08-15,1370000.0,2157.0,Blk 38,09,635.0,1,sales,Apartment,D10,248201
+327,1535,The Mercury,2025-05-27,2380000.0,2279.0,Blk 38,07,1044.0,1,sales,Apartment,D10,248201
+328,1535,The Mercury,2024-05-08,1295000.0,2039.0,Blk 38,06,635.0,1,sales,Apartment,D10,248201
+329,1535,The Mercury,2024-03-22,1320000.0,2078.0,Blk 38,13,635.0,1,sales,Apartment,D10,248201
+330,1535,The Mercury,2023-08-25,1300000.0,2047.0,Blk 38,03,635.0,1,sales,Apartment,D10,248201
+331,1535,The Mercury,2023-06-15,2188888.0,2096.0,Blk 38,15,1044.0,1,sales,Apartment,D10,248201
+332,1535,The Mercury,2022-07-12,1270000.0,2000.0,Blk 38,04,635.0,1,sales,Apartment,D10,248201
+333,1535,The Mercury,2022-06-02,1980000.0,1896.0,Blk 38,08,1044.0,1,sales,Apartment,D10,248201
+334,1535,The Mercury,2022-03-10,1285000.0,2023.0,Blk 38,12,635.0,1,sales,Apartment,D10,248201
+335,1535,The Mercury,2022-02-18,1340000.0,2110.0,Blk 38,16,635.0,1,sales,Apartment,D10,248201
+336,1535,The Mercury,2021-10-08,2042000.0,1956.0,Blk 38,12,1044.0,1,sales,Apartment,D10,248201
+337,1535,The Mercury,2021-05-11,1280000.0,2016.0,Blk 38,16,635.0,1,sales,Apartment,D10,248201
+338,1535,The Mercury,2021-01-04,1270000.0,2000.0,Blk 38,10,635.0,1,sales,Apartment,D10,248201
+339,1535,The Mercury,2020-12-23,1900000.0,1820.0,Blk 38,11,1044.0,1,sales,Apartment,D10,248201
+340,1535,The Mercury,2020-11-10,1273000.0,2004.0,Blk 38,09,635.0,1,sales,Apartment,D10,248201
+341,1535,The Mercury,2020-09-10,1835000.0,1757.0,Blk 38,05,1044.0,1,sales,Apartment,D10,248201
+342,1535,The Mercury,2020-07-01,1830000.0,1753.0,Blk 38,07,1044.0,1,sales,Apartment,D10,248201
+343,1535,The Mercury,2019-05-03,1838000.0,1760.0,Blk 38,03,1044.0,1,sales,Apartment,D10,248201
+344,1535,The Mercury,2019-04-29,1850000.0,1772.0,Blk 38,04,1044.0,1,sales,Apartment,D10,248201
+345,1535,The Mercury,2018-06-29,1850000.0,1772.0,Blk 38,16,1044.0,1,sales,Apartment,D10,248201
+346,1535,The Mercury,2017-12-26,1100000.0,1732.0,Blk 38,09,635.0,1,sales,Apartment,D10,248201
+347,1535,The Mercury,2017-09-08,1080000.0,1701.0,Blk 38,06,635.0,1,sales,Apartment,D10,248201
+348,1535,The Mercury,2017-05-11,1088000.0,1713.0,Blk 38,16,635.0,1,sales,Apartment,D10,248201
+349,1535,The Mercury,2016-12-20,980000.0,1543.0,Blk 38,14,635.0,1,sales,Apartment,D10,248201
+350,1535,The Mercury,2016-03-30,1086000.0,1710.0,Blk 38,12,635.0,1,sales,Apartment,D10,248201
+1706,1555,White House Residence,2014-06-18,8500000.0,2364.0,Blk 67,01,3595.0,5,sales,Condominium,D10,257855
+1889,1570,Grange 70,2004-06-21,1700000.0,858.0,Blk 70,10,1981.0,4,sales,Apartment,D10,249574
+1890,1570,Grange 70,2000-01-01,3466750.0,1750.0,Blk 70,10,1981.0,4,sales,Apartment,D10,249574
+1445,1581,Madison Residences,2026-01-08,3860000.0,2637.0,Blk 355,06,1464.0,3,sales,Condominium,D10,259724
+1446,1581,Madison Residences,2025-03-03,3800000.0,2596.0,Blk 355,04,1464.0,3,sales,Condominium,D10,259724
+1447,1581,Madison Residences,2022-12-19,3398000.0,2321.0,Blk 355,06,1464.0,3,sales,Condominium,D10,259724
+1448,1581,Madison Residences,2022-11-14,3384000.0,2312.0,Blk 355,05,1464.0,3,sales,Condominium,D10,259724
+1449,1581,Madison Residences,2018-07-17,3000000.0,2049.0,Blk 355,03,1464.0,3,sales,Condominium,D10,259724
+1450,1581,Madison Residences,2018-02-22,3000000.0,2049.0,Blk 355,10,1464.0,3,sales,Condominium,D10,259724
+1451,1581,Madison Residences,2018-02-14,3000000.0,2049.0,Blk 355,08,1464.0,3,sales,Condominium,D10,259724
+1452,1581,Madison Residences,2018-02-14,3050000.0,2083.0,Blk 355,12,1464.0,3,sales,Condominium,D10,259724
+1453,1581,Madison Residences,2017-11-08,2800000.0,1913.0,Blk 355,13,1464.0,3,sales,Condominium,D10,259724
+1454,1581,Madison Residences,2017-10-10,2960000.0,2022.0,Blk 355,11,1464.0,3,sales,Condominium,D10,259724
+1455,1581,Madison Residences,2017-08-16,2850000.0,1947.0,Blk 355,12,1464.0,3,sales,Condominium,D10,259724
+1456,1581,Madison Residences,2017-05-03,2860000.0,1954.0,Blk 355,05,1464.0,3,sales,Condominium,D10,259724
+1457,1581,Madison Residences,2012-11-30,2850000.0,1947.0,Blk 355,06,1464.0,3,sales,Condominium,D10,259724
+1458,1581,Madison Residences,2012-09-28,2720000.0,1858.0,Blk 355,05,1464.0,3,sales,Condominium,D10,259724
+1459,1581,Madison Residences,2011-07-20,2781600.0,1900.0,Blk 355,05,1464.0,3,sales,Condominium,D10,259724
+1460,1581,Madison Residences,2009-12-01,2535000.0,1732.0,Blk 355,03,1464.0,3,sales,Condominium,D10,259724
+1461,1581,Madison Residences,2009-11-23,2543000.0,1737.0,Blk 355,04,1464.0,3,sales,Condominium,D10,259724
+1464,1581,Madison Residences,2009-11-09,2483700.0,1697.0,Blk 355,09,1464.0,3,sales,Condominium,D10,259724
+1462,1581,Madison Residences,2009-11-09,2473000.0,1689.0,Blk 355,13,1464.0,3,sales,Condominium,D10,259724
+1463,1581,Madison Residences,2009-11-09,2445000.0,1670.0,Blk 355,10,1464.0,3,sales,Condominium,D10,259724
+1465,1581,Madison Residences,2009-11-05,2400000.0,1639.0,Blk 355,07,1464.0,3,sales,Condominium,D10,259724
+1466,1581,Madison Residences,2009-10-29,2520000.0,1721.0,Blk 355,13,1464.0,3,sales,Condominium,D10,259724
+1467,1581,Madison Residences,2009-10-27,2430000.0,1660.0,Blk 355,12,1464.0,3,sales,Condominium,D10,259724
+1468,1581,Madison Residences,2009-10-23,2508000.0,1713.0,Blk 355,08,1464.0,3,sales,Condominium,D10,259724
+1469,1581,Madison Residences,2009-10-21,2526000.0,1726.0,Blk 355,14,1464.0,3,sales,Condominium,D10,259724
+1808,2532,Tiong Bahru Estate,2024-12-23,2400000.0,2123.0,Blk 1A,-1,1130.0,0,sales,Apartment,D03,168641
+1809,2532,Tiong Bahru Estate,2020-10-09,1500000.0,1498.0,Blk 9B,-1,1001.0,0,sales,Apartment,D03,168645
+1810,2532,Tiong Bahru Estate,2018-03-09,1830000.0,1619.0,Blk 1A,-1,1130.0,0,sales,Apartment,D03,168641
+1811,2532,Tiong Bahru Estate,2012-07-31,1450000.0,1448.0,Blk 9B,-1,1001.0,0,sales,Apartment,D03,168645
+934,5292,131 Clarence Lane,2026-05-01,1260000.0,968.0,Blk 131,10,1302.0,3,sales,,D03,140131
+935,5292,131 Clarence Lane,2025-01-01,1148000.0,854.0,Blk 131,7,1345.0,3,sales,,D03,140131
+936,5292,131 Clarence Lane,2022-02-01,990000.0,687.0,Blk 131,10,1442.0,3,sales,,D03,140131
+937,5292,131 Clarence Lane,2022-02-01,975000.0,743.0,Blk 131,4,1313.0,3,sales,,D03,140131
+938,5292,131 Clarence Lane,2022-01-01,940000.0,699.0,Blk 131,1,1345.0,3,sales,,D03,140131
+939,5292,131 Clarence Lane,2021-02-01,955000.0,728.0,Blk 131,10,1313.0,3,sales,,D03,140131
+940,5292,131 Clarence Lane,2019-06-01,950000.0,664.0,Blk 131,7,1432.0,3,sales,,D03,140131
+941,5292,131 Clarence Lane,2017-12-01,860000.0,656.0,Blk 131,7,1313.0,3,sales,,D03,140131
+942,5292,131 Clarence Lane,2014-07-01,860000.0,656.0,Blk 131,1,1313.0,3,sales,,D03,140131
+943,5292,131 Clarence Lane,2013-01-01,818000.0,623.0,Blk 131,4,1313.0,3,sales,,D03,140131
+944,5292,131 Clarence Lane,2012-12-01,805000.0,599.0,Blk 131,1,1345.0,3,sales,,D03,140131
+945,5292,131 Clarence Lane,2012-04-01,820000.0,630.0,Blk 131,1,1302.0,3,sales,,D03,140131
+946,5292,131 Clarence Lane,2011-10-01,800000.0,615.0,Blk 131,13,1302.0,3,sales,,D03,140131
+947,5292,131 Clarence Lane,2010-04-01,770000.0,534.0,Blk 131,10,1442.0,3,sales,,D03,140131
+948,5292,131 Clarence Lane,2009-10-01,625000.0,465.0,Blk 131,1,1345.0,3,sales,,D03,140131
+949,5292,131 Clarence Lane,2008-11-01,690000.0,482.0,Blk 131,7,1432.0,3,sales,,D03,140131
+950,5292,131 Clarence Lane,2008-09-01,630000.0,469.0,Blk 131,1,1345.0,3,sales,,D03,140131
+951,5292,131 Clarence Lane,2008-02-01,650000.0,454.0,Blk 131,7,1432.0,3,sales,,D03,140131
+952,5292,131 Clarence Lane,2007-11-01,645000.0,496.0,Blk 131,13,1302.0,3,sales,,D03,140131
+953,5292,131 Clarence Lane,2007-10-01,650000.0,500.0,Blk 131,16,1302.0,3,sales,,D03,140131
+954,5292,131 Clarence Lane,2007-07-01,560000.0,430.0,Blk 131,10,1302.0,3,sales,,D03,140131
+955,5292,131 Clarence Lane,2007-07-01,500000.0,381.0,Blk 131,7,1313.0,3,sales,,D03,140131
+956,5292,131 Clarence Lane,2007-07-01,450000.0,343.0,Blk 131,1,1313.0,3,sales,,D03,140131
+957,5292,131 Clarence Lane,2007-03-01,530000.0,407.0,Blk 131,7,1302.0,3,sales,,D03,140131
+958,5292,131 Clarence Lane,2007-01-01,446000.0,332.0,Blk 131,1,1345.0,3,sales,,D03,140131
+1607,5314,337 Clementi Avenue 2,2025-05-01,910000.0,711.0,Blk 337,22,1281.0,3,sales,,D05,120337
+1608,5314,337 Clementi Avenue 2,2025-04-01,835000.0,652.0,Blk 337,19,1281.0,3,sales,,D05,120337
+1609,5314,337 Clementi Avenue 2,2024-01-01,850000.0,664.0,Blk 337,19,1281.0,3,sales,,D05,120337
+1611,5314,337 Clementi Avenue 2,2023-06-01,780000.0,610.0,Blk 337,16,1281.0,3,sales,,D05,120337
+1610,5314,337 Clementi Avenue 2,2023-06-01,770000.0,602.0,Blk 337,16,1281.0,3,sales,,D05,120337
+1612,5314,337 Clementi Avenue 2,2023-03-01,780000.0,610.0,Blk 337,13,1281.0,3,sales,,D05,120337
+1613,5314,337 Clementi Avenue 2,2023-02-01,650000.0,508.0,Blk 337,1,1281.0,3,sales,,D05,120337
+1614,5314,337 Clementi Avenue 2,2022-12-01,740000.0,578.0,Blk 337,10,1281.0,3,sales,,D05,120337
+1616,5314,337 Clementi Avenue 2,2021-08-01,645000.0,504.0,Blk 337,10,1281.0,3,sales,,D05,120337
+1615,5314,337 Clementi Avenue 2,2021-08-01,625000.0,488.0,Blk 337,4,1281.0,3,sales,,D05,120337
+1617,5314,337 Clementi Avenue 2,2021-05-01,550000.0,430.0,Blk 337,1,1281.0,3,sales,,D05,120337
+1618,5314,337 Clementi Avenue 2,2021-03-01,700000.0,547.0,Blk 337,22,1281.0,3,sales,,D05,120337
+1619,5314,337 Clementi Avenue 2,2020-11-01,690000.0,539.0,Blk 337,25,1281.0,3,sales,,D05,120337
+1620,5314,337 Clementi Avenue 2,2020-08-01,625000.0,488.0,Blk 337,10,1281.0,3,sales,,D05,120337
+1621,5314,337 Clementi Avenue 2,2020-03-01,660000.0,516.0,Blk 337,25,1281.0,3,sales,,D05,120337
+1622,5314,337 Clementi Avenue 2,2020-02-01,650000.0,508.0,Blk 337,7,1281.0,3,sales,,D05,120337
+1623,5314,337 Clementi Avenue 2,2019-08-01,728888.0,570.0,Blk 337,22,1281.0,3,sales,,D05,120337
+1624,5314,337 Clementi Avenue 2,2019-06-01,540000.0,422.0,Blk 337,1,1281.0,3,sales,,D05,120337
+1625,5314,337 Clementi Avenue 2,2019-05-01,650000.0,508.0,Blk 337,7,1281.0,3,sales,,D05,120337
+1626,5314,337 Clementi Avenue 2,2018-09-01,590000.0,461.0,Blk 337,4,1281.0,3,sales,,D05,120337
+1627,5314,337 Clementi Avenue 2,2018-08-01,650000.0,508.0,Blk 337,10,1281.0,3,sales,,D05,120337
+1628,5314,337 Clementi Avenue 2,2017-04-01,755000.0,590.0,Blk 337,25,1281.0,3,sales,,D05,120337
+1629,5314,337 Clementi Avenue 2,2017-03-01,718000.0,561.0,Blk 337,16,1281.0,3,sales,,D05,120337
+1630,5314,337 Clementi Avenue 2,2016-10-01,705000.0,551.0,Blk 337,4,1281.0,3,sales,,D05,120337
+1631,5314,337 Clementi Avenue 2,2016-08-01,748000.0,585.0,Blk 337,22,1281.0,3,sales,,D05,120337
+1526,5397,374 Clementi Avenue 4,2026-08-01,452000.0,618.0,Blk 374,7,732.0,2,sales,,D05,120374
+1527,5397,374 Clementi Avenue 4,2026-07-01,455000.0,622.0,Blk 374,10,732.0,2,sales,,D05,120374
+1528,5397,374 Clementi Avenue 4,2026-06-01,403000.0,551.0,Blk 374,1,732.0,2,sales,,D05,120374
+1529,5397,374 Clementi Avenue 4,2026-02-01,468888.0,641.0,Blk 374,10,732.0,2,sales,,D05,120374
+1530,5397,374 Clementi Avenue 4,2026-02-01,410000.0,561.0,Blk 374,1,732.0,2,sales,,D05,120374
+1531,5397,374 Clementi Avenue 4,2025-11-01,460000.0,629.0,Blk 374,4,732.0,2,sales,,D05,120374
+1532,5397,374 Clementi Avenue 4,2025-09-01,480000.0,656.0,Blk 374,7,732.0,2,sales,,D05,120374
+1533,5397,374 Clementi Avenue 4,2025-08-01,450000.0,615.0,Blk 374,7,732.0,2,sales,,D05,120374
+1534,5397,374 Clementi Avenue 4,2025-06-01,442888.0,606.0,Blk 374,4,732.0,2,sales,,D05,120374
+1535,5397,374 Clementi Avenue 4,2025-05-01,460000.0,629.0,Blk 374,4,732.0,2,sales,,D05,120374
+1537,5397,374 Clementi Avenue 4,2025-03-01,402000.0,550.0,Blk 374,1,732.0,2,sales,,D05,120374
+1536,5397,374 Clementi Avenue 4,2025-03-01,430000.0,588.0,Blk 374,4,732.0,2,sales,,D05,120374
+1538,5397,374 Clementi Avenue 4,2025-02-01,456888.0,625.0,Blk 374,10,732.0,2,sales,,D05,120374
+1540,5397,374 Clementi Avenue 4,2024-03-01,377000.0,516.0,Blk 374,7,732.0,2,sales,,D05,120374
+1539,5397,374 Clementi Avenue 4,2024-03-01,383000.0,524.0,Blk 374,4,732.0,2,sales,,D05,120374
+1541,5397,374 Clementi Avenue 4,2023-12-01,370000.0,506.0,Blk 374,4,732.0,2,sales,,D05,120374
+1542,5397,374 Clementi Avenue 4,2023-01-01,455000.0,516.0,Blk 374,7,883.0,2,sales,,D05,120374
+1543,5397,374 Clementi Avenue 4,2022-07-01,378000.0,517.0,Blk 374,4,732.0,2,sales,,D05,120374
+1544,5397,374 Clementi Avenue 4,2022-04-01,368000.0,503.0,Blk 374,7,732.0,2,sales,,D05,120374
+1545,5397,374 Clementi Avenue 4,2021-10-01,335000.0,458.0,Blk 374,7,732.0,2,sales,,D05,120374
+1546,5397,374 Clementi Avenue 4,2021-07-01,418000.0,474.0,Blk 374,10,883.0,2,sales,,D05,120374
+1547,5397,374 Clementi Avenue 4,2021-03-01,330000.0,451.0,Blk 374,10,732.0,2,sales,,D05,120374
+1548,5397,374 Clementi Avenue 4,2020-11-01,310000.0,424.0,Blk 374,1,732.0,2,sales,,D05,120374
+1550,5397,374 Clementi Avenue 4,2020-10-01,325000.0,444.0,Blk 374,7,732.0,2,sales,,D05,120374
+1549,5397,374 Clementi Avenue 4,2020-10-01,321000.0,439.0,Blk 374,4,732.0,2,sales,,D05,120374
+1707,5414,347 Clementi Avenue 5,2026-02-01,556000.0,562.0,Blk 347,7,990.0,3,sales,,D05,120347
+1708,5414,347 Clementi Avenue 5,2025-12-01,540000.0,546.0,Blk 347,4,990.0,3,sales,,D05,120347
+1709,5414,347 Clementi Avenue 5,2025-10-01,595000.0,601.0,Blk 347,7,990.0,3,sales,,D05,120347
+1710,5414,347 Clementi Avenue 5,2025-08-01,600000.0,606.0,Blk 347,10,990.0,3,sales,,D05,120347
+1711,5414,347 Clementi Avenue 5,2025-04-01,598000.0,604.0,Blk 347,1,990.0,3,sales,,D05,120347
+1712,5414,347 Clementi Avenue 5,2024-07-01,588000.0,594.0,Blk 347,10,990.0,3,sales,,D05,120347
+1713,5414,347 Clementi Avenue 5,2024-06-01,529888.0,536.0,Blk 347,4,990.0,3,sales,,D05,120347
+1714,5414,347 Clementi Avenue 5,2024-03-01,512000.0,518.0,Blk 347,1,990.0,3,sales,,D05,120347
+1715,5414,347 Clementi Avenue 5,2024-03-01,540000.0,546.0,Blk 347,7,990.0,3,sales,,D05,120347
+1716,5414,347 Clementi Avenue 5,2023-11-01,555000.0,561.0,Blk 347,7,990.0,3,sales,,D05,120347
+1718,5414,347 Clementi Avenue 5,2023-05-01,538000.0,544.0,Blk 347,7,990.0,3,sales,,D05,120347
+1717,5414,347 Clementi Avenue 5,2023-05-01,525000.0,531.0,Blk 347,7,990.0,3,sales,,D05,120347
+1719,5414,347 Clementi Avenue 5,2023-03-01,520000.0,526.0,Blk 347,4,990.0,3,sales,,D05,120347
+1720,5414,347 Clementi Avenue 5,2023-01-01,500000.0,505.0,Blk 347,7,990.0,3,sales,,D05,120347
+1721,5414,347 Clementi Avenue 5,2022-11-01,525000.0,531.0,Blk 347,7,990.0,3,sales,,D05,120347
+1722,5414,347 Clementi Avenue 5,2022-03-01,520000.0,526.0,Blk 347,7,990.0,3,sales,,D05,120347
+1723,5414,347 Clementi Avenue 5,2020-12-01,480000.0,485.0,Blk 347,10,990.0,3,sales,,D05,120347
+1724,5414,347 Clementi Avenue 5,2019-05-01,448000.0,453.0,Blk 347,4,990.0,3,sales,,D05,120347
+1725,5414,347 Clementi Avenue 5,2018-04-01,505000.0,510.0,Blk 347,4,990.0,3,sales,,D05,120347
+1726,5414,347 Clementi Avenue 5,2017-03-01,510000.0,515.0,Blk 347,1,990.0,3,sales,,D05,120347
+1727,5414,347 Clementi Avenue 5,2016-12-01,460000.0,465.0,Blk 347,7,990.0,3,sales,,D05,120347
+1728,5414,347 Clementi Avenue 5,2015-04-01,520000.0,526.0,Blk 347,7,990.0,3,sales,,D05,120347
+1729,5414,347 Clementi Avenue 5,2014-08-01,520000.0,526.0,Blk 347,10,990.0,3,sales,,D05,120347
+1730,5414,347 Clementi Avenue 5,2014-02-01,530000.0,536.0,Blk 347,7,990.0,3,sales,,D05,120347
+1731,5414,347 Clementi Avenue 5,2013-12-01,515000.0,521.0,Blk 347,1,990.0,3,sales,,D05,120347
+1326,6955,135 Jalan Bukit Merah,2026-03-01,781000.0,679.0,Blk 135,1,1152.0,3,sales,,D03,160135
+1327,6955,135 Jalan Bukit Merah,2025-08-01,1040000.0,806.0,Blk 135,16,1292.0,3,sales,,D03,160135
+1328,6955,135 Jalan Bukit Merah,2024-07-01,740000.0,643.0,Blk 135,10,1152.0,3,sales,,D03,160135
+1329,6955,135 Jalan Bukit Merah,2023-04-01,822888.0,567.0,Blk 135,7,1453.0,3,sales,,D03,160135
+1330,6955,135 Jalan Bukit Merah,2023-02-01,815000.0,561.0,Blk 135,1,1453.0,3,sales,,D03,160135
+1331,6955,135 Jalan Bukit Merah,2022-12-01,673000.0,585.0,Blk 135,10,1152.0,3,sales,,D03,160135
+1332,6955,135 Jalan Bukit Merah,2022-01-01,610000.0,530.0,Blk 135,1,1152.0,3,sales,,D03,160135
+1333,6955,135 Jalan Bukit Merah,2021-09-01,825000.0,581.0,Blk 135,4,1421.0,3,sales,,D03,160135
+1334,6955,135 Jalan Bukit Merah,2020-12-01,715000.0,523.0,Blk 135,7,1367.0,3,sales,,D03,160135
+1335,6955,135 Jalan Bukit Merah,2020-07-01,713000.0,553.0,Blk 135,10,1292.0,3,sales,,D03,160135
+1336,6955,135 Jalan Bukit Merah,2020-07-01,553000.0,481.0,Blk 135,7,1152.0,3,sales,,D03,160135
+1337,6955,135 Jalan Bukit Merah,2020-06-01,615000.0,534.0,Blk 135,7,1152.0,3,sales,,D03,160135
+1338,6955,135 Jalan Bukit Merah,2020-03-01,730000.0,535.0,Blk 135,1,1367.0,3,sales,,D03,160135
+1339,6955,135 Jalan Bukit Merah,2019-12-01,640000.0,496.0,Blk 135,4,1292.0,3,sales,,D03,160135
+1340,6955,135 Jalan Bukit Merah,2018-12-01,788000.0,555.0,Blk 135,10,1421.0,3,sales,,D03,160135
+1341,6955,135 Jalan Bukit Merah,2018-07-01,750000.0,581.0,Blk 135,16,1292.0,3,sales,,D03,160135
+1342,6955,135 Jalan Bukit Merah,2018-01-01,580000.0,504.0,Blk 135,10,1152.0,3,sales,,D03,160135
+1343,6955,135 Jalan Bukit Merah,2017-08-01,618000.0,537.0,Blk 135,16,1152.0,3,sales,,D03,160135
+1344,6955,135 Jalan Bukit Merah,2016-09-01,570000.0,495.0,Blk 135,1,1152.0,3,sales,,D03,160135
+1345,6955,135 Jalan Bukit Merah,2014-09-01,600000.0,521.0,Blk 135,13,1152.0,3,sales,,D03,160135
+1346,6955,135 Jalan Bukit Merah,2014-01-01,755000.0,585.0,Blk 135,10,1292.0,3,sales,,D03,160135
+1347,6955,135 Jalan Bukit Merah,2013-04-01,580000.0,504.0,Blk 135,1,1152.0,3,sales,,D03,160135
+1348,6955,135 Jalan Bukit Merah,2011-07-01,685000.0,531.0,Blk 135,16,1292.0,3,sales,,D03,160135
+1349,6955,135 Jalan Bukit Merah,2011-05-01,600000.0,465.0,Blk 135,7,1292.0,3,sales,,D03,160135
+1350,6955,135 Jalan Bukit Merah,2011-04-01,560000.0,487.0,Blk 135,7,1152.0,3,sales,,D03,160135
+1782,8065,34 Kim Cheng Street,2025-07-01,815000.0,861.0,Blk 34,4,947.0,2,sales,,D03,161034
+1783,8065,34 Kim Cheng Street,2024-10-01,760000.0,803.0,Blk 34,1,947.0,2,sales,,D03,161034
+1784,8065,34 Kim Cheng Street,2024-05-01,738000.0,780.0,Blk 34,1,947.0,2,sales,,D03,161034
+1785,8065,34 Kim Cheng Street,2024-02-01,735000.0,777.0,Blk 34,1,947.0,2,sales,,D03,161034
+1786,8065,34 Kim Cheng Street,2022-10-01,760000.0,803.0,Blk 34,1,947.0,2,sales,,D03,161034
+1787,8065,34 Kim Cheng Street,2022-09-01,742888.0,785.0,Blk 34,1,947.0,2,sales,,D03,161034
+1788,8065,34 Kim Cheng Street,2021-07-01,500000.0,620.0,Blk 34,1,807.0,2,sales,,D03,161034
+1789,8065,34 Kim Cheng Street,2020-12-01,620000.0,655.0,Blk 34,1,947.0,2,sales,,D03,161034
+1790,8065,34 Kim Cheng Street,2020-03-01,715000.0,756.0,Blk 34,4,947.0,2,sales,,D03,161034
+1791,8065,34 Kim Cheng Street,2019-10-01,616000.0,651.0,Blk 34,4,947.0,2,sales,,D03,161034
+1792,8065,34 Kim Cheng Street,2019-06-01,638000.0,674.0,Blk 34,1,947.0,2,sales,,D03,161034
+1793,8065,34 Kim Cheng Street,2017-05-01,668000.0,706.0,Blk 34,1,947.0,2,sales,,D03,161034
+1794,8065,34 Kim Cheng Street,2016-12-01,630000.0,666.0,Blk 34,1,947.0,2,sales,,D03,161034
+1795,8065,34 Kim Cheng Street,2016-11-01,635000.0,671.0,Blk 34,4,947.0,2,sales,,D03,161034
+1796,8065,34 Kim Cheng Street,2012-11-01,650000.0,687.0,Blk 34,1,947.0,2,sales,,D03,161034
+1797,8065,34 Kim Cheng Street,2011-04-01,635000.0,671.0,Blk 34,1,947.0,2,sales,,D03,161034
+1798,8065,34 Kim Cheng Street,2010-11-01,577000.0,610.0,Blk 34,1,947.0,2,sales,,D03,161034
+1799,8065,34 Kim Cheng Street,2010-06-01,510000.0,539.0,Blk 34,4,947.0,2,sales,,D03,161034
+1800,8065,34 Kim Cheng Street,2009-11-01,420000.0,444.0,Blk 34,4,947.0,2,sales,,D03,161034
+1801,8065,34 Kim Cheng Street,2008-08-01,408000.0,431.0,Blk 34,4,947.0,2,sales,,D03,161034
+1802,8065,34 Kim Cheng Street,2007-12-01,340000.0,359.0,Blk 34,1,947.0,2,sales,,D03,161034
+1803,8065,34 Kim Cheng Street,2006-01-01,230000.0,243.0,Blk 34,1,947.0,2,sales,,D03,161034
+1804,8065,34 Kim Cheng Street,2005-04-01,275000.0,291.0,Blk 34,1,947.0,2,sales,,D03,161034
+1805,8065,34 Kim Cheng Street,2004-10-01,267000.0,282.0,Blk 34,4,947.0,2,sales,,D03,161034
+1806,8065,34 Kim Cheng Street,2004-01-01,260000.0,275.0,Blk 34,1,947.0,2,sales,,D03,161034
+1351,10521,14 Taman Ho Swee,2023-12-01,290000.0,550.0,Blk 14,7,527.0,1,sales,,D03,161014
+1352,10521,14 Taman Ho Swee,2019-10-01,238000.0,452.0,Blk 14,7,527.0,1,sales,,D03,161014
+1353,10521,14 Taman Ho Swee,2018-07-01,220000.0,476.0,Blk 14,1,463.0,1,sales,,D03,161014
+1354,10521,14 Taman Ho Swee,2010-12-01,280000.0,531.0,Blk 14,7,527.0,1,sales,,D03,161014
+1355,10521,14 Taman Ho Swee,2009-12-01,198000.0,428.0,Blk 14,4,463.0,1,sales,,D03,161014
+1357,10521,14 Taman Ho Swee,2009-05-01,200000.0,380.0,Blk 14,7,527.0,1,sales,,D03,161014
+1356,10521,14 Taman Ho Swee,2009-05-01,195000.0,370.0,Blk 14,7,527.0,1,sales,,D03,161014
+1358,10521,14 Taman Ho Swee,2003-12-01,118000.0,224.0,Blk 14,7,527.0,1,sales,,D03,161014
+1359,10521,14 Taman Ho Swee,2000-08-01,79000.0,171.0,Blk 14,1,463.0,1,sales,,D03,161014
+1360,10521,14 Taman Ho Swee,1998-03-01,84000.0,182.0,Blk 14,4,463.0,1,sales,,D03,161014
+1361,10521,14 Taman Ho Swee,1996-10-01,98000.0,212.0,Blk 14,4,463.0,1,sales,,D03,161014
+1362,10521,14 Taman Ho Swee,1996-07-01,93000.0,176.0,Blk 14,7,527.0,1,sales,,D03,161014
+1363,10521,14 Taman Ho Swee,1994-09-01,48000.0,91.0,Blk 14,1,527.0,1,sales,,D03,161014
+1364,10521,14 Taman Ho Swee,1994-02-01,27000.0,58.0,Blk 14,1,463.0,1,sales,,D03,161014
+1365,10521,14 Taman Ho Swee,1994-01-01,40000.0,76.0,Blk 14,1,527.0,1,sales,,D03,161014
+1366,10521,14 Taman Ho Swee,1990-07-01,21500.0,41.0,Blk 14,7,527.0,1,sales,,D03,161014
+1367,10521,14 Taman Ho Swee,1990-06-01,18000.0,34.0,Blk 14,4,527.0,1,sales,,D03,161014
+273,11394,12 Telok Blangah Crescent,2026-03-01,405000.0,538.0,Blk 12,10,753.0,2,sales,,D04,090012
+274,11394,12 Telok Blangah Crescent,2026-01-01,410000.0,545.0,Blk 12,4,753.0,2,sales,,D04,090012
+275,11394,12 Telok Blangah Crescent,2025-06-01,438800.0,583.0,Blk 12,16,753.0,2,sales,,D04,090012
+276,11394,12 Telok Blangah Crescent,2025-02-01,370000.0,583.0,Blk 12,10,635.0,2,sales,,D04,090012
+277,11394,12 Telok Blangah Crescent,2024-05-01,398000.0,529.0,Blk 12,13,753.0,2,sales,,D04,090012
+278,11394,12 Telok Blangah Crescent,2024-04-01,328000.0,436.0,Blk 12,7,753.0,2,sales,,D04,090012
+279,11394,12 Telok Blangah Crescent,2024-02-01,362000.0,571.0,Blk 12,7,635.0,2,sales,,D04,090012
+280,11394,12 Telok Blangah Crescent,2024-02-01,330000.0,520.0,Blk 12,7,635.0,2,sales,,D04,090012
+281,11394,12 Telok Blangah Crescent,2024-01-01,398000.0,529.0,Blk 12,13,753.0,2,sales,,D04,090012
+282,11394,12 Telok Blangah Crescent,2023-01-01,322000.0,508.0,Blk 12,7,635.0,2,sales,,D04,090012
+283,11394,12 Telok Blangah Crescent,2022-12-01,325000.0,512.0,Blk 12,7,635.0,2,sales,,D04,090012
+284,11394,12 Telok Blangah Crescent,2022-08-01,345000.0,458.0,Blk 12,10,753.0,2,sales,,D04,090012
+285,11394,12 Telok Blangah Crescent,2022-04-01,310000.0,489.0,Blk 12,1,635.0,2,sales,,D04,090012
+286,11394,12 Telok Blangah Crescent,2021-10-01,368000.0,489.0,Blk 12,13,753.0,2,sales,,D04,090012
+287,11394,12 Telok Blangah Crescent,2021-07-01,278000.0,438.0,Blk 12,1,635.0,2,sales,,D04,090012
+288,11394,12 Telok Blangah Crescent,2021-04-01,257000.0,405.0,Blk 12,1,635.0,2,sales,,D04,090012
+289,11394,12 Telok Blangah Crescent,2021-04-01,275000.0,365.0,Blk 12,1,753.0,2,sales,,D04,090012
+290,11394,12 Telok Blangah Crescent,2020-08-01,300000.0,473.0,Blk 12,13,635.0,2,sales,,D04,090012
+292,11394,12 Telok Blangah Crescent,2019-10-01,315000.0,418.0,Blk 12,7,753.0,2,sales,,D04,090012
+291,11394,12 Telok Blangah Crescent,2019-10-01,245000.0,386.0,Blk 12,4,635.0,2,sales,,D04,090012
+294,11394,12 Telok Blangah Crescent,2019-06-01,300000.0,399.0,Blk 12,10,753.0,2,sales,,D04,090012
+293,11394,12 Telok Blangah Crescent,2019-06-01,268000.0,422.0,Blk 12,4,635.0,2,sales,,D04,090012
+295,11394,12 Telok Blangah Crescent,2019-05-01,308000.0,409.0,Blk 12,10,753.0,2,sales,,D04,090012
+296,11394,12 Telok Blangah Crescent,2019-01-01,308000.0,409.0,Blk 12,10,753.0,2,sales,,D04,090012
+297,11394,12 Telok Blangah Crescent,2018-10-01,275000.0,365.0,Blk 12,4,753.0,2,sales,,D04,090012
+1251,11459,88 Telok Blangah Heights,2026-06-01,980000.0,829.0,Blk 88,19,1184.0,3,sales,,D04,100088
+1253,11459,88 Telok Blangah Heights,2025-10-01,765000.0,837.0,Blk 88,22,915.0,3,sales,,D04,100088
+1252,11459,88 Telok Blangah Heights,2025-10-01,803000.0,830.0,Blk 88,10,969.0,3,sales,,D04,100088
+1254,11459,88 Telok Blangah Heights,2025-05-01,785000.0,811.0,Blk 88,19,969.0,3,sales,,D04,100088
+1255,11459,88 Telok Blangah Heights,2025-03-01,1066088.0,901.0,Blk 88,13,1184.0,3,sales,,D04,100088
+1256,11459,88 Telok Blangah Heights,2025-01-01,880000.0,744.0,Blk 88,4,1184.0,3,sales,,D04,100088
+1257,11459,88 Telok Blangah Heights,2024-12-01,728000.0,796.0,Blk 88,10,915.0,3,sales,,D04,100088
+1258,11459,88 Telok Blangah Heights,2024-11-01,940000.0,795.0,Blk 88,13,1184.0,3,sales,,D04,100088
+1259,11459,88 Telok Blangah Heights,2024-10-01,790000.0,864.0,Blk 88,22,915.0,3,sales,,D04,100088
+1260,11459,88 Telok Blangah Heights,2024-03-01,790000.0,816.0,Blk 88,25,969.0,3,sales,,D04,100088
+1261,11459,88 Telok Blangah Heights,2024-03-01,718000.0,742.0,Blk 88,13,969.0,3,sales,,D04,100088
+1262,11459,88 Telok Blangah Heights,2023-10-01,758000.0,783.0,Blk 88,28,969.0,3,sales,,D04,100088
+1263,11459,88 Telok Blangah Heights,2023-09-01,710000.0,734.0,Blk 88,19,969.0,3,sales,,D04,100088
+1264,11459,88 Telok Blangah Heights,2023-02-01,925000.0,782.0,Blk 88,16,1184.0,3,sales,,D04,100088
+1265,11459,88 Telok Blangah Heights,2023-01-01,911000.0,770.0,Blk 88,10,1184.0,3,sales,,D04,100088
+1266,11459,88 Telok Blangah Heights,2023-01-01,710000.0,734.0,Blk 88,19,969.0,3,sales,,D04,100088
+1268,11459,88 Telok Blangah Heights,2022-03-01,615000.0,673.0,Blk 88,16,915.0,3,sales,,D04,100088
+1267,11459,88 Telok Blangah Heights,2022-03-01,625000.0,684.0,Blk 88,7,915.0,3,sales,,D04,100088
+1269,11459,88 Telok Blangah Heights,2021-08-01,625000.0,684.0,Blk 88,19,915.0,3,sales,,D04,100088
+1270,11459,88 Telok Blangah Heights,2021-04-01,555000.0,573.0,Blk 88,13,969.0,3,sales,,D04,100088
+1271,11459,88 Telok Blangah Heights,2021-03-01,620000.0,678.0,Blk 88,19,915.0,3,sales,,D04,100088
+1272,11459,88 Telok Blangah Heights,2021-01-01,813000.0,687.0,Blk 88,28,1184.0,3,sales,,D04,100088
+1273,11459,88 Telok Blangah Heights,2020-02-01,808000.0,683.0,Blk 88,13,1184.0,3,sales,,D04,100088
+1274,11459,88 Telok Blangah Heights,2020-01-01,730000.0,617.0,Blk 88,7,1184.0,3,sales,,D04,100088
+1275,11459,88 Telok Blangah Heights,2019-10-01,808000.0,683.0,Blk 88,22,1184.0,3,sales,,D04,100088
+1757,11475,42 Telok Blangah Rise,2026-09-01,390888.0,519.0,Blk 42,1,753.0,2,sales,,D04,090042
+1758,11475,42 Telok Blangah Rise,2026-06-01,350000.0,465.0,Blk 42,1,753.0,2,sales,,D04,090042
+1759,11475,42 Telok Blangah Rise,2025-12-01,390000.0,615.0,Blk 42,10,635.0,2,sales,,D04,090042
+1760,11475,42 Telok Blangah Rise,2025-10-01,400000.0,531.0,Blk 42,4,753.0,2,sales,,D04,090042
+1761,11475,42 Telok Blangah Rise,2025-08-01,388000.0,612.0,Blk 42,13,635.0,2,sales,,D04,090042
+1762,11475,42 Telok Blangah Rise,2025-08-01,383000.0,509.0,Blk 42,1,753.0,2,sales,,D04,090042
+1763,11475,42 Telok Blangah Rise,2025-07-01,380000.0,599.0,Blk 42,1,635.0,2,sales,,D04,090042
+1764,11475,42 Telok Blangah Rise,2025-05-01,430000.0,571.0,Blk 42,4,753.0,2,sales,,D04,090042
+1765,11475,42 Telok Blangah Rise,2025-02-01,378000.0,502.0,Blk 42,1,753.0,2,sales,,D04,090042
+1766,11475,42 Telok Blangah Rise,2024-09-01,387000.0,514.0,Blk 42,4,753.0,2,sales,,D04,090042
+1767,11475,42 Telok Blangah Rise,2024-07-01,378000.0,502.0,Blk 42,1,753.0,2,sales,,D04,090042
+1768,11475,42 Telok Blangah Rise,2024-07-01,375000.0,591.0,Blk 42,13,635.0,2,sales,,D04,090042
+1769,11475,42 Telok Blangah Rise,2024-06-01,318000.0,501.0,Blk 42,7,635.0,2,sales,,D04,090042
+1770,11475,42 Telok Blangah Rise,2024-02-01,383000.0,509.0,Blk 42,7,753.0,2,sales,,D04,090042
+1771,11475,42 Telok Blangah Rise,2023-08-01,405000.0,538.0,Blk 42,10,753.0,2,sales,,D04,090042
+1772,11475,42 Telok Blangah Rise,2023-01-01,280000.0,372.0,Blk 42,7,753.0,2,sales,,D04,090042
+1773,11475,42 Telok Blangah Rise,2022-11-01,343000.0,541.0,Blk 42,4,635.0,2,sales,,D04,090042
+1774,11475,42 Telok Blangah Rise,2022-04-01,425000.0,565.0,Blk 42,10,753.0,2,sales,,D04,090042
+1775,11475,42 Telok Blangah Rise,2021-12-01,315000.0,496.0,Blk 42,4,635.0,2,sales,,D04,090042
+1777,11475,42 Telok Blangah Rise,2021-11-01,388000.0,515.0,Blk 42,13,753.0,2,sales,,D04,090042
+1776,11475,42 Telok Blangah Rise,2021-11-01,320000.0,425.0,Blk 42,4,753.0,2,sales,,D04,090042
+1778,11475,42 Telok Blangah Rise,2021-09-01,260000.0,410.0,Blk 42,1,635.0,2,sales,,D04,090042
+1779,11475,42 Telok Blangah Rise,2021-08-01,326000.0,514.0,Blk 42,7,635.0,2,sales,,D04,090042
+1780,11475,42 Telok Blangah Rise,2021-06-01,322888.0,429.0,Blk 42,1,753.0,2,sales,,D04,090042
+1781,11475,42 Telok Blangah Rise,2021-02-01,275000.0,433.0,Blk 42,4,635.0,2,sales,,D04,090042
+378,11584,14 Toh Yi Drive,2026-04-01,950000.0,849.0,Blk 14,7,1119.0,3,sales,,D21,590014
+380,11584,14 Toh Yi Drive,2026-03-01,910000.0,814.0,Blk 14,7,1119.0,3,sales,,D21,590014
+379,11584,14 Toh Yi Drive,2026-03-01,968000.0,866.0,Blk 14,7,1119.0,3,sales,,D21,590014
+381,11584,14 Toh Yi Drive,2026-01-01,970000.0,867.0,Blk 14,13,1119.0,3,sales,,D21,590014
+382,11584,14 Toh Yi Drive,2025-08-01,1178888.0,899.0,Blk 14,7,1313.0,3,sales,,D21,590014
+383,11584,14 Toh Yi Drive,2024-03-01,720000.0,644.0,Blk 14,1,1119.0,3,sales,,D21,590014
+384,11584,14 Toh Yi Drive,2023-10-01,838000.0,749.0,Blk 14,4,1119.0,3,sales,,D21,590014
+385,11584,14 Toh Yi Drive,2022-12-01,615000.0,550.0,Blk 14,4,1119.0,3,sales,,D21,590014
+386,11584,14 Toh Yi Drive,2021-12-01,703600.0,629.0,Blk 14,4,1119.0,3,sales,,D21,590014
+387,11584,14 Toh Yi Drive,2021-09-01,660000.0,590.0,Blk 14,7,1119.0,3,sales,,D21,590014
+388,11584,14 Toh Yi Drive,2021-08-01,870000.0,663.0,Blk 14,7,1313.0,3,sales,,D21,590014
+389,11584,14 Toh Yi Drive,2021-06-01,638000.0,570.0,Blk 14,7,1119.0,3,sales,,D21,590014
+390,11584,14 Toh Yi Drive,2021-04-01,678000.0,606.0,Blk 14,7,1119.0,3,sales,,D21,590014
+391,11584,14 Toh Yi Drive,2020-09-01,625000.0,559.0,Blk 14,4,1119.0,3,sales,,D21,590014
+392,11584,14 Toh Yi Drive,2020-06-01,620000.0,554.0,Blk 14,7,1119.0,3,sales,,D21,590014
+393,11584,14 Toh Yi Drive,2019-06-01,665000.0,595.0,Blk 14,7,1119.0,3,sales,,D21,590014
+394,11584,14 Toh Yi Drive,2019-05-01,675000.0,604.0,Blk 14,7,1119.0,3,sales,,D21,590014
+396,11584,14 Toh Yi Drive,2019-04-01,818000.0,623.0,Blk 14,10,1313.0,3,sales,,D21,590014
+395,11584,14 Toh Yi Drive,2019-04-01,665000.0,595.0,Blk 14,4,1119.0,3,sales,,D21,590014
+397,11584,14 Toh Yi Drive,2018-12-01,825000.0,629.0,Blk 14,13,1313.0,3,sales,,D21,590014
+398,11584,14 Toh Yi Drive,2018-03-01,650000.0,581.0,Blk 14,10,1119.0,3,sales,,D21,590014
+399,11584,14 Toh Yi Drive,2017-07-01,680000.0,608.0,Blk 14,13,1119.0,3,sales,,D21,590014
+400,11584,14 Toh Yi Drive,2017-06-01,813000.0,620.0,Blk 14,10,1313.0,3,sales,,D21,590014
+401,11584,14 Toh Yi Drive,2016-12-01,690000.0,617.0,Blk 14,13,1119.0,3,sales,,D21,590014
+402,11584,14 Toh Yi Drive,2016-04-01,645000.0,577.0,Blk 14,10,1119.0,3,sales,,D21,590014
+1566,20501,Viva Vista,2026-05-26,730000.0,1785.0,Blk 3,05,409.0,1,sales,Apartment,D05,118136
+1567,20501,Viva Vista,2025-11-19,718000.0,1803.0,Blk 3,04,398.0,1,sales,Apartment,D05,118136
+1568,20501,Viva Vista,2025-11-03,720000.0,1715.0,Blk 3,03,420.0,1,sales,Apartment,D05,118136
+1570,20501,Viva Vista,2025-10-24,990000.0,1373.0,Blk 3,05,721.0,1,sales,Apartment,D05,118136
+1569,20501,Viva Vista,2025-10-24,670000.0,1778.0,Blk 3,02,377.0,1,sales,Apartment,D05,118136
+1571,20501,Viva Vista,2025-09-25,655000.0,1739.0,Blk 3,02,377.0,1,sales,Apartment,D05,118136
+1572,20501,Viva Vista,2025-09-18,698000.0,1663.0,Blk 3,02,420.0,1,sales,Apartment,D05,118136
+1573,20501,Viva Vista,2025-08-05,705000.0,1871.0,Blk 3,04,377.0,1,sales,Apartment,D05,118136
+1574,20501,Viva Vista,2025-08-01,1150000.0,1425.0,Blk 3,05,807.0,1,sales,Apartment,D05,118136
+1575,20501,Viva Vista,2025-07-24,680000.0,1805.0,Blk 3,03,377.0,1,sales,Apartment,D05,118136
+1576,20501,Viva Vista,2025-05-20,680000.0,1914.0,Blk 3,02,355.0,1,sales,Apartment,D05,118136
+1577,20501,Viva Vista,2025-04-10,657000.0,1907.0,Blk 3,03,344.0,1,sales,Apartment,D05,118136
+1578,20501,Viva Vista,2025-04-03,728000.0,1879.0,Blk 3,03,388.0,1,sales,Apartment,D05,118136
+1579,20501,Viva Vista,2025-01-15,658000.0,1698.0,Blk 3,02,388.0,1,sales,Apartment,D05,118136
+1580,20501,Viva Vista,2024-07-31,730000.0,1884.0,Blk 3,02,388.0,1,sales,Apartment,D05,118136
+1581,20501,Viva Vista,2024-04-03,700000.0,1858.0,Blk 3,02,377.0,1,sales,Apartment,D05,118136
+1582,20501,Viva Vista,2024-01-31,685000.0,2121.0,Blk 3,03,323.0,1,sales,Apartment,D05,118136
+1583,20501,Viva Vista,2023-08-31,700000.0,1806.0,Blk 3,02,388.0,1,sales,Apartment,D05,118136
+1584,20501,Viva Vista,2022-12-20,1100000.0,1503.0,Blk 3,05,732.0,1,sales,Apartment,D05,118136
+1585,20501,Viva Vista,2022-09-30,658000.0,1747.0,Blk 3,04,377.0,1,sales,Apartment,D05,118136
+1586,20501,Viva Vista,2022-07-18,658000.0,1910.0,Blk 3,02,344.0,1,sales,Apartment,D05,118136
+1587,20501,Viva Vista,2022-07-18,686000.0,1770.0,Blk 3,03,388.0,1,sales,Apartment,D05,118136
+1588,20501,Viva Vista,2022-06-06,633000.0,1680.0,Blk 3,04,377.0,1,sales,Apartment,D05,118136
+1589,20501,Viva Vista,2022-05-26,630000.0,1540.0,Blk 3,03,409.0,1,sales,Apartment,D05,118136
+1590,20501,Viva Vista,2022-02-17,680000.0,1404.0,Blk 3,02,484.0,1,sales,Apartment,D05,118136
+454,20575,d'Leedon (Former Farrer Court),2019-07-23,28000000.0,1476.0,Blk 45,-1,18966.0,0,sales,Detached House,D10,267913
+478,20701,Skyline Residences,2025-07-14,1048880.0,2165.0,Blk 612,04,484.0,1,sales,Condominium,D04,109026
+479,20701,Skyline Residences,2025-05-29,1070000.0,2209.0,Blk 610,14,484.0,1,sales,Condominium,D04,109025
+480,20701,Skyline Residences,2025-05-26,1060000.0,2188.0,Blk 612,14,484.0,1,sales,Condominium,D04,109026
+481,20701,Skyline Residences,2024-12-27,1070000.0,2209.0,Blk 612,17,484.0,1,sales,Condominium,D04,109026
+482,20701,Skyline Residences,2024-12-05,1043000.0,2153.0,Blk 610,09,484.0,1,sales,Condominium,D04,109025
+483,20701,Skyline Residences,2024-11-08,1045000.0,2157.0,Blk 610,11,484.0,1,sales,Condominium,D04,109025
+484,20701,Skyline Residences,2024-07-10,1030000.0,2126.0,Blk 612,05,484.0,1,sales,Condominium,D04,109026
+485,20701,Skyline Residences,2024-05-08,1030000.0,2126.0,Blk 610,05,484.0,1,sales,Condominium,D04,109025
+486,20701,Skyline Residences,2024-04-01,1060000.0,2188.0,Blk 610,15,484.0,1,sales,Condominium,D04,109025
+487,20701,Skyline Residences,2023-10-12,1200000.0,2477.0,Blk 610,21,484.0,1,sales,Condominium,D04,109025
+488,20701,Skyline Residences,2023-08-10,1060000.0,2188.0,Blk 610,18,484.0,1,sales,Condominium,D04,109025
+489,20701,Skyline Residences,2022-09-22,1080000.0,2230.0,Blk 612,20,484.0,1,sales,Condominium,D04,109026
+490,20701,Skyline Residences,2022-08-15,1080000.0,2230.0,Blk 612,23,484.0,1,sales,Condominium,D04,109026
+491,20701,Skyline Residences,2021-08-18,1038000.0,2143.0,Blk 610,04,484.0,1,sales,Condominium,D04,109025
+492,20701,Skyline Residences,2021-03-09,1020000.0,2106.0,Blk 610,05,484.0,1,sales,Condominium,D04,109025
+493,20701,Skyline Residences,2021-01-11,900000.0,1858.0,Blk 610,03,484.0,1,sales,Condominium,D04,109025
+494,20701,Skyline Residences,2020-10-22,980000.0,2023.0,Blk 610,24,484.0,1,sales,Condominium,D04,109025
+495,20701,Skyline Residences,2018-05-16,1020000.0,2106.0,Blk 612,09,484.0,1,sales,Condominium,D04,109026
+496,20701,Skyline Residences,2017-10-30,965000.0,1992.0,Blk 610,05,484.0,1,sales,Condominium,D04,109025
+497,20701,Skyline Residences,2017-08-03,963000.0,1988.0,Blk 610,07,484.0,1,sales,Condominium,D04,109025
+498,20701,Skyline Residences,2017-05-12,950000.0,1961.0,Blk 612,04,484.0,1,sales,Condominium,D04,109026
+499,20701,Skyline Residences,2017-04-10,900000.0,1858.0,Blk 612,07,484.0,1,sales,Condominium,D04,109026
+500,20701,Skyline Residences,2016-09-06,1038800.0,2145.0,Blk 612,18,484.0,1,sales,Condominium,D04,109026
+501,20701,Skyline Residences,2016-08-16,985000.0,2034.0,Blk 612,21,484.0,1,sales,Condominium,D04,109026
+502,20701,Skyline Residences,2016-08-10,1120000.0,2312.0,Blk 610,18,484.0,1,sales,Condominium,D04,109025
+1214,20748,Nouvel 18,2026-05-19,3700000.0,2772.0,Blk 18,13,1335.0,2,sales,Condominium,D10,259977
+1215,20748,Nouvel 18,2023-03-13,4238000.0,3175.0,Blk 18,04,1335.0,2,sales,Condominium,D10,259977
+1216,20748,Nouvel 18,2021-07-30,3942000.0,2953.0,Blk 18,06,1335.0,2,sales,Condominium,D10,259977
+1217,20748,Nouvel 18,2021-06-17,3918000.0,2935.0,Blk 18,05,1335.0,2,sales,Condominium,D10,259977
+1218,20748,Nouvel 18,2021-04-15,4060000.0,3042.0,Blk 18,08,1335.0,2,sales,Condominium,D10,259977
+1219,20748,Nouvel 18,2021-03-23,4301000.0,3222.0,Blk 18,24,1335.0,2,sales,Condominium,D10,259977
+1220,20748,Nouvel 18,2021-01-18,3978000.0,2980.0,Blk 18,13,1335.0,2,sales,Condominium,D10,259977
+1222,20748,Nouvel 18,2020-11-13,4187000.0,3137.0,Blk 18,23,1335.0,2,sales,Condominium,D10,259977
+1221,20748,Nouvel 18,2020-11-13,3805000.0,2851.0,Blk 18,09,1335.0,2,sales,Condominium,D10,259977
+1223,20748,Nouvel 18,2020-02-05,4528000.0,3392.0,Blk 18,22,1335.0,2,sales,Condominium,D10,259977
+1059,21001,Paradise Island,2010-05-03,36000000.0,2403.0,Blk 30,-1,14973.0,0,sales,Detached House,D04,098427
+1060,21001,Paradise Island,2009-09-16,22000000.0,1468.0,Blk 28,-1,14983.0,0,sales,Detached House,D04,098493
+1061,21001,Paradise Island,2009-09-14,20180000.0,1347.0,Blk 30,-1,14973.0,0,sales,Detached House,D04,098427
+1062,21001,Paradise Island,2007-04-30,18100000.0,1208.0,Blk 30,-1,14973.0,0,sales,Detached House,D04,098427
+159,21039,Shepherd's Hill Estate,2025-11-21,15078688.0,2925.0,Blk 3,-1,5145.0,3,sales,Detached House,D03,149151
+160,21039,Shepherd's Hill Estate,2024-05-03,8200000.0,1759.0,Blk 10,-1,4661.0,3,sales,Detached House,D03,149158
+161,21039,Shepherd's Hill Estate,2023-12-05,8480000.0,1683.0,Blk 10,-1,5038.0,3,sales,Detached House,D03,149003
+162,21039,Shepherd's Hill Estate,2022-10-28,7500000.0,1455.0,Blk 3,-1,5145.0,3,sales,Detached House,D03,149151
+163,21039,Shepherd's Hill Estate,2012-09-11,5900000.0,1228.0,Blk 5,-1,4801.0,3,sales,Detached House,D03,148998
+164,21039,Shepherd's Hill Estate,2010-09-17,4075000.0,915.0,Blk 19,-1,4445.0,3,sales,Detached House,D03,149166
+165,21039,Shepherd's Hill Estate,2010-09-09,5500000.0,1077.0,Blk 4,-1,5102.0,3,sales,Detached House,D03,148997
+166,21039,Shepherd's Hill Estate,2010-07-08,2688000.0,974.0,Blk 17A,-1,2756.0,3,sales,Semi-Detached House,D03,149165
+167,21039,Shepherd's Hill Estate,2007-02-16,3063000.0,719.0,Blk 14,-1,4263.0,3,sales,Detached House,D03,149162
+168,21039,Shepherd's Hill Estate,2004-04-29,1630000.0,338.0,Blk 3,-1,4822.0,3,sales,Detached House,D03,148996
+169,21039,Shepherd's Hill Estate,2000-06-14,1200000.0,244.0,Blk 16,-1,4908.0,3,sales,Detached House,D03,149009
+170,21039,Shepherd's Hill Estate,1999-10-01,2060000.0,698.0,Blk 21A,-1,2949.0,3,sales,Semi-Detached House,D03,149168
+171,21039,Shepherd's Hill Estate,1997-04-15,2370000.0,859.0,Blk 17A,-1,2756.0,3,sales,Semi-Detached House,D03,149165
+172,21039,Shepherd's Hill Estate,1995-02-01,2050000.0,481.0,Blk 14,-1,4263.0,3,sales,Detached House,D03,149162
+351,21474,Faber Hills Estate,2019-08-08,5150000.0,1271.0,Blk 4,-1,4047.0,0,sales,Semi-Detached House,D05,129158
+352,21474,Faber Hills Estate,2016-04-22,4500000.0,1213.0,Blk 6,-1,3703.0,0,sales,Semi-Detached House,D05,129221
+578,21602,NEWest,2025-10-16,756000.0,1596.0,Blk 3,08,474.0,1,sales,Apartment,D05,128021
+579,21602,NEWest,2025-08-08,745000.0,1610.0,Blk 3,05,463.0,1,sales,Apartment,D05,128021
+580,21602,NEWest,2024-08-13,800000.0,1517.0,Blk 3,06,527.0,1,sales,Apartment,D05,128021
+581,21602,NEWest,2022-01-14,785000.0,1376.0,Blk 3,04,570.0,1,sales,Apartment,D05,128021
+582,21602,NEWest,2022-01-14,810000.0,1536.0,Blk 3,05,527.0,1,sales,Apartment,D05,128021
+583,21602,NEWest,2021-02-08,775000.0,1469.0,Blk 3,06,527.0,1,sales,Apartment,D05,128021
+584,21602,NEWest,2016-10-06,680000.0,1436.0,Blk 3,05,474.0,1,sales,Apartment,D05,128021
+585,21602,NEWest,2016-03-31,663600.0,1401.0,Blk 3,06,474.0,1,sales,Apartment,D05,128021
+586,21602,NEWest,2013-09-10,808808.0,1533.0,Blk 3,05,527.0,1,sales,Apartment,D05,128021
+587,21602,NEWest,2013-07-26,772600.0,1465.0,Blk 3,05,527.0,1,sales,Apartment,D05,128021
+588,21602,NEWest,2013-07-22,759700.0,1641.0,Blk 3,09,463.0,1,sales,Apartment,D05,128021
+589,21602,NEWest,2013-07-17,834990.0,1437.0,Blk 3,04,581.0,1,sales,Apartment,D05,128021
+590,21602,NEWest,2013-07-16,797100.0,1511.0,Blk 3,09,527.0,1,sales,Apartment,D05,128021
+591,21602,NEWest,2013-07-15,813100.0,1399.0,Blk 3,04,581.0,1,sales,Apartment,D05,128021
+592,21602,NEWest,2013-07-11,742200.0,1604.0,Blk 3,06,463.0,1,sales,Apartment,D05,128021
+593,21602,NEWest,2013-07-11,804000.0,1409.0,Blk 3,04,570.0,1,sales,Apartment,D05,128021
+594,21602,NEWest,2013-07-08,815700.0,1430.0,Blk 3,04,570.0,1,sales,Apartment,D05,128021
+595,21602,NEWest,2013-07-03,778700.0,1476.0,Blk 3,06,527.0,1,sales,Apartment,D05,128021
+596,21602,NEWest,2013-06-20,797472.0,1684.0,Blk 3,08,474.0,1,sales,Apartment,D05,128021
+597,21602,NEWest,2013-06-19,796100.0,1509.0,Blk 3,08,527.0,1,sales,Apartment,D05,128021
+598,21602,NEWest,2013-06-18,748900.0,1581.0,Blk 3,05,474.0,1,sales,Apartment,D05,128021
+599,21602,NEWest,2013-06-17,783800.0,1486.0,Blk 3,06,527.0,1,sales,Apartment,D05,128021
+600,21602,NEWest,2013-06-17,790000.0,1498.0,Blk 3,07,527.0,1,sales,Apartment,D05,128021
+601,21602,NEWest,2013-06-17,791000.0,1500.0,Blk 3,08,527.0,1,sales,Apartment,D05,128021
+602,21602,NEWest,2013-06-14,748000.0,1616.0,Blk 3,07,463.0,1,sales,Apartment,D05,128021
+1839,21604,Corals at Keppel Bay,2025-08-07,1300000.0,1887.0,Blk 13,04,689.0,1,sales,Condominium,D04,098018
+1840,21604,Corals at Keppel Bay,2024-01-29,1300000.0,2279.0,Blk 21,03,570.0,1,sales,Condominium,D04,098022
+1841,21604,Corals at Keppel Bay,2024-01-09,1200000.0,2064.0,Blk 21,03,581.0,1,sales,Condominium,D04,098022
+1842,21604,Corals at Keppel Bay,2021-07-19,1420000.0,2489.0,Blk 21,09,570.0,1,sales,Condominium,D04,098022
+1843,21604,Corals at Keppel Bay,2021-07-08,1450000.0,2449.0,Blk 21,08,592.0,1,sales,Condominium,D04,098022
+1844,21604,Corals at Keppel Bay,2021-07-06,1410000.0,2426.0,Blk 21,07,581.0,1,sales,Condominium,D04,098022
+1845,21604,Corals at Keppel Bay,2021-07-05,1430000.0,2507.0,Blk 21,10,570.0,1,sales,Condominium,D04,098022
+1846,21604,Corals at Keppel Bay,2020-08-07,1526000.0,2675.0,Blk 21,10,570.0,1,sales,Condominium,D04,098022
+1847,21604,Corals at Keppel Bay,2020-01-23,1738000.0,2523.0,Blk 13,04,689.0,1,sales,Condominium,D04,098018
+1848,21604,Corals at Keppel Bay,2019-12-18,1466000.0,2522.0,Blk 21,05,581.0,1,sales,Condominium,D04,098022
+1849,21604,Corals at Keppel Bay,2019-11-20,1511000.0,2649.0,Blk 21,09,570.0,1,sales,Condominium,D04,098022
+1850,21604,Corals at Keppel Bay,2019-11-06,1538000.0,2233.0,Blk 13,03,689.0,1,sales,Condominium,D04,098018
+1852,21604,Corals at Keppel Bay,2019-10-08,1560000.0,2264.0,Blk 13,05,689.0,1,sales,Condominium,D04,098018
+1851,21604,Corals at Keppel Bay,2019-10-08,1538000.0,2198.0,Blk 13,02,700.0,1,sales,Condominium,D04,098018
+1853,21604,Corals at Keppel Bay,2019-10-01,1576000.0,2288.0,Blk 13,06,689.0,1,sales,Condominium,D04,098018
+1854,21604,Corals at Keppel Bay,2018-10-01,1563000.0,2689.0,Blk 21,06,581.0,1,sales,Condominium,D04,098022
+1855,21604,Corals at Keppel Bay,2014-06-04,1515000.0,2606.0,Blk 21,06,581.0,1,sales,Condominium,D04,098022
+1856,21604,Corals at Keppel Bay,2014-02-18,1530000.0,2632.0,Blk 21,07,581.0,1,sales,Condominium,D04,098022
+1857,21604,Corals at Keppel Bay,2013-07-29,1426050.0,2500.0,Blk 21,02,570.0,1,sales,Condominium,D04,098022
+1858,21604,Corals at Keppel Bay,2013-07-08,1414260.0,2433.0,Blk 21,01,581.0,1,sales,Condominium,D04,098022
+1859,21604,Corals at Keppel Bay,2013-06-28,1525050.0,2285.0,Blk 13,07,667.0,1,sales,Condominium,D04,098018
+1860,21604,Corals at Keppel Bay,2013-06-28,1463760.0,2472.0,Blk 21,01,592.0,1,sales,Condominium,D04,098022
+1861,21604,Corals at Keppel Bay,2013-06-26,1437840.0,2520.0,Blk 21,04,570.0,1,sales,Condominium,D04,098022
+1862,21604,Corals at Keppel Bay,2013-06-24,1518760.0,2313.0,Blk 13,08,657.0,1,sales,Condominium,D04,098018
+1863,21604,Corals at Keppel Bay,2013-06-18,1389910.0,2226.0,Blk 13,09,624.0,1,sales,Condominium,D04,098018
+1393,21687,Ardmore Residence,2005-04-27,2330000.0,852.0,Blk 7,16,2734.0,0,sales,Apartment,D10,259954
+1394,21687,Ardmore Residence,2004-09-08,2280000.0,858.0,Blk 7,13,2659.0,0,sales,Apartment,D10,259954
+1395,21687,Ardmore Residence,2002-11-26,2250000.0,823.0,Blk 7,12,2734.0,0,sales,Apartment,D10,259954
+1396,21687,Ardmore Residence,2002-05-15,2258000.0,849.0,Blk 7,13,2659.0,0,sales,Apartment,D10,259954
+1397,21687,Ardmore Residence,2002-05-10,2258000.0,849.0,Blk 7,11,2659.0,0,sales,Apartment,D10,259954
+1398,21687,Ardmore Residence,2001-12-11,2200000.0,827.0,Blk 7,12,2659.0,0,sales,Apartment,D10,259954
+1399,21687,Ardmore Residence,2000-10-01,2935000.0,1104.0,Blk 7,09,2659.0,0,sales,Apartment,D10,259954
+1400,21687,Ardmore Residence,2000-08-16,2650000.0,969.0,Blk 7,13,2734.0,0,sales,Apartment,D10,259954
+1401,21687,Ardmore Residence,1996-04-30,2850000.0,1042.0,Blk 7,04,2734.0,0,sales,Apartment,D10,259954
+1402,21687,Ardmore Residence,1995-06-01,2650000.0,997.0,Blk 7,07,2659.0,0,sales,Apartment,D10,259954
+1114,21791,Alex Residences,2026-07-17,970000.0,2048.0,Blk 28,13,474.0,1,sales,Apartment,D03,158744
+1115,21791,Alex Residences,2026-07-13,970000.0,2048.0,Blk 28,23,474.0,1,sales,Apartment,D03,158744
+1116,21791,Alex Residences,2026-05-14,1015000.0,2143.0,Blk 28,31,474.0,1,sales,Apartment,D03,158744
+1117,21791,Alex Residences,2026-03-31,1010000.0,2133.0,Blk 28,35,474.0,1,sales,Apartment,D03,158744
+1119,21791,Alex Residences,2026-03-30,955000.0,2016.0,Blk 28,18,474.0,1,sales,Apartment,D03,158744
+1118,21791,Alex Residences,2026-03-30,970000.0,2048.0,Blk 28,16,474.0,1,sales,Apartment,D03,158744
+1120,21791,Alex Residences,2025-09-11,948000.0,2002.0,Blk 28,03,474.0,1,sales,Apartment,D03,158744
+1121,21791,Alex Residences,2025-05-09,950000.0,2006.0,Blk 28,14,474.0,1,sales,Apartment,D03,158744
+1122,21791,Alex Residences,2024-08-26,1010000.0,2133.0,Blk 28,29,474.0,1,sales,Apartment,D03,158744
+1123,21791,Alex Residences,2024-08-06,945000.0,1995.0,Blk 28,11,474.0,1,sales,Apartment,D03,158744
+1124,21791,Alex Residences,2024-02-08,975000.0,2059.0,Blk 28,18,474.0,1,sales,Apartment,D03,158744
+1125,21791,Alex Residences,2023-11-16,918000.0,1938.0,Blk 28,04,474.0,1,sales,Apartment,D03,158744
+1126,21791,Alex Residences,2023-11-10,945000.0,1995.0,Blk 28,10,474.0,1,sales,Apartment,D03,158744
+1127,21791,Alex Residences,2023-10-03,985000.0,2080.0,Blk 28,24,474.0,1,sales,Apartment,D03,158744
+1128,21791,Alex Residences,2023-08-25,920000.0,1943.0,Blk 28,04,474.0,1,sales,Apartment,D03,158744
+1129,21791,Alex Residences,2023-07-31,915000.0,1932.0,Blk 28,06,474.0,1,sales,Apartment,D03,158744
+1130,21791,Alex Residences,2023-02-06,940000.0,1985.0,Blk 28,11,474.0,1,sales,Apartment,D03,158744
+1131,21791,Alex Residences,2022-09-01,920000.0,1943.0,Blk 28,07,474.0,1,sales,Apartment,D03,158744
+1132,21791,Alex Residences,2022-08-23,955000.0,2016.0,Blk 28,16,474.0,1,sales,Apartment,D03,158744
+1133,21791,Alex Residences,2022-08-08,920000.0,1943.0,Blk 28,07,474.0,1,sales,Apartment,D03,158744
+1134,21791,Alex Residences,2022-06-17,905000.0,1911.0,Blk 28,09,474.0,1,sales,Apartment,D03,158744
+1135,21791,Alex Residences,2022-06-09,915000.0,1932.0,Blk 28,16,474.0,1,sales,Apartment,D03,158744
+1136,21791,Alex Residences,2022-06-07,960000.0,2027.0,Blk 28,29,474.0,1,sales,Apartment,D03,158744
+1137,21791,Alex Residences,2022-04-08,925000.0,1953.0,Blk 28,22,474.0,1,sales,Apartment,D03,158744
+1138,21791,Alex Residences,2022-01-13,975000.0,2059.0,Blk 28,36,474.0,1,sales,Apartment,D03,158744
+1063,21806,Ardmore 3,2026-06-09,6350000.0,3554.0,Blk 3,09,1787.0,3,sales,Condominium,D10,259950
+1064,21806,Ardmore 3,2026-05-29,6280000.0,3515.0,Blk 3,30,1787.0,3,sales,Condominium,D10,259950
+1065,21806,Ardmore 3,2026-04-02,5620000.0,3145.0,Blk 3,19,1787.0,3,sales,Condominium,D10,259950
+1066,21806,Ardmore 3,2026-03-30,6050000.0,3386.0,Blk 3,31,1787.0,3,sales,Condominium,D10,259950
+1067,21806,Ardmore 3,2026-02-24,6280000.0,3601.0,Blk 3,32,1744.0,3,sales,Condominium,D10,259950
+1068,21806,Ardmore 3,2025-10-16,6000000.0,3358.0,Blk 3,24,1787.0,3,sales,Condominium,D10,259950
+1069,21806,Ardmore 3,2024-07-03,6150000.0,3527.0,Blk 3,33,1744.0,3,sales,Condominium,D10,259950
+1070,21806,Ardmore 3,2023-05-29,7700000.0,4335.0,Blk 3,35,1776.0,3,sales,Condominium,D10,259950
+1071,21806,Ardmore 3,2023-01-27,6950000.0,3986.0,Blk 3,35,1744.0,3,sales,Condominium,D10,259950
+1072,21806,Ardmore 3,2022-11-09,5800888.0,3246.0,Blk 3,09,1787.0,3,sales,Condominium,D10,259950
+1073,21806,Ardmore 3,2022-02-07,5250000.0,3011.0,Blk 3,21,1744.0,3,sales,Condominium,D10,259950
+1074,21806,Ardmore 3,2021-09-24,6500000.0,3660.0,Blk 3,09,1776.0,3,sales,Condominium,D10,259950
+1075,21806,Ardmore 3,2021-04-07,5100000.0,2925.0,Blk 3,24,1744.0,3,sales,Condominium,D10,259950
+1076,21806,Ardmore 3,2019-11-07,5150000.0,2882.0,Blk 3,20,1787.0,3,sales,Condominium,D10,259950
+1077,21806,Ardmore 3,2017-12-04,7460000.0,4175.0,Blk 3,36,1787.0,3,sales,Condominium,D10,259950
+1078,21806,Ardmore 3,2017-07-21,6137425.0,3435.0,Blk 3,24,1787.0,3,sales,Condominium,D10,259950
+1079,21806,Ardmore 3,2017-06-08,7700000.0,4335.0,Blk 3,36,1776.0,3,sales,Condominium,D10,259950
+1080,21806,Ardmore 3,2017-05-12,5860155.0,3361.0,Blk 3,21,1744.0,3,sales,Condominium,D10,259950
+1081,21806,Ardmore 3,2017-02-24,6543555.0,3662.0,Blk 3,28,1787.0,3,sales,Condominium,D10,259950
+1082,21806,Ardmore 3,2016-12-28,6178650.0,3458.0,Blk 3,25,1787.0,3,sales,Condominium,D10,259950
+1083,21806,Ardmore 3,2016-11-18,6776880.0,3886.0,Blk 3,28,1744.0,3,sales,Condominium,D10,259950
+1084,21806,Ardmore 3,2016-11-10,5946005.0,3328.0,Blk 3,21,1787.0,3,sales,Condominium,D10,259950
+1085,21806,Ardmore 3,2016-11-01,6219025.0,3480.0,Blk 3,26,1787.0,3,sales,Condominium,D10,259950
+1086,21806,Ardmore 3,2016-09-27,5819780.0,3337.0,Blk 3,20,1744.0,3,sales,Condominium,D10,259950
+1087,21806,Ardmore 3,2016-09-02,5904780.0,3305.0,Blk 3,20,1787.0,3,sales,Condominium,D10,259950
+1591,21871,62B Strathmore Avenue,2025-08-01,758000.0,1022.0,Blk 62B,10,743.0,2,sales,,D03,143062
+1593,21871,62B Strathmore Avenue,2024-12-01,755000.0,1018.0,Blk 62B,13,743.0,2,sales,,D03,143062
+1592,21871,62B Strathmore Avenue,2024-12-01,710000.0,957.0,Blk 62B,7,743.0,2,sales,,D03,143062
+1594,21871,62B Strathmore Avenue,2024-01-01,700000.0,943.0,Blk 62B,16,743.0,2,sales,,D03,143062
+1595,21871,62B Strathmore Avenue,2022-10-01,537500.0,724.0,Blk 62B,4,743.0,2,sales,,D03,143062
+1596,21871,62B Strathmore Avenue,2021-10-01,605000.0,815.0,Blk 62B,10,743.0,2,sales,,D03,143062
+1597,21871,62B Strathmore Avenue,2021-05-01,580000.0,782.0,Blk 62B,16,743.0,2,sales,,D03,143062
+1598,21871,62B Strathmore Avenue,2021-02-01,580000.0,782.0,Blk 62B,22,743.0,2,sales,,D03,143062
+1599,21871,62B Strathmore Avenue,2018-09-01,560000.0,755.0,Blk 62B,19,743.0,2,sales,,D03,143062
+1600,21871,62B Strathmore Avenue,2018-08-01,562000.0,757.0,Blk 62B,22,743.0,2,sales,,D03,143062
+1601,21871,62B Strathmore Avenue,2018-07-01,489000.0,659.0,Blk 62B,1,743.0,2,sales,,D03,143062
+1602,21871,62B Strathmore Avenue,2017-07-01,505000.0,681.0,Blk 62B,4,743.0,2,sales,,D03,143062
+1603,21871,62B Strathmore Avenue,2016-06-01,488888.0,659.0,Blk 62B,13,743.0,2,sales,,D03,143062
+1604,21871,62B Strathmore Avenue,2016-05-01,520000.0,701.0,Blk 62B,7,743.0,2,sales,,D03,143062
+1605,21871,62B Strathmore Avenue,2015-07-01,476000.0,642.0,Blk 62B,25,743.0,2,sales,,D03,143062
+1606,21871,62B Strathmore Avenue,2014-11-01,538000.0,725.0,Blk 62B,22,743.0,2,sales,,D03,143062
+718,21928,The Crest,2026-03-18,1380000.0,1972.0,Blk 103,12,700.0,1,sales,Condominium,D03,159018
+719,21928,The Crest,2025-12-22,1280000.0,2016.0,Blk 101,17,635.0,1,sales,Condominium,D03,159017
+720,21928,The Crest,2025-03-03,1140000.0,1708.0,Blk 105,10,667.0,1,sales,Condominium,D03,159019
+721,21928,The Crest,2024-12-23,1066000.0,1679.0,Blk 105,06,635.0,1,sales,Condominium,D03,159019
+722,21928,The Crest,2024-04-09,1290000.0,2103.0,Blk 103,16,614.0,1,sales,Condominium,D03,159018
+723,21928,The Crest,2023-09-08,1380000.0,1972.0,Blk 101,11,700.0,1,sales,Condominium,D03,159017
+724,21928,The Crest,2022-03-04,1260000.0,2054.0,Blk 103,05,614.0,1,sales,Condominium,D03,159018
+725,21928,The Crest,2020-02-03,1268000.0,1997.0,Blk 101,16,635.0,1,sales,Condominium,D03,159017
+726,21928,The Crest,2020-01-28,1290000.0,1933.0,Blk 105,19,667.0,1,sales,Condominium,D03,159019
+727,21928,The Crest,2020-01-17,1488000.0,2095.0,Blk 103,11,710.0,1,sales,Condominium,D03,159018
+728,21928,The Crest,2019-09-06,1250000.0,2037.0,Blk 103,02,614.0,1,sales,Condominium,D03,159018
+729,21928,The Crest,2019-09-03,1270000.0,2070.0,Blk 103,04,614.0,1,sales,Condominium,D03,159018
+730,21928,The Crest,2019-08-29,1330000.0,2094.0,Blk 103,08,635.0,1,sales,Condominium,D03,159018
+731,21928,The Crest,2019-03-18,1275120.0,2078.0,Blk 103,06,614.0,1,sales,Condominium,D03,159018
+732,21928,The Crest,2018-12-06,1280000.0,2086.0,Blk 103,05,614.0,1,sales,Condominium,D03,159018
+733,21928,The Crest,2018-10-16,1378000.0,2099.0,Blk 103,09,657.0,1,sales,Condominium,D03,159018
+734,21928,The Crest,2018-10-12,1434500.0,2082.0,Blk 103,10,689.0,1,sales,Condominium,D03,159018
+735,21928,The Crest,2018-07-12,1281000.0,2088.0,Blk 103,07,614.0,1,sales,Condominium,D03,159018
+736,21928,The Crest,2018-06-07,1448000.0,2038.0,Blk 103,13,710.0,1,sales,Condominium,D03,159018
+737,21928,The Crest,2018-04-20,1265000.0,2062.0,Blk 103,14,614.0,1,sales,Condominium,D03,159018
+738,21928,The Crest,2018-04-13,1423000.0,2034.0,Blk 103,12,700.0,1,sales,Condominium,D03,159018
+739,21928,The Crest,2018-04-10,1463000.0,2091.0,Blk 103,20,700.0,1,sales,Condominium,D03,159018
+740,21928,The Crest,2018-04-06,1269000.0,2068.0,Blk 103,15,614.0,1,sales,Condominium,D03,159018
+742,21928,The Crest,2018-04-04,1335000.0,2102.0,Blk 103,18,635.0,1,sales,Condominium,D03,159018
+741,21928,The Crest,2018-04-04,1280000.0,2086.0,Blk 103,17,614.0,1,sales,Condominium,D03,159018
+1657,22083,126C Kim Tian Road,2025-05-01,780000.0,1170.0,Blk 126C,37,667.0,2,sales,,D03,163126
+1658,22083,126C Kim Tian Road,2025-02-01,762000.0,1143.0,Blk 126C,28,667.0,2,sales,,D03,163126
+1659,22083,126C Kim Tian Road,2023-06-01,685000.0,1027.0,Blk 126C,28,667.0,2,sales,,D03,163126
+1660,22083,126C Kim Tian Road,2023-05-01,605000.0,907.0,Blk 126C,4,667.0,2,sales,,D03,163126
+1661,22083,126C Kim Tian Road,2023-04-01,690000.0,1035.0,Blk 126C,28,667.0,2,sales,,D03,163126
+1662,22083,126C Kim Tian Road,2022-10-01,525000.0,787.0,Blk 126C,1,667.0,2,sales,,D03,163126
+1663,22083,126C Kim Tian Road,2022-03-01,590000.0,885.0,Blk 126C,13,667.0,2,sales,,D03,163126
+1664,22083,126C Kim Tian Road,2022-02-01,632000.0,948.0,Blk 126C,37,667.0,2,sales,,D03,163126
+1665,22083,126C Kim Tian Road,2021-10-01,630000.0,945.0,Blk 126C,31,667.0,2,sales,,D03,163126
+1666,22083,126C Kim Tian Road,2019-10-01,433000.0,649.0,Blk 126C,4,667.0,2,sales,,D03,163126
+1667,22083,126C Kim Tian Road,2019-06-01,535000.0,802.0,Blk 126C,34,667.0,2,sales,,D03,163126
+1668,22083,126C Kim Tian Road,2018-07-01,540000.0,810.0,Blk 126C,10,667.0,2,sales,,D03,163126
+1669,22083,126C Kim Tian Road,2018-05-01,538000.0,807.0,Blk 126C,16,667.0,2,sales,,D03,163126
+1670,22083,126C Kim Tian Road,2018-04-01,470000.0,705.0,Blk 126C,4,667.0,2,sales,,D03,163126
+1671,22083,126C Kim Tian Road,2018-02-01,545000.0,817.0,Blk 126C,31,667.0,2,sales,,D03,163126
+1672,22083,126C Kim Tian Road,2017-10-01,550000.0,825.0,Blk 126C,22,667.0,2,sales,,D03,163126
+1673,22083,126C Kim Tian Road,2017-08-01,570000.0,855.0,Blk 126C,25,667.0,2,sales,,D03,163126
+1674,22083,126C Kim Tian Road,2016-10-01,478000.0,717.0,Blk 126C,1,667.0,2,sales,,D03,163126
+1675,22083,126C Kim Tian Road,2016-08-01,470000.0,705.0,Blk 126C,13,667.0,2,sales,,D03,163126
+1676,22083,126C Kim Tian Road,2016-03-01,608000.0,912.0,Blk 126C,37,667.0,2,sales,,D03,163126
+871,22161,Parksuites,2024-02-25,1560000.0,2454.0,Blk 22,03,635.0,1,sales,Apartment,D10,278802
+872,22161,Parksuites,2023-10-31,1443321.0,2273.0,Blk 26,02,635.0,1,sales,Apartment,D10,278804
+873,22161,Parksuites,2023-04-18,1626360.0,2477.0,Blk 22,02,657.0,1,sales,Apartment,D10,278802
+874,22161,Parksuites,2022-12-22,1480000.0,2292.0,Blk 22,03,646.0,1,sales,Apartment,D10,278802
+875,22161,Parksuites,2022-10-28,1380000.0,2137.0,Blk 26,02,646.0,1,sales,Apartment,D10,278804
+876,22161,Parksuites,2022-09-19,1545560.0,2354.0,Blk 22,03,657.0,1,sales,Apartment,D10,278802
+877,22161,Parksuites,2022-04-08,1328000.0,2285.0,Blk 22,03,581.0,1,sales,Apartment,D10,278802
+878,22161,Parksuites,2019-02-25,1128180.0,1941.0,Blk 26,03,581.0,1,sales,Apartment,D10,278804
+879,22161,Parksuites,2018-05-11,1389390.0,2089.0,Blk 26,03,646.0,1,sales,Apartment,D10,278804
+880,22161,Parksuites,2018-04-28,1333960.0,2041.0,Blk 26,03,635.0,1,sales,Apartment,D10,278804
+881,22161,Parksuites,2018-03-08,1485435.0,2232.0,Blk 26,03,646.0,1,sales,Apartment,D10,278804
+882,22161,Parksuites,2018-03-06,1279036.0,2139.0,Blk 26,02,581.0,1,sales,Apartment,D10,278804
+883,22161,Parksuites,2018-02-22,1349809.0,2215.0,Blk 26,03,592.0,1,sales,Apartment,D10,278804
+1301,22701,Queens Peak,2026-08-28,1050000.0,2168.0,Blk 1,21,484.0,1,sales,Condominium,D03,149456
+1302,22701,Queens Peak,2026-08-12,1035000.0,2137.0,Blk 1,11,484.0,1,sales,Condominium,D03,149456
+1303,22701,Queens Peak,2026-07-10,1050000.0,2168.0,Blk 1,24,484.0,1,sales,Condominium,D03,149456
+1304,22701,Queens Peak,2026-06-26,1080000.0,2230.0,Blk 1,26,484.0,1,sales,Condominium,D03,149456
+1305,22701,Queens Peak,2026-06-05,968000.0,2193.0,Blk 1,24,441.0,1,sales,Condominium,D03,149456
+1306,22701,Queens Peak,2026-04-30,972000.0,2202.0,Blk 1,13,441.0,1,sales,Condominium,D03,149456
+1307,22701,Queens Peak,2026-04-29,965000.0,2241.0,Blk 3,26,431.0,1,sales,Condominium,D03,149457
+1308,22701,Queens Peak,2026-04-24,970000.0,2253.0,Blk 1,18,431.0,1,sales,Condominium,D03,149456
+1309,22701,Queens Peak,2026-01-21,948000.0,2202.0,Blk 1,08,431.0,1,sales,Condominium,D03,149456
+1310,22701,Queens Peak,2025-12-12,980000.0,2221.0,Blk 1,18,441.0,1,sales,Condominium,D03,149456
+1311,22701,Queens Peak,2025-12-05,955000.0,2218.0,Blk 1,12,431.0,1,sales,Condominium,D03,149456
+1312,22701,Queens Peak,2025-10-10,970000.0,2253.0,Blk 1,26,431.0,1,sales,Condominium,D03,149456
+1313,22701,Queens Peak,2025-09-29,968000.0,2193.0,Blk 3,21,441.0,1,sales,Condominium,D03,149457
+1314,22701,Queens Peak,2025-09-24,968000.0,2248.0,Blk 3,15,431.0,1,sales,Condominium,D03,149457
+1315,22701,Queens Peak,2025-09-17,948000.0,2202.0,Blk 1,18,431.0,1,sales,Condominium,D03,149456
+1316,22701,Queens Peak,2025-08-29,1058000.0,2184.0,Blk 1,20,484.0,1,sales,Condominium,D03,149456
+1317,22701,Queens Peak,2025-08-12,985000.0,2232.0,Blk 1,21,441.0,1,sales,Condominium,D03,149456
+1318,22701,Queens Peak,2025-06-25,968000.0,2193.0,Blk 1,23,441.0,1,sales,Condominium,D03,149456
+1319,22701,Queens Peak,2025-06-10,1133000.0,2288.0,Blk 3,18,495.0,1,sales,Condominium,D03,149457
+1320,22701,Queens Peak,2025-04-15,1138000.0,2298.0,Blk 1,25,495.0,1,sales,Condominium,D03,149456
+1321,22701,Queens Peak,2025-04-03,978000.0,2271.0,Blk 1,10,431.0,1,sales,Condominium,D03,149456
+1322,22701,Queens Peak,2025-03-10,955000.0,2164.0,Blk 3,17,441.0,1,sales,Condominium,D03,149457
+1323,22701,Queens Peak,2025-02-28,1138000.0,2298.0,Blk 3,25,495.0,1,sales,Condominium,D03,149457
+1324,22701,Queens Peak,2025-01-13,950000.0,2206.0,Blk 3,13,431.0,1,sales,Condominium,D03,149457
+1325,22701,Queens Peak,2024-11-27,968000.0,2248.0,Blk 3,16,431.0,1,sales,Condominium,D03,149457
+984,22746,90B Telok Blangah Street 31,2026-08-01,1060000.0,1060.0,Blk 90B,25,1001.0,3,sales,,D04,102090
+985,22746,90B Telok Blangah Street 31,2026-04-01,935000.0,935.0,Blk 90B,4,1001.0,3,sales,,D04,102090
+986,22746,90B Telok Blangah Street 31,2026-04-01,938000.0,938.0,Blk 90B,13,1001.0,3,sales,,D04,102090
+988,22746,90B Telok Blangah Street 31,2026-03-01,928000.0,928.0,Blk 90B,13,1001.0,3,sales,,D04,102090
+987,22746,90B Telok Blangah Street 31,2026-03-01,1070888.0,1071.0,Blk 90B,25,1001.0,3,sales,,D04,102090
+990,22746,90B Telok Blangah Street 31,2025-12-01,938888.0,939.0,Blk 90B,7,1001.0,3,sales,,D04,102090
+989,22746,90B Telok Blangah Street 31,2025-12-01,995000.0,995.0,Blk 90B,16,1001.0,3,sales,,D04,102090
+991,22746,90B Telok Blangah Street 31,2025-06-01,940000.0,940.0,Blk 90B,7,1001.0,3,sales,,D04,102090
+992,22746,90B Telok Blangah Street 31,2025-04-01,938000.0,938.0,Blk 90B,7,1001.0,3,sales,,D04,102090
+993,22746,90B Telok Blangah Street 31,2025-03-01,983000.0,983.0,Blk 90B,25,1001.0,3,sales,,D04,102090
+994,22746,90B Telok Blangah Street 31,2024-08-01,838000.0,838.0,Blk 90B,1,1001.0,3,sales,,D04,102090
+995,22746,90B Telok Blangah Street 31,2024-08-01,940000.0,940.0,Blk 90B,13,1001.0,3,sales,,D04,102090
+996,22746,90B Telok Blangah Street 31,2024-07-01,950000.0,950.0,Blk 90B,22,1001.0,3,sales,,D04,102090
+997,22746,90B Telok Blangah Street 31,2024-05-01,1008000.0,1008.0,Blk 90B,19,1001.0,3,sales,,D04,102090
+998,22746,90B Telok Blangah Street 31,2024-04-01,880000.0,880.0,Blk 90B,10,1001.0,3,sales,,D04,102090
+999,22746,90B Telok Blangah Street 31,2024-03-01,936000.0,936.0,Blk 90B,19,1001.0,3,sales,,D04,102090
+1000,22746,90B Telok Blangah Street 31,2024-02-01,940000.0,940.0,Blk 90B,13,1001.0,3,sales,,D04,102090
+1002,22746,90B Telok Blangah Street 31,2024-01-01,888000.0,888.0,Blk 90B,4,1001.0,3,sales,,D04,102090
+1001,22746,90B Telok Blangah Street 31,2024-01-01,905000.0,905.0,Blk 90B,13,1001.0,3,sales,,D04,102090
+1003,22746,90B Telok Blangah Street 31,2024-01-01,975000.0,975.0,Blk 90B,25,1001.0,3,sales,,D04,102090
+1004,22746,90B Telok Blangah Street 31,2024-01-01,900000.0,900.0,Blk 90B,10,1001.0,3,sales,,D04,102090
+1006,22746,90B Telok Blangah Street 31,2023-11-01,860888.0,861.0,Blk 90B,4,1001.0,3,sales,,D04,102090
+1005,22746,90B Telok Blangah Street 31,2023-11-01,965000.0,965.0,Blk 90B,25,1001.0,3,sales,,D04,102090
+1007,22746,90B Telok Blangah Street 31,2023-08-01,900000.0,900.0,Blk 90B,19,1001.0,3,sales,,D04,102090
+1008,22746,90B Telok Blangah Street 31,2023-06-01,940000.0,940.0,Blk 90B,25,1001.0,3,sales,,D04,102090
+603,23462,Stirling Residences,2026-08-14,1238000.0,2447.0,Blk 21,38,506.0,1,sales,Apartment,D03,148960
+604,23462,Stirling Residences,2026-07-16,1238888.0,2449.0,Blk 23,38,506.0,1,sales,Apartment,D03,148961
+605,23462,Stirling Residences,2026-06-29,1200000.0,2372.0,Blk 21,17,506.0,1,sales,Apartment,D03,148960
+606,23462,Stirling Residences,2026-06-15,1055000.0,2391.0,Blk 21,11,441.0,1,sales,Apartment,D03,148960
+607,23462,Stirling Residences,2026-06-03,1206000.0,2384.0,Blk 21,36,506.0,1,sales,Apartment,D03,148960
+608,23462,Stirling Residences,2026-05-20,1170888.0,2314.0,Blk 21,18,506.0,1,sales,Apartment,D03,148960
+609,23462,Stirling Residences,2026-05-19,1160000.0,2293.0,Blk 21,08,506.0,1,sales,Apartment,D03,148960
+610,23462,Stirling Residences,2026-05-08,1200000.0,2372.0,Blk 21,32,506.0,1,sales,Apartment,D03,148960
+611,23462,Stirling Residences,2026-04-09,1052000.0,2384.0,Blk 21,23,441.0,1,sales,Apartment,D03,148960
+612,23462,Stirling Residences,2026-03-19,1090000.0,2470.0,Blk 23,15,441.0,1,sales,Apartment,D03,148961
+613,23462,Stirling Residences,2026-03-06,1188000.0,2348.0,Blk 21,25,506.0,1,sales,Apartment,D03,148960
+614,23462,Stirling Residences,2026-02-24,1153888.0,2281.0,Blk 25,18,506.0,1,sales,Apartment,D03,148962
+615,23462,Stirling Residences,2026-01-13,1035000.0,2345.0,Blk 25,09,441.0,1,sales,Apartment,D03,148962
+616,23462,Stirling Residences,2025-12-19,1180000.0,2332.0,Blk 23,26,506.0,1,sales,Apartment,D03,148961
+617,23462,Stirling Residences,2025-12-18,1205000.0,2382.0,Blk 21,30,506.0,1,sales,Apartment,D03,148960
+618,23462,Stirling Residences,2025-12-04,1048000.0,2375.0,Blk 25,30,441.0,1,sales,Apartment,D03,148962
+619,23462,Stirling Residences,2025-12-02,1000000.0,2266.0,Blk 21,05,441.0,1,sales,Apartment,D03,148960
+620,23462,Stirling Residences,2025-11-20,1175000.0,2323.0,Blk 25,26,506.0,1,sales,Apartment,D03,148962
+621,23462,Stirling Residences,2025-11-11,1141000.0,2255.0,Blk 23,09,506.0,1,sales,Apartment,D03,148961
+622,23462,Stirling Residences,2025-11-10,1080000.0,2447.0,Blk 23,38,441.0,1,sales,Apartment,D03,148961
+623,23462,Stirling Residences,2025-11-10,1180000.0,2332.0,Blk 21,29,506.0,1,sales,Apartment,D03,148960
+624,23462,Stirling Residences,2025-10-13,1010000.0,1996.0,Blk 21,28,506.0,1,sales,Apartment,D03,148960
+625,23462,Stirling Residences,2025-09-25,1025000.0,2323.0,Blk 21,10,441.0,1,sales,Apartment,D03,148960
+626,23462,Stirling Residences,2025-09-17,1025000.0,2323.0,Blk 25,11,441.0,1,sales,Apartment,D03,148962
+627,23462,Stirling Residences,2025-08-21,1014000.0,2298.0,Blk 25,14,441.0,1,sales,Apartment,D03,148962
+1403,23539,3 Cuscaden,2024-12-10,1470000.0,3104.0,Blk 3,06,474.0,1,sales,Apartment,D10,249690
+1404,23539,3 Cuscaden,2021-06-23,1904488.0,4213.0,Blk 3,19,452.0,1,sales,Apartment,D10,249690
+1405,23539,3 Cuscaden,2020-08-06,1940308.0,4192.0,Blk 3,19,463.0,1,sales,Apartment,D10,249690
+1406,23539,3 Cuscaden,2020-01-18,1631960.0,3446.0,Blk 3,13,474.0,1,sales,Apartment,D10,249690
+1407,23539,3 Cuscaden,2019-11-26,1693200.0,3575.0,Blk 3,16,474.0,1,sales,Apartment,D10,249690
+1408,23539,3 Cuscaden,2019-10-30,1552361.0,3278.0,Blk 3,03,474.0,1,sales,Apartment,D10,249690
+1409,23539,3 Cuscaden,2019-10-21,1743000.0,3766.0,Blk 3,16,463.0,1,sales,Apartment,D10,249690
+1410,23539,3 Cuscaden,2019-10-12,1564607.0,3304.0,Blk 3,05,474.0,1,sales,Apartment,D10,249690
+1411,23539,3 Cuscaden,2019-09-09,1778351.0,3934.0,Blk 3,17,452.0,1,sales,Apartment,D10,249690
+1412,23539,3 Cuscaden,2019-08-28,1558484.0,3291.0,Blk 3,04,474.0,1,sales,Apartment,D10,249690
+1413,23539,3 Cuscaden,2019-08-23,1720619.0,3633.0,Blk 3,17,474.0,1,sales,Apartment,D10,249690
+1414,23539,3 Cuscaden,2019-08-20,1560000.0,3370.0,Blk 3,03,463.0,1,sales,Apartment,D10,249690
+1415,23539,3 Cuscaden,2019-08-13,1747151.0,4162.0,Blk 3,19,420.0,1,sales,Apartment,D10,249690
+1416,23539,3 Cuscaden,2019-08-07,1580400.0,3496.0,Blk 3,04,452.0,1,sales,Apartment,D10,249690
+1417,23539,3 Cuscaden,2019-08-06,1632990.0,3890.0,Blk 3,18,420.0,1,sales,Apartment,D10,249690
+1418,23539,3 Cuscaden,2019-08-04,1625845.0,3433.0,Blk 3,12,474.0,1,sales,Apartment,D10,249690
+1419,23539,3 Cuscaden,2019-07-15,1719587.0,3715.0,Blk 3,13,463.0,1,sales,Apartment,D10,249690
+1420,23539,3 Cuscaden,2019-07-15,1700000.0,3589.0,Blk 3,15,474.0,1,sales,Apartment,D10,249690
+1421,23539,3 Cuscaden,2019-06-24,1601350.0,3381.0,Blk 3,08,474.0,1,sales,Apartment,D10,249690
+1422,23539,3 Cuscaden,2019-05-30,1790000.0,3867.0,Blk 3,17,463.0,1,sales,Apartment,D10,249690
+1423,23539,3 Cuscaden,2019-05-21,1685567.0,3728.0,Blk 3,13,452.0,1,sales,Apartment,D10,249690
+1424,23539,3 Cuscaden,2019-05-18,1607473.0,3394.0,Blk 3,09,474.0,1,sales,Apartment,D10,249690
+1425,23539,3 Cuscaden,2019-05-17,1729948.0,3827.0,Blk 3,15,452.0,1,sales,Apartment,D10,249690
+1426,23539,3 Cuscaden,2019-05-17,1570732.0,3316.0,Blk 3,06,474.0,1,sales,Apartment,D10,249690
+1427,23539,3 Cuscaden,2019-05-13,1598288.0,3453.0,Blk 3,04,463.0,1,sales,Apartment,D10,249690
+528,23566,Fourth Avenue Residences,2026-04-10,1098000.0,2267.0,Blk 6,04,484.0,1,sales,Apartment,D10,268673
+529,23566,Fourth Avenue Residences,2025-12-29,1030000.0,2126.0,Blk 6,02,484.0,1,sales,Apartment,D10,268673
+530,23566,Fourth Avenue Residences,2025-09-18,1118000.0,2210.0,Blk 12,02,506.0,1,sales,Apartment,D10,268676
+531,23566,Fourth Avenue Residences,2025-09-05,1090000.0,2250.0,Blk 6,06,484.0,1,sales,Apartment,D10,268673
+532,23566,Fourth Avenue Residences,2025-06-04,1090000.0,2250.0,Blk 16,01,484.0,1,sales,Apartment,D10,268678
+533,23566,Fourth Avenue Residences,2025-05-22,1168000.0,2309.0,Blk 18,04,506.0,1,sales,Apartment,D10,268679
+534,23566,Fourth Avenue Residences,2025-05-14,1300000.0,2684.0,Blk 6,10,484.0,1,sales,Apartment,D10,268673
+535,23566,Fourth Avenue Residences,2025-04-22,1142000.0,2358.0,Blk 12,05,484.0,1,sales,Apartment,D10,268676
+536,23566,Fourth Avenue Residences,2025-03-12,1090000.0,2250.0,Blk 12,06,484.0,1,sales,Apartment,D10,268676
+537,23566,Fourth Avenue Residences,2025-02-28,1288000.0,2659.0,Blk 12,09,484.0,1,sales,Apartment,D10,268676
+538,23566,Fourth Avenue Residences,2024-12-09,1070000.0,2209.0,Blk 6,02,484.0,1,sales,Apartment,D10,268673
+539,23566,Fourth Avenue Residences,2024-11-22,1055000.0,2178.0,Blk 14,01,484.0,1,sales,Apartment,D10,268677
+540,23566,Fourth Avenue Residences,2024-11-01,1120000.0,2312.0,Blk 6,03,484.0,1,sales,Apartment,D10,268673
+541,23566,Fourth Avenue Residences,2023-09-28,1060000.0,2188.0,Blk 12,01,484.0,1,sales,Apartment,D10,268676
+542,23566,Fourth Avenue Residences,2023-07-07,1365000.0,2698.0,Blk 18,06,506.0,1,sales,Apartment,D10,268679
+543,23566,Fourth Avenue Residences,2023-04-26,1260000.0,2545.0,Blk 6,06,495.0,1,sales,Apartment,D10,268673
+544,23566,Fourth Avenue Residences,2023-01-06,1260000.0,2660.0,Blk 12,08,474.0,1,sales,Apartment,D10,268676
+545,23566,Fourth Avenue Residences,2022-09-26,1292000.0,2728.0,Blk 12,10,474.0,1,sales,Apartment,D10,268676
+547,23566,Fourth Avenue Residences,2022-09-25,1363000.0,2694.0,Blk 12,10,506.0,1,sales,Apartment,D10,268676
+546,23566,Fourth Avenue Residences,2022-09-25,1347020.0,2663.0,Blk 12,09,506.0,1,sales,Apartment,D10,268676
+548,23566,Fourth Avenue Residences,2022-09-12,1346000.0,2661.0,Blk 6,10,506.0,1,sales,Apartment,D10,268673
+549,23566,Fourth Avenue Residences,2022-09-06,1376160.0,2664.0,Blk 6,10,517.0,1,sales,Apartment,D10,268673
+550,23566,Fourth Avenue Residences,2022-08-16,1340000.0,2594.0,Blk 6,08,517.0,1,sales,Apartment,D10,268673
+552,23566,Fourth Avenue Residences,2022-08-05,1247000.0,2574.0,Blk 6,09,484.0,1,sales,Apartment,D10,268673
+551,23566,Fourth Avenue Residences,2022-08-05,1330000.0,2686.0,Blk 6,10,495.0,1,sales,Apartment,D10,268673
+743,23759,One Pearl Bank,2026-07-06,988000.0,2295.0,Blk 1,18,431.0,1,sales,Apartment,D03,169016
+744,23759,One Pearl Bank,2026-04-27,1385000.0,2428.0,Blk 1,32,570.0,1,sales,Apartment,D03,169016
+745,23759,One Pearl Bank,2025-12-19,955000.0,2218.0,Blk 1,08,431.0,1,sales,Apartment,D03,169016
+746,23759,One Pearl Bank,2025-11-26,953000.0,2213.0,Blk 1,04,431.0,1,sales,Apartment,D03,169016
+747,23759,One Pearl Bank,2025-11-20,1010000.0,2346.0,Blk 1,25,431.0,1,sales,Apartment,D03,169016
+748,23759,One Pearl Bank,2025-07-21,1238888.0,2349.0,Blk 1,13,527.0,1,sales,Apartment,D03,169016
+749,23759,One Pearl Bank,2025-06-19,1270000.0,2408.0,Blk 1,33,527.0,1,sales,Apartment,D03,169016
+750,23759,One Pearl Bank,2025-06-18,1410000.0,2472.0,Blk 1,17,570.0,1,sales,Apartment,D03,169016
+751,23759,One Pearl Bank,2025-05-22,1398000.0,2498.0,Blk 1,23,560.0,1,sales,Apartment,D03,169016
+752,23759,One Pearl Bank,2025-05-02,1130000.0,2142.0,Blk 1,25,527.0,1,sales,Apartment,D03,169016
+753,23759,One Pearl Bank,2025-04-14,1199888.0,2275.0,Blk 1,02,527.0,1,sales,Apartment,D03,169016
+754,23759,One Pearl Bank,2024-08-29,1332500.0,2526.0,Blk 1,03,527.0,1,sales,Apartment,D03,169016
+755,23759,One Pearl Bank,2024-08-02,1050000.0,2439.0,Blk 1,37,431.0,1,sales,Apartment,D03,169016
+756,23759,One Pearl Bank,2023-11-16,1140000.0,2648.0,Blk 1,08,431.0,1,sales,Apartment,D03,169016
+757,23759,One Pearl Bank,2023-10-24,1480000.0,2594.0,Blk 1,12,570.0,1,sales,Apartment,D03,169016
+758,23759,One Pearl Bank,2023-08-18,1140000.0,2648.0,Blk 1,09,431.0,1,sales,Apartment,D03,169016
+759,23759,One Pearl Bank,2023-08-01,1120000.0,2601.0,Blk 1,09,431.0,1,sales,Apartment,D03,169016
+760,23759,One Pearl Bank,2022-09-03,1234000.0,2866.0,Blk 1,23,431.0,1,sales,Apartment,D03,169016
+761,23759,One Pearl Bank,2022-08-21,1229000.0,2854.0,Blk 1,21,431.0,1,sales,Apartment,D03,169016
+762,23759,One Pearl Bank,2022-08-21,1664000.0,2973.0,Blk 1,37,560.0,1,sales,Apartment,D03,169016
+763,23759,One Pearl Bank,2022-08-20,1238000.0,2875.0,Blk 1,25,431.0,1,sales,Apartment,D03,169016
+764,23759,One Pearl Bank,2022-07-31,1226000.0,2847.0,Blk 1,21,431.0,1,sales,Apartment,D03,169016
+765,23759,One Pearl Bank,2022-07-16,1237000.0,2873.0,Blk 1,26,431.0,1,sales,Apartment,D03,169016
+766,23759,One Pearl Bank,2022-07-15,1237000.0,2873.0,Blk 1,26,431.0,1,sales,Apartment,D03,169016
+767,23759,One Pearl Bank,2022-07-13,1656000.0,2959.0,Blk 1,36,560.0,1,sales,Apartment,D03,169016
+503,23763,Parc Clematis,2026-01-30,935000.0,2068.0,Blk 8E,15,452.0,1,sales,Apartment,D05,128827
+504,23763,Parc Clematis,2025-12-15,905000.0,2002.0,Blk 8C,06,452.0,1,sales,Apartment,D05,128825
+505,23763,Parc Clematis,2025-11-11,920000.0,2035.0,Blk 8E,12,452.0,1,sales,Apartment,D05,128827
+506,23763,Parc Clematis,2025-11-11,933000.0,2064.0,Blk 8C,16,452.0,1,sales,Apartment,D05,128825
+507,23763,Parc Clematis,2025-10-23,980000.0,1897.0,Blk 8B,17,517.0,1,sales,Apartment,D05,128824
+508,23763,Parc Clematis,2025-10-08,940000.0,2079.0,Blk 8C,18,452.0,1,sales,Apartment,D05,128825
+509,23763,Parc Clematis,2025-10-03,880000.0,1947.0,Blk 8E,04,452.0,1,sales,Apartment,D05,128827
+510,23763,Parc Clematis,2025-10-01,920000.0,2035.0,Blk 8B,09,452.0,1,sales,Apartment,D05,128824
+511,23763,Parc Clematis,2025-09-25,908888.0,2010.0,Blk 8E,14,452.0,1,sales,Apartment,D05,128827
+512,23763,Parc Clematis,2025-09-17,925000.0,1828.0,Blk 8E,02,506.0,1,sales,Apartment,D05,128827
+513,23763,Parc Clematis,2025-09-04,990000.0,1957.0,Blk 8E,20,506.0,1,sales,Apartment,D05,128827
+514,23763,Parc Clematis,2025-08-29,922000.0,2039.0,Blk 8B,07,452.0,1,sales,Apartment,D05,128824
+515,23763,Parc Clematis,2025-08-19,900000.0,1991.0,Blk 8B,18,452.0,1,sales,Apartment,D05,128824
+516,23763,Parc Clematis,2025-07-28,945000.0,2090.0,Blk 8B,22,452.0,1,sales,Apartment,D05,128824
+517,23763,Parc Clematis,2025-07-28,925000.0,2046.0,Blk 8B,19,452.0,1,sales,Apartment,D05,128824
+518,23763,Parc Clematis,2025-06-19,900000.0,1991.0,Blk 8C,02,452.0,1,sales,Apartment,D05,128825
+519,23763,Parc Clematis,2025-06-13,1010000.0,1996.0,Blk 8E,21,506.0,1,sales,Apartment,D05,128827
+520,23763,Parc Clematis,2025-06-10,1002000.0,1981.0,Blk 8E,22,506.0,1,sales,Apartment,D05,128827
+521,23763,Parc Clematis,2025-05-06,880000.0,1947.0,Blk 8E,06,452.0,1,sales,Apartment,D05,128827
+522,23763,Parc Clematis,2025-04-28,925000.0,2046.0,Blk 8C,18,452.0,1,sales,Apartment,D05,128825
+523,23763,Parc Clematis,2025-04-16,870000.0,1924.0,Blk 8E,05,452.0,1,sales,Apartment,D05,128827
+525,23763,Parc Clematis,2025-04-01,900000.0,1991.0,Blk 8B,06,452.0,1,sales,Apartment,D05,128824
+524,23763,Parc Clematis,2025-04-01,935000.0,2068.0,Blk 8E,22,452.0,1,sales,Apartment,D05,128827
+526,23763,Parc Clematis,2025-03-24,985000.0,1906.0,Blk 8B,04,517.0,1,sales,Apartment,D05,128824
+527,23763,Parc Clematis,2025-02-12,920000.0,1819.0,Blk 8E,03,506.0,1,sales,Apartment,D05,128827
+1034,23765,View at Kismis,2026-07-13,1230000.0,2078.0,Blk 21,01,592.0,2,sales,Apartment,D21,596187
+1035,23765,View at Kismis,2026-06-10,1370000.0,1958.0,Blk 19,03,700.0,2,sales,Apartment,D21,598012
+1036,23765,View at Kismis,2026-05-26,1380000.0,1972.0,Blk 19,05,700.0,2,sales,Apartment,D21,598012
+1037,23765,View at Kismis,2026-05-05,1100000.0,1825.0,Blk 15,05,603.0,2,sales,Apartment,D21,598008
+1038,23765,View at Kismis,2025-12-05,1330000.0,1931.0,Blk 23,02,689.0,2,sales,Apartment,D21,596188
+1039,23765,View at Kismis,2025-12-02,1390000.0,1987.0,Blk 19,03,700.0,2,sales,Apartment,D21,598012
+1040,23765,View at Kismis,2025-10-30,1300000.0,1830.0,Blk 21,02,710.0,2,sales,Apartment,D21,596187
+1041,23765,View at Kismis,2025-06-23,1200000.0,2027.0,Blk 23,01,592.0,2,sales,Apartment,D21,596188
+1042,23765,View at Kismis,2025-06-18,1460000.0,2087.0,Blk 21,05,700.0,2,sales,Apartment,D21,596187
+1043,23765,View at Kismis,2025-05-16,1275000.0,2154.0,Blk 21,05,592.0,2,sales,Apartment,D21,596187
+1044,23765,View at Kismis,2025-05-02,1198888.0,1989.0,Blk 25,02,603.0,2,sales,Apartment,D21,596189
+1045,23765,View at Kismis,2025-04-17,1400000.0,2032.0,Blk 17,05,689.0,2,sales,Apartment,D21,598010
+1046,23765,View at Kismis,2025-04-03,1288000.0,2137.0,Blk 23,03,603.0,2,sales,Apartment,D21,596188
+1047,23765,View at Kismis,2025-03-27,1208000.0,2040.0,Blk 21,04,592.0,2,sales,Apartment,D21,596187
+1048,23765,View at Kismis,2025-03-26,1480000.0,2115.0,Blk 21,03,700.0,2,sales,Apartment,D21,596187
+1049,23765,View at Kismis,2025-03-11,1258000.0,2125.0,Blk 21,05,592.0,2,sales,Apartment,D21,596187
+1050,23765,View at Kismis,2025-02-14,1230000.0,2041.0,Blk 15,02,603.0,2,sales,Apartment,D21,598008
+1051,23765,View at Kismis,2024-12-09,1330000.0,2247.0,Blk 25,04,592.0,2,sales,Apartment,D21,596189
+1052,23765,View at Kismis,2024-11-29,1478000.0,2080.0,Blk 23,05,710.0,2,sales,Apartment,D21,596188
+1053,23765,View at Kismis,2024-11-25,1350000.0,1930.0,Blk 17,02,700.0,2,sales,Apartment,D21,598010
+1054,23765,View at Kismis,2024-10-17,1440000.0,2058.0,Blk 19,01,700.0,2,sales,Apartment,D21,598012
+1055,23765,View at Kismis,2024-10-14,1225000.0,2032.0,Blk 15,04,603.0,2,sales,Apartment,D21,598008
+1056,23765,View at Kismis,2024-10-04,1445000.0,2065.0,Blk 17,05,700.0,2,sales,Apartment,D21,598010
+1057,23765,View at Kismis,2024-09-12,1378000.0,1970.0,Blk 21,04,700.0,2,sales,Apartment,D21,596187
+1058,23765,View at Kismis,2024-09-03,1440000.0,2058.0,Blk 19,01,700.0,2,sales,Apartment,D21,598012
+173,23798,Avenue South Residence,2026-08-26,1028888.0,1951.0,Blk 11,27,527.0,1,sales,Apartment,D03,168877
+174,23798,Avenue South Residence,2026-05-21,1110000.0,2105.0,Blk 11,25,527.0,1,sales,Apartment,D03,168877
+175,23798,Avenue South Residence,2026-05-13,980000.0,2069.0,Blk 1,04,474.0,1,sales,Apartment,D03,168872
+176,23798,Avenue South Residence,2026-04-29,1220000.0,2313.0,Blk 13,34,527.0,1,sales,Apartment,D03,168878
+177,23798,Avenue South Residence,2026-03-19,980000.0,1858.0,Blk 11,21,527.0,1,sales,Apartment,D03,168877
+178,23798,Avenue South Residence,2026-01-23,1150000.0,2180.0,Blk 13,51,527.0,1,sales,Apartment,D03,168878
+179,23798,Avenue South Residence,2025-11-21,990500.0,2091.0,Blk 5,04,474.0,1,sales,Apartment,D03,168874
+180,23798,Avenue South Residence,2025-09-12,988888.0,2088.0,Blk 3,04,474.0,1,sales,Apartment,D03,168873
+181,23798,Avenue South Residence,2025-08-15,1275000.0,2417.0,Blk 11,47,527.0,1,sales,Apartment,D03,168877
+182,23798,Avenue South Residence,2025-05-26,660000.0,1394.0,Blk 5,02,474.0,1,sales,Apartment,D03,168874
+183,23798,Avenue South Residence,2025-05-02,1070000.0,2029.0,Blk 13,16,527.0,1,sales,Apartment,D03,168878
+184,23798,Avenue South Residence,2025-04-22,1200000.0,2275.0,Blk 11,16,527.0,1,sales,Apartment,D03,168877
+185,23798,Avenue South Residence,2025-03-07,920000.0,1943.0,Blk 1,02,474.0,1,sales,Apartment,D03,168872
+186,23798,Avenue South Residence,2025-02-28,960000.0,1939.0,Blk 1,03,495.0,1,sales,Apartment,D03,168872
+187,23798,Avenue South Residence,2025-02-24,1250000.0,2370.0,Blk 13,32,527.0,1,sales,Apartment,D03,168878
+188,23798,Avenue South Residence,2024-11-18,1280000.0,2427.0,Blk 13,39,527.0,1,sales,Apartment,D03,168878
+189,23798,Avenue South Residence,2024-10-03,1170000.0,2218.0,Blk 13,10,527.0,1,sales,Apartment,D03,168878
+190,23798,Avenue South Residence,2024-05-31,1200000.0,2275.0,Blk 11,18,527.0,1,sales,Apartment,D03,168877
+191,23798,Avenue South Residence,2024-05-10,1360000.0,2579.0,Blk 13,40,527.0,1,sales,Apartment,D03,168878
+192,23798,Avenue South Residence,2023-12-18,1050000.0,2121.0,Blk 5,03,495.0,1,sales,Apartment,D03,168874
+193,23798,Avenue South Residence,2023-12-07,1120000.0,2365.0,Blk 5,04,474.0,1,sales,Apartment,D03,168874
+194,23798,Avenue South Residence,2023-12-05,1240000.0,2351.0,Blk 13,09,527.0,1,sales,Apartment,D03,168878
+195,23798,Avenue South Residence,2023-10-17,1095000.0,2076.0,Blk 13,08,527.0,1,sales,Apartment,D03,168878
+196,23798,Avenue South Residence,2022-09-07,1382000.0,2620.0,Blk 11,54,527.0,1,sales,Apartment,D03,168877
+197,23798,Avenue South Residence,2022-09-05,1372000.0,2601.0,Blk 13,52,527.0,1,sales,Apartment,D03,168878
+1496,23805,Cuscaden Reserve,2024-11-01,2485560.0,3299.0,Blk 8,27,753.0,1,sales,Condominium,D10,249732
+1498,23805,Cuscaden Reserve,2024-10-18,2404860.0,3192.0,Blk 8,23,753.0,1,sales,Condominium,D10,249732
+1497,23805,Cuscaden Reserve,2024-10-18,2519440.0,3344.0,Blk 8,24,753.0,1,sales,Condominium,D10,249732
+1499,23805,Cuscaden Reserve,2024-09-16,2332230.0,3095.0,Blk 8,14,753.0,1,sales,Condominium,D10,249732
+1500,23805,Cuscaden Reserve,2024-03-28,2411000.0,3200.0,Blk 8,12,753.0,1,sales,Condominium,D10,249732
+846,23848,Leedon Green,2025-12-26,1290000.0,2724.0,Blk 32,06,474.0,1,sales,Condominium,D10,266075
+847,23848,Leedon Green,2025-07-21,1300000.0,2745.0,Blk 32,05,474.0,1,sales,Condominium,D10,266075
+848,23848,Leedon Green,2024-10-22,1350000.0,2850.0,Blk 34,04,474.0,1,sales,Condominium,D10,266076
+849,23848,Leedon Green,2024-10-02,1500000.0,2581.0,Blk 34,05,581.0,1,sales,Condominium,D10,266076
+851,23848,Leedon Green,2024-03-25,1692000.0,3144.0,Blk 36,12,538.0,1,sales,Condominium,D10,266077
+850,23848,Leedon Green,2024-03-25,1682000.0,3125.0,Blk 36,10,538.0,1,sales,Condominium,D10,266077
+852,23848,Leedon Green,2024-02-28,1692200.0,3144.0,Blk 38,11,538.0,1,sales,Condominium,D10,266078
+853,23848,Leedon Green,2024-02-24,1655200.0,3075.0,Blk 36,08,538.0,1,sales,Condominium,D10,266077
+854,23848,Leedon Green,2024-01-31,1629000.0,3027.0,Blk 30,09,538.0,1,sales,Condominium,D10,266223
+855,23848,Leedon Green,2023-11-12,1683000.0,3127.0,Blk 36,11,538.0,1,sales,Condominium,D10,266077
+856,23848,Leedon Green,2023-11-09,1608000.0,2988.0,Blk 32,06,538.0,1,sales,Condominium,D10,266075
+857,23848,Leedon Green,2023-10-20,1741000.0,3235.0,Blk 26,10,538.0,1,sales,Condominium,D10,266221
+858,23848,Leedon Green,2023-10-01,1749000.0,3250.0,Blk 26,11,538.0,1,sales,Condominium,D10,266221
+859,23848,Leedon Green,2023-09-30,1700000.0,3159.0,Blk 26,07,538.0,1,sales,Condominium,D10,266221
+860,23848,Leedon Green,2023-09-05,1628000.0,3025.0,Blk 26,02,538.0,1,sales,Condominium,D10,266221
+861,23848,Leedon Green,2023-07-31,1630000.0,3029.0,Blk 30,11,538.0,1,sales,Condominium,D10,266223
+862,23848,Leedon Green,2023-07-09,1608000.0,2988.0,Blk 32,08,538.0,1,sales,Condominium,D10,266075
+863,23848,Leedon Green,2023-07-03,1509000.0,2503.0,Blk 34,12,603.0,1,sales,Condominium,D10,266076
+864,23848,Leedon Green,2023-07-02,1499000.0,2487.0,Blk 34,12,603.0,1,sales,Condominium,D10,266076
+865,23848,Leedon Green,2023-06-12,1683000.0,3127.0,Blk 38,10,538.0,1,sales,Condominium,D10,266078
+866,23848,Leedon Green,2023-06-06,1509000.0,2503.0,Blk 34,12,603.0,1,sales,Condominium,D10,266076
+868,23848,Leedon Green,2023-06-01,1657000.0,3079.0,Blk 38,09,538.0,1,sales,Condominium,D10,266078
+867,23848,Leedon Green,2023-06-01,1509000.0,2503.0,Blk 32,12,603.0,1,sales,Condominium,D10,266075
+869,23848,Leedon Green,2023-05-25,1657000.0,3079.0,Blk 36,09,538.0,1,sales,Condominium,D10,266077
+870,23848,Leedon Green,2023-05-16,1730000.0,3214.0,Blk 26,09,538.0,1,sales,Condominium,D10,266221
+628,23957,Forett at Bukit Timah,2025-09-29,1050000.0,2217.0,Blk 34A,07,474.0,1,sales,Apartment,D21,596112
+629,23957,Forett at Bukit Timah,2025-09-05,1050000.0,2217.0,Blk 32B,08,474.0,1,sales,Apartment,D21,596111
+630,23957,Forett at Bukit Timah,2025-08-14,1038888.0,2194.0,Blk 32B,06,474.0,1,sales,Apartment,D21,596111
+631,23957,Forett at Bukit Timah,2025-05-13,1050000.0,2217.0,Blk 34B,07,474.0,1,sales,Apartment,D21,596113
+632,23957,Forett at Bukit Timah,2025-03-20,1055000.0,2228.0,Blk 34A,05,474.0,1,sales,Apartment,D21,596112
+633,23957,Forett at Bukit Timah,2023-10-20,900000.0,1900.0,Blk 34B,01,474.0,1,sales,Apartment,D21,596113
+634,23957,Forett at Bukit Timah,2022-02-27,1011000.0,2135.0,Blk 34A,04,474.0,1,sales,Apartment,D21,596112
+635,23957,Forett at Bukit Timah,2022-01-14,1042000.0,2104.0,Blk 34A,01,495.0,1,sales,Apartment,D21,596112
+636,23957,Forett at Bukit Timah,2021-12-05,1004000.0,2120.0,Blk 34,01,474.0,1,sales,Apartment,D21,596712
+637,23957,Forett at Bukit Timah,2021-11-07,984000.0,2078.0,Blk 34A,01,474.0,1,sales,Apartment,D21,596112
+638,23957,Forett at Bukit Timah,2021-10-14,1086000.0,2293.0,Blk 34,09,474.0,1,sales,Apartment,D21,596712
+639,23957,Forett at Bukit Timah,2021-10-12,974000.0,2057.0,Blk 34A,02,474.0,1,sales,Apartment,D21,596112
+640,23957,Forett at Bukit Timah,2021-10-10,1060000.0,2238.0,Blk 34A,08,474.0,1,sales,Apartment,D21,596112
+641,23957,Forett at Bukit Timah,2021-10-07,1003000.0,2118.0,Blk 34,03,474.0,1,sales,Apartment,D21,596712
+642,23957,Forett at Bukit Timah,2021-10-03,1048000.0,2213.0,Blk 34A,07,474.0,1,sales,Apartment,D21,596112
+643,23957,Forett at Bukit Timah,2021-09-18,1072000.0,2263.0,Blk 34,09,474.0,1,sales,Apartment,D21,596712
+644,23957,Forett at Bukit Timah,2021-09-15,1038000.0,2192.0,Blk 34A,06,474.0,1,sales,Apartment,D21,596112
+645,23957,Forett at Bukit Timah,2021-09-06,1038000.0,2192.0,Blk 34,06,474.0,1,sales,Apartment,D21,596712
+646,23957,Forett at Bukit Timah,2021-08-30,1021000.0,2156.0,Blk 34A,05,474.0,1,sales,Apartment,D21,596112
+647,23957,Forett at Bukit Timah,2021-08-17,1003000.0,2118.0,Blk 34A,03,474.0,1,sales,Apartment,D21,596112
+648,23957,Forett at Bukit Timah,2021-08-04,1001000.0,2114.0,Blk 34,05,474.0,1,sales,Apartment,D21,596712
+649,23957,Forett at Bukit Timah,2021-08-03,992000.0,2095.0,Blk 34,04,474.0,1,sales,Apartment,D21,596712
+650,23957,Forett at Bukit Timah,2021-08-02,1040000.0,2196.0,Blk 34,08,474.0,1,sales,Apartment,D21,596712
+651,23957,Forett at Bukit Timah,2021-07-29,1054000.0,2225.0,Blk 34,08,474.0,1,sales,Apartment,D21,596712
+652,23957,Forett at Bukit Timah,2021-07-14,1044000.0,2204.0,Blk 34,07,474.0,1,sales,Apartment,D21,596712
+909,24440,19 Nassim,2026-07-24,1500000.0,2629.0,Blk 19,02,570.0,1,sales,Apartment,D10,258482
+910,24440,19 Nassim,2026-07-16,1500000.0,2787.0,Blk 19,02,538.0,1,sales,Apartment,D10,258482
+911,24440,19 Nassim,2026-07-14,1700000.0,2980.0,Blk 19,04,570.0,1,sales,Apartment,D10,258482
+912,24440,19 Nassim,2026-07-14,1700000.0,3159.0,Blk 19,05,538.0,1,sales,Apartment,D10,258482
+913,24440,19 Nassim,2026-03-26,1848000.0,3434.0,Blk 19,04,538.0,1,sales,Apartment,D10,258482
+914,24440,19 Nassim,2026-02-27,1855000.0,3447.0,Blk 19,03,538.0,1,sales,Apartment,D10,258482
+915,24440,19 Nassim,2026-02-06,1959000.0,3640.0,Blk 19,07,538.0,1,sales,Apartment,D10,258482
+916,24440,19 Nassim,2026-01-30,2010000.0,3523.0,Blk 19,07,570.0,1,sales,Apartment,D10,258482
+917,24440,19 Nassim,2025-11-18,2070000.0,3053.0,Blk 19,02,678.0,1,sales,Apartment,D10,258482
+918,24440,19 Nassim,2025-11-14,2000000.0,3506.0,Blk 19,06,570.0,1,sales,Apartment,D10,258482
+919,24440,19 Nassim,2025-10-21,2050000.0,3023.0,Blk 19,03,678.0,1,sales,Apartment,D10,258482
+920,24440,19 Nassim,2025-10-13,2000000.0,3716.0,Blk 19,08,538.0,1,sales,Apartment,D10,258482
+921,24440,19 Nassim,2025-09-18,1983000.0,3070.0,Blk 19,02,646.0,1,sales,Apartment,D10,258482
+922,24440,19 Nassim,2025-08-20,2034000.0,3149.0,Blk 19,05,646.0,1,sales,Apartment,D10,258482
+923,24440,19 Nassim,2025-08-18,2169090.0,3802.0,Blk 19,08,570.0,1,sales,Apartment,D10,258482
+924,24440,19 Nassim,2025-08-07,2103000.0,3101.0,Blk 19,04,678.0,1,sales,Apartment,D10,258482
+925,24440,19 Nassim,2025-07-30,2003000.0,3101.0,Blk 19,07,646.0,1,sales,Apartment,D10,258482
+926,24440,19 Nassim,2025-07-23,1928000.0,2985.0,Blk 19,03,646.0,1,sales,Apartment,D10,258482
+927,24440,19 Nassim,2025-07-02,2118000.0,3279.0,Blk 19,08,646.0,1,sales,Apartment,D10,258482
+928,24440,19 Nassim,2025-03-07,2000000.0,3716.0,Blk 19,09,538.0,1,sales,Apartment,D10,258482
+929,24440,19 Nassim,2024-11-09,1910000.0,2957.0,Blk 19,04,646.0,1,sales,Apartment,D10,258482
+930,24440,19 Nassim,2024-11-07,2121000.0,3128.0,Blk 19,08,678.0,1,sales,Apartment,D10,258482
+931,24440,19 Nassim,2024-06-04,2066505.0,3200.0,Blk 19,09,646.0,1,sales,Apartment,D10,258482
+932,24440,19 Nassim,2024-06-01,2315200.0,3414.0,Blk 19,09,678.0,1,sales,Apartment,D10,258482
+933,24440,19 Nassim,2024-03-22,2035000.0,3001.0,Blk 19,06,678.0,1,sales,Apartment,D10,258482
+223,24503,KI Residences At Brookvale,2026-06-19,1578000.0,2094.0,Blk 12,08,753.0,2,sales,Condominium,D21,599978
+224,24503,KI Residences At Brookvale,2026-05-18,1538000.0,2071.0,Blk 20,09,743.0,2,sales,Condominium,D21,599982
+225,24503,KI Residences At Brookvale,2026-05-08,1560000.0,2070.0,Blk 20,06,753.0,2,sales,Condominium,D21,599982
+226,24503,KI Residences At Brookvale,2026-04-14,1512000.0,2007.0,Blk 18,05,753.0,2,sales,Condominium,D21,599981
+227,24503,KI Residences At Brookvale,2026-04-09,1515000.0,2011.0,Blk 20,04,753.0,2,sales,Condominium,D21,599982
+228,24503,KI Residences At Brookvale,2026-02-26,1490000.0,1977.0,Blk 12,03,753.0,2,sales,Condominium,D21,599978
+229,24503,KI Residences At Brookvale,2026-02-05,1560000.0,2100.0,Blk 18,11,743.0,2,sales,Condominium,D21,599981
+230,24503,KI Residences At Brookvale,2026-01-16,1485000.0,1971.0,Blk 20,04,753.0,2,sales,Condominium,D21,599982
+231,24503,KI Residences At Brookvale,2026-01-08,1650000.0,1869.0,Blk 12,12,883.0,2,sales,Condominium,D21,599978
+232,24503,KI Residences At Brookvale,2026-01-05,1680000.0,2230.0,Blk 18,09,753.0,2,sales,Condominium,D21,599981
+233,24503,KI Residences At Brookvale,2025-12-23,1492888.0,1981.0,Blk 12,04,753.0,2,sales,Condominium,D21,599978
+234,24503,KI Residences At Brookvale,2025-11-14,1490000.0,1977.0,Blk 20,05,753.0,2,sales,Condominium,D21,599982
+235,24503,KI Residences At Brookvale,2025-11-10,1560000.0,2100.0,Blk 6,10,743.0,2,sales,Condominium,D21,599975
+236,24503,KI Residences At Brookvale,2025-10-10,1520000.0,2047.0,Blk 20,09,743.0,2,sales,Condominium,D21,599982
+237,24503,KI Residences At Brookvale,2025-06-27,1500000.0,2020.0,Blk 18,04,743.0,2,sales,Condominium,D21,599981
+238,24503,KI Residences At Brookvale,2025-06-23,1580000.0,2097.0,Blk 6,06,753.0,2,sales,Condominium,D21,599975
+239,24503,KI Residences At Brookvale,2025-06-12,1725000.0,1954.0,Blk 18,12,883.0,2,sales,Condominium,D21,599981
+240,24503,KI Residences At Brookvale,2025-06-05,1490888.0,1979.0,Blk 12,04,753.0,2,sales,Condominium,D21,599978
+241,24503,KI Residences At Brookvale,2025-05-23,1600000.0,2123.0,Blk 6,07,753.0,2,sales,Condominium,D21,599975
+242,24503,KI Residences At Brookvale,2025-05-19,1660000.0,2235.0,Blk 6,01,743.0,2,sales,Condominium,D21,599975
+243,24503,KI Residences At Brookvale,2025-05-08,1568888.0,2242.0,Blk 12,06,700.0,2,sales,Condominium,D21,599978
+244,24503,KI Residences At Brookvale,2025-03-14,1530000.0,2060.0,Blk 20,03,743.0,2,sales,Condominium,D21,599982
+245,24503,KI Residences At Brookvale,2025-03-04,1750000.0,1983.0,Blk 18,12,883.0,2,sales,Condominium,D21,599981
+246,24503,KI Residences At Brookvale,2025-01-16,1710000.0,2302.0,Blk 6,05,743.0,2,sales,Condominium,D21,599975
+247,24503,KI Residences At Brookvale,2025-01-07,1560000.0,2100.0,Blk 20,07,743.0,2,sales,Condominium,D21,599982
+1139,24515,Hyll on Holland,2026-02-13,2080000.0,2884.0,Blk 99,08,721.0,2,sales,Condominium,D10,275751
+1140,24515,Hyll on Holland,2026-01-05,1930000.0,2717.0,Blk 99,07,710.0,2,sales,Condominium,D10,275751
+1141,24515,Hyll on Holland,2025-12-22,1818000.0,2521.0,Blk 99,02,721.0,2,sales,Condominium,D10,275751
+1142,24515,Hyll on Holland,2025-11-12,1990000.0,2844.0,Blk 91,08,700.0,2,sales,Condominium,D10,278536
+1143,24515,Hyll on Holland,2025-09-22,1700000.0,2589.0,Blk 89,06,657.0,2,sales,Condominium,D10,275750
+1144,24515,Hyll on Holland,2025-06-02,1740000.0,2650.0,Blk 89,07,657.0,2,sales,Condominium,D10,275750
+1145,24515,Hyll on Holland,2025-02-26,1615000.0,2632.0,Blk 89,05,614.0,2,sales,Condominium,D10,275750
+1146,24515,Hyll on Holland,2025-01-09,1850000.0,2644.0,Blk 99,05,700.0,2,sales,Condominium,D10,275751
+1147,24515,Hyll on Holland,2024-08-01,1820000.0,2601.0,Blk 99,02,700.0,2,sales,Condominium,D10,275751
+1148,24515,Hyll on Holland,2023-08-11,1943800.0,2960.0,Blk 89,12,657.0,2,sales,Condominium,D10,275750
+1149,24515,Hyll on Holland,2023-08-05,1919800.0,2924.0,Blk 89,11,657.0,2,sales,Condominium,D10,275750
+1150,24515,Hyll on Holland,2023-08-01,1949800.0,2970.0,Blk 89,11,657.0,2,sales,Condominium,D10,275750
+1151,24515,Hyll on Holland,2023-07-28,1973800.0,3006.0,Blk 89,12,657.0,2,sales,Condominium,D10,275750
+1152,24515,Hyll on Holland,2023-07-28,2050000.0,2930.0,Blk 93,12,700.0,2,sales,Condominium,D10,278537
+1153,24515,Hyll on Holland,2023-07-26,2000000.0,2859.0,Blk 99,12,700.0,2,sales,Condominium,D10,275751
+1154,24515,Hyll on Holland,2023-07-24,2049500.0,2929.0,Blk 97,11,700.0,2,sales,Condominium,D10,278541
+1155,24515,Hyll on Holland,2023-07-23,2101500.0,3004.0,Blk 95,12,700.0,2,sales,Condominium,D10,278539
+1156,24515,Hyll on Holland,2023-07-13,2086500.0,2982.0,Blk 95,12,700.0,2,sales,Condominium,D10,278539
+1157,24515,Hyll on Holland,2023-07-03,2058500.0,2942.0,Blk 95,11,700.0,2,sales,Condominium,D10,278539
+1159,24515,Hyll on Holland,2023-06-30,2028000.0,2899.0,Blk 91,11,700.0,2,sales,Condominium,D10,278536
+1158,24515,Hyll on Holland,2023-06-30,1750100.0,2903.0,Blk 89,12,603.0,2,sales,Condominium,D10,275750
+1160,24515,Hyll on Holland,2023-06-30,2030500.0,2902.0,Blk 95,10,700.0,2,sales,Condominium,D10,278539
+1161,24515,Hyll on Holland,2023-06-25,1725400.0,2812.0,Blk 89,10,614.0,2,sales,Condominium,D10,275750
+1162,24515,Hyll on Holland,2023-06-15,2010800.0,2874.0,Blk 99,11,700.0,2,sales,Condominium,D10,275751
+1163,24515,Hyll on Holland,2023-06-05,2030200.0,2902.0,Blk 91,12,700.0,2,sales,Condominium,D10,278536
+403,24518,Clavon,2026-06-15,1045000.0,1981.0,Blk 8,14,527.0,1,sales,Apartment,D05,129964
+404,24518,Clavon,2026-06-08,1100000.0,2086.0,Blk 8,34,527.0,1,sales,Apartment,D05,129964
+405,24518,Clavon,2026-04-06,1055000.0,2000.0,Blk 6,16,527.0,1,sales,Apartment,D05,129963
+406,24518,Clavon,2025-12-26,1045000.0,1981.0,Blk 6,10,527.0,1,sales,Apartment,D05,129963
+407,24518,Clavon,2025-10-06,1038000.0,1968.0,Blk 8,15,527.0,1,sales,Apartment,D05,129964
+408,24518,Clavon,2025-09-22,1060000.0,2010.0,Blk 6,15,527.0,1,sales,Apartment,D05,129963
+409,24518,Clavon,2025-08-12,1030000.0,1953.0,Blk 8,10,527.0,1,sales,Apartment,D05,129964
+410,24518,Clavon,2025-04-15,1070000.0,2029.0,Blk 6,32,527.0,1,sales,Apartment,D05,129963
+411,24518,Clavon,2025-02-27,1050000.0,1991.0,Blk 8,08,527.0,1,sales,Apartment,D05,129964
+412,24518,Clavon,2025-02-18,1180000.0,2237.0,Blk 6,37,527.0,1,sales,Apartment,D05,129963
+413,24518,Clavon,2025-01-24,1020000.0,1934.0,Blk 6,17,527.0,1,sales,Apartment,D05,129963
+414,24518,Clavon,2025-01-07,990000.0,1877.0,Blk 6,02,527.0,1,sales,Apartment,D05,129963
+415,24518,Clavon,2024-12-27,1090000.0,2067.0,Blk 8,30,527.0,1,sales,Apartment,D05,129964
+416,24518,Clavon,2024-12-23,980000.0,1858.0,Blk 6,03,527.0,1,sales,Apartment,D05,129963
+417,24518,Clavon,2024-12-18,1025000.0,1943.0,Blk 8,12,527.0,1,sales,Apartment,D05,129964
+418,24518,Clavon,2024-12-16,1060000.0,2010.0,Blk 6,26,527.0,1,sales,Apartment,D05,129963
+419,24518,Clavon,2024-10-24,1045000.0,1981.0,Blk 6,14,527.0,1,sales,Apartment,D05,129963
+420,24518,Clavon,2024-10-24,1080000.0,2048.0,Blk 6,29,527.0,1,sales,Apartment,D05,129963
+421,24518,Clavon,2024-10-16,988888.0,1875.0,Blk 8,09,527.0,1,sales,Apartment,D05,129964
+422,24518,Clavon,2024-08-05,1100000.0,2086.0,Blk 8,36,527.0,1,sales,Apartment,D05,129964
+423,24518,Clavon,2024-07-25,1000000.0,1896.0,Blk 6,08,527.0,1,sales,Apartment,D05,129963
+424,24518,Clavon,2024-06-07,1080000.0,2048.0,Blk 8,24,527.0,1,sales,Apartment,D05,129964
+425,24518,Clavon,2024-06-06,1150000.0,2180.0,Blk 6,25,527.0,1,sales,Apartment,D05,129963
+426,24518,Clavon,2021-03-04,890000.0,1687.0,Blk 6,17,527.0,1,sales,Apartment,D05,129963
+427,24518,Clavon,2021-01-29,889000.0,1686.0,Blk 6,19,527.0,1,sales,Apartment,D05,129963
+1705,24627,Grange 1866,2026-07-07,1880000.0,2687.0,Blk 74,16,700.0,0,sales,Apartment,D10,249578
+198,25063,Perfect Ten,2026-08-11,2338000.0,3103.0,Blk 323,02,753.0,2,sales,Apartment,D10,259713
+199,25063,Perfect Ten,2026-05-26,2440000.0,3193.0,Blk 321,06,764.0,2,sales,Apartment,D10,259781
+200,25063,Perfect Ten,2026-05-18,2440000.0,3193.0,Blk 323,06,764.0,2,sales,Apartment,D10,259713
+201,25063,Perfect Ten,2026-03-18,2440000.0,3193.0,Blk 321,13,764.0,2,sales,Apartment,D10,259781
+202,25063,Perfect Ten,2024-04-12,2650000.0,3372.0,Blk 323,24,786.0,2,sales,Apartment,D10,259713
+203,25063,Perfect Ten,2024-03-02,2755280.0,3459.0,Blk 321,23,797.0,2,sales,Apartment,D10,259781
+204,25063,Perfect Ten,2024-02-26,2680000.0,3557.0,Blk 323,24,753.0,2,sales,Apartment,D10,259713
+205,25063,Perfect Ten,2024-01-20,2859000.0,3589.0,Blk 321,24,797.0,2,sales,Apartment,D10,259781
+206,25063,Perfect Ten,2023-11-22,2590720.0,3297.0,Blk 323,23,786.0,2,sales,Apartment,D10,259713
+207,25063,Perfect Ten,2023-09-01,2638000.0,3501.0,Blk 321,22,753.0,2,sales,Apartment,D10,259781
+208,25063,Perfect Ten,2023-08-18,2765000.0,3670.0,Blk 321,24,753.0,2,sales,Apartment,D10,259781
+209,25063,Perfect Ten,2023-08-08,2638000.0,3357.0,Blk 321,22,786.0,2,sales,Apartment,D10,259781
+210,25063,Perfect Ten,2023-08-06,2638000.0,3357.0,Blk 321,23,786.0,2,sales,Apartment,D10,259781
+211,25063,Perfect Ten,2023-06-09,2699840.0,3389.0,Blk 321,21,797.0,2,sales,Apartment,D10,259781
+212,25063,Perfect Ten,2023-05-11,2672670.0,3355.0,Blk 321,20,797.0,2,sales,Apartment,D10,259781
+213,25063,Perfect Ten,2023-05-07,2540950.0,3234.0,Blk 321,19,786.0,2,sales,Apartment,D10,259781
+214,25063,Perfect Ten,2023-04-24,2618380.0,3332.0,Blk 321,21,786.0,2,sales,Apartment,D10,259781
+215,25063,Perfect Ten,2023-04-18,2647750.0,3324.0,Blk 321,19,797.0,2,sales,Apartment,D10,259781
+216,25063,Perfect Ten,2023-04-12,2724290.0,3420.0,Blk 321,22,797.0,2,sales,Apartment,D10,259781
+217,25063,Perfect Ten,2023-04-06,2624610.0,3295.0,Blk 321,18,797.0,2,sales,Apartment,D10,259781
+218,25063,Perfect Ten,2023-04-05,2789500.0,3502.0,Blk 323,24,797.0,2,sales,Apartment,D10,259713
+219,25063,Perfect Ten,2023-03-24,2563200.0,3402.0,Blk 323,22,753.0,2,sales,Apartment,D10,259713
+220,25063,Perfect Ten,2023-03-22,2554300.0,3251.0,Blk 321,14,786.0,2,sales,Apartment,D10,259781
+221,25063,Perfect Ten,2023-03-18,2531160.0,3359.0,Blk 321,16,753.0,2,sales,Apartment,D10,259781
+222,25063,Perfect Ten,2023-03-10,2589010.0,3250.0,Blk 323,21,797.0,2,sales,Apartment,D10,259713
+248,25378,Terra Hill,2026-07-13,1900000.0,2802.0,Blk 18,03,678.0,2,sales,Apartment,D05,117755
+249,25378,Terra Hill,2026-05-14,2192000.0,2715.0,Blk 22A,02,807.0,2,sales,Apartment,D05,118954
+250,25378,Terra Hill,2026-03-20,2100000.0,2601.0,Blk 22A,01,807.0,2,sales,Apartment,D05,118954
+251,25378,Terra Hill,2025-11-11,1913000.0,2821.0,Blk 18,02,678.0,2,sales,Apartment,D05,117755
+252,25378,Terra Hill,2025-10-18,2082000.0,2480.0,Blk 18,05,840.0,2,sales,Apartment,D05,117755
+253,25378,Terra Hill,2025-09-23,2180000.0,2700.0,Blk 22A,03,807.0,2,sales,Apartment,D05,118954
+254,25378,Terra Hill,2025-08-21,1928000.0,2843.0,Blk 18,03,678.0,2,sales,Apartment,D05,117755
+255,25378,Terra Hill,2025-08-19,2245000.0,2781.0,Blk 22B,01,807.0,2,sales,Apartment,D05,118955
+256,25378,Terra Hill,2025-07-10,2182000.0,2703.0,Blk 18A,02,807.0,2,sales,Apartment,D05,118992
+257,25378,Terra Hill,2025-06-11,2205000.0,2731.0,Blk 18A,01,807.0,2,sales,Apartment,D05,118992
+258,25378,Terra Hill,2025-05-12,2260000.0,2799.0,Blk 22,04,807.0,2,sales,Apartment,D05,117757
+259,25378,Terra Hill,2025-01-21,2262000.0,2802.0,Blk 22,03,807.0,2,sales,Apartment,D05,117757
+260,25378,Terra Hill,2024-12-07,2120000.0,2626.0,Blk 18A,01,807.0,2,sales,Apartment,D05,118992
+261,25378,Terra Hill,2024-11-26,2175000.0,2694.0,Blk 18,02,807.0,2,sales,Apartment,D05,117755
+262,25378,Terra Hill,2024-11-25,2130000.0,2638.0,Blk 18A,04,807.0,2,sales,Apartment,D05,118992
+263,25378,Terra Hill,2024-04-26,2122000.0,2629.0,Blk 18A,03,807.0,2,sales,Apartment,D05,118992
+264,25378,Terra Hill,2024-04-15,2265000.0,2806.0,Blk 22,01,807.0,2,sales,Apartment,D05,117757
+265,25378,Terra Hill,2024-01-01,2190000.0,2713.0,Blk 18A,03,807.0,2,sales,Apartment,D05,118992
+266,25378,Terra Hill,2023-09-06,1861000.0,2744.0,Blk 18,03,678.0,2,sales,Apartment,D05,117755
+267,25378,Terra Hill,2023-08-17,2229000.0,2761.0,Blk 22B,03,807.0,2,sales,Apartment,D05,118955
+268,25378,Terra Hill,2023-07-05,2190000.0,2713.0,Blk 18,03,807.0,2,sales,Apartment,D05,117755
+269,25378,Terra Hill,2023-05-05,2202000.0,2728.0,Blk 22,01,807.0,2,sales,Apartment,D05,117757
+270,25378,Terra Hill,2023-03-05,2252000.0,2790.0,Blk 22B,04,807.0,2,sales,Apartment,D05,118955
+271,25378,Terra Hill,2023-02-28,1853000.0,2733.0,Blk 18,03,678.0,2,sales,Apartment,D05,117755
+272,25378,Terra Hill,2023-02-25,2056000.0,2449.0,Blk 18,05,840.0,2,sales,Apartment,D05,117755
+1088,26213,Hudson Place Residences,2026-05-15,4612000.0,2645.0,Blk 18,15,1744.0,0,sales,Apartment,D05,139818
