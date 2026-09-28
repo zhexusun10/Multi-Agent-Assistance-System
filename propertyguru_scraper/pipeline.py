@@ -3,7 +3,7 @@ from typing import Optional, Callable, Tuple, List, Dict, Any
 from dataclasses import dataclass, field
 from scraper import PropertyGuruScraper
 from cleaner import PropertyCleaner
-from database import upsert_properties, upsert_property_images, upsert_agents, upsert_price_history
+from database import save_batch
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +45,7 @@ class IngestionPipeline:
         separated images, and project price history).
         """
         stats = PipelineStats()
+        self.processed_projects.clear()
         current_page = start_page
         total_pages_known = max_pages or 1
         dist_str = "+".join(districts) if districts else "ALL"
@@ -60,11 +61,14 @@ class IngestionPipeline:
                 break
 
             stats.total_pages_attempted += 1
-            raw_listings, pagination = self.scraper.fetch_page(
-                current_page,
-                listing_type=listing_type,
-                districts=districts
-            )
+            try:
+                raw_listings, pagination = self.scraper.fetch_page(
+                    current_page, listing_type=listing_type, districts=districts
+                )
+            except Exception:
+                logger.exception("Failed to fetch page %s", current_page)
+                stats.total_errors += 1
+                raw_listings, pagination = [], {}
 
             site_total_pages = pagination.get("totalPages")
             if site_total_pages:
@@ -94,16 +98,29 @@ class IngestionPipeline:
                     stats.total_errors += 1
 
             # Concurrent detail enrichment
+            # Dedup before fetching details or persisting; keep the last card.
+            cleaned_batch = list({c["listing_id"]: c for c in cleaned_batch}.values())
             if fetch_details and cleaned_batch:
-                urls = [c["url"] for c in cleaned_batch if c.get("url")]
-                logger.debug(f"Fetching {len(urls)} detail pages concurrently (concurrency={concurrency})...")
-                details_map = self.scraper.fetch_details_concurrent(urls, max_workers=concurrency)
-                
+                urls = list({c["url"] for c in cleaned_batch if c.get("url")})
+                logger.debug("Fetching %s detail pages (concurrency=%s)", len(urls), concurrency)
+                try:
+                    details_map = self.scraper.fetch_details_concurrent(urls, max_workers=concurrency)
+                except Exception:
+                    logger.exception("Detail fetch failed on page %s", current_page)
+                    stats.total_errors += 1
+                    details_map = {}
                 for c in cleaned_batch:
                     u = c.get("url")
-                    if u and u in details_map and details_map[u]:
-                        c = PropertyCleaner.enrich_from_detail(c, details_map[u])
-                        stats.total_details_enriched += 1
+                    if u and details_map.get(u):
+                        try:
+                            PropertyCleaner.enrich_from_detail(c, details_map[u])
+                            stats.total_details_enriched += 1
+                        except Exception:
+                            logger.exception("Detail enrichment failed for %s", c["listing_id"])
+                            stats.total_errors += 1
+                    elif u and u in details_map:
+                        logger.warning("Detail fetch returned no data for %s", u)
+                        stats.total_errors += 1
 
             # Process Agents, Price History, and Separated Images
             agents_batch: List[Dict[str, Any]] = []
@@ -135,60 +152,47 @@ class IngestionPipeline:
                 # 3. Extract Separated Images
                 img_rows = PropertyCleaner.extract_separated_image_records(c)
                 image_records_batch.extend(img_rows)
-                for r in img_rows:
-                    if r["source_page"] == "HOMEPAGE":
-                        stats.total_homepage_images += 1
-                    elif r["source_page"] == "DETAIL_PAGE":
-                        stats.total_detail_images += 1
 
                 # 4. Fetch Project Price History (transactions) if associated with a project
                 if fetch_price_history and c.get("project_id"):
                     proj_id = c["project_id"]
                     if proj_id > 0 and proj_id not in self.processed_projects:
-                        self.processed_projects.add(proj_id)
                         # Get project slug or title
                         proj_slug = (c.get("title") or "").lower().replace(" ", "-")
-                        html_proj = self.scraper.fetch_project_page(proj_id, proj_slug)
-                        if html_proj:
-                            txs = PropertyCleaner.parse_project_transactions(html_proj, proj_id, c.get("title"))
-                            tx_batch.extend(txs)
+                        try:
+                            html_proj = self.scraper.fetch_project_page(proj_id, proj_slug)
+                            if html_proj:
+                                tx_batch.extend(PropertyCleaner.parse_project_transactions(html_proj, proj_id, c.get("title")))
+                                self.processed_projects.add(proj_id)
+                        except Exception:
+                            logger.exception("Price history fetch failed for project %s", proj_id)
+                            stats.total_errors += 1
 
             stats.total_cleaned += len(cleaned_batch)
 
-            # Bulk save to PostgreSQL
+            # One transaction per page: no related rows when property save fails.
             if cleaned_batch:
                 try:
-                    upserted = upsert_properties(cleaned_batch)
+                    upserted, ag_saved, _, tx_saved = save_batch(
+                        cleaned_batch, image_records_batch, agents_batch, tx_batch
+                    )
                     stats.total_upserted += upserted
-                except Exception as e:
-                    logger.error(f"DB properties upsert error: {e}")
-                    stats.total_errors += 1
-
-            if agents_batch:
-                try:
-                    ag_saved = upsert_agents(agents_batch)
                     stats.total_agents_saved += ag_saved
-                except Exception as e:
-                    logger.error(f"DB agents upsert error: {e}")
-
-            if image_records_batch:
-                try:
-                    upsert_property_images(image_records_batch)
-                except Exception as e:
-                    logger.error(f"DB images upsert error: {e}")
-
-            if tx_batch:
-                try:
-                    tx_saved = upsert_price_history(tx_batch)
                     stats.total_price_history_saved += tx_saved
-                except Exception as e:
-                    logger.error(f"DB price history upsert error: {e}")
+                    stats.total_homepage_images += sum(
+                        r["source_page"] == "HOMEPAGE" for r in image_records_batch
+                    )
+                    stats.total_detail_images += sum(
+                        r["source_page"] == "DETAIL_PAGE" for r in image_records_batch
+                    )
+                except Exception:
+                    logger.exception("DB batch save failed on page %s", current_page)
+                    stats.total_errors += 1
+                    # Retry project transactions on a later page after rollback.
+                    self.processed_projects.difference_update(r["project_id"] for r in tx_batch)
 
-            logger.info(
-                f"Page {current_page}/{total_pages_known}: "
-                f"saved {len(cleaned_batch)} properties, {len(agents_batch)} agents, "
-                f"{len(image_records_batch)} images, {len(tx_batch)} price transactions."
-            )
+            logger.info("Page %s/%s: %s cleaned listings, %s total errors",
+                        current_page, total_pages_known, len(cleaned_batch), stats.total_errors)
 
             if progress_callback:
                 progress_callback(current_page, total_pages_known, len(cleaned_batch), stats)
