@@ -2,7 +2,7 @@
 import hashlib
 import logging
 from typing import List, Dict, Any
-from sqlalchemy import create_engine, text, func, select, or_, case
+from sqlalchemy import create_engine, text, func, select, or_, case, delete, inspect
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.dialects.postgresql import insert
 from config import config
@@ -21,20 +21,22 @@ SessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bi
 
 
 def init_db():
-    """Upgrade known legacy property columns before creating missing tables/indexes."""
-    # create_all on an old properties table would try to index absent columns.
+    """Add missing nullable property columns and indexes; do not alter existing data/types."""
     with engine.begin() as conn:
-        if conn.execute(text("SELECT to_regclass('properties')")).scalar() is not None:
-            for name, sql_type in (
-                ("project_id", "BIGINT"), ("agent_avatar", "TEXT"),
-                ("agent_license", "VARCHAR(50)"), ("agent_years_with_pg", "VARCHAR(50)"),
-                ("agent_years_count", "INTEGER"), ("agent_phone", "VARCHAR(50)"),
-                ("agent_profile_url", "TEXT"), ("price_insights", "JSONB"),
-                ("transaction_category", "VARCHAR(50)"),
-            ):
-                # Identifiers and types above are fixed constants, never user input.
-                conn.execute(text(f"ALTER TABLE properties ADD COLUMN IF NOT EXISTS {name} {sql_type}"))
+        if inspect(conn).has_table(Property.__tablename__):
+            existing = {col["name"] for col in inspect(conn).get_columns(Property.__tablename__)}
+            required = {col.name for col in Property.__table__.columns if not col.nullable}
+            if missing := required - existing:
+                raise ValueError(f"properties missing required columns: {sorted(missing)}")
+            for col in Property.__table__.columns:
+                if col.name not in existing:
+                    sql_type = col.type.compile(dialect=conn.dialect)
+                    # Names/types come exclusively from the fixed model, not from input.
+                    conn.execute(text(f'ALTER TABLE properties ADD COLUMN "{col.name}" {sql_type}'))
     Base.metadata.create_all(bind=engine)
+    # create_all does not create indexes on tables that already exist.
+    for index in Base.metadata.tables["properties"].indexes:
+        index.create(bind=engine, checkfirst=True)
     logger.info("Database initialized successfully.")
 
 
@@ -96,6 +98,20 @@ def _images(db, records):
     return count
 
 
+def _replace_detail_images(db, properties, images):
+    """Prune obsolete detail URLs only after a successful detail image fetch."""
+    latest = {row["listing_id"]: row for row in properties}
+    ids = {lid for lid, row in latest.items()
+           if row.get("detail_fetched") is True and row.get("detail_images") is not None}
+    for lid in ids:
+        urls = {row["image_url"] for row in images
+                if row.get("listing_id") == lid and row.get("source_page") == "DETAIL_PAGE"}
+        condition = [PropertyImage.listing_id == lid, PropertyImage.source_page == "DETAIL_PAGE"]
+        if urls:
+            condition.append(PropertyImage.image_url.not_in(urls))
+        db.execute(delete(PropertyImage).where(*condition))
+
+
 def _agents(db, records):
     dedup = {}
     for record in records:
@@ -143,11 +159,12 @@ def save_batch(properties, images=(), agents=(), transactions=()):
         counts = (
             _properties(db, properties),
             _agents(db, agents),
+            _replace_detail_images(db, properties, images),
             _images(db, images),
             _transactions(db, transactions),
         )
         db.commit()
-        return counts
+        return counts[0], counts[1], counts[3], counts[4]
     except Exception:
         db.rollback()
         logger.exception("Failed to persist PropertyGuru batch")

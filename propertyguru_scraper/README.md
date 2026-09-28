@@ -70,7 +70,7 @@ python3 propertyguru_scraper/main.py init-db
 python3 propertyguru_scraper/main.py stats
 ```
 
-爬虫只使用 `PROPERTYGURU_DATABASE_URL`，**不会**读取根项目 LangGraph 的 `DATABASE_URL` 或普通 `PG*` 环境变量。根项目的 `multi_agent_assistance` 数据库保存 checkpoint、任务及事件；爬虫使用独立的 `propertyguru` 数据库，避免表名/数据/权限冲突。不要把这两个 URL 指向同一个数据库。示例 URL 在根目录 `.env.example`；本机若不允许无密码 TCP 连接，请为角色设置密码并修改本地 `.env` 的 URL（不要提交凭据）。未提供 URL 时，才使用专属 `PROPERTYGURU_PGUSER`（默认 `jerry`）、`PROPERTYGURU_PGPASSWORD`（默认空）、`PROPERTYGURU_PGHOST`（默认 `localhost`）、`PROPERTYGURU_PGPORT`（默认 `5432`）、`PROPERTYGURU_PGDATABASE`（默认 `propertyguru`）。`init-db` 要求建表权限，创建表和索引并补齐已知旧列，不会创建数据库。
+爬虫只使用 `PROPERTYGURU_DATABASE_URL`，**不会**读取根项目 LangGraph 的 `DATABASE_URL` 或普通 `PG*` 环境变量。根项目的 `multi_agent_assistance` 数据库保存 checkpoint、任务及事件；爬虫使用独立的 `propertyguru` 数据库，避免表名/数据/权限冲突。不要把这两个 URL 指向同一个数据库。示例 URL 在根目录 `.env.example`；本机若不允许无密码 TCP 连接，请为角色设置密码并修改本地 `.env` 的 URL（不要提交凭据）。未提供 URL 时，才使用专属 `PROPERTYGURU_PGUSER`（默认 `jerry`）、`PROPERTYGURU_PGPASSWORD`（默认空）、`PROPERTYGURU_PGHOST`（默认 `localhost`）、`PROPERTYGURU_PGPORT`（默认 `5432`）、`PROPERTYGURU_PGDATABASE`（默认 `propertyguru`）。`init-db` 要求建表权限，创建表和索引，并给已有 `properties` 表补齐模型中缺失的可空列及索引；不会创建数据库，也不修改旧列的类型/约束或升级其他旧表。非兼容手工 schema 仍需人工迁移。
 
 ---
 
@@ -148,7 +148,7 @@ RETURN l.listing_id AS listing_id, l.title AS title, l.price AS price,
 ORDER BY listing_id LIMIT 10;
 ```
 
-`NEO4J_URI` 默认 `bolt://localhost:7687`、`NEO4J_USER` 默认 `neo4j`、`NEO4J_PASSWORD` 默认 `password`、`NEO4J_DATABASE` 默认 `neo4j`；不要依赖不安全的默认密码。compose 与 CLI 的密码必须一致；持久化数据卷已初始化后，更改 `.env` 密码不会自动更新 Neo4j 中的密码，需在 Neo4j 中修改账号密码再同步配置。`sync-graph` 无需重新抓取，`--limit` 限制本次读取的最小 listing_id 顺序记录数，`--batch-size` 控制每次 Neo4j 事务数量。生产同步不要设置 limit；变更 PG 行后重跑即可更新房源属性及四条关系。删除的 PG 房源目前不会自动从 Neo4j 删除；如需完整重建，可清空此专用图数据库后全量同步。`--sync-graph` 同步整个已有 PG 表（不限于本次抓取），失败返回非零状态，但已提交的 PG 写入不会回滚；修复 Neo4j 后单独重跑 `sync-graph` 即可。
+`NEO4J_URI` 默认 `bolt://localhost:7687`、`NEO4J_USER` 默认 `neo4j`、`NEO4J_DATABASE` 默认 `neo4j`；Compose 启动时必须显式设置 `NEO4J_PASSWORD`（至少 8 字符）。CLI 未设置时仍默认 `password`，但不应依赖默认凭据。compose 与 CLI 的密码必须一致；持久化数据卷已初始化后，更改 `.env` 密码不会自动更新 Neo4j 中的密码，需在 Neo4j 中修改账号密码再同步配置。`sync-graph` 无需重新抓取，`--limit` 限制本次读取的最小 listing_id 顺序记录数，`--batch-size` 控制每次 Neo4j 事务数量。生产同步不要设置 limit；变更 PG 行后重跑即可更新房源属性及四条关系。成功的详情页抓取会用最新相册移除旧的 `DETAIL_PAGE` 图片行；卡片抓取和详情页失败不会清除它们。卡片抓取不覆盖已保存的 Agent 档案；房源自己的 Agent 名称优先用于图投影。缺失字段被视为未知而非确认删除：后续详情页省略 agent/project 或地址时可能保留旧 ID/字段及图关系，需人工核实并清理确认已失效的数据。删除的 PG 房源目前不会自动从 Neo4j 删除；如需完整重建，可清空此专用图数据库后全量同步。`--all-pages` 在空页/失败页且没有分页元数据时停止并报告错误（有限 `--pages` 仍可继续下一页）。`--sync-graph` 同步整个已有 PG 表（不限于本次抓取），失败返回非零状态，但已提交的 PG 写入不会回滚；修复 Neo4j 后单独重跑 `sync-graph` 即可。
 
 图模型：`(:Listing {listing_id})-[:IN_PROJECT]->(:Project {project_id})`、`-[:LISTED_BY]->(:Agent {agent_id})`、`-[:IN_DISTRICT]->(:District {district_code})`、`-[:NEAR_MRT]->(:MRT {name})`。缺失 ID/空地铁站不创建共享节点；房源只包含价格、类型、面积、邮编、URL 等有限白名单字段。**不复制电话、证照、原始 JSON、图片或详细住址**。换边时旧边删除，失联的维度节点可能保留；约束和 MERGE 防止重复节点。
 

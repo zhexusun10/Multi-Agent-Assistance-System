@@ -52,6 +52,38 @@ def test_config_never_reads_langgraph_env(monkeypatch):
     assert Config().DATABASE_URL == "postgresql://other/isolated"
 
 
+def test_all_pages_stops_on_failed_or_empty_page_without_pagination():
+    class FailedScraper:
+        def fetch_page(self, *args, **kwargs):
+            raise RuntimeError("offline")
+
+    class EmptyScraper:
+        def fetch_page(self, *args, **kwargs):
+            return [], {}
+
+    for scraper in (FailedScraper(), EmptyScraper()):
+        stats = IngestionPipeline(scraper).run_sync(max_pages=None)
+        assert stats.total_pages_attempted == 1
+        assert stats.total_errors > 0
+
+
+def test_missing_detail_url_counts_as_error():
+    class MissingDetailScraper(FakeScraper):
+        def fetch_details_concurrent(self, urls, max_workers=5):
+            return {}
+
+    with patch("pipeline.save_batch", return_value=(1, 0, 0, 0)):
+        stats = IngestionPipeline(MissingDetailScraper()).run_sync(max_pages=1, fetch_price_history=False)
+    assert stats.total_errors == 1
+    assert stats.total_details_enriched == 0
+
+
+def test_card_only_does_not_upsert_agent():
+    with patch("pipeline.save_batch", return_value=(1, 0, 0, 0)) as save:
+        IngestionPipeline(FakeScraper()).run_sync(max_pages=1, fetch_details=False, fetch_price_history=False)
+    assert save.call_args.args[2] == []
+
+
 def test_pipeline_deduplicates_and_reports_db_failure():
     with patch("pipeline.save_batch", side_effect=RuntimeError("db down")) as save:
         stats = IngestionPipeline(FakeScraper()).run_sync(max_pages=1, fetch_price_history=False)
@@ -79,7 +111,7 @@ def test_cli_run_exits_nonzero_on_persistence_error(monkeypatch):
 
 
 @pytest.fixture
-def pg(monkeypatch):
+def pg(monkeypatch, request):
     url = os.getenv("PROPERTYGURU_TEST_DATABASE_URL")
     if not url:
         pytest.skip("set PROPERTYGURU_TEST_DATABASE_URL for real PostgreSQL integration")
@@ -94,7 +126,10 @@ def pg(monkeypatch):
     monkeypatch.setattr(database, "engine", engine)
     monkeypatch.setattr(database, "SessionLocal", scoped_session(sessionmaker(bind=engine)))
     try:
-        database.init_db()  # empty schema
+        if getattr(request, "param", None) == "legacy":
+            with engine.begin() as conn:
+                conn.execute(text("CREATE TABLE properties (listing_id bigint PRIMARY KEY, listing_type varchar(20) NOT NULL)"))
+        database.init_db()
         database.init_db()  # repeatable
         yield engine
     finally:
@@ -102,6 +137,18 @@ def pg(monkeypatch):
         with admin.begin() as conn:
             conn.execute(text(f'DROP SCHEMA "{schema}" CASCADE'))
         admin.dispose()
+
+
+@pytest.mark.parametrize("pg", ["legacy"], indirect=True)
+def test_init_db_upgrades_minimal_properties_and_indexes(pg):
+    from sqlalchemy import inspect
+    from graph import iter_listing_batches
+
+    assert list(iter_listing_batches(pg)) == []
+    columns = {col["name"] for col in inspect(pg).get_columns("properties")}
+    assert {"nearest_mrt", "postal_code", "title", "detail_images"} <= columns
+    indexes = {index["name"] for index in inspect(pg).get_indexes("properties")}
+    assert {"idx_properties_raw_json", "ix_properties_listing_type"} <= indexes
 
 
 def test_committed_ingestion_can_be_backfilled_into_graph_batches(pg):
@@ -140,8 +187,40 @@ def test_repeat_run_enrichment_related_rows_and_rollback(pg, monkeypatch):
         assert session.scalar(select(func.count()).select_from(Property)) == 1
         assert session.scalar(select(func.count()).select_from(PropertyImage)) == 2
         assert session.scalar(select(func.count()).select_from(Agent)) == 1
+        assert session.get(Agent, 30).name == "Detail Agent"
         # nullable transaction key fields are NULL: repeat must still dedup
         assert session.scalar(select(func.count()).select_from(PriceHistory)) == 1
+
+    from graph import iter_listing_batches
+    assert list(iter_listing_batches(pg))[0][0]["agent_name"] == "Detail Agent"
+
+    class ReplacedImages(FakeScraper):
+        def fetch_details_concurrent(self, urls, max_workers=5):
+            details = super().fetch_details_concurrent(urls, max_workers)
+            details[urls[0]]["mediaGalleryData"]["media"]["images"]["items"] = [
+                {"src": "https://example.org/replacement.jpg"}]
+            return details
+
+    replaced = IngestionPipeline(ReplacedImages()).run_sync(max_pages=1, fetch_price_history=False)
+    assert replaced.total_errors == 0
+    with database.SessionLocal() as session:
+        urls = {row.image_url for row in session.scalars(select(PropertyImage))}
+        assert urls == {"https://example.org/card.jpg", "https://example.org/replacement.jpg"}
+
+    class EmptyGallery(ReplacedImages):
+        def fetch_details_concurrent(self, urls, max_workers=5):
+            details = super().fetch_details_concurrent(urls, max_workers)
+            details[urls[0]]["mediaGalleryData"]["media"]["images"]["items"] = []
+            return details
+
+    assert IngestionPipeline(EmptyGallery()).run_sync(max_pages=1, fetch_price_history=False).total_errors == 0
+    with database.SessionLocal() as session:
+        assert {row.image_url for row in session.scalars(select(PropertyImage))} == {"https://example.org/card.jpg"}
+    # Failed detail / card-only crawls must not delete previously saved gallery rows.
+    assert IngestionPipeline(ReplacedImages()).run_sync(max_pages=1, fetch_price_history=False).total_errors == 0
+    assert pipeline.run_sync(max_pages=1, fetch_details=False, fetch_price_history=False).total_errors == 0
+    with database.SessionLocal() as session:
+        assert session.scalar(select(func.count()).select_from(PropertyImage)) == 2
 
     def fail_image(conn, cursor, statement, parameters, context, executemany):
         if "INSERT INTO property_images" in statement:
