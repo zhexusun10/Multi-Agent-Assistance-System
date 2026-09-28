@@ -1,23 +1,23 @@
 import os
 from dataclasses import dataclass
+from sqlalchemy.engine import URL
 
 @dataclass
 class Config:
     # PostgreSQL Connection URL
-    DB_USER: str = os.getenv("PGUSER", "jerry")
-    DB_PASSWORD: str = os.getenv("PGPASSWORD", "")
-    DB_HOST: str = os.getenv("PGHOST", "localhost")
-    DB_PORT: str = os.getenv("PGPORT", "5432")
-    DB_NAME: str = os.getenv("PGDATABASE", "propertyguru")
-    
     @property
     def DATABASE_URL(self) -> str:
-        env_url = os.getenv("DATABASE_URL")
-        if env_url:
-            return env_url
-        if self.DB_PASSWORD:
-            return f"postgresql://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
-        return f"postgresql://{self.DB_USER}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        # Never use the root LangGraph DATABASE_URL (or its PG* settings).
+        if os.getenv("PROPERTYGURU_DATABASE_URL"):
+            return os.environ["PROPERTYGURU_DATABASE_URL"]
+        return URL.create(
+            "postgresql+psycopg2",
+            username=os.getenv("PROPERTYGURU_PGUSER", "jerry"),
+            password=os.getenv("PROPERTYGURU_PGPASSWORD") or None,
+            host=os.getenv("PROPERTYGURU_PGHOST", "localhost"),
+            port=int(os.getenv("PROPERTYGURU_PGPORT", "5432")),
+            database=os.getenv("PROPERTYGURU_PGDATABASE", "propertyguru"),
+        ).render_as_string(hide_password=False)
 
     # Target site
     BASE_URL: str = "https://www.propertyguru.com.sg"

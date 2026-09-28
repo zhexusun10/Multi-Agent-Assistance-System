@@ -3,7 +3,13 @@ import test from "node:test";
 import { createModel } from "../src/model.js";
 
 test("model factory loads installed provider SDKs without a network call", async () => {
-  const previousGoogleKey = process.env.GOOGLE_API_KEY;
+  const previousKeys = {
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
+    GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
+  };
+  process.env.OPENAI_API_KEY = "test-key";
+  process.env.ANTHROPIC_API_KEY = "test-key";
   process.env.GOOGLE_API_KEY = "test-key";
   try {
     for (const modelId of [
@@ -16,7 +22,9 @@ test("model factory loads installed provider SDKs without a network call", async
       assert.equal(typeof model.bindTools, "function");
     }
   } finally {
-    if (previousGoogleKey === undefined) delete process.env.GOOGLE_API_KEY;
-    else process.env.GOOGLE_API_KEY = previousGoogleKey;
+    for (const [name, value] of Object.entries(previousKeys)) {
+      if (value === undefined) delete process.env[name];
+      else process.env[name] = value;
+    }
   }
 });

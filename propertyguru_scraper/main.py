@@ -5,6 +5,7 @@ from rich.console import Console
 from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, BarColumn, TextColumn, TimeRemainingColumn
 from rich.panel import Panel
+from sqlalchemy.engine import make_url
 
 from config import config
 from database import init_db, get_stats, SessionLocal
@@ -54,7 +55,7 @@ def handle_run(args):
         f"Fetch Details       : [cyan]{'Yes (Exact Address, Agent Profile, Separated Images)' if fetch_details else 'No'}[/cyan]\n"
         f"Fetch Price History : [cyan]{'Yes (URA / HDB Transactions)' if fetch_price_history else 'No'}[/cyan]\n"
         f"Concurrency         : [cyan]{args.concurrency} worker threads[/cyan]\n"
-        f"Database            : [cyan]{config.DATABASE_URL}[/cyan]",
+        f"Database            : [cyan]{make_url(config.DATABASE_URL).render_as_string(hide_password=True)}[/cyan]",
         border_style="blue"
     ))
 
@@ -65,6 +66,7 @@ def handle_run(args):
     overall_agents = 0
     overall_tx = 0
     overall_images = 0
+    overall_errors = 0
 
     for l_type in types_to_crawl:
         console.print(f"\n[bold yellow]>>> Starting crawl for category: {l_type.upper()} (Districts={', '.join(districts) if districts else 'ALL'})[/bold yellow]")
@@ -115,6 +117,7 @@ def handle_run(args):
                 progress_callback=progress_hook
             )
 
+            overall_errors += stats.total_errors
             overall_upserted += stats.total_upserted
             overall_agents += stats.total_agents_saved
             overall_tx += stats.total_price_history_saved
@@ -130,6 +133,10 @@ def handle_run(args):
             f"Detail Images={stats.total_detail_images}[/bold green]"
         )
 
+    if overall_errors:
+        console.print(f"[bold red]Crawl completed with {overall_errors} error(s); check logs.[/bold red]")
+        raise SystemExit(1)
+
     console.print(
         f"\n[bold green]★ All tasks finished! "
         f"Total properties: {overall_upserted}, "
@@ -137,6 +144,22 @@ def handle_run(args):
         f"Total price history transactions: {overall_tx}, "
         f"Total images recorded: {overall_images}[/bold green]"
     )
+    if args.sync_graph:
+        handle_sync_graph(args)
+
+
+def handle_sync_graph(args):
+    # Projection is deliberately downstream of committed PostgreSQL writes.
+    from database import engine
+    from graph import sync_graph
+    try:
+        count = sync_graph(engine, limit=getattr(args, "limit", None),
+                           batch_size=getattr(args, "batch_size", 500))
+    except Exception as exc:
+        console.print(f"[bold red]Neo4j graph sync failed (PostgreSQL writes remain intact): {exc}[/bold red]")
+        raise SystemExit(1) from exc
+    console.print(f"[bold green]Graph synced: {count} listings.[/bold green]")
+
 
 def handle_stats(args):
     console.print("[bold cyan]Fetching comprehensive database statistics...[/bold cyan]")
@@ -329,6 +352,12 @@ def main():
     run_parser.add_argument("--skip-price-history", action="store_true", help="Skip URA price history transactions fetching")
     run_parser.add_argument("--concurrency", type=int, default=5, help="Concurrent worker threads for detail pages (default: 5)")
     run_parser.add_argument("--verbose", action="store_true", help="Enable verbose debug logging")
+    run_parser.add_argument("--sync-graph", action="store_true", help="Sync committed PostgreSQL rows to Neo4j after successful crawl")
+
+    # sync-graph command (reads existing PostgreSQL rows; no scraping)
+    graph_parser = subparsers.add_parser("sync-graph", help="Project PostgreSQL listings into local Neo4j")
+    graph_parser.add_argument("--limit", type=int, default=None, help="Maximum listings for development")
+    graph_parser.add_argument("--batch-size", type=int, default=500, help="Listings per transaction (default: 500)")
 
     # stats command
     subparsers.add_parser("stats", help="Display summary statistics from PostgreSQL")
@@ -345,6 +374,8 @@ def main():
         handle_init_db(args)
     elif args.command == "run":
         handle_run(args)
+    elif args.command == "sync-graph":
+        handle_sync_graph(args)
     elif args.command == "stats":
         handle_stats(args)
     elif args.command == "export":
