@@ -6,3 +6,4 @@ pydantic>=2.0.0
 pandas>=2.0.0
 rich>=13.0.0
 pytest>=8.0.0
+neo4j>=5.20,<7

@@ -1,6 +1,8 @@
+"""PostgreSQL persistence for the scraper (independent of LangGraph storage)."""
+import hashlib
 import logging
 from typing import List, Dict, Any
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, text, func, select, or_, case
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.dialects.postgresql import insert
 from config import config
@@ -15,158 +17,159 @@ engine = create_engine(
     pool_recycle=3600,
     pool_pre_ping=True
 )
-
 SessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
 
+
 def init_db():
-    """Create all tables, missing columns, and indexes."""
+    """Upgrade known legacy property columns before creating missing tables/indexes."""
+    # create_all on an old properties table would try to index absent columns.
+    with engine.begin() as conn:
+        if conn.execute(text("SELECT to_regclass('properties')")).scalar() is not None:
+            for name, sql_type in (
+                ("project_id", "BIGINT"), ("agent_avatar", "TEXT"),
+                ("agent_license", "VARCHAR(50)"), ("agent_years_with_pg", "VARCHAR(50)"),
+                ("agent_years_count", "INTEGER"), ("agent_phone", "VARCHAR(50)"),
+                ("agent_profile_url", "TEXT"), ("price_insights", "JSONB"),
+                ("transaction_category", "VARCHAR(50)"),
+            ):
+                # Identifiers and types above are fixed constants, never user input.
+                conn.execute(text(f"ALTER TABLE properties ADD COLUMN IF NOT EXISTS {name} {sql_type}"))
     Base.metadata.create_all(bind=engine)
-    
-    with engine.connect() as conn:
-        new_cols = [
-            ("project_id", "BIGINT"),
-            ("agent_avatar", "TEXT"),
-            ("agent_license", "VARCHAR(50)"),
-            ("agent_years_with_pg", "VARCHAR(50)"),
-            ("agent_years_count", "INTEGER"),
-            ("agent_phone", "VARCHAR(50)"),
-            ("agent_profile_url", "TEXT"),
-            ("price_insights", "JSONB"),
-            ("transaction_category", "VARCHAR(50)")
-        ]
-        for col_name, col_type in new_cols:
-            try:
-                conn.execute(text(f"ALTER TABLE properties ADD COLUMN IF NOT EXISTS {col_name} {col_type};"))
-                conn.commit()
-            except Exception as e:
-                logger.debug(f"Column {col_name} check/add: {e}")
-                
-    logger.info("Database initialized successfully with all tables and columns.")
+    logger.info("Database initialized successfully.")
 
-def upsert_properties(items: List[Dict[str, Any]]) -> int:
-    """Bulk upsert properties into PostgreSQL with strict column filtering."""
-    if not items:
-        return 0
 
-    valid_cols = {c.name for c in Property.__table__.columns}
-    clean_items = [{k: v for k, v in item.items() if k in valid_cols} for item in items]
+def _columns(model, row):
+    return {k: v for k, v in row.items() if k in model.__table__.columns}
 
+
+_DETAIL_FIELDS = frozenset((
+    "postal_code", "street_name", "street_number", "block", "unit", "floor_level",
+    "latitude", "longitude", "agent_id", "agent_name", "agent_avatar",
+    "agent_license", "agent_years_with_pg", "agent_years_count", "agent_phone",
+    "agent_profile_url", "agency_name", "project_id", "detail_images", "price_insights",
+))
+
+
+def _properties(db, items):
+    # Per-row statements accept heterogeneous cleaned records and avoid PG's
+    # 'cannot affect row a second time' error for duplicate IDs in one batch.
+    dedup = {}
+    for item in items:
+        row = _columns(Property, item)
+        if not row.get("listing_id") or not row.get("listing_type"):
+            raise ValueError("property requires listing_id and listing_type")
+        dedup[row["listing_id"]] = row
+    for row in dedup.values():
+        stmt = insert(Property).values(row)
+        updates = {}
+        for key in row:
+            if key in ("listing_id", "created_at", "updated_at"):
+                continue
+            if key == "detail_fetched":
+                updates[key] = or_(Property.detail_fetched.is_(True), stmt.excluded.detail_fetched.is_(True))
+            else:
+                value = func.coalesce(stmt.excluded[key], Property.__table__.c[key])
+                if key in _DETAIL_FIELDS:
+                    # Listing cards may contain a different agent/address; only a
+                    # successful detail fetch may replace existing detail fields.
+                    value = case(
+                        (Property.detail_fetched.is_(True) & stmt.excluded.detail_fetched.is_not(True),
+                         Property.__table__.c[key]),
+                        else_=value,
+                    )
+                updates[key] = value
+        updates["updated_at"] = func.now()
+        db.execute(stmt.on_conflict_do_update(index_elements=[Property.listing_id], set_=updates))
+    return len(dedup)
+
+
+def _images(db, records):
+    dedup = {}
+    for record in records:
+        row = _columns(PropertyImage, record)
+        key = (row["listing_id"], row["source_page"], row["image_url"])
+        dedup[key] = row
+    count = 0
+    for row in dedup.values():
+        stmt = insert(PropertyImage).values(row).on_conflict_do_nothing(constraint="uq_listing_source_image")
+        count += db.execute(stmt).rowcount
+    return count
+
+
+def _agents(db, records):
+    dedup = {}
+    for record in records:
+        row = _columns(Agent, record)
+        if row.get("agent_id"):
+            dedup[row["agent_id"]] = row
+    for row in dedup.values():
+        stmt = insert(Agent).values(row)
+        updates = {key: func.coalesce(stmt.excluded[key], Agent.__table__.c[key])
+                   for key in row if key not in ("agent_id", "created_at", "updated_at")}
+        updates["updated_at"] = func.now()
+        db.execute(stmt.on_conflict_do_update(index_elements=[Agent.agent_id], set_=updates))
+    return len(dedup)
+
+
+_TX_KEY = ("project_id", "contract_date", "building", "floor_level", "size_sqft", "price")
+
+
+def _transactions(db, records):
+    dedup = {}
+    for record in records:
+        row = _columns(PriceHistory, record)
+        dedup[tuple(row.get(k) for k in _TX_KEY)] = row
+    count = 0
+    for key in sorted(dedup, key=repr):
+        row = dedup[key]
+        # PG unique constraints consider NULL distinct. A transaction-scoped
+        # advisory lock + NULL-safe lookup closes that gap even across crawlers.
+        digest = hashlib.sha256(repr(key).encode()).digest()
+        lock_id = int.from_bytes(digest[:8], "big", signed=True)
+        db.execute(text("SELECT pg_advisory_xact_lock(:key)"), {"key": lock_id})
+        condition = [PriceHistory.__table__.c[k].is_not_distinct_from(value)
+                     for k, value in zip(_TX_KEY, key)]
+        if db.execute(select(PriceHistory.id).where(*condition).limit(1)).first():
+            continue
+        stmt = insert(PriceHistory).values(row).on_conflict_do_nothing(constraint="uq_price_history_record")
+        count += db.execute(stmt).rowcount
+    return count
+
+
+def save_batch(properties, images=(), agents=(), transactions=()):
+    """Persist one page atomically; no images/related rows if properties fail."""
     db = SessionLocal()
     try:
-        stmt = insert(Property).values(clean_items)
-        update_cols = {
-            c.name: stmt.excluded[c.name]
-            for c in Property.__table__.columns
-            if c.name not in ("listing_id", "created_at")
-        }
-        stmt = stmt.on_conflict_do_update(
-            index_elements=[Property.listing_id],
-            set_=update_cols
+        counts = (
+            _properties(db, properties),
+            _agents(db, agents),
+            _images(db, images),
+            _transactions(db, transactions),
         )
-        db.execute(stmt)
         db.commit()
-        return len(clean_items)
-    except Exception as e:
+        return counts
+    except Exception:
         db.rollback()
-        logger.error(f"Failed to upsert properties: {e}")
+        logger.exception("Failed to persist PropertyGuru batch")
         raise
     finally:
         db.close()
 
+
+def upsert_properties(items: List[Dict[str, Any]]) -> int:
+    return save_batch(items)[0] if items else 0
+
+
 def upsert_property_images(image_records: List[Dict[str, Any]]) -> int:
-    """Bulk upsert image records into property_images table."""
-    if not image_records:
-        return 0
+    return save_batch([], images=image_records)[2] if image_records else 0
 
-    valid_cols = {c.name for c in PropertyImage.__table__.columns}
-    clean_records = [{k: v for k, v in r.items() if k in valid_cols} for r in image_records]
-
-    db = SessionLocal()
-    try:
-        stmt = insert(PropertyImage).values(clean_records)
-        stmt = stmt.on_conflict_do_nothing(
-            constraint="uq_listing_source_image"
-        )
-        result = db.execute(stmt)
-        db.commit()
-        return result.rowcount
-    except Exception as e:
-        db.rollback()
-        logger.error(f"Failed to upsert property images: {e}")
-        return 0
-    finally:
-        db.close()
 
 def upsert_agents(agent_records: List[Dict[str, Any]]) -> int:
-    """Bulk upsert agent records into agents table."""
-    if not agent_records:
-        return 0
+    return save_batch([], agents=agent_records)[1] if agent_records else 0
 
-    valid_cols = {c.name for c in Agent.__table__.columns}
-    clean_records = [{k: v for k, v in r.items() if k in valid_cols} for r in agent_records]
-    dedup = {a["agent_id"]: a for a in clean_records if a.get("agent_id")}.values()
-    if not dedup:
-        return 0
-
-    db = SessionLocal()
-    try:
-        stmt = insert(Agent).values(list(dedup))
-        update_cols = {
-            c.name: stmt.excluded[c.name]
-            for c in Agent.__table__.columns
-            if c.name not in ("agent_id", "created_at")
-        }
-        stmt = stmt.on_conflict_do_update(
-            index_elements=[Agent.agent_id],
-            set_=update_cols
-        )
-        db.execute(stmt)
-        db.commit()
-        return len(dedup)
-    except Exception as e:
-        db.rollback()
-        logger.error(f"Failed to upsert agents: {e}")
-        return 0
-    finally:
-        db.close()
 
 def upsert_price_history(tx_records: List[Dict[str, Any]]) -> int:
-    """Bulk upsert price history transaction records into price_history table."""
-    if not tx_records:
-        return 0
-
-    valid_cols = {c.name for c in PriceHistory.__table__.columns}
-    clean_records = [{k: v for k, v in r.items() if k in valid_cols} for r in tx_records]
-
-    # Deduplicate in-memory by unique constraint keys to avoid PostgreSQL batch conflict error
-    dedup = {}
-    for r in clean_records:
-        key = (
-            r.get("project_id"),
-            r.get("contract_date"),
-            r.get("building"),
-            r.get("floor_level"),
-            r.get("size_sqft"),
-            r.get("price")
-        )
-        dedup[key] = r
-    clean_records = list(dedup.values())
-
-    db = SessionLocal()
-    try:
-        stmt = insert(PriceHistory).values(clean_records)
-        stmt = stmt.on_conflict_do_nothing(
-            constraint="uq_price_history_record"
-        )
-        result = db.execute(stmt)
-        db.commit()
-        return result.rowcount
-    except Exception as e:
-        db.rollback()
-        logger.error(f"Failed to upsert price history: {e}")
-        return 0
-    finally:
-        db.close()
+    return save_batch([], transactions=tx_records)[3] if tx_records else 0
 
 def get_stats() -> Dict[str, Any]:
     """Retrieve detailed statistics from database."""
