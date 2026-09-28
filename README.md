@@ -63,6 +63,7 @@ src/agents/b.ts          Agent B 扩展入口
 src/agents/c.ts          Agent C 扩展入口
 src/agents/d.ts          Agent D 扩展入口
 tests/                  图流程与 API 契约测试
+propertyguru_scraper/    独立的 PropertyGuru 抓取、PostgreSQL 入库及 Neo4j 投影（见其 README）
 ```
 
 ## 本地运行
@@ -81,7 +82,7 @@ tests/                  图流程与 API 契约测试
 2. 从环境变量模板创建本地配置，并填写所选模型的密钥：
 
    ```bash
-   cp .env.example .env
+   test -e .env || cp .env.example .env
    # 编辑 .env，填写 OPENAI_API_KEY（或所选 provider 的密钥）。
    set -a; source .env; set +a
    ```
@@ -165,6 +166,47 @@ curl -N -X POST http://127.0.0.1:8000/api/query \
 
 `GET /health` 会检查图服务是否可用。FastAPI 默认连接 `http://127.0.0.1:3001`；可用 `GRAPH_SERVICE_URL` 修改。图服务监听地址和端口分别由 `GRAPH_HOST`、`GRAPH_PORT` 控制，默认仅监听本机。
 
+## PropertyGuru 数据管道（独立于 Agent 服务）
+
+从**项目根目录**运行以下命令。需要 Python 3.11+、本机 PostgreSQL；图投影还需要 Docker Compose。爬虫使用脚本目录相对导入，调用 `python3 propertyguru_scraper/main.py`，不要从根目录用 `python3 -m propertyguru_scraper.main`。完整的 CLI、表结构及图模型见 [propertyguru_scraper/README.md](propertyguru_scraper/README.md)。
+
+```bash
+source .venv/bin/activate           # 若尚未创建，按上方“本地运行”创建 .venv
+python3 -m pip install -r propertyguru_scraper/requirements.txt  # 包含 psycopg2、SQLAlchemy、neo4j、pytest
+# 使用具备 PostgreSQL 管理权限的账号；已存在时跳过。
+psql -d postgres -c 'CREATE ROLE propertyguru_scraper LOGIN'
+psql -d postgres -c 'CREATE DATABASE propertyguru OWNER propertyguru_scraper'
+# 只在没有本地 .env 时复制模板；编辑独立 PG URL、Neo4j 密码，不要提交本地 .env。
+test -e .env || cp .env.example .env
+set -a; source .env; set +a          # 新终端也需加载
+python3 propertyguru_scraper/main.py init-db
+python3 propertyguru_scraper/main.py run --type sale --pages 1
+python3 propertyguru_scraper/main.py stats
+```
+
+`PROPERTYGURU_DATABASE_URL` 指向**专用** `propertyguru` 库，不能与上面的 `DATABASE_URL`（LangGraph 的 `multi_agent_assistance` checkpoint/任务/事件库）混用；`init-db` 创建/更新表结构但**不创建库**。若 PostgreSQL TCP 连接要求密码，为专用角色设置密码后仅在本地 `.env` 的 URL 中填写，不改 `.env.example` 为真实凭据。已有 `.env` 不要覆盖。两个 Python 依赖文件分别服务 FastAPI 和爬虫；同时运行时两个都安装。
+
+可选 Neo4j 只保存从**已提交 PostgreSQL 数据**重建的房源图投影，不参与入库事务。`.env` 中设置 `NEO4J_URI`、`NEO4J_USER`、`NEO4J_PASSWORD`、`NEO4J_DATABASE`（示例见 `.env.example`）；Compose 需显式读取根目录 `.env`，而 Python CLI 需先 `source` 它：
+
+```bash
+docker compose --env-file .env -f propertyguru_scraper/compose.yaml up -d
+set -a; source .env; set +a
+python3 propertyguru_scraper/main.py sync-graph --limit 100 --batch-size 25 # 先试少量记录
+python3 propertyguru_scraper/main.py sync-graph                          # 全量回填、重跑更新
+python3 propertyguru_scraper/main.py run --type sale --pages 1 --sync-graph # 成功抓取入库后同步整个 PG 表
+docker compose --env-file .env -f propertyguru_scraper/compose.yaml down # 保留数据卷
+```
+
+在 Neo4j Browser `http://127.0.0.1:7474` 使用 `.env` 的账号登录并执行（没有 D05 房源时结果为空）：
+
+```cypher
+MATCH (l:Listing)-[:IN_DISTRICT]->(d:District {district_code: 'D05'})
+RETURN l.listing_id AS listing_id, l.title AS title, l.price AS price
+ORDER BY listing_id LIMIT 10;
+```
+
+`sync-graph` 从 PG 回填，不会抓取，可反复运行；`--sync-graph` 只在成功抓取入库后执行，Neo4j 失败不会回滚已提交的 PG 数据，修复连接后重新执行 `sync-graph`。删除的 PG 行不会自动删除图节点；Neo4j 是可重建投影，不是新的数据源。Docker `down` 不删除数据卷，修改 `.env` 中的密码不会重设已初始化 Neo4j 的账号密码。更多限制见爬虫 README。
+
 ## 后续职责划分
 
 - 在 `src/agents/a.ts` 至 `d.ts` 中分别实现各 Agent 的职责、工具和工作流；`registry.ts` 保持统一的 `(prompt, sessionId, taskId) => Promise<string>` 调用契约。
@@ -180,7 +222,9 @@ npm run typecheck
 npm test
 npm run build
 python3 -m unittest discover -s tests -p 'test_*.py'
+PYTHONPATH=propertyguru_scraper python3 -m pytest propertyguru_scraper/tests -q
+# 设置专用 PROPERTYGURU_TEST_DATABASE_URL 后，爬虫持久化测试会在临时 schema 中执行。
 # 加载 .env 后，npm test 也会运行 PostgreSQL 持久化集成测试。
 ```
 
-图流程测试使用模拟模型，不需要 API 密钥。真实模型的端到端调用需要先配置模型凭据。
+图流程测试使用模拟模型，不需要 API 密钥。真实模型的端到端调用需要先配置模型凭据。爬虫清洗/图投影单测无需数据库；未设置 `PROPERTYGURU_TEST_DATABASE_URL` 时真实 PostgreSQL 测试跳过。Neo4j 端到端同步还需可用的 Docker 守护进程/Neo4j 服务，本地无法启动时可验证 CLI、Compose 配置及无网络的图测试，但不能验证真实 Bolt 写入。实际抓取还依赖目标站点可访问及其策略。

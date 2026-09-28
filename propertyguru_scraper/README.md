@@ -39,10 +39,11 @@ propertyguru_scraper/
 ├── cleaner.py            # 核心清洗器（主页/详情页图片分离、具体地址/经纬度提取）
 ├── scraper.py            # 抗 Cloudflare 抓取引擎（支持列表页与详情页连续抓取）
 ├── pipeline.py           # 抓取-详情增强-清洗-入库一体化编排调度器
-├── main.py               # 命令行交互工具（init-db / run / stats / export）
-├── requirements.txt      # 依赖包列表
-├── tests/
-│   └── test_cleaner.py   # 数据清洗测试用例（覆盖图片分离、具体地址等）
+├── main.py               # CLI（init-db / run / stats / export / sync-graph）
+├── graph.py              # 从 PostgreSQL 到 Neo4j 的可重建投影
+├── compose.yaml          # 可选本地 Neo4j（持久化数据卷）
+├── requirements.txt      # 爬虫、入库、图同步及测试依赖
+├── tests/                # 清洗、持久化和图同步测试
 └── README.md             # 使用说明文档
 ```
 
@@ -50,25 +51,26 @@ propertyguru_scraper/
 
 ## 🚀 快速上手
 
-### 1. 激活 Python 环境
+**以下所有命令均从项目根目录运行**（不要 `cd propertyguru_scraper`）。需要 Python 3.11+、本机 PostgreSQL；Neo4j 可选。脚本采用脚本目录相对导入，应以 `python3 propertyguru_scraper/main.py` 调用。
+
+### 1. 安装与独立数据库
 ```bash
-conda activate workshop
-# 或直接调用环境中的 Python:
-# /opt/miniconda3/envs/workshop/bin/python
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install -r propertyguru_scraper/requirements.txt
+# 若也运行根项目 FastAPI，另安装：python3 -m pip install -r requirements.txt
+
+# 使用有 CREATE ROLE/DATABASE 权限的本机 PostgreSQL 管理账号；已存在则跳过。
+psql -d postgres -c 'CREATE ROLE propertyguru_scraper LOGIN'
+psql -d postgres -c 'CREATE DATABASE propertyguru OWNER propertyguru_scraper'
+test -e .env || cp .env.example .env    # 仅首次创建；不要覆盖现有 .env
+# 编辑 .env，设置 PROPERTYGURU_DATABASE_URL；如需密码，先给角色设密码并写入该 URL。
+set -a; source .env; set +a           # 新终端需重新加载
+python3 propertyguru_scraper/main.py init-db
+python3 propertyguru_scraper/main.py stats
 ```
 
-### 2. 数据库配置
-爬虫数据库独立于根项目 LangGraph 数据库：仅使用 `PROPERTYGURU_DATABASE_URL`，不读取根项目的 `DATABASE_URL` 或普通 `PG*` 环境变量。未设置 URL 时，使用专属 `PROPERTYGURU_PGUSER`（默认 `jerry`）、`PROPERTYGURU_PGPASSWORD`（默认空）、`PROPERTYGURU_PGHOST`（默认 `localhost`）、`PROPERTYGURU_PGPORT`（默认 `5432`）、`PROPERTYGURU_PGDATABASE`（默认 `propertyguru`）。数据库和角色需事先创建，`init-db` 创建表和索引，并补齐已知旧版属性列；账号需有建表权限。
-
-例如：
-```bash
-export PROPERTYGURU_DATABASE_URL='postgresql://jerry@localhost:5432/propertyguru'
-```
-
-初始化数据库表与索引：
-```bash
-python main.py init-db
-```
+爬虫只使用 `PROPERTYGURU_DATABASE_URL`，**不会**读取根项目 LangGraph 的 `DATABASE_URL` 或普通 `PG*` 环境变量。根项目的 `multi_agent_assistance` 数据库保存 checkpoint、任务及事件；爬虫使用独立的 `propertyguru` 数据库，避免表名/数据/权限冲突。不要把这两个 URL 指向同一个数据库。示例 URL 在根目录 `.env.example`；本机若不允许无密码 TCP 连接，请为角色设置密码并修改本地 `.env` 的 URL（不要提交凭据）。未提供 URL 时，才使用专属 `PROPERTYGURU_PGUSER`（默认 `jerry`）、`PROPERTYGURU_PGPASSWORD`（默认空）、`PROPERTYGURU_PGHOST`（默认 `localhost`）、`PROPERTYGURU_PGPORT`（默认 `5432`）、`PROPERTYGURU_PGDATABASE`（默认 `propertyguru`）。`init-db` 要求建表权限，创建表和索引并补齐已知旧列，不会创建数据库。
 
 ---
 
@@ -77,59 +79,76 @@ python main.py init-db
 ### 1. 抓取数据并入库（默认自动包含详情页地址与高清大图）
 ```bash
 # 抓取买房数据（默认抓取 5 页，自动提取门牌号、邮编、经纬度与分离图片）
-python main.py run --type sale --pages 5
+python3 propertyguru_scraper/main.py run --type sale --pages 5
 
 # 抓取租房数据
-python main.py run --type rent --pages 5
+python3 propertyguru_scraper/main.py run --type rent --pages 5
 
 # 买房和租房同时抓取
-python main.py run --type all --pages 10
+python3 propertyguru_scraper/main.py run --type all --pages 10
 
 # 极速模式：跳过详情页抓取（仅抓取主页数据与卡片预览图）
-python main.py run --type sale --pages 10 --skip-details
+python3 propertyguru_scraper/main.py run --type sale --pages 10 --skip-details
 
 # 从指定页码开始抓取（支持断点续爬）
-python main.py run --type sale --start-page 6 --pages 10
+python3 propertyguru_scraper/main.py run --type sale --start-page 6 --pages 10
 ```
 
 ### 2. 查看数据库统计与图片分离看板
 ```bash
-python main.py stats
+python3 propertyguru_scraper/main.py stats
 ```
 
 ### 3. 导出数据为 CSV / JSON
 ```bash
 # 导出全部房源为 CSV（包含具体街道、邮编、经纬度及图片统计）
-python main.py export --format csv --output singapore_properties.csv
+python3 propertyguru_scraper/main.py export --format csv --output singapore_properties.csv
 
-# 导出租房数据为 JSON
-python main.py export --type rent --format json --output rent_listings.json --limit 200
+# 导出指定区域的房源为 JSON（export 不支持 --type/--limit）
+python3 propertyguru_scraper/main.py export --table properties --format json --output properties.json
 ```
 
 ### 4. 运行单元测试
 ```bash
-PYTHONPATH=. pytest tests/
-# 可选：在独立测试库中使用临时 schema 验证真实 PostgreSQL 幂等与回滚
-PROPERTYGURU_TEST_DATABASE_URL='postgresql://jerry@localhost:5432/propertyguru_test' PYTHONPATH=. pytest tests/test_persistence.py
+PYTHONPATH=propertyguru_scraper python3 -m pytest propertyguru_scraper/tests -q
+# 可选：用 PostgreSQL 管理账号运行：
+# psql -d postgres -c 'CREATE DATABASE propertyguru_test OWNER propertyguru_scraper'
+# 测试会在该独立测试库创建/删除临时 schema（不要使用生产库）。
+PROPERTYGURU_TEST_DATABASE_URL='postgresql+psycopg2://propertyguru_scraper@127.0.0.1:5432/propertyguru_test' \
+  PYTHONPATH=propertyguru_scraper python3 -m pytest propertyguru_scraper/tests/test_persistence.py -q
 ```
 
 ---
 
 ## 可选本地 Neo4j 知识图谱投影
 
-PostgreSQL `properties` / `agents` 是唯一数据源；Neo4j 仅存放可重建的房源投影，**不参与 PostgreSQL 入库事务**。先安装 `pip install -r propertyguru_scraper/requirements.txt`（在此目录下则用 `-r requirements.txt`），执行 `init-db` 并完成 PostgreSQL 入库。图谱只读现有 PostgreSQL 数据，不会触发抓取：
+PostgreSQL `properties` / `agents` 是唯一数据源；Neo4j 仅存放可重建的房源投影，**不参与 PostgreSQL 入库事务**。先按上节安装依赖、执行 `init-db` 并完成 PostgreSQL 入库。所有命令从项目根目录执行；图谱回填只读现有 PostgreSQL 数据，不触发抓取：
 
 ```bash
-cd propertyguru_scraper
-export NEO4J_USER=neo4j NEO4J_PASSWORD='choose-a-local-password'
-docker compose up -d                   # compose.yaml 仅启动 Neo4j
-export NEO4J_URI=bolt://localhost:7687 NEO4J_DATABASE=neo4j
-python main.py sync-graph               # 全量遍历、分批写入；可安全重跑
-python main.py sync-graph --limit 100 --batch-size 25
-python main.py run --pages 5 --sync-graph # 抓取成功写入 PG 后才同步已有 PG 行
+# 编辑本地 .env 的 NEO4J_PASSWORD（至少 8 个字符）；不要提交密码。
+# Compose 不会自动读取根目录 .env，因此显式指定 --env-file。
+docker compose --env-file .env -f propertyguru_scraper/compose.yaml up -d
+# Neo4j 首次启动后等待服务就绪；Bolt 127.0.0.1:7687，Browser http://127.0.0.1:7474
+set -a; source .env; set +a           # 使 CLI 与 Compose 使用相同的 NEO4J_* 值
+python3 propertyguru_scraper/main.py sync-graph  # 全量回填；可安全重跑
+python3 propertyguru_scraper/main.py sync-graph --limit 100 --batch-size 25 # 小批量试运行
+python3 propertyguru_scraper/main.py run --type sale --pages 1 --sync-graph
+python3 propertyguru_scraper/main.py stats
+# 不删除数据卷：下次 up 会保留图数据和首次启动的密码。
+docker compose --env-file .env -f propertyguru_scraper/compose.yaml down
 ```
 
-`NEO4J_URI` 默认 `bolt://localhost:7687`、`NEO4J_USER` 默认 `neo4j`、`NEO4J_PASSWORD` 默认 `password`、`NEO4J_DATABASE` 默认 `neo4j`；compose 与 CLI 的密码必须一致。建议在本机设置非默认密码，数据卷会持久化；首次启动可能需要稍等服务就绪。`sync-graph` 无需重新抓取，`--limit` 限制本次读取的最小 listing_id 顺序记录数，`--batch-size` 控制每次 Neo4j 事务数量。生产同步不要设置 limit；变更 PG 行后重跑即可更新房源属性及四条关系。删除的 PG 房源目前不会自动从 Neo4j 删除；如需完整重建，可清空此专用图数据库后全量同步。`--sync-graph` 同步整个已有 PG 表（不限于本次抓取），失败返回非零状态，但已提交的 PG 写入不会回滚；修复 Neo4j 后单独重跑 `sync-graph` 即可。
+Browser 中选择 `neo4j` 数据库执行示例 Cypher（或使用同一账号的 Neo4j 客户端）：
+
+```cypher
+MATCH (l:Listing)-[:IN_DISTRICT]->(d:District {district_code: 'D05'})
+OPTIONAL MATCH (l)-[:IN_PROJECT]->(p:Project)
+RETURN l.listing_id AS listing_id, l.title AS title, l.price AS price,
+       d.district_code AS district, p.project_id AS project_id
+ORDER BY listing_id LIMIT 10;
+```
+
+`NEO4J_URI` 默认 `bolt://localhost:7687`、`NEO4J_USER` 默认 `neo4j`、`NEO4J_PASSWORD` 默认 `password`、`NEO4J_DATABASE` 默认 `neo4j`；不要依赖不安全的默认密码。compose 与 CLI 的密码必须一致；持久化数据卷已初始化后，更改 `.env` 密码不会自动更新 Neo4j 中的密码，需在 Neo4j 中修改账号密码再同步配置。`sync-graph` 无需重新抓取，`--limit` 限制本次读取的最小 listing_id 顺序记录数，`--batch-size` 控制每次 Neo4j 事务数量。生产同步不要设置 limit；变更 PG 行后重跑即可更新房源属性及四条关系。删除的 PG 房源目前不会自动从 Neo4j 删除；如需完整重建，可清空此专用图数据库后全量同步。`--sync-graph` 同步整个已有 PG 表（不限于本次抓取），失败返回非零状态，但已提交的 PG 写入不会回滚；修复 Neo4j 后单独重跑 `sync-graph` 即可。
 
 图模型：`(:Listing {listing_id})-[:IN_PROJECT]->(:Project {project_id})`、`-[:LISTED_BY]->(:Agent {agent_id})`、`-[:IN_DISTRICT]->(:District {district_code})`、`-[:NEAR_MRT]->(:MRT {name})`。缺失 ID/空地铁站不创建共享节点；房源只包含价格、类型、面积、邮编、URL 等有限白名单字段。**不复制电话、证照、原始 JSON、图片或详细住址**。换边时旧边删除，失联的维度节点可能保留；约束和 MERGE 防止重复节点。
 

@@ -104,6 +104,24 @@ def pg(monkeypatch):
         admin.dispose()
 
 
+def test_committed_ingestion_can_be_backfilled_into_graph_batches(pg):
+    from graph import iter_listing_batches
+
+    stats = IngestionPipeline(FakeScraper()).run_sync(max_pages=1, fetch_price_history=False)
+    assert stats.total_errors == 0
+    assert stats.total_upserted == 1
+    batches = list(iter_listing_batches(pg, batch_size=1))
+    assert len(batches) == 1
+    assert len(batches[0]) == 1
+    row = batches[0][0]
+    assert row["listing_id"] == 101
+    assert row["props"]["title"] == "Test condo"
+    assert row["project_id"] == 20
+    assert row["agent_id"] == 30
+    assert row["agent_name"] == "Detail Agent"
+    assert "agent_phone" not in row["props"]
+
+
 def test_repeat_run_enrichment_related_rows_and_rollback(pg, monkeypatch):
     from sqlalchemy import select, func, event
     scraper = FakeScraper()
