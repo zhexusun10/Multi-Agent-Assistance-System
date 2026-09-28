@@ -144,6 +144,22 @@ def handle_run(args):
         f"Total price history transactions: {overall_tx}, "
         f"Total images recorded: {overall_images}[/bold green]"
     )
+    if args.sync_graph:
+        handle_sync_graph(args)
+
+
+def handle_sync_graph(args):
+    # Projection is deliberately downstream of committed PostgreSQL writes.
+    from database import engine
+    from graph import sync_graph
+    try:
+        count = sync_graph(engine, limit=getattr(args, "limit", None),
+                           batch_size=getattr(args, "batch_size", 500))
+    except Exception as exc:
+        console.print(f"[bold red]Neo4j graph sync failed (PostgreSQL writes remain intact): {exc}[/bold red]")
+        raise SystemExit(1) from exc
+    console.print(f"[bold green]Graph synced: {count} listings.[/bold green]")
+
 
 def handle_stats(args):
     console.print("[bold cyan]Fetching comprehensive database statistics...[/bold cyan]")
@@ -336,6 +352,12 @@ def main():
     run_parser.add_argument("--skip-price-history", action="store_true", help="Skip URA price history transactions fetching")
     run_parser.add_argument("--concurrency", type=int, default=5, help="Concurrent worker threads for detail pages (default: 5)")
     run_parser.add_argument("--verbose", action="store_true", help="Enable verbose debug logging")
+    run_parser.add_argument("--sync-graph", action="store_true", help="Sync committed PostgreSQL rows to Neo4j after successful crawl")
+
+    # sync-graph command (reads existing PostgreSQL rows; no scraping)
+    graph_parser = subparsers.add_parser("sync-graph", help="Project PostgreSQL listings into local Neo4j")
+    graph_parser.add_argument("--limit", type=int, default=None, help="Maximum listings for development")
+    graph_parser.add_argument("--batch-size", type=int, default=500, help="Listings per transaction (default: 500)")
 
     # stats command
     subparsers.add_parser("stats", help="Display summary statistics from PostgreSQL")
@@ -352,6 +374,8 @@ def main():
         handle_init_db(args)
     elif args.command == "run":
         handle_run(args)
+    elif args.command == "sync-graph":
+        handle_sync_graph(args)
     elif args.command == "stats":
         handle_stats(args)
     elif args.command == "export":
