@@ -1,0 +1,11 @@
+listing_id,listing_type,title,property_type,price,psf,bedrooms,bathrooms,floor_area_sqft,district_code,district_text,nearest_mrt,mrt_distance_m,tenure,build_year,posted_at
+500237302,SALE,8 @ Woodleigh,Condominium,1650000.0,1964.29,2,2,840.0,D13,Macpherson / Potong Pasir,NE11 Woodleigh MRT Station,500.0,99-year Leasehold,2012.0,2026-09-07T13:56:39+10:00
+60038043,SALE,The Arcady At Boon Keng,Condominium,1978000.0,2589.01,2,2,764.0,D12,Balestier / Toa Payoh,NE9 Boon Keng MRT Station,510.0,Freehold,,2026-09-07T13:47:53+10:00
+500200564,SALE,Oasis Garden,Condominium,1580000.0,1668.43,2,2,947.0,D19,Hougang / Punggol / Sengkang,CC11 Tai Seng MRT Station,890.0,Freehold,2012.0,2026-09-07T13:46:23+10:00
+500242451,SALE,Bellewaters,Executive Condominium,1799999.0,1688.55,3,2,1066.0,D19,Hougang / Punggol / Sengkang,SW2 Farmway LRT Station,320.0,99-year Leasehold,2017.0,2026-09-07T13:36:44+10:00
+500256542,SALE,The Springbloom,Condominium,2450000.0,1682.69,3,2,1456.0,D19,Hougang / Punggol / Sengkang,CC14 Lorong Chuan MRT Station,100.0,99-year Leasehold,1999.0,2026-09-07T13:23:18+10:00
+500236299,SALE,Avenue South Residence,Condominium,1390000.0,2115.68,2,1,657.0,D03,Alexandra / Commonwealth,CC31 Cantonment MRT Station,1230.0,99-year Leasehold,2023.0,2026-09-07T13:09:41+10:00
+500214551,SALE,The Visionaire,Executive Condominium,1868000.0,1637.16,4,3,1141.0,D27,Sembawang / Yishun,NS12 Canberra MRT Station,930.0,99-year Leasehold,2018.0,2026-09-07T13:09:00+10:00
+500225874,SALE,The Greenwich,Condominium,880000.0,1459.37,-1,1,603.0,D28,Seletar / Yio Chu Kang,,,99-year Leasehold,2013.0,2026-09-07T13:01:47+10:00
+500241515,SALE,Draycott Eight,Condominium,6335000.0,2187.5,4,4,2896.0,D10,Tanglin / Holland / Bukit Timah,NS22 Orchard MRT Station,970.0,99-year Leasehold,2006.0,2026-09-07T13:00:36+10:00
+500205792,SALE,519 Jelapang Road,HDB Flat,699000.0,519.32,3,2,1346.0,D23,Dairy Farm / Bukit Panjang / Choa Chu Kang,BP11 Segar LRT Station,600.0,99-year Leasehold,1997.0,2026-09-07T13:00:06+10:00
