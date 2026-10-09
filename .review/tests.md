@@ -2,7 +2,7 @@
 
 ## 摘要
 
-仅验证了无真实模型调用、无真实 PostgreSQL 的路径；TypeScript 类型检查和构建、Python API 模拟测试通过，默认 `npm test` **失败**（模型工厂测试缺少 Anthropic 测试密钥），两项 PostgreSQL 测试跳过。用临时假密钥重跑可通过其余测试；不能据此认定 README 中的持久化、服务重启和真实 SSE 端到端行为已验证。未读取或加载 `.env`，未修改源码。
+仅验证了无真实模型调用、无真实 PostgreSQL 的路径；TypeScript 类型检查和构建、Python API 模拟测试通过，`npm test` 15 项中 13 通过、2 项 PostgreSQL 集成测试因未设置 `TEST_DATABASE_URL` 跳过（模型工厂测试已自设临时假密钥，无需真实 API 密钥）。不能据此认定 README 中的持久化、服务重启和真实 SSE 端到端行为已验证。未读取或加载 `.env`，未修改源码。
 
 ## 命令结果
 
@@ -11,10 +11,9 @@
 | 命令 | 结果 |
 | --- | --- |
 | `npm run typecheck` | 退出码 0，`tsc --noEmit` 通过。 |
-| `npm test` | 退出码 1：15 项，12 通过、1 失败、2 跳过；`tests/model.test.ts:5-16` 的 Anthropic 初始化抛出 `Anthropic API key not found`。 |
+| `npm test` | 退出码 0：15 项，13 通过、2 跳过；`tests/model.test.ts` 自设临时假密钥，只构造模型对象、不调用线上模型。 |
 | `npm run build` | 退出码 0，`tsc` 通过。 |
 | `python3 -m unittest discover -s tests -p 'test_*.py'` | 退出码 0，7 项通过。 |
-| 补充：`env ANTHROPIC_API_KEY=test-key OPENAI_API_KEY=test-key GOOGLE_API_KEY=test-key npm test` | 退出码 0：15 项，13 通过、2 跳过；只构造模型对象，不调用线上模型（`tests/model.test.ts:5-16`）。这些是临时**假**密钥，不是 `.env` 内容。 |
 
 两项 DB 集成测试由 `TEST_DATABASE_URL` 是否存在决定，当前没有提供，因此跳过；未连接或验证外部数据库（`tests/postgres-session.test.ts:14-16,75-77`）。README 也要求加载本地配置后才运行数据库测试（`README.md:176-186`）；不应将跳过解释为通过。
 
@@ -27,5 +26,4 @@
 
 ## 可证实的问题
 
-1. **默认验证命令失败（已实际复现）**：README 写“图流程测试使用模拟模型，不需要 API 密钥”（`README.md:176-186`），但 `npm test` 包含模型工厂测试，测试仅临时设置 `GOOGLE_API_KEY`（`tests/model.test.ts:5-20`），却还初始化 Anthropic（`tests/model.test.ts:9-14`）；在无 Anthropic 密钥的干净环境抛错。生产代码的 `createModel` 直接调用 provider 初始化（`src/model.ts:5-11`）；临时假密钥复测通过表明这是**测试自包含性/文档验证前提**缺陷，并非已证明生产模型调用故障。
-2. **外部 Runtime 事件在重启中途有丢失唤醒风险（代码路径可证，未做 DB 崩溃实测）**：接口在事件落库后即返回 202，不等回答（`README.md:146-154`；`src/agents/master.ts:390-394`）；运行中待处理状态只保存在 `pendingRuntime` 内存映射（`src/agents/master.ts:107,315-335`）。启动恢复仅执行 `resumePendingTasks()`，该函数只扫描 Agent 任务，并不扫描已落库但未得到 `runtime_answer` 的外部事件（`src/server.ts:24`；`src/agents/master.ts:449-454`）。因此若落库/返回 202 后、推理完成前进程停止，原始事件能重放，但不会自动再次唤醒 master 生成回答；现有两项 DB 测试也未覆盖这一情形（`tests/postgres-session.test.ts:14-140`）。
+1. **外部 Runtime 事件在重启中途有丢失唤醒风险（代码路径可证，未做 DB 崩溃实测）**：接口在事件落库后即返回 202，不等回答（`README.md:146-154`；`src/agents/master.ts:390-394`）；运行中待处理状态只保存在 `pendingRuntime` 内存映射（`src/agents/master.ts:107,315-335`）。启动恢复仅执行 `resumePendingTasks()`，该函数只扫描 Agent 任务，并不扫描已落库但未得到 `runtime_answer` 的外部事件（`src/server.ts:24`；`src/agents/master.ts:449-454`）。因此若落库/返回 202 后、推理完成前进程停止，原始事件能重放，但不会自动再次唤醒 master 生成回答；现有两项 DB 测试也未覆盖这一情形（`tests/postgres-session.test.ts:14-140`）。
