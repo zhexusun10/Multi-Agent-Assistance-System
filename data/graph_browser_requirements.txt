@@ -1,0 +1,4 @@
+# Optional: automate an isolated installed Chrome window for the official Browser.
+# No bundled browser download is needed when Google Chrome is already installed.
+-r graph_requirements.txt
+playwright>=1.50,<2

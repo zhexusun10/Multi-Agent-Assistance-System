@@ -1,0 +1,20 @@
+{
+  "checks": [
+    {
+      "place_id": "OSM:way:54619697",
+      "osm_name": "BIZ2",
+      "postal_code": "117592",
+      "campus_id": "OSM:way:54519165",
+      "official_source_url": "https://map.nus.edu.sg/",
+      "official_api_url": "https://map.nus.edu.sg/index.php/search/ajax_auto?maxrows=10&qword=BIZ2",
+      "official_record_id": "53",
+      "official_name": "BIZ2",
+      "official_campus_name": "Kent Ridge Campus",
+      "official_reference_latitude": 1.29337,
+      "official_reference_longitude": 103.77557,
+      "official_verified_at": "2026-10-09T13:59:40+08:00",
+      "official_verification_method": "nus_campus_map_api_lookup",
+      "official_source_license": "public web content; no database reuse; coordinates are reference points only"
+    }
+  ]
+}

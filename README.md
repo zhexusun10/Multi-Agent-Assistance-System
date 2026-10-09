@@ -55,7 +55,7 @@ src/model.ts             模型创建与环境变量
 src/types.ts             请求、分配任务和结果契约
 src/agent-task-store.ts  PostgreSQL 子 Agent 任务队列
 src/session-store.ts     PostgreSQL 会话事件记录
-src/agents/master.ts     master 图与 spawn_agent 工具
+src/agents/master.ts     master 图与 spawn_agent 业务调度
 src/agents/registry.ts   Agent 注册表
 src/agents/worker.ts     子 Agent 共用的最小 LangGraph 工作流
 src/agents/a.ts          Agent A 扩展入口
@@ -63,7 +63,22 @@ src/agents/b.ts          Agent B 扩展入口
 src/agents/c.ts          Agent C 扩展入口
 src/agents/d.ts          Agent D 扩展入口
 tests/                  图流程与 API 契约测试
-propertyguru_scraper/    独立的 PropertyGuru 抓取、PostgreSQL 入库及 Neo4j 投影（见其 README）
+data/                   统一的数据模块：抓取、数据库、导出、图谱、只读 HTTP API、数据运行文件与教程
+
+  core/                 基础配置、项目路径与 Pydantic 数据契约
+  scraper/              PropertyGuru 爬虫、清洗器与入库流水线
+  storage/              PostgreSQL/SQLite 模型、数据库会话、仓储与快照校验
+  graph/                Neo4j 图谱投影、Cypher 同步、空间语义与 OSM 地点
+  service/              只读 HTTP REST API 与双库/服务一致性验收
+  main.py               爬虫、建表、导出与迁移命令行入口
+  knowledge_graph.py    知识图谱全生命周期统一命令行入口
+  README.md             PostgreSQL 启动、连接、导入与 SQL 查询指南
+  NEO4J.md              Neo4j 启动、Browser、Cypher、空间查询与只读 API 指南
+  propertyguru.db       忽略的 SQLite 本地快照（数据归档，不提交 Git）
+  exports/              CSV/JSON 导出
+  .runtime/             忽略的 Neo4j 本地数据、日志、报告和缓存
+  datasets/             可审阅的公开 OSM 快照及来源许可
+  tests/                爬虫、数据库、API 与图谱测试
 ```
 
 ## 本地运行
@@ -89,16 +104,27 @@ propertyguru_scraper/    独立的 PropertyGuru 抓取、PostgreSQL 入库及 Ne
 
    `.env` 已被 Git 忽略；每个新终端都需要执行 `set -a; source .env; set +a`。已安装 OpenAI、Anthropic 和 Google GenAI 的 provider SDK。例如可改为 `CHAT_MODEL="anthropic:<模型名>"` 并设置 `ANTHROPIC_API_KEY`，或改为 `CHAT_MODEL="google-genai:<模型名>"` 并设置 `GOOGLE_API_KEY`。`OPENAI_BASE_URL` 仅在 `CHAT_MODEL` 使用 `openai:` 前缀时生效，可连接遵循 OpenAI 接口的服务。更多 provider 可按 [LangChain 模型文档](https://docs.langchain.com/oss/javascript/concepts/providers-and-models#one-api-for-any-model) 安装对应集成包，再设置 `CHAT_MODEL`。
 
-3. 启动 PostgreSQL，并创建模板中使用的角色、开发库和测试库（已有时跳过创建）：
+3. 启动 PostgreSQL，并创建模板中使用的角色、开发库和测试库。**本机没有 PostgreSQL 时可一键免密配置（开发阶段自动下载便携版，仅回环地址）**：
+
+   ```powershell
+   # Windows：只启动免密 PostgreSQL（trust）；首次自动下载
+   powershell -NoProfile -ExecutionPolicy Bypass -File data/start_postgres.ps1
+   ```
 
    ```bash
-   # 以下命令适用于已有 PostgreSQL 管理权限的本机账号。
+   # Docker：免密开发栈（PostgreSQL + Neo4j）
+   docker compose --env-file .env -f data/compose.yaml up -d --wait
+   ```
+
+   脚本会幂等创建 `multi_agent_assistance`、`multi_agent_assistance_test`（及房源库 `propertyguru` 等）角色与数据库，无需设置密码。也可用已有 PostgreSQL 手工创建（需要管理权限）：
+
+   ```bash
    psql -d postgres -c 'CREATE ROLE multi_agent_assistance LOGIN'
    psql -d postgres -c 'CREATE DATABASE multi_agent_assistance OWNER multi_agent_assistance'
    psql -d postgres -c 'CREATE DATABASE multi_agent_assistance_test OWNER multi_agent_assistance'
    ```
 
-   模板中的连接地址适用于允许本机连接的 PostgreSQL。若服务器要求密码，请给该角色设置密码，并在本地 `.env` 的两个 URL 中填写。`DATABASE_URL` 的账号需要建表权限。
+   模板中的连接地址适用于允许本机连接的 PostgreSQL。若服务器要求密码，请给该角色设置密码，并在本地 `.env` 的两个 URL 中填写。`DATABASE_URL` 的账号需要建表权限。开发免密模式的详细说明与边界见 [PostgreSQL 指南](data/README.md) 和 [Neo4j 指南](data/NEO4J.md)。
 
 4. 启动图服务：
 
@@ -166,46 +192,13 @@ curl -N -X POST http://127.0.0.1:8000/api/query \
 
 `GET /health` 会检查图服务是否可用。FastAPI 默认连接 `http://127.0.0.1:3001`；可用 `GRAPH_SERVICE_URL` 修改。图服务监听地址和端口分别由 `GRAPH_HOST`、`GRAPH_PORT` 控制，默认仅监听本机。
 
-## PropertyGuru 数据管道（独立于 Agent 服务）
+## PropertyGuru 数据模块（独立于 Agent 服务）
 
-从**项目根目录**运行以下命令。需要 Python 3.11+、本机 PostgreSQL；图投影还需要 Docker Compose。爬虫使用脚本目录相对导入，调用 `python3 propertyguru_scraper/main.py`，不要从根目录用 `python3 -m propertyguru_scraper.main`。完整的 CLI、表结构及图模型见 [propertyguru_scraper/README.md](propertyguru_scraper/README.md)。
+房源数据固定来自 **2026-10-09 快照**。PostgreSQL 保存规范房源，Neo4j 保存房源关系及学校、食阁、商场等公共地点，含 NUS/NTU 等校园内建筑及其校园归属证据。官方 Neo4j Browser **http://127.0.0.1:7474/browser/** 是图谱可视化入口；`data/graph_api.py` 在 **http://127.0.0.1:8088** 提供独立只读 HTTP API。
 
-```bash
-source .venv/bin/activate           # 若尚未创建，按上方“本地运行”创建 .venv
-python3 -m pip install -r propertyguru_scraper/requirements.txt  # 包含 psycopg2、SQLAlchemy、neo4j、pytest
-# 使用具备 PostgreSQL 管理权限的账号；已存在时跳过。
-psql -d postgres -c 'CREATE ROLE propertyguru_scraper LOGIN'
-psql -d postgres -c 'CREATE DATABASE propertyguru OWNER propertyguru_scraper'
-# 只在没有本地 .env 时复制模板；编辑独立 PG URL、Neo4j 密码，不要提交本地 .env。
-test -e .env || cp .env.example .env
-set -a; source .env; set +a          # 新终端也需加载
-python3 propertyguru_scraper/main.py init-db
-python3 propertyguru_scraper/main.py run --type sale --pages 1
-python3 propertyguru_scraper/main.py stats
-```
+Windows 完整数据链路：`powershell -NoProfile -ExecutionPolicy Bypass -File data/start_knowledge_graph.ps1 -WithPostgres`，统一从 PG 导图及读取明细，启动后执行只读全量验收。已有图时加 `-SkipImport`；只看 SQLite 须显式 `-Source SQLite`。
 
-`PROPERTYGURU_DATABASE_URL` 指向**专用** `propertyguru` 库，不能与上面的 `DATABASE_URL`（LangGraph 的 `multi_agent_assistance` checkpoint/任务/事件库）混用；`init-db` 创建表，并补齐已有 `properties` 表缺失的可空列及索引，但**不创建库**，也不迁移旧列类型/约束或其他旧表。若 PostgreSQL TCP 连接要求密码，为专用角色设置密码后仅在本地 `.env` 的 URL 中填写，不改 `.env.example` 为真实凭据。已有 `.env` 不要覆盖。两个 Python 依赖文件分别服务 FastAPI 和爬虫；同时运行时两个都安装。
-
-可选 Neo4j 只保存从**已提交 PostgreSQL 数据**重建的房源图投影，不参与入库事务。`.env` 中设置 `NEO4J_URI`、`NEO4J_USER`、`NEO4J_PASSWORD`、`NEO4J_DATABASE`（示例见 `.env.example`）；Compose 需显式读取根目录 `.env`，而 Python CLI 需先 `source` 它：
-
-```bash
-docker compose --env-file .env -f propertyguru_scraper/compose.yaml up -d
-set -a; source .env; set +a
-python3 propertyguru_scraper/main.py sync-graph --limit 100 --batch-size 25 # 先试少量记录
-python3 propertyguru_scraper/main.py sync-graph                          # 全量回填、重跑更新
-python3 propertyguru_scraper/main.py run --type sale --pages 1 --sync-graph # 成功抓取入库后同步整个 PG 表
-docker compose --env-file .env -f propertyguru_scraper/compose.yaml down # 保留数据卷
-```
-
-在 Neo4j Browser `http://127.0.0.1:7474` 使用 `.env` 的账号登录并执行（没有 D05 房源时结果为空）：
-
-```cypher
-MATCH (l:Listing)-[:IN_DISTRICT]->(d:District {district_code: 'D05'})
-RETURN l.listing_id AS listing_id, l.title AS title, l.price AS price
-ORDER BY listing_id LIMIT 10;
-```
-
-`sync-graph` 从 PG 回填，不会抓取，可反复运行；`--sync-graph` 只在成功抓取入库后执行，Neo4j 失败不会回滚已提交的 PG 数据，修复连接后重新执行 `sync-graph`。删除的 PG 行不会自动删除图节点；Neo4j 是可重建投影，不是新的数据源。Docker `down` 不删除数据卷，修改 `.env` 中的密码不会重设已初始化 Neo4j 的账号密码。无分页信息的空页/失败页会终止 `--all-pages` 并报告错误；成功详情更新会清除旧详情图片行，卡片重跑不会覆盖已保存的 Agent 档案。详情页省略的 agent/project 等字段仍按未知数据保留旧值，不能视作确认删除。更多限制见爬虫 README。
+**上手文档**：[PostgreSQL：启动、连接、导入与 SQL 查询](data/README.md) · [Neo4j：Browser、Cypher、空间查询与只读 API](data/NEO4J.md)。爬虫 SQL/Neo4j 实现、API 契约、测试、数据库文件、导出、运行缓存与文档集中在 `data/`；多 Agent 会话后端仍在 `src/`、`api/`。房源库使用专用 `PROPERTYGURU_DATABASE_URL`，不能与 Agent Runtime 的 `DATABASE_URL` 混用。
 
 ## 后续职责划分
 
@@ -222,7 +215,7 @@ npm run typecheck
 npm test
 npm run build
 python3 -m unittest discover -s tests -p 'test_*.py'
-PYTHONPATH=propertyguru_scraper python3 -m pytest propertyguru_scraper/tests -q
+python3 -m pytest data/tests -q
 # 设置专用 PROPERTYGURU_TEST_DATABASE_URL 后，爬虫持久化测试会在临时 schema 中执行。
 # 加载 .env 后，npm test 也会运行 PostgreSQL 持久化集成测试。
 ```

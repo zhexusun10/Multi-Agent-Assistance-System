@@ -1,0 +1,46 @@
+# Optional local projection only. SQL sources (PostgreSQL/SQLite) are managed separately.
+services:
+  # Loopback-only development stack; trust/no-auth modes are NEVER for production.
+  postgres:
+    image: postgres:16
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      # Scram-sha-256 would require setting passwords; dev containers stay loopback-only.
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres-init.sql:/docker-entrypoint-initdb.d/10-roles.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -h 127.0.0.1"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+  neo4j:
+    image: neo4j:5-community
+    ports:
+      - "127.0.0.1:7474:7474"
+      - "127.0.0.1:7687:7687"
+    environment:
+      # Explicit NEO4J_AUTH=none is local-development only; ports remain loopback-bound.
+      NEO4J_AUTH: ${NEO4J_AUTH:-${NEO4J_USER:-neo4j}/${NEO4J_PASSWORD:?Set NEO4J_PASSWORD or explicitly use NEO4J_AUTH=none for local development}}
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          if [ "$$NEO4J_AUTH" = "none" ]; then
+            cypher-shell --non-interactive 'RETURN 1';
+          else
+            cypher-shell --non-interactive -u "$${NEO4J_AUTH%%/*}" -p "$${NEO4J_AUTH#*/}" 'RETURN 1';
+          fi >/dev/null 2>&1
+      interval: 10s
+      timeout: 20s
+      retries: 12
+      start_period: 30s
+    volumes:
+      - neo4j_data:/data
+
+volumes:
+  neo4j_data:
+  postgres_data:

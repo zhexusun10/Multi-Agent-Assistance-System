@@ -4,5 +4,15 @@ dist/
 .venv/
 __pycache__/
 .pytest_cache/
+data/.runtime/
+data/*.db
+data/*.db-*
+# Full-snapshot exports are regenerated with `python data/main.py export`; only small samples are tracked.
+data/exports/export_properties_agents.csv
+data/exports/export_properties_images.csv
+data/exports/export_properties_price_history.csv
+data/exports/export_properties_properties.csv
+data/exports/export_properties_properties_rent.csv
+data/exports/export_properties_properties_sale.csv
 *.pyc
 .DS_Store
