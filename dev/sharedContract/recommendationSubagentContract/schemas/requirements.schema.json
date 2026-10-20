@@ -1,0 +1,201 @@
+{
+  "$defs": {
+    "Criterion": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Category"
+        },
+        "criterion_id": {
+          "minLength": 1,
+          "title": "Criterion Id",
+          "type": "string"
+        },
+        "destination_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Destination Id"
+        },
+        "destination_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Destination Name"
+        },
+        "distance_type": {
+          "anyOf": [
+            {
+              "enum": [
+                "straight_line",
+                "walking",
+                "transit"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Distance Type"
+        },
+        "field": {
+          "enum": [
+            "price",
+            "bedrooms",
+            "floor_area_sqft",
+            "district_code",
+            "property_type",
+            "distance",
+            "commute",
+            "furnishing",
+            "availability",
+            "lease_months"
+          ],
+          "title": "Field",
+          "type": "string"
+        },
+        "operator": {
+          "enum": [
+            "eq",
+            "in",
+            "gte",
+            "lte",
+            "between"
+          ],
+          "title": "Operator",
+          "type": "string"
+        },
+        "strength": {
+          "enum": [
+            "hard",
+            "soft"
+          ],
+          "title": "Strength",
+          "type": "string"
+        },
+        "transport_mode": {
+          "anyOf": [
+            {
+              "enum": [
+                "walk",
+                "transit",
+                "drive"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Transport Mode"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "utility": {
+          "default": "threshold",
+          "enum": [
+            "threshold",
+            "proximity",
+            "minimize",
+            "maximize"
+          ],
+          "title": "Utility",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          ],
+          "title": "Value"
+        },
+        "weight": {
+          "default": 1,
+          "exclusiveMinimum": 0,
+          "title": "Weight",
+          "type": "number"
+        }
+      },
+      "required": [
+        "criterion_id",
+        "field",
+        "operator",
+        "value",
+        "strength"
+      ],
+      "title": "Criterion",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "criteria": {
+      "items": {
+        "$ref": "#/$defs/Criterion"
+      },
+      "title": "Criteria",
+      "type": "array"
+    },
+    "listing_type": {
+      "const": "RENT",
+      "default": "RENT",
+      "title": "Listing Type",
+      "type": "string"
+    }
+  },
+  "required": [
+    "criteria"
+  ],
+  "title": "Requirements",
+  "type": "object"
+}

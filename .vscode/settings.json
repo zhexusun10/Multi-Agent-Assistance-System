@@ -1,0 +1,12 @@
+{
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/*.pyc": true,
+    "**/.DS_Store": true,
+    "**/.runtime": true,
+    ".venv": true,
+    "node_modules": true,
+    "dist": true
+  }
+}

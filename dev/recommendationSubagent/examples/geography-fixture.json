@@ -1,0 +1,26 @@
+{
+  "listing_type": "RENT",
+  "criteria": [
+    {
+      "criterion_id": "school-distance",
+      "field": "distance",
+      "operator": "lte",
+      "value": 1500,
+      "unit": "m",
+      "strength": "hard",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line"
+    },
+    {
+      "criterion_id": "nearer-school",
+      "field": "distance",
+      "operator": "lte",
+      "value": 1500,
+      "unit": "m",
+      "strength": "soft",
+      "category": "School",
+      "distance_type": "straight_line",
+      "utility": "proximity"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+pydantic>=2.14,<2.15
+SQLAlchemy>=2.0,<3
+psycopg2-binary>=2.9,<3
+neo4j>=5.20,<7
+python-dotenv>=1,<2
+jsonschema>=4,<5
+pytest>=8,<10

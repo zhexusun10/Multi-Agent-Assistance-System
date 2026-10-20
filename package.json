@@ -8,7 +8,8 @@
     "test:live": "node --env-file=.env --import tsx --test tests/business-live.test.ts tests/advanced-live.test.ts tests/intake-live.test.ts",
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "test": "node --import tsx --test tests/*.test.ts"
+    "test": "node --import tsx --test tests/*.test.ts",
+    "typecheck:recommendation": "tsc -p tsconfig.recommendation.json"
   },
   "dependencies": {
     "@langchain/anthropic": "^1.5.11",

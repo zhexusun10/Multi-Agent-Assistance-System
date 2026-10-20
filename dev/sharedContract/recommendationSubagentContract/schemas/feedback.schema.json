@@ -1,0 +1,78 @@
+{
+  "$defs": {
+    "ViewPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "duration_seconds": {
+          "minimum": 0,
+          "title": "Duration Seconds",
+          "type": "number"
+        },
+        "view_session_id": {
+          "minLength": 1,
+          "title": "View Session Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "view_session_id",
+        "duration_seconds"
+      ],
+      "title": "ViewPayload",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "conversation_id": {
+      "minLength": 1,
+      "title": "Conversation Id",
+      "type": "string"
+    },
+    "event_id": {
+      "minLength": 1,
+      "title": "Event Id",
+      "type": "string"
+    },
+    "event_type": {
+      "const": "listing_view_duration",
+      "default": "listing_view_duration",
+      "title": "Event Type",
+      "type": "string"
+    },
+    "listing_id": {
+      "minLength": 1,
+      "title": "Listing Id",
+      "type": "string"
+    },
+    "occurred_at": {
+      "format": "date-time",
+      "title": "Occurred At",
+      "type": "string"
+    },
+    "payload": {
+      "$ref": "#/$defs/ViewPayload"
+    },
+    "recommendation_request_id": {
+      "minLength": 1,
+      "title": "Recommendation Request Id",
+      "type": "string"
+    },
+    "source": {
+      "const": "sample",
+      "default": "sample",
+      "title": "Source",
+      "type": "string"
+    }
+  },
+  "required": [
+    "event_id",
+    "conversation_id",
+    "recommendation_request_id",
+    "listing_id",
+    "occurred_at",
+    "payload"
+  ],
+  "title": "ViewingEvent",
+  "type": "object"
+}

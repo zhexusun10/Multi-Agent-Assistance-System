@@ -1,0 +1,30 @@
+{
+  "listing_type": "RENT",
+  "criteria": [
+    {
+      "criterion_id": "budget",
+      "field": "price",
+      "operator": "lte",
+      "value": 3000,
+      "unit": "SGD/month",
+      "strength": "hard"
+    },
+    {
+      "criterion_id": "bedrooms",
+      "field": "bedrooms",
+      "operator": "gte",
+      "value": 2,
+      "strength": "hard"
+    },
+    {
+      "criterion_id": "district",
+      "field": "district_code",
+      "operator": "in",
+      "value": [
+        "D05"
+      ],
+      "strength": "soft",
+      "weight": 1
+    }
+  ]
+}

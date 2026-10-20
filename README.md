@@ -1,113 +1,223 @@
-# 新加坡租房多 Agent 工作台 · V1.1
+# Multi-Agent Assistance System
 
-可通过对话提取和修改租房需求，核查房源硬条件，解释推荐证据，生成包含协商诉求的跟进草稿，安排候选看房、跟踪回复与提醒，并下载推荐总结及当天会话文档。
+基于 TypeScript、LangGraph 和 FastAPI 的多 Agent 后端骨架。用户请求先进入 `master`；它可以直接回答，也可以通过 `spawn_agent` 工具向当前 session 固定的 `a`、`b`、`c`、`d` Agent 分配任务。工具名保留 `spawn_agent`，但每次调用都复用该 session 已有的逻辑 Agent，不创建新的 Agent 实例。任务先写入 PostgreSQL，master 随后回答并结束当前请求。子 Agent 完成时，Runtime 事件会再次唤醒 master；结果和后续回答通过独立的会话事件流发送给客户端。模型由 LangChain 的 `initChatModel` 按 `provider:model` 标识加载对应 provider SDK。
 
-跟进默认使用无需平台凭证的手动流程：**编辑并复制草稿 → 自行发送后确认已发送 → 粘贴经纪人回复并确认 → 系统理解、总结并起草下一步**。目前不打开外部平台链接。WhatsApp / Telegram API 发送接口保留为高级功能，需单独配置；没有凭证也可以完整使用手动跟进。详见[手动跟进使用与实现说明](docs/手动跟进使用与实现说明.md)。
+当前版本只定义运行链路、数据契约和代码边界。**没有编写 master 或子 Agent 的系统提示词，也没有分配 A–D 的业务职责。**
 
-推荐卡片除需求匹配外，还独立展示已收录的房型、卧室与卫浴数量、面积、地址、照片及周边地点；未提及的属性也会展示。桌面采用约35%对话、65%工作台布局，手机上下排列。补充资料不改变硬条件筛选、软偏好排序和证据，详见[房源展示与数据来源](docs/房源展示与数据来源.md)。
+## 架构
 
-当前交付实现周树晖负责的编排、Requirement、Explanation、Follow-up 和外部工具边界；Recommendation 采用可替换的 Contract V1 接口。为便于独立联调，附有支持完整快照扫描、明确标记的确定性推荐基线，尚未接入崔江山的最终推荐 Agent。
-
-## 直接使用
-
-本机应用入口：**<http://127.0.0.1:8010/>**。
-
-先打开 Docker Desktop，在 PowerShell 中运行：
-
-```powershell
-Set-Location 'D:\Real Estate Agent\Multi-Agent-Assistance-System'
-.\scripts\start-app.ps1 -SkipDataImport
+```mermaid
+flowchart LR
+    U[客户端] --> F[FastAPI /api/query]
+    F --> S[TypeScript 图服务 /run]
+    S --> M[master 选择任务]
+    S <--> P[(PostgreSQL 会话历史、Agent 上下文、任务与事件)]
+    M --> R[Spawn 成功后回答并结束请求]
+    M --> T[持久化任务队列]
+    T --> A[session 的 agent a]
+    T --> B[session 的 agent b]
+    T --> C[session 的 agent c]
+    T --> D[session 的 agent d]
+    A --> J[Runtime 事件唤醒 master]
+    B --> J
+    C --> J
+    D --> J
+    R --> F
+    J --> E[会话事件流 /api/events]
+    E --> U
+    F --> U
 ```
 
-首次初始化或需要核查导入时去掉 `-SkipDataImport`。脚本默认读取 `.env` 的数据模式；本机当前为完整快照，启动 PostgreSQL、正式 Neo4j、Chroma，以及数据 API、图服务和前端。样本库保留隔离。已运行时不会重复启动；修改代码或 `.env` 后用以下命令重启：
+- **FastAPI** 是对外 HTTP 入口，负责请求校验和转发请求与会话的 SSE 事件流。
+- **TypeScript 图服务** 通过本机 HTTP 接收请求，运行 LangGraph，并逐步发送事件。
+- **master 图** 包含任务选择与回答节点，并通过 PostgreSQL 版 LangGraph checkpointer 保存会话历史。`spawn_agent` 是可选工具；调用时可选择 1–4 个不同 Agent。为兼容现有接口，工具返回值仍是 `{"status":"spawned","agents":[...]}`，实际含义是任务已提交给当前 session 的 Agent。后续 Runtime 事件再次启动图的一次执行。
+- **PostgreSQL** 保存 master 与每个子 Agent 的 checkpoint、待处理任务和会话事件。图服务启动时自动创建所需表；按 `session_id` 隔离会话，并为每个会话保存递增事件 ID。
+- **子 Agent 运行图** 每个 session 的 A、B、C、D 分别使用固定的 checkpoint 线程。再次分配给同一 Agent 时，它会读取自己的历史消息；不同 Agent 与不同 session 的上下文互相隔离。同一 Agent 的任务依次执行，不同 Agent 可并发执行。
 
-```powershell
-.\scripts\stop-app.ps1
-.\scripts\start-app.ps1 -SkipDataImport
-```
+### 运行语义
 
-停止脚本仅停止记录且创建时间匹配的本项目应用进程树，保留数据库容器和数据。完整依赖安装、全量数据切换见 [实现与运维文档](IMPLEMENTATION.md)。
+`master` 的图实例在 TypeScript 服务启动时创建，并在服务运行期间持续接收用户请求和 Runtime 事件。每次请求都先由 `master` 决定是否分配任务；分配记录写入 PostgreSQL 后，当前 session 的相应 Agent 开始处理。通信方向是 master 分配任务给子 Agent、子 Agent 完成后发送 Runtime 事件；子 Agent 之间没有通信通道。分配成功后，master 再调用一次模型回答用户，随后 `/api/query` 的 SSE 发送 `done` 并关闭。此时子 Agent 可以继续运行，但 master 不等待、不轮询，也不再消耗模型推理资源。每个子 Agent 完成或失败时，Runtime 事件会自动触发 master 的一次新执行，产生 `runtime_answer`。外部系统也可通过 `/api/runtime/events` 发送事件。查询完成得很快时，子 Agent 的事件也会在 `done` 之后处理。
 
-建议依次尝试：
+`master` 使用 PostgreSQL 版 LangGraph checkpointer 按 `session_id` 保存对话历史。同一会话的图执行依次进行，但用户 query 的调度优先于等待中的 Runtime 事件。若 Runtime 正在调用 master，新 query 会中止该次调用，并把尚未处理的 Runtime 事件追加到新 query 的模型上下文中；用户 query 仍是最后一条输入。此时 `/api/query` 返回吸收这些事件后的 `master_answer`，`/api/events` 保留原始事件，不再为已吸收的事件单独发送 `runtime_answer`。这一消费状态写入 checkpoint，任务重投时不会让 master 重复处理。若 Runtime 回答已生成，新 query 会在该轮 checkpoint 完成后读取它。上一轮的子 Agent 仍在运行时，新 query 也可进入 master。不同会话互相隔离并可并发处理。子 Agent 只读取自己在该 session 的历史及新分配的任务文本，不读取 master 或其他 Agent 的历史。
 
-1. `帮我找租房，预算不超过5000新币，至少2房，D05`
-2. `预算改为4500新币`
-3. `最好超市直线距离800米以内`
-4. `比较前两套，说明各自的证据和待核实项`
-5. `请联系第1套房源的经纪人，先生成询问草稿`
-6. 在工作台选择已核实的 WhatsApp / Telegram 渠道和地址，加入协商诉求、选择候选时段，保存、审核、模拟执行。
-7. `生成当前推荐的总结文档`，下载 Markdown 或 HTML。
+图服务启动时会把上次运行中断的子 Agent 任务放回队列，并继续处理未完成任务和未投递结果。若停机发生在模型调用中，该任务会从本次 Agent 节点重新执行；已写入 checkpoint 的任务结果按任务 ID 去重，不会重复加入 Agent 上下文。
 
-也可在新会话中提出：`先帮我找预算5000新币、至少2房、D05的租房，并生成总结文档`。系统按 A → B → C → D 顺序完成。
+新 query 进入 master 时，运行时会读取该会话仍在工作的子 Agent，并在本次模型输入的最末尾追加状态。例如 A 和 D 尚未完成时，末行是 `Sub agents A and D are still running`。完成的 Agent 会从状态中移除；全部完成时不追加状态行。这行状态只用于本次模型调用，保存到会话历史中的仍是用户原始 query。
 
-## 当前数据与能力范围
+这采用 LangChain 文档中的 [单一分发工具与子 Agent 隔离模式](https://docs.langchain.com/oss/javascript/langchain/multi-agent/subagents#single-dispatch-tool)，并使用 LangGraph 的 [持久化 checkpoint](https://docs.langchain.com/oss/javascript/langgraph/add-memory) 与 [Graph API](https://docs.langchain.com/oss/javascript/langgraph/quickstart#use-the-graph-api)。
 
-| 项目 | 当前实际状态 |
-| --- | --- |
-| 模型 | 本机 `.env` 的 DeepSeek，真实 API 调用；无密钥时可明确使用 `LLM_MODE=rules` |
-| 当前房源 | 已接入 2026-10-09 完整 SQLite 快照，PostgreSQL 实际使用 21,431 套租赁房源；4,657 条经纪人资料、418,700 条图片链接 |
-| 当前图谱 | 正式 Neo4j：21,431 个 Listing、3,716 个 OSM Place、710,468 条 NEAR_PLACE；另有 URA 区域、LTA 出口和校园关系 |
-| 距离 | 官方区域边界、站点出口或 OSM 参考点的 geodesic / 直线距离；不能证明真实步行或通勤路线 |
-| 地名目录 | 55 规划区、5 大区、188 站及 613 个有效具名出口；区域与站点分开解析，附近默认更近优先 |
-| 推荐 | 本地可解释基线；支持接入队友远程 `/recommend` 服务 |
-| 跟进与看房 | 可编辑草稿与协商诉求、审核实际正文；WhatsApp Cloud / Telegram Bot 适配器、持久发送队列、回执与回复、月历及ICS、双方确认、独立跟进提醒与日总结；未配凭证时仅模拟 |
-| 总结 | 可下载 Markdown、HTML，包含需求版本、结果、未知项及证据索引 |
-| 意图与编排 | Orchestrator 三路融合：LLM 70%、Chroma 模板向量20%、关键词10%；可直接解释、知识问答与跟进 |
-| 知识检索 | 8篇Markdown、Docker Chroma向量 + BM25、RRF融合、模型重排与逐句出处核验；资料整理自URA/HDB/IRAS/CEA/警方/法院 |
-| 完整快照验收 | SQL/Neo4j 逐条核对、HTTP 全量分页与真实业务排序均已通过；数据结构见 [完整数据说明](docs/完整数据结构与接入说明.md) |
-
-快照价格和页面来源不证明房源现在仍可租。家具、租期、整租范围、当前可租和真实路线等缺少证据的条件保留为 `unknown`；硬条件未知的房源单列为待核实，不能进入已验证推荐。
-
-本轮已完成实际字段审计、120 条租房话术的前后评估、25 个真实对话的独立 SQL 业务核对及 58 项自动测试。`1B1B` 可按精确卧室/卫浴数量检索；独立卫浴仍需专用使用权证据。详情与评估限制见 [租房需求语义评估与字段审计](docs/租房需求语义评估与字段审计.md)。
-
-## 代码入口
+## 目录
 
 ```text
-frontend/                 对话工作台、证据与动作审核界面
-api/main.py               FastAPI 同源入口、SSE 代理、静态资源
-src/agents/               LangGraph master 和 A/B/C/D 角色图
-src/domain/               需求、编排、解释、动作、知识业务规则
-src/contracts/            Contract V1 Zod 模型与语义校验
-src/adapters/             真实数据 API、远程推荐接口、本地推荐基线
-src/stores/               事务状态、版本、引用与哈希
-src/tools/                权限、预算、缓存、熔断、执行追踪
-skills/                   应用角色技能及边界
-migrations/               业务表迁移；运行时直接读取
-contracts/releases/       可执行 JSON Schema 和字段登记表
-scripts/                  隔离样本导入、启动停止、契约导出
-tests/                    单元、PostgreSQL、真实 HTTP 业务测试
-evaluation/               浏览器用户旅程、验收报告和截图
-data/                     原团队数据模块：采集、SQL、图谱、只读 API
+api/main.py              FastAPI 对外 API
+src/server.ts            TypeScript 图服务 HTTP 入口
+src/model.ts             模型创建与环境变量
+src/types.ts             请求、分配任务和结果契约
+src/agent-task-store.ts  PostgreSQL 子 Agent 任务队列
+src/session-store.ts     PostgreSQL 会话事件记录
+src/agents/master.ts     master 图与 spawn_agent 业务调度
+src/agents/registry.ts   Agent 注册表
+src/agents/worker.ts     子 Agent 共用的最小 LangGraph 工作流
+src/agents/a.ts          Agent A 扩展入口
+src/agents/b.ts          Agent B 扩展入口
+src/agents/c.ts          Agent C 扩展入口
+src/agents/d.ts          Agent D 扩展入口
+tests/                  图流程与 API 契约测试
+data/                   统一的数据模块：抓取、数据库、导出、图谱、只读 HTTP API、数据运行文件与教程
+
+  core/                 基础配置、项目路径与 Pydantic 数据契约
+  scraper/              PropertyGuru 爬虫、清洗器与入库流水线
+  storage/              PostgreSQL/SQLite 模型、数据库会话、仓储与快照校验
+  graph/                Neo4j 图谱投影、Cypher 同步、空间语义与 OSM 地点
+  service/              只读 HTTP REST API 与双库/服务一致性验收
+  main.py               爬虫、建表、导出与迁移命令行入口
+  knowledge_graph.py    知识图谱全生命周期统一命令行入口
+  README.md             PostgreSQL 启动、连接、导入与 SQL 查询指南
+  NEO4J.md              Neo4j 启动、Browser、Cypher、空间查询与只读 API 指南
+  propertyguru.db       忽略的 SQLite 本地快照（数据归档，不提交 Git）
+  exports/              CSV/JSON 导出
+  .runtime/             忽略的 Neo4j 本地数据、日志、报告和缓存
+  datasets/             可审阅的公开 OSM 快照及来源许可
+  tests/                爬虫、数据库、API 与图谱测试
 ```
 
-## 测试与交接
+## 本地运行
 
-```powershell
+需要 Node.js 20+、Python 3.11+，以及支持工具调用的聊天模型。
+
+1. 安装依赖：
+
+   ```bash
+   npm ci
+   python3 -m venv .venv
+   source .venv/bin/activate
+   pip install -r requirements.txt
+   ```
+
+2. 从环境变量模板创建本地配置，并填写所选模型的密钥：
+
+   ```bash
+   test -e .env || cp .env.example .env
+   # 编辑 .env，填写 OPENAI_API_KEY（或所选 provider 的密钥）。
+   set -a; source .env; set +a
+   ```
+
+   `.env` 已被 Git 忽略；每个新终端都需要执行 `set -a; source .env; set +a`。已安装 OpenAI、Anthropic 和 Google GenAI 的 provider SDK。例如可改为 `CHAT_MODEL="anthropic:<模型名>"` 并设置 `ANTHROPIC_API_KEY`，或改为 `CHAT_MODEL="google-genai:<模型名>"` 并设置 `GOOGLE_API_KEY`。`OPENAI_BASE_URL` 仅在 `CHAT_MODEL` 使用 `openai:` 前缀时生效，可连接遵循 OpenAI 接口的服务。更多 provider 可按 [LangChain 模型文档](https://docs.langchain.com/oss/javascript/concepts/providers-and-models#one-api-for-any-model) 安装对应集成包，再设置 `CHAT_MODEL`。
+
+3. 启动 PostgreSQL，并创建模板中使用的角色、开发库和测试库。**本机没有 PostgreSQL 时可一键免密配置（开发阶段自动下载便携版，仅回环地址）**：
+
+   ```powershell
+   # Windows：只启动免密 PostgreSQL（trust）；首次自动下载
+   powershell -NoProfile -ExecutionPolicy Bypass -File data/start_postgres.ps1
+   ```
+
+   ```bash
+   # Docker：免密开发栈（PostgreSQL + Neo4j）
+   docker compose --env-file .env -f data/compose.yaml up -d --wait
+   ```
+
+   脚本会幂等创建 `multi_agent_assistance`、`multi_agent_assistance_test`（及房源库 `propertyguru` 等）角色与数据库，无需设置密码。也可用已有 PostgreSQL 手工创建（需要管理权限）：
+
+   ```bash
+   psql -d postgres -c 'CREATE ROLE multi_agent_assistance LOGIN'
+   psql -d postgres -c 'CREATE DATABASE multi_agent_assistance OWNER multi_agent_assistance'
+   psql -d postgres -c 'CREATE DATABASE multi_agent_assistance_test OWNER multi_agent_assistance'
+   ```
+
+   模板中的连接地址适用于允许本机连接的 PostgreSQL。若服务器要求密码，请给该角色设置密码，并在本地 `.env` 的两个 URL 中填写。`DATABASE_URL` 的账号需要建表权限。开发免密模式的详细说明与边界见 [PostgreSQL 指南](data/README.md) 和 [Neo4j 指南](data/NEO4J.md)。
+
+4. 启动图服务：
+
+   ```bash
+   npm run dev:graph
+   ```
+
+   图服务会自动初始化 LangGraph checkpoint、任务和会话事件表；数据库不可用时启动失败，`/health` 也会报告不可用。
+
+5. 在另一个终端启动 FastAPI：
+
+   ```bash
+   source .venv/bin/activate
+   uvicorn api.main:app --reload --host 127.0.0.1 --port 8000
+   ```
+
+6. 发送请求：
+
+   ```bash
+   curl -N -X POST http://127.0.0.1:8000/api/query \
+     -H 'Content-Type: application/json' \
+     -d '{"query":"你的问题"}'
+   ```
+
+返回的是 `text/event-stream`。例如选择 Agent A 时，当前请求的事件依次为：
+
+```text
+event: session
+data: {"type":"session","session_id":"会话 ID"}
+
+event: master_answer
+data: {"type":"master_answer","answer":"master 的回答"}
+
+event: done
+data: {"type":"done","session_id":"会话 ID","answer":"master 的回答","spawned_agents":["a"]}
+```
+
+客户端拿到 `session_id` 后，可另行订阅后续事件：
+
+```bash
+curl -N "http://127.0.0.1:8000/api/events?session_id=会话ID"
+```
+
+子 Agent 完成后，此流通常依次收到带递增 `id` 的 `agent_result` 和 `runtime_answer`；失败时收到 `agent_error` 和后续回答。若新的 query 抢占了 Runtime 回答，该事件由 query 的 `master_answer` 一并处理，因此此流只有原始 Agent 事件。重连时传入 `after=上次收到的事件ID`，或使用 SSE 的 `Last-Event-ID` 请求头，可从 PostgreSQL 重放遗漏的事件，包括图服务重启前的事件。没有事件时，订阅连接异步等待，不触发模型调用。
+
+外部 Runtime 事件可通过以下接口唤醒 master：
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/runtime/events \
+  -H 'Content-Type: application/json' \
+  -d '{"session_id":"会话ID","name":"build_finished","payload":{"ok":true}}'
+```
+
+事件写入 PostgreSQL 后接口返回 `202`，无需等待 master 推理；事件及未被新 query 吸收时的 `runtime_answer` 出现在 `/api/events`。如果 `master` 直接回答且没有调用 `spawn_agent`，当前请求仍只有 `session`、`master_answer` 和 `done`；运行出错时发送 `error` 事件。
+
+继续同一会话时，在下一次请求中带回 `session_id`：
+
+```bash
+curl -N -X POST http://127.0.0.1:8000/api/query \
+  -H 'Content-Type: application/json' \
+  -d '{"query":"继续刚才的问题","session_id":"上一次返回的会话 ID"}'
+```
+
+首次请求不带 `session_id` 时由图服务生成 UUID；也可以由客户端传入自己的非空会话 ID（最多 128 个字符）。
+
+`GET /health` 会检查图服务是否可用。FastAPI 默认连接 `http://127.0.0.1:3001`；可用 `GRAPH_SERVICE_URL` 修改。图服务监听地址和端口分别由 `GRAPH_HOST`、`GRAPH_PORT` 控制，默认仅监听本机。
+
+## PropertyGuru 数据模块（独立于 Agent 服务）
+
+房源数据固定来自 **2026-10-09 快照**。PostgreSQL 保存规范房源，Neo4j 保存房源关系及学校、食阁、商场等公共地点，含 NUS/NTU 等校园内建筑及其校园归属证据。官方 Neo4j Browser **http://127.0.0.1:7474/browser/** 是图谱可视化入口；`data/graph_api.py` 在 **http://127.0.0.1:8088** 提供独立只读 HTTP API。
+
+Windows 完整数据链路：`powershell -NoProfile -ExecutionPolicy Bypass -File data/start_knowledge_graph.ps1 -WithPostgres`，统一从 PG 导图及读取明细，启动后执行只读全量验收。已有图时加 `-SkipImport`；只看 SQLite 须显式 `-Source SQLite`。
+
+**上手文档**：[PostgreSQL：启动、连接、导入与 SQL 查询](data/README.md) · [Neo4j：Browser、Cypher、空间查询与只读 API](data/NEO4J.md)。爬虫 SQL/Neo4j 实现、API 契约、测试、数据库文件、导出、运行缓存与文档集中在 `data/`；多 Agent 会话后端仍在 `src/`、`api/`。房源库使用专用 `PROPERTYGURU_DATABASE_URL`，不能与 Agent Runtime 的 `DATABASE_URL` 混用。
+
+## 后续职责划分
+
+- 在 `src/agents/a.ts` 至 `d.ts` 中分别实现各 Agent 的职责、工具和工作流；`registry.ts` 保持统一的 `(prompt, sessionId, taskId) => Promise<string>` 调用契约。
+- 在确定职责后，再补充对应的系统提示词和工具描述。当前只有 `spawn_agent` 的参数说明，供模型按 `a`–`d` 选择目标并提供各自的任务文本。
+- 更换已安装的模型提供商时只需修改 `CHAT_MODEL` 和对应凭据；模型创建逻辑集中在 `src/model.ts`。
+
+master 与子 Agent 的历史、待办任务和会话事件均存放在 PostgreSQL，可在图服务重启后继续处理。进程停机时正在执行的模型调用会重新执行；未来若给子 Agent 添加有外部副作用的工具，应按任务 ID 实现幂等。当前同一 `session_id` 的请求在单个图服务进程内串行处理，部署时应只运行一个图服务实例。
+
+## 验证
+
+```bash
 npm run typecheck
 npm test
-node --env-file=.env --import tsx --test tests/postgres-session.test.ts
-.venv\Scripts\python.exe -m pytest tests/test_api.py -q
-$env:BUSINESS_LIVE='1'
-npm run test:live
-.venv\Scripts\python.exe evaluation/browser_flow.py
+npm run build
+python3 -m unittest discover -s tests -p 'test_*.py'
+python3 -m pytest data/tests -q
+# 设置专用 PROPERTYGURU_TEST_DATABASE_URL 后，爬虫持久化测试会在临时 schema 中执行。
+# 加载 .env 后，npm test 也会运行 PostgreSQL 持久化集成测试。
 ```
 
-真实业务测试使用已运行的样本应用，会创建独立测试会话并调用配置的模型。完整测试结果与业务断言见 [验收报告](evaluation/ACCEPTANCE.md)。
-
-- [实现、架构、运行与交接](IMPLEMENTATION.md)
-- [模糊需求与就近推荐调研、具体实施方案](docs/模糊需求与地理推荐调研及实施方案.md)
-- [推荐接口说明及待双方确认的细节](contracts/releases/README.md)
-- [完整数据部署记录](LOCAL_DEPLOYMENT.md)
-- [团队原始运行框架说明](docs/ORIGINAL_RUNTIME.md)
-- [数据模块说明](data/README.md) / [Neo4j 与空间语义](data/NEO4J.md)
-
-## Follow-up 与两个消息平台
-
-实现了可选的真实发送适配器，目前本机没有 WhatsApp / Telegram 凭证，因此仍以 simulation 运行，真实账号收发未验收。
-
-- [WhatsApp 与 Telegram 账号申请、配置和真实收发验收](docs/WhatsApp与Telegram申请配置指南.md)
-- [首次操作：平台代发消息逐步教程](docs/平台代发消息逐步操作教程.md)
-- [仅使用 WhatsApp：完整配置、收发与跟进教程](docs/WhatsApp单平台完整操作教程.md)
-- [Follow-up 工程设计、状态机、范围与测试](docs/Follow-up工程实现与验收.md)
-
-“平台已受理”不代表已读或看房确认；待核实房源可以咨询和约看，未知条件仍保持未知。发出后可创建、调整、完成跟进提醒，生成当天会话与跟进文档。当前只实现两个消息 API，日历为本地日历与 ICS，文档为数据库存储和下载。
+图流程测试使用模拟模型，不需要 API 密钥。真实模型的端到端调用需要先配置模型凭据。爬虫清洗/图投影单测无需数据库；未设置 `PROPERTYGURU_TEST_DATABASE_URL` 时真实 PostgreSQL 测试跳过。Neo4j 端到端同步还需可用的 Docker 守护进程/Neo4j 服务，本地无法启动时可验证 CLI、Compose 配置及无网络的图测试，但不能验证真实 Bolt 写入。实际抓取还依赖目标站点可访问及其策略。

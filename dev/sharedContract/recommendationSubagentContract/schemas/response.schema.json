@@ -1,0 +1,864 @@
+{
+  "$defs": {
+    "Contribution": {
+      "additionalProperties": false,
+      "properties": {
+        "contribution": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Contribution",
+          "type": "number"
+        },
+        "feature": {
+          "title": "Feature",
+          "type": "string"
+        },
+        "raw_difference": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Raw Difference"
+        },
+        "reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reference"
+        },
+        "scale": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scale"
+        },
+        "similarity": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Similarity"
+        },
+        "unknown": {
+          "default": false,
+          "title": "Unknown",
+          "type": "boolean"
+        },
+        "weight": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Weight",
+          "type": "number"
+        }
+      },
+      "required": [
+        "feature",
+        "weight",
+        "contribution"
+      ],
+      "title": "Contribution",
+      "type": "object"
+    },
+    "CriterionResult": {
+      "additionalProperties": false,
+      "properties": {
+        "criterion_id": {
+          "title": "Criterion Id",
+          "type": "string"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "outcome": {
+          "enum": [
+            "pass",
+            "fail",
+            "unknown",
+            "unsupported"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "criterion_id",
+        "outcome",
+        "reason"
+      ],
+      "title": "CriterionResult",
+      "type": "object"
+    },
+    "ErrorDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "retryable": {
+          "default": false,
+          "title": "Retryable",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "ErrorDetail",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "coverage_m": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Coverage M"
+        },
+        "criterion_id": {
+          "title": "Criterion Id",
+          "type": "string"
+        },
+        "destination_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Destination Id"
+        },
+        "distance_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Distance Type"
+        },
+        "evidence_id": {
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "listing_id": {
+          "title": "Listing Id",
+          "type": "string"
+        },
+        "mapping_status": {
+          "default": "not_applicable",
+          "enum": [
+            "known",
+            "missing",
+            "not_applicable"
+          ],
+          "title": "Mapping Status",
+          "type": "string"
+        },
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "observed_at": {
+          "title": "Observed At",
+          "type": "string"
+        },
+        "snapshot_hash": {
+          "title": "Snapshot Hash",
+          "type": "string"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "unknown_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unknown Reason"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "listing_id",
+        "criterion_id",
+        "source",
+        "observed_at",
+        "method",
+        "snapshot_hash"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "Execution": {
+      "additionalProperties": false,
+      "properties": {
+        "controller_mode": {
+          "title": "Controller Mode",
+          "type": "string"
+        },
+        "data_mode": {
+          "title": "Data Mode",
+          "type": "string"
+        },
+        "duration_ms": {
+          "default": 0,
+          "title": "Duration Ms",
+          "type": "number"
+        },
+        "model_calls": {
+          "default": 0,
+          "title": "Model Calls",
+          "type": "integer"
+        },
+        "model_identifier": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Identifier"
+        },
+        "scoring_version": {
+          "default": "weighted-v1",
+          "title": "Scoring Version",
+          "type": "string"
+        },
+        "strategy": {
+          "title": "Strategy",
+          "type": "string"
+        },
+        "tokens": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tokens"
+        },
+        "tool_calls": {
+          "default": 0,
+          "title": "Tool Calls",
+          "type": "integer"
+        },
+        "trace_id": {
+          "title": "Trace Id",
+          "type": "string"
+        },
+        "trace_ref": {
+          "title": "Trace Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "trace_id",
+        "trace_ref",
+        "strategy",
+        "data_mode",
+        "controller_mode"
+      ],
+      "title": "Execution",
+      "type": "object"
+    },
+    "ListingSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "bedrooms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bedrooms"
+        },
+        "district_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "District Code"
+        },
+        "floor_area_sqft": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Floor Area Sqft"
+        },
+        "latitude": {
+          "anyOf": [
+            {
+              "maximum": 90,
+              "minimum": -90,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Latitude"
+        },
+        "listing_id": {
+          "title": "Listing Id",
+          "type": "string"
+        },
+        "listing_type": {
+          "default": "RENT",
+          "title": "Listing Type",
+          "type": "string"
+        },
+        "longitude": {
+          "anyOf": [
+            {
+              "maximum": 180,
+              "minimum": -180,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Longitude"
+        },
+        "normalization_warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Normalization Warnings",
+          "type": "array"
+        },
+        "observed_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observed At"
+        },
+        "postal_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Postal Code"
+        },
+        "price": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Price"
+        },
+        "property_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Property Type"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        }
+      },
+      "required": [
+        "listing_id",
+        "source"
+      ],
+      "title": "ListingSummary",
+      "type": "object"
+    },
+    "RecommendationItem": {
+      "additionalProperties": false,
+      "properties": {
+        "criterion_results": {
+          "items": {
+            "$ref": "#/$defs/CriterionResult"
+          },
+          "title": "Criterion Results",
+          "type": "array"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "listing": {
+          "$ref": "#/$defs/ListingSummary"
+        },
+        "rank": {
+          "maximum": 4,
+          "minimum": 1,
+          "title": "Rank",
+          "type": "integer"
+        },
+        "scores": {
+          "$ref": "#/$defs/ScoreBreakdown"
+        },
+        "strengths": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Strengths",
+          "type": "array"
+        },
+        "trade_offs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Trade Offs",
+          "type": "array"
+        },
+        "unknowns": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unknowns",
+          "type": "array"
+        }
+      },
+      "required": [
+        "listing",
+        "rank",
+        "scores",
+        "criterion_results",
+        "evidence_refs",
+        "strengths",
+        "trade_offs",
+        "unknowns"
+      ],
+      "title": "RecommendationItem",
+      "type": "object"
+    },
+    "ScoreBreakdown": {
+      "additionalProperties": false,
+      "properties": {
+        "combined_score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Combined Score",
+          "type": "number"
+        },
+        "contributions": {
+          "items": {
+            "$ref": "#/$defs/Contribution"
+          },
+          "title": "Contributions",
+          "type": "array"
+        },
+        "evidence_coverage": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Evidence Coverage",
+          "type": "number"
+        },
+        "explicit_score": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Explicit Score"
+        },
+        "explicit_weight": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Explicit Weight",
+          "type": "number"
+        },
+        "implicit_score": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Implicit Score"
+        },
+        "implicit_weight": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Implicit Weight",
+          "type": "number"
+        },
+        "ordering": {
+          "title": "Ordering",
+          "type": "string"
+        },
+        "suppressed_features": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Suppressed Features",
+          "type": "array"
+        }
+      },
+      "required": [
+        "combined_score",
+        "explicit_weight",
+        "implicit_weight",
+        "evidence_coverage",
+        "contributions",
+        "ordering"
+      ],
+      "title": "ScoreBreakdown",
+      "type": "object"
+    },
+    "StateReference": {
+      "additionalProperties": false,
+      "properties": {
+        "assessed_count": {
+          "default": 0,
+          "title": "Assessed Count",
+          "type": "integer"
+        },
+        "candidate_pool_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Pool Ref"
+        },
+        "feedback_version": {
+          "default": 0,
+          "title": "Feedback Version",
+          "type": "integer"
+        },
+        "prefilter_excluded": {
+          "default": 0,
+          "title": "Prefilter Excluded",
+          "type": "integer"
+        },
+        "run_sequence": {
+          "default": 0,
+          "title": "Run Sequence",
+          "type": "integer"
+        },
+        "scope": {
+          "default": "all RENT listings",
+          "title": "Scope",
+          "type": "string"
+        },
+        "source_count": {
+          "default": 0,
+          "title": "Source Count",
+          "type": "integer"
+        },
+        "state_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "State Id"
+        },
+        "truncated": {
+          "default": false,
+          "title": "Truncated",
+          "type": "boolean"
+        }
+      },
+      "title": "StateReference",
+      "type": "object"
+    },
+    "Unverified": {
+      "additionalProperties": false,
+      "properties": {
+        "criterion_results": {
+          "items": {
+            "$ref": "#/$defs/CriterionResult"
+          },
+          "title": "Criterion Results",
+          "type": "array"
+        },
+        "listing_id": {
+          "title": "Listing Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "listing_id",
+        "criterion_results"
+      ],
+      "title": "Unverified",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "clarifications": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Clarifications",
+      "type": "array"
+    },
+    "contract_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Contract Version",
+      "type": "string"
+    },
+    "conversation_id": {
+      "title": "Conversation Id",
+      "type": "string"
+    },
+    "error": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ErrorDetail"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/Evidence"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "execution": {
+      "$ref": "#/$defs/Execution"
+    },
+    "recommendations": {
+      "items": {
+        "$ref": "#/$defs/RecommendationItem"
+      },
+      "maxItems": 4,
+      "title": "Recommendations",
+      "type": "array"
+    },
+    "relaxation_suggestions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Relaxation Suggestions",
+      "type": "array"
+    },
+    "request_id": {
+      "title": "Request Id",
+      "type": "string"
+    },
+    "requirements_version": {
+      "title": "Requirements Version",
+      "type": "integer"
+    },
+    "state": {
+      "$ref": "#/$defs/StateReference"
+    },
+    "status": {
+      "enum": [
+        "success",
+        "needs_clarification",
+        "no_match",
+        "error"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "unverified_candidates": {
+      "items": {
+        "$ref": "#/$defs/Unverified"
+      },
+      "maxItems": 4,
+      "title": "Unverified Candidates",
+      "type": "array"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "request_id",
+    "conversation_id",
+    "requirements_version",
+    "status",
+    "state",
+    "execution"
+  ],
+  "title": "Response",
+  "type": "object"
+}
