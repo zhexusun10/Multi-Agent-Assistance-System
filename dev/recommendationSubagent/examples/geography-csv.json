@@ -1,0 +1,27 @@
+{
+  "listing_type": "RENT",
+  "criteria": [
+    {
+      "criterion_id": "school-radius",
+      "field": "distance",
+      "operator": "lte",
+      "value": 1500,
+      "unit": "m",
+      "strength": "hard",
+      "destination_id": "OSM:node:10893638965",
+      "distance_type": "straight_line"
+    },
+    {
+      "criterion_id": "nearer-school",
+      "field": "distance",
+      "operator": "lte",
+      "value": 1500,
+      "unit": "m",
+      "strength": "soft",
+      "weight": 1,
+      "utility": "proximity",
+      "destination_id": "OSM:node:10893638965",
+      "distance_type": "straight_line"
+    }
+  ]
+}

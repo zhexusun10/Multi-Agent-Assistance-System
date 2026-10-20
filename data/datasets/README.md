@@ -1,6 +1,6 @@
 # 公共地点快照
 
-`singapore_places.json` 是可重放的真实新加坡 OSM 地点数据，不是演示数据。导入与 API 使用指南见 [Neo4j 指南](../NEO4J.md)。
+`singapore_places.json` 是可重放的真实新加坡 OSM 地点数据，不是演示数据。导入与 API 使用指南见 [Neo4j 指南](../../docs/preprocessing/neo4j.md)。
 
 - 来源：© [OpenStreetMap contributors](https://www.openstreetmap.org/copyright)，**ODbL-1.0**；不与项目代码许可混同，分发/改编须遵守 ODbL 署名及数据库许可要求。
 - 获取：优先 Overpass 按新加坡国家 area 查询；不可用时使用 [BBBike Singapore PBF](https://download.bbbike.org/osm/bbbike/Singapore/Singapore.osm.pbf)。本快照实际来自 PBF。
@@ -22,4 +22,4 @@ python data/knowledge_graph.py enrich-places --refresh
 python data/knowledge_graph.py enrich-places
 ```
 
-原始提取文件/国界缓存留在忽略的 `data/.runtime/places/`；更新后的此 JSON 可审查后随项目分发。距离计算和字段未知状态见 [Neo4j 图模型与距离语义](../NEO4J.md#4-图模型与距离语义)，不宣称步行路线或学校入学资格。
+原始提取文件/国界缓存留在忽略的 `dataPreprocessing/.runtime/places/`；更新后的此 JSON 可审查后随项目分发。距离计算和字段未知状态见 [Neo4j 图模型与距离语义](../../docs/preprocessing/neo4j.md#4-图模型与距离语义)，不宣称步行路线或学校入学资格。

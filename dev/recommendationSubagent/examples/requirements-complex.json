@@ -1,0 +1,81 @@
+{
+  "listing_type": "RENT",
+  "criteria": [
+    {
+      "criterion_id": "budget",
+      "field": "price",
+      "operator": "lte",
+      "value": 6500,
+      "unit": "SGD/month",
+      "strength": "hard"
+    },
+    {
+      "criterion_id": "bedrooms",
+      "field": "bedrooms",
+      "operator": "gte",
+      "value": 2,
+      "strength": "hard"
+    },
+    {
+      "criterion_id": "minimum-space",
+      "field": "floor_area_sqft",
+      "operator": "gte",
+      "value": 700,
+      "unit": "sqft",
+      "strength": "hard"
+    },
+    {
+      "criterion_id": "school-radius",
+      "field": "distance",
+      "operator": "lte",
+      "value": 5000,
+      "unit": "m",
+      "strength": "hard",
+      "destination_id": "OSM:node:10893638965",
+      "distance_type": "straight_line"
+    },
+    {
+      "criterion_id": "prefer-cheaper",
+      "field": "price",
+      "operator": "lte",
+      "value": 6500,
+      "unit": "SGD/month",
+      "strength": "soft",
+      "weight": 3,
+      "utility": "minimize"
+    },
+    {
+      "criterion_id": "prefer-larger",
+      "field": "floor_area_sqft",
+      "operator": "gte",
+      "value": 700,
+      "unit": "sqft",
+      "strength": "soft",
+      "weight": 2,
+      "utility": "maximize"
+    },
+    {
+      "criterion_id": "prefer-nearer-school",
+      "field": "distance",
+      "operator": "lte",
+      "value": 5000,
+      "unit": "m",
+      "strength": "soft",
+      "weight": 4,
+      "utility": "proximity",
+      "destination_id": "OSM:node:10893638965",
+      "distance_type": "straight_line"
+    },
+    {
+      "criterion_id": "prefer-district",
+      "field": "district_code",
+      "operator": "in",
+      "value": [
+        "D05",
+        "D21"
+      ],
+      "strength": "soft",
+      "weight": 1
+    }
+  ]
+}

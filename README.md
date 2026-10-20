@@ -4,6 +4,8 @@
 
 当前版本只定义运行链路、数据契约和代码边界。**没有编写 master 或子 Agent 的系统提示词，也没有分配 A–D 的业务职责。**
 
+For folder navigation and testing, start with the [project guide](docs/README.md) or [small CSV test](docs/testing/csv-sample.md).
+
 ## 架构
 
 ```mermaid
@@ -63,7 +65,7 @@ src/agents/b.ts          Agent B 扩展入口
 src/agents/c.ts          Agent C 扩展入口
 src/agents/d.ts          Agent D 扩展入口
 tests/                  图流程与 API 契约测试
-data/                   统一的数据模块：抓取、数据库、导出、图谱、只读 HTTP API、数据运行文件与教程
+dataPreprocessing/                   数据处理代码、数据库启动配置与测试
 
   core/                 基础配置、项目路径与 Pydantic 数据契约
   scraper/              PropertyGuru 爬虫、清洗器与入库流水线
@@ -72,13 +74,12 @@ data/                   统一的数据模块：抓取、数据库、导出、�
   service/              只读 HTTP REST API 与双库/服务一致性验收
   main.py               爬虫、建表、导出与迁移命令行入口
   knowledge_graph.py    知识图谱全生命周期统一命令行入口
-  README.md             PostgreSQL 启动、连接、导入与 SQL 查询指南
-  NEO4J.md              Neo4j 启动、Browser、Cypher、空间查询与只读 API 指南
-  propertyguru.db       忽略的 SQLite 本地快照（数据归档，不提交 Git）
-  exports/              CSV/JSON 导出
-  .runtime/             忽略的 Neo4j 本地数据、日志、报告和缓存
-  datasets/             可审阅的公开 OSM 快照及来源许可
+  README.md             模块导航与文档链接
   tests/                爬虫、数据库、API 与图谱测试
+docs/                   项目导航、数据库指南、手动测试与验收记录
+data/                   保留原始数据资产：datasets、exports
+dev/sharedContract/recommendationSubagentContract/  推荐接口和 JSON Schema
+dev/recommendationSubagent/                        独立推荐服务、工具、终端及测试
 ```
 
 ## 本地运行
@@ -108,12 +109,12 @@ data/                   统一的数据模块：抓取、数据库、导出、�
 
    ```powershell
    # Windows：只启动免密 PostgreSQL（trust）；首次自动下载
-   powershell -NoProfile -ExecutionPolicy Bypass -File data/start_postgres.ps1
+   powershell -NoProfile -ExecutionPolicy Bypass -File dataPreprocessing/start_postgres.ps1
    ```
 
    ```bash
    # Docker：免密开发栈（PostgreSQL + Neo4j）
-   docker compose --env-file .env -f data/compose.yaml up -d --wait
+   docker compose --env-file .env -f dataPreprocessing/compose.yaml up -d --wait
    ```
 
    脚本会幂等创建 `multi_agent_assistance`、`multi_agent_assistance_test`（及房源库 `propertyguru` 等）角色与数据库，无需设置密码。也可用已有 PostgreSQL 手工创建（需要管理权限）：
@@ -124,7 +125,7 @@ data/                   统一的数据模块：抓取、数据库、导出、�
    psql -d postgres -c 'CREATE DATABASE multi_agent_assistance_test OWNER multi_agent_assistance'
    ```
 
-   模板中的连接地址适用于允许本机连接的 PostgreSQL。若服务器要求密码，请给该角色设置密码，并在本地 `.env` 的两个 URL 中填写。`DATABASE_URL` 的账号需要建表权限。开发免密模式的详细说明与边界见 [PostgreSQL 指南](data/README.md) 和 [Neo4j 指南](data/NEO4J.md)。
+   模板中的连接地址适用于允许本机连接的 PostgreSQL。若服务器要求密码，请给该角色设置密码，并在本地 `.env` 的两个 URL 中填写。`DATABASE_URL` 的账号需要建表权限。开发免密模式的详细说明与边界见 [PostgreSQL 指南](docs/preprocessing/postgresql.md) 和 [Neo4j 指南](docs/preprocessing/neo4j.md)。
 
 4. 启动图服务：
 
@@ -194,11 +195,11 @@ curl -N -X POST http://127.0.0.1:8000/api/query \
 
 ## PropertyGuru 数据模块（独立于 Agent 服务）
 
-房源数据固定来自 **2026-10-09 快照**。PostgreSQL 保存规范房源，Neo4j 保存房源关系及学校、食阁、商场等公共地点，含 NUS/NTU 等校园内建筑及其校园归属证据。官方 Neo4j Browser **http://127.0.0.1:7474/browser/** 是图谱可视化入口；`data/graph_api.py` 在 **http://127.0.0.1:8088** 提供独立只读 HTTP API。
+房源数据固定来自 **2026-10-09 快照**。PostgreSQL 保存规范房源，Neo4j 保存房源关系及学校、食阁、商场等公共地点，含 NUS/NTU 等校园内建筑及其校园归属证据。官方 Neo4j Browser **http://127.0.0.1:7474/browser/** 是图谱可视化入口；`dataPreprocessing/service/app.py` 在 **http://127.0.0.1:8088** 提供独立只读 HTTP API。
 
-Windows 完整数据链路：`powershell -NoProfile -ExecutionPolicy Bypass -File data/start_knowledge_graph.ps1 -WithPostgres`，统一从 PG 导图及读取明细，启动后执行只读全量验收。已有图时加 `-SkipImport`；只看 SQLite 须显式 `-Source SQLite`。
+Windows 完整数据链路：`powershell -NoProfile -ExecutionPolicy Bypass -File dataPreprocessing/start_knowledge_graph.ps1 -WithPostgres`，统一从 PG 导图及读取明细，启动后执行只读全量验收。已有图时加 `-SkipImport`；只看 SQLite 须显式 `-Source SQLite`。
 
-**上手文档**：[PostgreSQL：启动、连接、导入与 SQL 查询](data/README.md) · [Neo4j：Browser、Cypher、空间查询与只读 API](data/NEO4J.md)。爬虫 SQL/Neo4j 实现、API 契约、测试、数据库文件、导出、运行缓存与文档集中在 `data/`；多 Agent 会话后端仍在 `src/`、`api/`。房源库使用专用 `PROPERTYGURU_DATABASE_URL`，不能与 Agent Runtime 的 `DATABASE_URL` 混用。
+**上手文档**：[PostgreSQL：启动、连接、导入与 SQL 查询](docs/preprocessing/postgresql.md) · [Neo4j：Browser、Cypher、空间查询与只读 API](docs/preprocessing/neo4j.md)。爬虫 SQL/Neo4j 实现、API 契约与测试位于 `dataPreprocessing/`，操作指南位于 `docs/`，数据库文件、导出和运行缓存保留在 `data/`；多 Agent 会话后端仍在 `src/`、`api/`。房源库使用专用 `PROPERTYGURU_DATABASE_URL`，不能与 Agent Runtime 的 `DATABASE_URL` 混用。
 
 ## 后续职责划分
 
@@ -215,9 +216,17 @@ npm run typecheck
 npm test
 npm run build
 python3 -m unittest discover -s tests -p 'test_*.py'
-python3 -m pytest data/tests -q
+python3 -m pytest dataPreprocessing/tests -q
 # 设置专用 PROPERTYGURU_TEST_DATABASE_URL 后，爬虫持久化测试会在临时 schema 中执行。
 # 加载 .env 后，npm test 也会运行 PostgreSQL 持久化集成测试。
 ```
 
 图流程测试使用模拟模型，不需要 API 密钥。真实模型的端到端调用需要先配置模型凭据。爬虫清洗/图投影单测无需数据库；未设置 `PROPERTYGURU_TEST_DATABASE_URL` 时真实 PostgreSQL 测试跳过。Neo4j 端到端同步还需可用的 Docker 守护进程/Neo4j 服务，本地无法启动时可验证 CLI、Compose 配置及无网络的图测试，但不能验证真实 Bolt 写入。实际抓取还依赖目标站点可访问及其策略。
+
+## 独立推荐子 Agent
+
+已实现独立推荐服务、四个类型化工具、数据库只读适配器、加权排序、样例浏览时长反馈、SQLite 状态/追踪和应用层最终约束校验。当前不绑定 A–D 的业务职责。使用说明与验证结果见 [推荐子 Agent](dev/recommendationSubagent/README.md)。原数据处理代码迁移至 `dataPreprocessing/`，数据资产保留在 `data/`；详见 [迁移映射](docs/preprocessing/migration.md)。
+
+```bash
+.venv/bin/python -m dev.recommendationSubagent.terminal --data-mode fixture --controller scripted
+```

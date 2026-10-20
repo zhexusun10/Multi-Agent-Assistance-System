@@ -1,0 +1,37 @@
+{
+  "scoring": {
+    "version": "weighted-v1",
+    "scales": {
+      "bedrooms": 3.0,
+      "floor_area_sqft": 500.0,
+      "geography": 3000.0
+    },
+    "feature_weights": {
+      "property_type": 0.25,
+      "bedrooms": 0.2,
+      "floor_area_sqft": 0.25,
+      "geography": 0.3
+    },
+    "numeric_bounds": {
+      "price": [
+        0.0,
+        20000.0
+      ],
+      "bedrooms": [
+        0.0,
+        10.0
+      ],
+      "floor_area_sqft": [
+        0.0,
+        10000.0
+      ]
+    }
+  },
+  "limits": {
+    "model_turns": 8,
+    "tool_calls": 20,
+    "timeout_seconds": 90.0,
+    "model_result_candidates": 100,
+    "repairs": 2
+  }
+}
