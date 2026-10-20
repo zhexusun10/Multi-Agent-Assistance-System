@@ -1,0 +1,13 @@
+{
+  "checked_at": "2026-10-20T07:02:45.329425+00:00",
+  "messages_sent_externally": 0,
+  "checks": [
+    "old generated draft rewrites before a new copy; empty router command does not become negotiation",
+    "real negotiation survives exactly once; uncertainty stays in the workbench",
+    "browser preview equals server copy payload and Windows clipboard content",
+    "UTC06–07 becomes SG14–15 with a readable date and AM/PM",
+    "desktop and mobile dialog; no JavaScript errors; no send acknowledgement performed"
+  ],
+  "status": "passed",
+  "example_message": "你好，我对 Gold Coast Condo（房源 23583402） 很感兴趣，请问现在还可以租吗？我看到的月租是1,600新币，现在还是这个价格吗？\n\n想问一下最短可以租多久，带哪些家具，除了房租还有没有其他费用。\n房间有独立卫浴吗，还是需要和其他人共用卫生间？\n\n我也想找个时间去看看。\n\n协商诉求：希望月租协商到1500新币。\n\n我想在 2026年10月21日（周三） 2:00 PM–3:00 PM（新加坡时间） 去看房，请问你方便吗？\n\n谢谢！"
+}

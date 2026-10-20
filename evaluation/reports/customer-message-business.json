@@ -1,0 +1,12 @@
+{
+  "checked_at": "2026-10-20T07:02:29.854Z",
+  "status": "passed",
+  "fixture": "isolated controlled Gold Coast example from the user report",
+  "messages_sent_externally": 0,
+  "checks": [
+    "actual UI query → D agent → natural inquiry, with private-bath unknown retained internally",
+    "copy body contains genuine price negotiation once; UTC06–07 converted to SG14–15; copying does not send",
+    "legacy draft copy blocked until rewritten; recompose removes router notes without overwriting a user edit",
+    "historical copy snapshot remains recordable verbatim; no retrospective rewriting of an already sent message"
+  ]
+}

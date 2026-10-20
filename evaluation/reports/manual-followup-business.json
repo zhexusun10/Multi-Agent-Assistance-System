@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-10-20T08:40:02.033Z",
+  "status": "passed",
+  "database": "real PostgreSQL",
+  "messages_sent_externally": 0,
+  "checks": [
+    "copy is not send; exact revision/hash; explicit acknowledgement; no token/address/outbox/provider receipt; duplicate acknowledgement deduplicated",
+    "owner/action isolation; no reply before send; durable raw reply; reply ID conflict; selective reminder completion; not a WhatsApp inbound receipt",
+    "restart recovery; immutable sent budget 2000 despite current budget 3000; rent2200 and no private bath both conflict; no automatic booking or property-fact mutation",
+    "next inquiry draft is idempotent, editable and unsent; explicit bilateral viewing confirmation recorded as manual",
+    "copied revision guard; raw reply survives model failure; confirmed state monotonic; day document contains sent snapshot, raw replies and analysis with escaped HTML",
+    "manual history remains recordable after a new search; sent requirement snapshot stays immutable; stale new copies/drafts rejected"
+  ]
+}

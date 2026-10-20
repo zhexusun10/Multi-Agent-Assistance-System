@@ -3,8 +3,15 @@ import type { BaseChatModel } from "@langchain/core/language_models/chat_models"
 import { Annotation, END, START, StateGraph } from "@langchain/langgraph";
 import type { BaseCheckpointSaver } from "@langchain/langgraph-checkpoint";
 import type { AgentId } from "../types.js";
+import type { WorkflowService } from '../domain/workflow.js';
 
 export type AgentRunner = (prompt: string, sessionId: string, taskId: string) => Promise<string>;
+
+export function createRoleRunner(agent:AgentId,service:WorkflowService,checkpointer:BaseCheckpointSaver):AgentRunner{
+  const state=Annotation.Root({prompt:Annotation<string>(),taskId:Annotation<string>(),sessionId:Annotation<string>(),output:Annotation<string>(),lastTaskId:Annotation<string>()});
+  const graph=new StateGraph(state).addNode('role',async s=>s.lastTaskId===s.taskId?{output:s.output}:{output:await service.run(agent,s.prompt,s.sessionId,s.taskId),lastTaskId:s.taskId}).addEdge(START,'role').addEdge('role',END).compile({checkpointer});
+  return async(prompt,sessionId,taskId)=>(await graph.invoke({prompt,sessionId,taskId},{configurable:{thread_id:JSON.stringify(['business-worker',sessionId,agent])},durability:'sync'})).output;
+}
 
 const WorkerState = Annotation.Root({
   prompt: Annotation<string>(),

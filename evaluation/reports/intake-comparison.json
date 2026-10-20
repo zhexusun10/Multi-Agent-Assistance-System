@@ -1,0 +1,50 @@
+{
+  "excluded_from_before_after": [
+    "R058"
+  ],
+  "reason": "R058 originally used unapproved NER; data/README.md defines CCR/RCR/OCR. Original reports retain the original corpus hash. Final label requires clarification; exclude this case from paired metrics.",
+  "rules": {
+    "before": {
+      "cases": 119,
+      "exact_pass": 51,
+      "exact_accuracy": 0.42857142857142855,
+      "precision": 0.8333333333333334,
+      "recall": 0.4838709677419355,
+      "f1": 0.6122448979591837,
+      "exceptions": 0,
+      "corpus_sha256": "e3096295611a872c5923f501a5b83925a734ac55b847febd3240cf9313cb6da5"
+    },
+    "after": {
+      "cases": 119,
+      "exact_pass": 119,
+      "exact_accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "exceptions": 0,
+      "corpus_sha256": "63e44abe30de5854e08b4bb72915b0c778f544b071ba7ae68d4cce5310504687"
+    }
+  },
+  "model": {
+    "before": {
+      "cases": 119,
+      "exact_pass": 68,
+      "exact_accuracy": 0.5714285714285714,
+      "precision": 0.80625,
+      "recall": 0.6935483870967742,
+      "f1": 0.745664739884393,
+      "exceptions": 8,
+      "corpus_sha256": "e3096295611a872c5923f501a5b83925a734ac55b847febd3240cf9313cb6da5"
+    },
+    "after": {
+      "cases": 119,
+      "exact_pass": 119,
+      "exact_accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "exceptions": 0,
+      "corpus_sha256": "63e44abe30de5854e08b4bb72915b0c778f544b071ba7ae68d4cce5310504687"
+    }
+  }
+}

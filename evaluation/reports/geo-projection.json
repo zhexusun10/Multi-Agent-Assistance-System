@@ -1,0 +1,96 @@
+{
+  "checked_at": "2026-10-20T08:45:24.922Z",
+  "status": "passed",
+  "target": "isolated sample 7475 only",
+  "planning_areas": 55,
+  "regions": 5,
+  "stations": 188,
+  "exits": 613,
+  "memberships": 593,
+  "source_hashes": [
+    "f23856251b467089f788d0fff72ef5a38e753f21aa69b4352401d7ed50d380cc",
+    "7a57cb14cf7c621203938e944f99b41891284e5e67876c43d9f8f3ee3aa88ee6"
+  ],
+  "graph_counts": [
+    {
+      "columns": [
+        "labels",
+        "n"
+      ],
+      "data": [
+        {
+          "row": [
+            [
+              "GeoLocation",
+              "GeoArea"
+            ],
+            55
+          ],
+          "meta": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "row": [
+            [
+              "GeoLocation",
+              "GeoRegion"
+            ],
+            5
+          ],
+          "meta": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "row": [
+            [
+              "GeoLocation",
+              "GeoStation"
+            ],
+            188
+          ],
+          "meta": [
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "columns": [
+        "n"
+      ],
+      "data": [
+        {
+          "row": [
+            593
+          ],
+          "meta": [
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "columns": [
+        "n"
+      ],
+      "data": [
+        {
+          "row": [
+            613
+          ],
+          "meta": [
+            null
+          ]
+        }
+      ]
+    }
+  ]
+}

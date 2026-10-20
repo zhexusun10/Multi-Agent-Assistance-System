@@ -1,0 +1,1676 @@
+{
+  "checked_at": "2026-10-19T14:22:30.668Z",
+  "mode": "model",
+  "tag": "showcase30",
+  "model": "openai:deepseek-flash",
+  "corpus_sha256": "63e44abe30de5854e08b4bb72915b0c778f544b071ba7ae68d4cce5310504687",
+  "metrics": {
+    "cases": 30,
+    "exact_pass": 30,
+    "exact_accuracy": 1,
+    "slot_precision": 1,
+    "slot_recall": 1,
+    "slot_f1": 1,
+    "exceptions": 0,
+    "clarification_accuracy": 1,
+    "removal_accuracy": 1,
+    "p95_latency_ms": 1985
+  },
+  "by_split": {
+    "development": {
+      "cases": 26,
+      "exact_pass": 26,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "clarification_accuracy": 1,
+      "removal_accuracy": 1,
+      "p95_latency_ms": 1985
+    },
+    "validation": {
+      "cases": 4,
+      "exact_pass": 4,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "clarification_accuracy": 1,
+      "removal_accuracy": 1,
+      "p95_latency_ms": 1289
+    }
+  },
+  "by_group": {
+    "budget": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "clarification_accuracy": 1,
+      "removal_accuracy": 1,
+      "p95_latency_ms": 1325
+    },
+    "layout": {
+      "cases": 8,
+      "exact_pass": 8,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "clarification_accuracy": 1,
+      "removal_accuracy": 1,
+      "p95_latency_ms": 1289
+    },
+    "type": {
+      "cases": 2,
+      "exact_pass": 2,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "clarification_accuracy": 1,
+      "removal_accuracy": 1,
+      "p95_latency_ms": 1021
+    },
+    "dimensions": {
+      "cases": 2,
+      "exact_pass": 2,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "clarification_accuracy": 1,
+      "removal_accuracy": 1,
+      "p95_latency_ms": 1187
+    },
+    "location": {
+      "cases": 4,
+      "exact_pass": 4,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "clarification_accuracy": 1,
+      "removal_accuracy": 1,
+      "p95_latency_ms": 1088
+    },
+    "transport": {
+      "cases": 2,
+      "exact_pass": 2,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "clarification_accuracy": 1,
+      "removal_accuracy": 1,
+      "p95_latency_ms": 1342
+    },
+    "capability": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "clarification_accuracy": 1,
+      "removal_accuracy": 1,
+      "p95_latency_ms": 1249
+    },
+    "compound": {
+      "cases": 3,
+      "exact_pass": 3,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "clarification_accuracy": 1,
+      "removal_accuracy": 1,
+      "p95_latency_ms": 2327
+    },
+    "followup": {
+      "cases": 3,
+      "exact_pass": 3,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "clarification_accuracy": 1,
+      "removal_accuracy": 1,
+      "p95_latency_ms": 1144
+    }
+  },
+  "results": [
+    {
+      "id": "R003",
+      "split": "development",
+      "group": "budget",
+      "query": "一个月最多两千五",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2500,
+          "strength": "hard",
+          "unit": "SGD/month"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2500,
+          "strength": "hard",
+          "unit": "SGD/month"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 1161
+    },
+    {
+      "id": "R005",
+      "split": "development",
+      "group": "budget",
+      "query": "budget under SGD 3k",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 3000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 3000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 1089
+    },
+    {
+      "id": "R007",
+      "split": "development",
+      "group": "budget",
+      "query": "预算两千到三千",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "price",
+          "operator": "between",
+          "value": [
+            2000,
+            3000
+          ],
+          "strength": "hard",
+          "unit": "SGD/month"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "price",
+          "operator": "between",
+          "value": [
+            2000,
+            3000
+          ],
+          "strength": "hard",
+          "unit": "SGD/month"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 1004
+    },
+    {
+      "id": "R010",
+      "split": "development",
+      "group": "budget",
+      "query": "预算3000，最好租金2500以内",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 3000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2500,
+          "strength": "soft",
+          "unit": "SGD/month"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 3000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2500,
+          "strength": "soft",
+          "unit": "SGD/month"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 2,
+      "expected": 2,
+      "predicted": 2,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 1325
+    },
+    {
+      "id": "R011",
+      "split": "development",
+      "group": "budget",
+      "query": "预算3000美元",
+      "base_slots": [],
+      "expected_slots": [],
+      "actual_slots": [],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 0,
+      "expected": 0,
+      "predicted": 0,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [
+        "租金以 SGD/月评估。请提供新加坡元月租上限，系统不会自动换算币种。"
+      ],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 0
+    },
+    {
+      "id": "R013",
+      "split": "development",
+      "group": "layout",
+      "query": "1B1B",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard",
+          "unit": "count"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard",
+          "unit": "count"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 2,
+      "expected": 2,
+      "predicted": 2,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 1189
+    },
+    {
+      "id": "R015",
+      "split": "development",
+      "group": "layout",
+      "query": "2BR2BA",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 2,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 2,
+          "strength": "hard",
+          "unit": "count"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 2,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 2,
+          "strength": "hard",
+          "unit": "count"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 2,
+      "expected": 2,
+      "predicted": 2,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 1112
+    },
+    {
+      "id": "R018",
+      "split": "development",
+      "group": "layout",
+      "query": "两房一厅一卫",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 2,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard",
+          "unit": "count"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 2,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard",
+          "unit": "count"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 2,
+      "expected": 2,
+      "predicted": 2,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 1168
+    },
+    {
+      "id": "R020",
+      "split": "validation",
+      "group": "layout",
+      "query": "至少两个卧室",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "bedrooms",
+          "operator": "gte",
+          "value": 2,
+          "strength": "hard",
+          "unit": "count"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "bedrooms",
+          "operator": "gte",
+          "value": 2,
+          "strength": "hard",
+          "unit": "count"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 1289
+    },
+    {
+      "id": "R021",
+      "split": "development",
+      "group": "layout",
+      "query": "最多三间卧室",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "bedrooms",
+          "operator": "lte",
+          "value": 3,
+          "strength": "hard",
+          "unit": "count"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "bedrooms",
+          "operator": "lte",
+          "value": 3,
+          "strength": "hard",
+          "unit": "count"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 1100
+    },
+    {
+      "id": "R025",
+      "split": "development",
+      "group": "layout",
+      "query": "找两房",
+      "base_slots": [],
+      "expected_slots": [],
+      "actual_slots": [],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 0,
+      "expected": 0,
+      "predicted": 0,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [
+        "你说的“两房”是至少 2 房，还是恰好这个数量？"
+      ],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 0
+    },
+    {
+      "id": "R027",
+      "split": "development",
+      "group": "layout",
+      "query": "需要独立卫浴",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "private_bathroom",
+          "strength": "hard"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "private_bathroom",
+          "strength": "hard"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 1065
+    },
+    {
+      "id": "R030",
+      "split": "development",
+      "group": "layout",
+      "query": "1B1B，不要求独立卫浴",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard",
+          "unit": "count"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard",
+          "unit": "count"
+        }
+      ],
+      "expected_remove_fields": [
+        "amenities"
+      ],
+      "passed": true,
+      "tp": 2,
+      "expected": 2,
+      "predicted": 2,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [
+        "amenities"
+      ],
+      "remove_criterion_ids": [],
+      "latency_ms": 1063
+    },
+    {
+      "id": "R031",
+      "split": "development",
+      "group": "type",
+      "query": "找condo",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "property_type",
+          "operator": "eq",
+          "value": "Condominium",
+          "strength": "hard"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "property_type",
+          "operator": "eq",
+          "value": "Condominium",
+          "strength": "hard"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 924
+    },
+    {
+      "id": "R034",
+      "split": "development",
+      "group": "type",
+      "query": "walk-up apartment",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "property_type",
+          "operator": "eq",
+          "value": "Walk-up Apartment",
+          "strength": "hard"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "property_type",
+          "operator": "eq",
+          "value": "Walk-up Apartment",
+          "strength": "hard"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 1021
+    },
+    {
+      "id": "R039",
+      "split": "development",
+      "group": "dimensions",
+      "query": "面积至少80平方米",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "floor_area_sqft",
+          "operator": "gte",
+          "value": 861.1128333368,
+          "strength": "hard",
+          "unit": "sqft"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "floor_area_sqft",
+          "operator": "gte",
+          "value": 861.1128333368001,
+          "strength": "hard",
+          "unit": "sqft"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 996
+    },
+    {
+      "id": "R044",
+      "split": "validation",
+      "group": "dimensions",
+      "query": "land area at least 2000 sqft",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "land_area_sqft",
+          "operator": "gte",
+          "value": 2000,
+          "strength": "hard",
+          "unit": "sqft"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "land_area_sqft",
+          "operator": "gte",
+          "value": 2000,
+          "strength": "hard",
+          "unit": "sqft"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 1187
+    },
+    {
+      "id": "R049",
+      "split": "development",
+      "group": "location",
+      "query": "D5",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "district",
+          "operator": "eq",
+          "value": "D05",
+          "strength": "hard"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "district",
+          "operator": "eq",
+          "value": "D05",
+          "strength": "hard"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 907
+    },
+    {
+      "id": "R052",
+      "split": "validation",
+      "group": "location",
+      "query": "邮编012345",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "postal_code",
+          "operator": "eq",
+          "value": "012345",
+          "strength": "hard"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "postal_code",
+          "operator": "eq",
+          "value": "012345",
+          "strength": "hard"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 1088
+    },
+    {
+      "id": "R053",
+      "split": "development",
+      "group": "location",
+      "query": "金文泰附近",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "@location",
+          "operator": "near",
+          "value": null,
+          "strength": "soft",
+          "target": "URA:AREA:CLEMENTI",
+          "unit": "m",
+          "distance_type": "straight_line"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "@location",
+          "operator": "near",
+          "value": null,
+          "strength": "soft",
+          "target": "URA:AREA:CLEMENTI",
+          "unit": "m",
+          "distance_type": "straight_line"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 1024
+    },
+    {
+      "id": "R054",
+      "split": "development",
+      "group": "location",
+      "query": "Clementi MRT附近3公里",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 3000,
+          "strength": "hard",
+          "target": "LTA:MRT:CLEMENTI",
+          "unit": "m",
+          "distance_type": "straight_line"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 3000,
+          "strength": "hard",
+          "target": "LTA:MRT:CLEMENTI",
+          "unit": "m",
+          "distance_type": "straight_line"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 875
+    },
+    {
+      "id": "R059",
+      "split": "development",
+      "group": "transport",
+      "query": "离地铁站步行不超过10分钟",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "mrt_walking_mins",
+          "operator": "lte",
+          "value": 10,
+          "strength": "hard",
+          "unit": "min",
+          "distance_type": "platform_reported"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "mrt_walking_mins",
+          "operator": "lte",
+          "value": 10,
+          "strength": "hard",
+          "unit": "min",
+          "distance_type": "platform_reported"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 1059
+    },
+    {
+      "id": "R063",
+      "split": "development",
+      "group": "transport",
+      "query": "去NTU公交45分钟以内",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "commute_time",
+          "operator": "lte",
+          "value": 45,
+          "strength": "hard",
+          "unit": "min",
+          "target": "NTU",
+          "transport_mode": "transit"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "commute_time",
+          "operator": "lte",
+          "value": 45,
+          "strength": "hard",
+          "unit": "min",
+          "target": "NTU",
+          "transport_mode": "transit"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 1342
+    },
+    {
+      "id": "R069",
+      "split": "development",
+      "group": "capability",
+      "query": "master room with ensuite",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "rental_scope",
+          "operator": "eq",
+          "value": "room",
+          "strength": "hard"
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "master_room",
+          "strength": "hard"
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "private_bathroom",
+          "strength": "hard"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "rental_scope",
+          "operator": "eq",
+          "value": "room",
+          "strength": "hard"
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "master_room",
+          "strength": "hard"
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "private_bathroom",
+          "strength": "hard"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 3,
+      "expected": 3,
+      "predicted": 3,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 1249
+    },
+    {
+      "id": "R094",
+      "split": "development",
+      "group": "compound",
+      "query": "预算5000，2B2B，condo，D05，面积至少800sqft",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 5000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 2,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 2,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "property_type",
+          "operator": "eq",
+          "value": "Condominium",
+          "strength": "hard"
+        },
+        {
+          "field": "district",
+          "operator": "eq",
+          "value": "D05",
+          "strength": "hard"
+        },
+        {
+          "field": "floor_area_sqft",
+          "operator": "gte",
+          "value": 800,
+          "strength": "hard",
+          "unit": "sqft"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 5000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 2,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 2,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "property_type",
+          "operator": "eq",
+          "value": "Condominium",
+          "strength": "hard"
+        },
+        {
+          "field": "district",
+          "operator": "eq",
+          "value": "D05",
+          "strength": "hard"
+        },
+        {
+          "field": "floor_area_sqft",
+          "operator": "gte",
+          "value": 800,
+          "strength": "hard",
+          "unit": "sqft"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 6,
+      "expected": 6,
+      "predicted": 6,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 1985
+    },
+    {
+      "id": "R095",
+      "split": "development",
+      "group": "compound",
+      "query": "预算3000，1B1B，整租，全家具，租一年，2026-12-01入住",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 3000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "rental_scope",
+          "operator": "eq",
+          "value": "whole_unit",
+          "strength": "hard"
+        },
+        {
+          "field": "furnishing",
+          "operator": "eq",
+          "value": "fully_furnished",
+          "strength": "hard"
+        },
+        {
+          "field": "lease_months",
+          "operator": "eq",
+          "value": 12,
+          "strength": "hard",
+          "unit": "month"
+        },
+        {
+          "field": "move_in_date",
+          "operator": "eq",
+          "value": "2026-12-01",
+          "strength": "hard"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 3000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "rental_scope",
+          "operator": "eq",
+          "value": "whole_unit",
+          "strength": "hard"
+        },
+        {
+          "field": "furnishing",
+          "operator": "eq",
+          "value": "fully_furnished",
+          "strength": "hard"
+        },
+        {
+          "field": "lease_months",
+          "operator": "eq",
+          "value": 12,
+          "strength": "hard",
+          "unit": "month"
+        },
+        {
+          "field": "move_in_date",
+          "operator": "eq",
+          "value": "2026-12-01",
+          "strength": "hard"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 7,
+      "expected": 7,
+      "predicted": 7,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 2327
+    },
+    {
+      "id": "R098",
+      "split": "development",
+      "group": "compound",
+      "query": "Clementi MRT附近3公里，预算2500，1B1B，独卫，能做饭，没有同住屋主",
+      "base_slots": [],
+      "expected_slots": [
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 3000,
+          "strength": "hard",
+          "target": "LTA:MRT:CLEMENTI",
+          "unit": "m",
+          "distance_type": "straight_line"
+        },
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2500,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "private_bathroom",
+          "strength": "hard"
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "cooking_allowed",
+          "strength": "hard"
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "no_live_in_landlord",
+          "strength": "hard"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2500,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "private_bathroom",
+          "strength": "hard"
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "cooking_allowed",
+          "strength": "hard"
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "no_live_in_landlord",
+          "strength": "hard"
+        },
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 3000,
+          "strength": "hard",
+          "target": "LTA:MRT:CLEMENTI",
+          "unit": "m",
+          "distance_type": "straight_line"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 7,
+      "expected": 7,
+      "predicted": 7,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 1710
+    },
+    {
+      "id": "R103",
+      "split": "development",
+      "group": "followup",
+      "query": "预算改为2800",
+      "base_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2500,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard",
+          "unit": "count"
+        }
+      ],
+      "expected_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2800,
+          "strength": "hard",
+          "unit": "SGD/month"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2800,
+          "strength": "hard",
+          "unit": "SGD/month"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 710
+    },
+    {
+      "id": "R105",
+      "split": "development",
+      "group": "followup",
+      "query": "取消独立卫浴要求",
+      "base_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2500,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "private_bathroom",
+          "strength": "hard"
+        }
+      ],
+      "expected_slots": [],
+      "actual_slots": [],
+      "expected_remove_fields": [
+        "amenities"
+      ],
+      "passed": true,
+      "tp": 0,
+      "expected": 0,
+      "predicted": 0,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [
+        "amenities"
+      ],
+      "remove_criterion_ids": [],
+      "latency_ms": 1144
+    },
+    {
+      "id": "R108",
+      "split": "validation",
+      "group": "followup",
+      "query": "通勤方式改成公交",
+      "base_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2500,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "field": "commute_time",
+          "operator": "lte",
+          "value": 30,
+          "strength": "hard",
+          "unit": "min",
+          "target": "NUS",
+          "transport_mode": "unspecified"
+        }
+      ],
+      "expected_slots": [
+        {
+          "field": "commute_time",
+          "operator": "lte",
+          "value": 30,
+          "strength": "hard",
+          "unit": "min",
+          "target": "NUS",
+          "transport_mode": "transit"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "commute_time",
+          "operator": "lte",
+          "value": 30,
+          "strength": "hard",
+          "unit": "min",
+          "target": "NUS",
+          "transport_mode": "transit"
+        }
+      ],
+      "expected_remove_fields": [],
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "clarifications": [],
+      "remove_fields": [],
+      "remove_criterion_ids": [],
+      "latency_ms": 1012
+    }
+  ]
+}

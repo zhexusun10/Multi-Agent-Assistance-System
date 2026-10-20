@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev:graph": "tsx watch src/server.ts",
-    "start:graph": "node dist/server.js",
+    "start:graph": "node --env-file-if-exists=.env dist/server.js",
+    "test:live": "node --env-file=.env --import tsx --test tests/business-live.test.ts tests/advanced-live.test.ts tests/intake-live.test.ts",
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "test": "node --import tsx --test tests/*.test.ts"
@@ -17,6 +18,7 @@
     "@langchain/langgraph-checkpoint": "^1.1.5",
     "@langchain/langgraph-checkpoint-postgres": "^1.0.5",
     "@langchain/openai": "^1.5.13",
+    "@turf/point-to-polygon-distance": "^7.4.0",
     "langchain": "^1.5.12",
     "pg": "^8.23.0",
     "zod": "^4.1.0"

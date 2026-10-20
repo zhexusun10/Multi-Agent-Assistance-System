@@ -1,0 +1,237 @@
+{
+  "audited_at": "2026-10-20T12:41:49.067123+08:00",
+  "source": "local committed historical CSVs used by sample importer; live PostgreSQL was not running",
+  "population": "593 historical sample listings, not the full 2026-10-09 snapshot or Singapore market",
+  "sources_sha256": {
+    "export_properties.csv": "56ff2bd61f8338c61c55fbac43a60630d753c70856f9b19e2e5cb4a29422068d",
+    "export_agents.csv": "98f6c965eda3a16bd5a03f8482b9ed7a791a42c9509fe7b6b4e2d65612596c44",
+    "export_properties_rent.csv": "ddbff8d185988da8694f008a0bef7fe20ccf90ce25af6214700dd2b962559d43",
+    "export_properties_sale.csv": "8b063dbf9858bda12dc141647761296c2bae7136c32fbc7802c2061ef9c3aa74"
+  },
+  "installation_source_hash_matches": {
+    "export_properties.csv": true,
+    "export_agents.csv": true
+  },
+  "rent_sale_export_consistency": {
+    "RENT": {
+      "same_rows": true,
+      "unique_listing_ids": 475,
+      "separated_rows": 475
+    },
+    "SALE": {
+      "same_rows": true,
+      "unique_listing_ids": 118,
+      "separated_rows": 118
+    }
+  },
+  "property_headers": [
+    "listing_id",
+    "listing_type",
+    "transaction_category",
+    "title",
+    "property_type",
+    "price",
+    "psf",
+    "bedrooms",
+    "bathrooms",
+    "floor_area_sqft",
+    "postal_code",
+    "street_name",
+    "street_number",
+    "district_code",
+    "latitude",
+    "longitude",
+    "agent_name",
+    "agency_name",
+    "agent_license",
+    "agent_years_with_pg",
+    "agent_phone",
+    "thumbnail_url",
+    "detail_photo_count",
+    "detail_floorplan_count",
+    "posted_at",
+    "url"
+  ],
+  "agent_headers": [
+    "agent_id",
+    "name",
+    "agency_name",
+    "license",
+    "years_with_pg",
+    "years_count",
+    "phone",
+    "avatar_url",
+    "profile_url"
+  ],
+  "groups": [
+    {
+      "scope": "ALL",
+      "listings": 593,
+      "direct_phone_listings": 200,
+      "direct_phone_pct": 33.73,
+      "missing_direct_phone": 393,
+      "distinct_direct_phones": 162,
+      "phone_matching_sg_mobile_pattern": 200,
+      "phone_recoverable_by_unique_license": 32,
+      "direct_or_license_phone_listings": 232,
+      "direct_or_license_phone_pct": 39.12,
+      "recovered_listing_ids": [
+        "500240267",
+        "500231881",
+        "500227099",
+        "500213651",
+        "500210219",
+        "500210131",
+        "500209970",
+        "500205915",
+        "500185839",
+        "500181963",
+        "500173534",
+        "500140844",
+        "500139895",
+        "500119093",
+        "500119077",
+        "500087280",
+        "60107104",
+        "60051842",
+        "60009112",
+        "25643192",
+        "25606963",
+        "25581311",
+        "25550253",
+        "25472382",
+        "25464001",
+        "25410128",
+        "25394908",
+        "25374581",
+        "25346992",
+        "25323819",
+        "24630144",
+        "24362159"
+      ],
+      "phone_conflict_listing_ids": [],
+      "ambiguous_license_listing_ids": [],
+      "listing_url_present": 593,
+      "channel_keyword_occurrence_rows": {
+        "whatsapp": 0,
+        "telegram": 0,
+        "email": 0,
+        "wechat": 1,
+        "sms_explicit": 0
+      }
+    },
+    {
+      "scope": "RENT",
+      "listings": 475,
+      "direct_phone_listings": 100,
+      "direct_phone_pct": 21.05,
+      "missing_direct_phone": 375,
+      "distinct_direct_phones": 86,
+      "phone_matching_sg_mobile_pattern": 100,
+      "phone_recoverable_by_unique_license": 29,
+      "direct_or_license_phone_listings": 129,
+      "direct_or_license_phone_pct": 27.16,
+      "recovered_listing_ids": [
+        "500240267",
+        "500231881",
+        "500213651",
+        "500210219",
+        "500210131",
+        "500209970",
+        "500205915",
+        "500185839",
+        "500181963",
+        "500140844",
+        "500139895",
+        "500119093",
+        "500119077",
+        "500087280",
+        "60107104",
+        "60051842",
+        "60009112",
+        "25643192",
+        "25606963",
+        "25581311",
+        "25550253",
+        "25472382",
+        "25464001",
+        "25410128",
+        "25394908",
+        "25374581",
+        "25346992",
+        "25323819",
+        "24630144"
+      ],
+      "phone_conflict_listing_ids": [],
+      "ambiguous_license_listing_ids": [],
+      "listing_url_present": 475,
+      "channel_keyword_occurrence_rows": {
+        "whatsapp": 0,
+        "telegram": 0,
+        "email": 0,
+        "wechat": 1,
+        "sms_explicit": 0
+      }
+    },
+    {
+      "scope": "SALE",
+      "listings": 118,
+      "direct_phone_listings": 100,
+      "direct_phone_pct": 84.75,
+      "missing_direct_phone": 18,
+      "distinct_direct_phones": 85,
+      "phone_matching_sg_mobile_pattern": 100,
+      "phone_recoverable_by_unique_license": 3,
+      "direct_or_license_phone_listings": 103,
+      "direct_or_license_phone_pct": 87.29,
+      "recovered_listing_ids": [
+        "500227099",
+        "500173534",
+        "24362159"
+      ],
+      "phone_conflict_listing_ids": [],
+      "ambiguous_license_listing_ids": [],
+      "listing_url_present": 118,
+      "channel_keyword_occurrence_rows": {
+        "whatsapp": 0,
+        "telegram": 0,
+        "email": 0,
+        "wechat": 0,
+        "sms_explicit": 0
+      }
+    }
+  ],
+  "agents": {
+    "rows": 162,
+    "unique_agent_ids": 162,
+    "phone_present": 162,
+    "distinct_phones": 162,
+    "phone_matching_sg_mobile_pattern": 162,
+    "propertyguru_relative_profile_url": 162,
+    "channel_keyword_occurrence_rows": {
+      "whatsapp": 0,
+      "telegram": 0,
+      "email": 0,
+      "wechat": 0,
+      "sms_explicit": 0
+    }
+  },
+  "wechat_evidence": [
+    {
+      "listing_id": "19877684",
+      "listing_type": "RENT",
+      "field": "title",
+      "channel": "wechat",
+      "evidence_kind": "explicit_title_text"
+    }
+  ],
+  "actual_whatsapp_activation_rate": null,
+  "contact_activity_verified": false,
+  "limitations": [
+    "No WhatsApp activation or delivery probes were performed.",
+    "A phone number is not evidence of WhatsApp, SMS availability, opt-in, or current agent identity.",
+    "Zero explicit WhatsApp references means missing channel evidence, not zero real WhatsApp users.",
+    "The agents export contains only saved agent records, not every distinct agent in the listing population.",
+    "License association is a read-only recovery calculation; runtime lookup and source CSVs were not changed."
+  ]
+}

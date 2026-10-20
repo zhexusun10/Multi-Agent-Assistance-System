@@ -1,0 +1,1112 @@
+{
+  "tables": {
+    "properties": {
+      "count": 21431,
+      "columns": [
+        {
+          "cid": 0,
+          "name": "listing_id",
+          "type": "BIGINT",
+          "notnull": 1,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "listing_type",
+          "type": "VARCHAR(20)",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "transaction_category",
+          "type": "VARCHAR(50)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "title",
+          "type": "VARCHAR(255)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "property_type",
+          "type": "VARCHAR(100)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "project_id",
+          "type": "BIGINT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "price",
+          "type": "NUMERIC(15, 2)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "currency",
+          "type": "VARCHAR(10)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "price_type",
+          "type": "VARCHAR(50)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "psf",
+          "type": "NUMERIC(10, 2)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "bedrooms",
+          "type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "bathrooms",
+          "type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "floor_area_sqft",
+          "type": "NUMERIC(12, 2)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "land_area_sqft",
+          "type": "NUMERIC(12, 2)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "tenure",
+          "type": "VARCHAR(100)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "tenure_category",
+          "type": "VARCHAR(50)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 16,
+          "name": "build_year",
+          "type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 17,
+          "name": "full_address",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 18,
+          "name": "short_address",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 19,
+          "name": "district_code",
+          "type": "VARCHAR(20)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 20,
+          "name": "district_text",
+          "type": "VARCHAR(255)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 21,
+          "name": "region_code",
+          "type": "VARCHAR(20)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 22,
+          "name": "region_text",
+          "type": "VARCHAR(255)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 23,
+          "name": "postal_code",
+          "type": "VARCHAR(20)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 24,
+          "name": "street_name",
+          "type": "VARCHAR(255)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 25,
+          "name": "street_number",
+          "type": "VARCHAR(50)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 26,
+          "name": "block",
+          "type": "VARCHAR(50)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 27,
+          "name": "unit",
+          "type": "VARCHAR(50)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 28,
+          "name": "floor_level",
+          "type": "VARCHAR(50)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 29,
+          "name": "latitude",
+          "type": "NUMERIC(11, 8)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 30,
+          "name": "longitude",
+          "type": "NUMERIC(11, 8)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 31,
+          "name": "nearest_mrt",
+          "type": "VARCHAR(255)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 32,
+          "name": "mrt_distance_m",
+          "type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 33,
+          "name": "mrt_walking_mins",
+          "type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 34,
+          "name": "agent_id",
+          "type": "BIGINT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 35,
+          "name": "agent_name",
+          "type": "VARCHAR(255)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 36,
+          "name": "agent_avatar",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 37,
+          "name": "agent_license",
+          "type": "VARCHAR(50)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 38,
+          "name": "agent_years_with_pg",
+          "type": "VARCHAR(50)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 39,
+          "name": "agent_years_count",
+          "type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 40,
+          "name": "agent_phone",
+          "type": "VARCHAR(50)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 41,
+          "name": "agent_profile_url",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 42,
+          "name": "agency_id",
+          "type": "BIGINT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 43,
+          "name": "agency_name",
+          "type": "VARCHAR(255)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 44,
+          "name": "url",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 45,
+          "name": "thumbnail_url",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 46,
+          "name": "is_verified",
+          "type": "BOOLEAN",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 47,
+          "name": "is_official",
+          "type": "BOOLEAN",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 48,
+          "name": "detail_fetched",
+          "type": "BOOLEAN",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 49,
+          "name": "homepage_images",
+          "type": "JSON",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 50,
+          "name": "detail_images",
+          "type": "JSON",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 51,
+          "name": "price_insights",
+          "type": "JSON",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 52,
+          "name": "posted_at",
+          "type": "DATETIME",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 53,
+          "name": "created_at",
+          "type": "DATETIME",
+          "notnull": 0,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": 0
+        },
+        {
+          "cid": 54,
+          "name": "updated_at",
+          "type": "DATETIME",
+          "notnull": 0,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": 0
+        },
+        {
+          "cid": 55,
+          "name": "raw_json",
+          "type": "JSON",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "ix_properties_agent_id",
+          0,
+          "c",
+          0
+        ],
+        [
+          1,
+          "idx_properties_postal_code",
+          0,
+          "c",
+          0
+        ],
+        [
+          2,
+          "idx_properties_type_district",
+          0,
+          "c",
+          0
+        ],
+        [
+          3,
+          "ix_properties_property_type",
+          0,
+          "c",
+          0
+        ],
+        [
+          4,
+          "ix_properties_listing_type",
+          0,
+          "c",
+          0
+        ],
+        [
+          5,
+          "ix_properties_postal_code",
+          0,
+          "c",
+          0
+        ],
+        [
+          6,
+          "ix_properties_transaction_category",
+          0,
+          "c",
+          0
+        ],
+        [
+          7,
+          "idx_properties_type_price",
+          0,
+          "c",
+          0
+        ],
+        [
+          8,
+          "ix_properties_district_code",
+          0,
+          "c",
+          0
+        ],
+        [
+          9,
+          "ix_properties_posted_at",
+          0,
+          "c",
+          0
+        ],
+        [
+          10,
+          "idx_properties_detail_images",
+          0,
+          "c",
+          0
+        ],
+        [
+          11,
+          "ix_properties_tenure_category",
+          0,
+          "c",
+          0
+        ],
+        [
+          12,
+          "ix_properties_detail_fetched",
+          0,
+          "c",
+          0
+        ],
+        [
+          13,
+          "idx_properties_raw_json",
+          0,
+          "c",
+          0
+        ],
+        [
+          14,
+          "idx_properties_agent_id",
+          0,
+          "c",
+          0
+        ],
+        [
+          15,
+          "idx_properties_homepage_images",
+          0,
+          "c",
+          0
+        ],
+        [
+          16,
+          "ix_properties_psf",
+          0,
+          "c",
+          0
+        ],
+        [
+          17,
+          "ix_properties_price",
+          0,
+          "c",
+          0
+        ],
+        [
+          18,
+          "ix_properties_project_id",
+          0,
+          "c",
+          0
+        ],
+        [
+          19,
+          "sqlite_autoindex_properties_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    "agents": {
+      "count": 4657,
+      "columns": [
+        {
+          "cid": 0,
+          "name": "agent_id",
+          "type": "BIGINT",
+          "notnull": 1,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "name",
+          "type": "VARCHAR(255)",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "avatar_url",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "agency_name",
+          "type": "VARCHAR(255)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "license",
+          "type": "VARCHAR(50)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "years_with_pg",
+          "type": "VARCHAR(50)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "years_count",
+          "type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "phone",
+          "type": "VARCHAR(50)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "profile_url",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "created_at",
+          "type": "DATETIME",
+          "notnull": 0,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "updated_at",
+          "type": "DATETIME",
+          "notnull": 0,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "ix_agents_name",
+          0,
+          "c",
+          0
+        ],
+        [
+          1,
+          "ix_agents_license",
+          0,
+          "c",
+          0
+        ],
+        [
+          2,
+          "ix_agents_agency_name",
+          0,
+          "c",
+          0
+        ],
+        [
+          3,
+          "sqlite_autoindex_agents_1",
+          1,
+          "pk",
+          0
+        ]
+      ]
+    },
+    "price_history": {
+      "count": 0,
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "project_id",
+          "type": "BIGINT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "project_name",
+          "type": "VARCHAR(255)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "contract_date",
+          "type": "DATE",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "price",
+          "type": "NUMERIC(15, 2)",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "psf",
+          "type": "NUMERIC(10, 2)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "building",
+          "type": "VARCHAR(100)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "floor_level",
+          "type": "VARCHAR(50)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 8,
+          "name": "size_sqft",
+          "type": "NUMERIC(10, 2)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 9,
+          "name": "bedrooms",
+          "type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 10,
+          "name": "transaction_type",
+          "type": "VARCHAR(50)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 11,
+          "name": "property_type",
+          "type": "VARCHAR(100)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 12,
+          "name": "district_code",
+          "type": "VARCHAR(20)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 13,
+          "name": "postal_code",
+          "type": "VARCHAR(20)",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 14,
+          "name": "raw_json",
+          "type": "JSON",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 15,
+          "name": "created_at",
+          "type": "DATETIME",
+          "notnull": 0,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [],
+      "indexes": [
+        [
+          0,
+          "ix_price_history_project_name",
+          0,
+          "c",
+          0
+        ],
+        [
+          1,
+          "ix_price_history_district_code",
+          0,
+          "c",
+          0
+        ],
+        [
+          2,
+          "idx_price_history_proj_date",
+          0,
+          "c",
+          0
+        ],
+        [
+          3,
+          "ix_price_history_project_id",
+          0,
+          "c",
+          0
+        ],
+        [
+          4,
+          "ix_price_history_contract_date",
+          0,
+          "c",
+          0
+        ],
+        [
+          5,
+          "ix_price_history_transaction_type",
+          0,
+          "c",
+          0
+        ],
+        [
+          6,
+          "sqlite_autoindex_price_history_1",
+          1,
+          "u",
+          0
+        ]
+      ]
+    },
+    "property_images": {
+      "count": 418700,
+      "columns": [
+        {
+          "cid": 0,
+          "name": "id",
+          "type": "INTEGER",
+          "notnull": 1,
+          "default": null,
+          "pk": 1
+        },
+        {
+          "cid": 1,
+          "name": "listing_id",
+          "type": "BIGINT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 2,
+          "name": "source_page",
+          "type": "VARCHAR(20)",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 3,
+          "name": "image_type",
+          "type": "VARCHAR(20)",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 4,
+          "name": "image_url",
+          "type": "TEXT",
+          "notnull": 1,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 5,
+          "name": "caption",
+          "type": "TEXT",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 6,
+          "name": "display_order",
+          "type": "INTEGER",
+          "notnull": 0,
+          "default": null,
+          "pk": 0
+        },
+        {
+          "cid": 7,
+          "name": "created_at",
+          "type": "DATETIME",
+          "notnull": 0,
+          "default": "CURRENT_TIMESTAMP",
+          "pk": 0
+        }
+      ],
+      "foreign_keys": [
+        [
+          0,
+          0,
+          "properties",
+          "listing_id",
+          "listing_id",
+          "NO ACTION",
+          "CASCADE",
+          "NONE"
+        ]
+      ],
+      "indexes": [
+        [
+          0,
+          "ix_property_images_image_type",
+          0,
+          "c",
+          0
+        ],
+        [
+          1,
+          "ix_property_images_source_page",
+          0,
+          "c",
+          0
+        ],
+        [
+          2,
+          "idx_property_images_listing_source",
+          0,
+          "c",
+          0
+        ],
+        [
+          3,
+          "ix_property_images_listing_id",
+          0,
+          "c",
+          0
+        ],
+        [
+          4,
+          "sqlite_autoindex_property_images_1",
+          1,
+          "u",
+          0
+        ]
+      ]
+    }
+  },
+  "json_fields": {
+    "homepage_images": {
+      "object_rows": 21431,
+      "sampled_top_level_keys": [
+        "preview_count",
+        "preview_images",
+        "thumbnail"
+      ]
+    },
+    "detail_images": {
+      "object_rows": 8634,
+      "sampled_top_level_keys": [
+        "floor_plan_count",
+        "floor_plans",
+        "photo_count",
+        "photos"
+      ]
+    },
+    "price_insights": {
+      "object_rows": 1558,
+      "sampled_top_level_keys": [
+        "shouldHidePriceHistoryComparison",
+        "srpSimilarListingUrl"
+      ]
+    },
+    "raw_json": {
+      "object_rows": 21431,
+      "sampled_top_level_keys": [
+        "accountTypeCode",
+        "additionalData",
+        "agency",
+        "agent",
+        "area",
+        "availabilityInfo",
+        "badgeText",
+        "badges",
+        "bathrooms",
+        "bedrooms",
+        "contactAgentText",
+        "crossListingType",
+        "developer",
+        "externalId",
+        "floorArea",
+        "fullAddress",
+        "hasAward",
+        "highlights",
+        "id",
+        "isDeveloperListing",
+        "isDeveloperUnitListing",
+        "isOfficialListing",
+        "isPhoneOtpEnabled",
+        "isPreLaunched",
+        "isPrioritized",
+        "isVerified",
+        "listedByText",
+        "listerType",
+        "listingFeatures",
+        "localizedTitle",
+        "mediaCarousel",
+        "mediaControls",
+        "mediaItems",
+        "mrt",
+        "postedOn",
+        "price",
+        "pricePerArea",
+        "products",
+        "property",
+        "psfText",
+        "recency",
+        "shortAddress",
+        "statusCode",
+        "thumbnail",
+        "tracking",
+        "typeCode",
+        "typeText",
+        "url",
+        "viewProfileText",
+        "viewedLabel"
+      ]
+    }
+  },
+  "negative_bathrooms": [],
+  "zero_bedrooms": 8326,
+  "zero_bathrooms": 1605,
+  "unique_photo_urls": 238308
+}

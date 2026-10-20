@@ -1,0 +1,16 @@
+-- Domain tables; runtime task/event tables are initialized by their existing stores.
+CREATE TABLE IF NOT EXISTS session_domain_state(session_id TEXT PRIMARY KEY,owner_hash TEXT NOT NULL,requirements_version INTEGER NOT NULL DEFAULT 0,requirements JSONB NOT NULL DEFAULT '{"listing_type":"RENT","criteria":[]}',active_operation_id UUID,latest_request_id UUID,recommendation JSONB,explanation JSONB,pending JSONB,revision INTEGER NOT NULL DEFAULT 0,messages JSONB NOT NULL DEFAULT '[]',created_at TIMESTAMPTZ NOT NULL DEFAULT now());
+    CREATE TABLE IF NOT EXISTS domain_operations(id UUID PRIMARY KEY,session_id TEXT NOT NULL REFERENCES session_domain_state,request_id UUID NOT NULL,query TEXT NOT NULL,kind TEXT NOT NULL,source_request_id TEXT,context JSONB NOT NULL DEFAULT '[]',status TEXT NOT NULL DEFAULT 'queued',created_at TIMESTAMPTZ NOT NULL DEFAULT now(),UNIQUE(session_id,request_id));
+    ALTER TABLE domain_operations ADD COLUMN IF NOT EXISTS context JSONB NOT NULL DEFAULT '[]';
+    ALTER TABLE domain_operations ADD COLUMN IF NOT EXISTS intent_plan JSONB NOT NULL DEFAULT '{}';
+    CREATE TABLE IF NOT EXISTS domain_payloads(ref UUID PRIMARY KEY,session_id TEXT NOT NULL REFERENCES session_domain_state,operation_id UUID NOT NULL,body JSONB NOT NULL,sha256 TEXT NOT NULL,created_at TIMESTAMPTZ NOT NULL DEFAULT now());
+    CREATE TABLE IF NOT EXISTS requirement_revisions(session_id TEXT NOT NULL,version INTEGER NOT NULL,body JSONB NOT NULL,sources JSONB NOT NULL,PRIMARY KEY(session_id,version));
+    CREATE TABLE IF NOT EXISTS recommendation_calls(id UUID PRIMARY KEY,session_id TEXT NOT NULL,operation_id UUID NOT NULL,request JSONB NOT NULL,response JSONB,created_at TIMESTAMPTZ NOT NULL DEFAULT now());
+    CREATE TABLE IF NOT EXISTS handled_results(task_id UUID PRIMARY KEY,status TEXT NOT NULL,error TEXT,handled_at TIMESTAMPTZ NOT NULL DEFAULT now());
+    CREATE TABLE IF NOT EXISTS workflow_actions(id UUID PRIMARY KEY,session_id TEXT NOT NULL REFERENCES session_domain_state,body JSONB NOT NULL,updated_at TIMESTAMPTZ NOT NULL DEFAULT now());
+    CREATE TABLE IF NOT EXISTS action_executions(execution_key TEXT PRIMARY KEY,action_id UUID NOT NULL,session_id TEXT NOT NULL,result JSONB NOT NULL,created_at TIMESTAMPTZ NOT NULL DEFAULT now());
+    CREATE TABLE IF NOT EXISTS viewing_reservations(execution_key TEXT NOT NULL,session_id TEXT NOT NULL,calendar_key TEXT NOT NULL,starts_at TIMESTAMPTZ NOT NULL,ends_at TIMESTAMPTZ NOT NULL,PRIMARY KEY(execution_key,calendar_key));
+    CREATE TABLE IF NOT EXISTS workflow_artifacts(id UUID PRIMARY KEY,session_id TEXT NOT NULL,source_request_id TEXT NOT NULL,requirements_version INTEGER NOT NULL,content JSONB NOT NULL,sha256 TEXT NOT NULL,created_at TIMESTAMPTZ NOT NULL DEFAULT now());
+    CREATE TABLE IF NOT EXISTS tool_traces(id UUID PRIMARY KEY,session_id TEXT NOT NULL,operation_id UUID NOT NULL,body JSONB NOT NULL,created_at TIMESTAMPTZ NOT NULL DEFAULT now());
+    CREATE TABLE IF NOT EXISTS listing_feedback(session_id TEXT NOT NULL,event_id TEXT NOT NULL,body JSONB NOT NULL,consumed_request_id UUID,PRIMARY KEY(session_id,event_id));
+    CREATE TABLE IF NOT EXISTS agent_result_payloads(task_id UUID PRIMARY KEY,envelope JSONB NOT NULL);

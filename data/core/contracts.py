@@ -47,6 +47,13 @@ class ListingSearch(Contract):
     page_size: int = Field(default=50, ge=1, le=1000)
 
 
+class ListingAssessmentScan(Contract):
+    """Canonical field scan for local ranking; retain unknown values, no hidden filters."""
+    listing_type: Literal["SALE", "RENT"] = "RENT"
+    cursor: str | None = Field(default=None, max_length=2000)
+    page_size: int = Field(default=1000, ge=1, le=1000)
+
+
 class GraphExpand(Contract):
     entity_id: str = Field(min_length=1, max_length=200)
     filters: ListingFilters = Field(default_factory=ListingFilters)

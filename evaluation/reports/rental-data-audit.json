@@ -1,0 +1,417 @@
+{
+  "checked_at": "2026-10-19T14:04:36.594Z",
+  "database": "propertyguru_sample",
+  "scope": "475 historical rental listings; aggregate metadata only, no contacts or raw records",
+  "rental_rows": 475,
+  "columns": [
+    {
+      "column_name": "listing_id",
+      "data_type": "bigint"
+    },
+    {
+      "column_name": "listing_type",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "transaction_category",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "title",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "property_type",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "project_id",
+      "data_type": "bigint"
+    },
+    {
+      "column_name": "price",
+      "data_type": "numeric"
+    },
+    {
+      "column_name": "currency",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "price_type",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "psf",
+      "data_type": "numeric"
+    },
+    {
+      "column_name": "bedrooms",
+      "data_type": "integer"
+    },
+    {
+      "column_name": "bathrooms",
+      "data_type": "integer"
+    },
+    {
+      "column_name": "floor_area_sqft",
+      "data_type": "numeric"
+    },
+    {
+      "column_name": "land_area_sqft",
+      "data_type": "numeric"
+    },
+    {
+      "column_name": "tenure",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "tenure_category",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "build_year",
+      "data_type": "integer"
+    },
+    {
+      "column_name": "full_address",
+      "data_type": "text"
+    },
+    {
+      "column_name": "short_address",
+      "data_type": "text"
+    },
+    {
+      "column_name": "district_code",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "district_text",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "region_code",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "region_text",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "postal_code",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "street_name",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "street_number",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "block",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "unit",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "floor_level",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "latitude",
+      "data_type": "numeric"
+    },
+    {
+      "column_name": "longitude",
+      "data_type": "numeric"
+    },
+    {
+      "column_name": "nearest_mrt",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "mrt_distance_m",
+      "data_type": "integer"
+    },
+    {
+      "column_name": "mrt_walking_mins",
+      "data_type": "integer"
+    },
+    {
+      "column_name": "agent_id",
+      "data_type": "bigint"
+    },
+    {
+      "column_name": "agent_name",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "agent_avatar",
+      "data_type": "text"
+    },
+    {
+      "column_name": "agent_license",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "agent_years_with_pg",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "agent_years_count",
+      "data_type": "integer"
+    },
+    {
+      "column_name": "agent_phone",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "agent_profile_url",
+      "data_type": "text"
+    },
+    {
+      "column_name": "agency_id",
+      "data_type": "bigint"
+    },
+    {
+      "column_name": "agency_name",
+      "data_type": "character varying"
+    },
+    {
+      "column_name": "url",
+      "data_type": "text"
+    },
+    {
+      "column_name": "thumbnail_url",
+      "data_type": "text"
+    },
+    {
+      "column_name": "is_verified",
+      "data_type": "boolean"
+    },
+    {
+      "column_name": "is_official",
+      "data_type": "boolean"
+    },
+    {
+      "column_name": "detail_fetched",
+      "data_type": "boolean"
+    },
+    {
+      "column_name": "homepage_images",
+      "data_type": "jsonb"
+    },
+    {
+      "column_name": "detail_images",
+      "data_type": "jsonb"
+    },
+    {
+      "column_name": "price_insights",
+      "data_type": "jsonb"
+    },
+    {
+      "column_name": "posted_at",
+      "data_type": "timestamp with time zone"
+    },
+    {
+      "column_name": "created_at",
+      "data_type": "timestamp with time zone"
+    },
+    {
+      "column_name": "updated_at",
+      "data_type": "timestamp with time zone"
+    },
+    {
+      "column_name": "raw_json",
+      "data_type": "jsonb"
+    }
+  ],
+  "coverage": [
+    {
+      "field": "price",
+      "rows": 475,
+      "present": 475,
+      "zero_values": 0
+    },
+    {
+      "field": "currency",
+      "rows": 475,
+      "present": 475,
+      "zero_values": 0
+    },
+    {
+      "field": "bedrooms",
+      "rows": 475,
+      "present": 465,
+      "zero_values": 192
+    },
+    {
+      "field": "bathrooms",
+      "rows": 475,
+      "present": 475,
+      "zero_values": 32
+    },
+    {
+      "field": "floor_area_sqft",
+      "rows": 475,
+      "present": 282,
+      "zero_values": 0
+    },
+    {
+      "field": "land_area_sqft",
+      "rows": 475,
+      "present": 0,
+      "zero_values": 0
+    },
+    {
+      "field": "build_year",
+      "rows": 475,
+      "present": 0,
+      "zero_values": 0
+    },
+    {
+      "field": "district_code",
+      "rows": 475,
+      "present": 475,
+      "zero_values": 0
+    },
+    {
+      "field": "region_code",
+      "rows": 475,
+      "present": 0,
+      "zero_values": 0
+    },
+    {
+      "field": "postal_code",
+      "rows": 475,
+      "present": 475,
+      "zero_values": 0
+    },
+    {
+      "field": "tenure_category",
+      "rows": 475,
+      "present": 0,
+      "zero_values": 0
+    },
+    {
+      "field": "property_type",
+      "rows": 475,
+      "present": 475,
+      "zero_values": 0
+    },
+    {
+      "field": "latitude",
+      "rows": 475,
+      "present": 475,
+      "zero_values": 0
+    },
+    {
+      "field": "longitude",
+      "rows": 475,
+      "present": 475,
+      "zero_values": 0
+    },
+    {
+      "field": "mrt_distance_m",
+      "rows": 475,
+      "present": 0,
+      "zero_values": 0
+    },
+    {
+      "field": "mrt_walking_mins",
+      "rows": 475,
+      "present": 0,
+      "zero_values": 0
+    }
+  ],
+  "absent_business_columns": [
+    "amenities",
+    "private_bathroom",
+    "description",
+    "furnishing",
+    "rental_scope",
+    "lease_months",
+    "move_in_date",
+    "commute_time",
+    "current_availability"
+  ],
+  "populated_raw_json": 0,
+  "enums": [
+    {
+      "field": "property_type",
+      "values": [
+        {
+          "value": "Apartment",
+          "count": "51"
+        },
+        {
+          "value": "Bungalow House",
+          "count": "2"
+        },
+        {
+          "value": "Condominium",
+          "count": "268"
+        },
+        {
+          "value": "Corner Terrace",
+          "count": "5"
+        },
+        {
+          "value": "Detached House",
+          "count": "7"
+        },
+        {
+          "value": "Good Class Bungalow",
+          "count": "18"
+        },
+        {
+          "value": "HDB Flat",
+          "count": "99"
+        },
+        {
+          "value": "Semi-Detached House",
+          "count": "5"
+        },
+        {
+          "value": "Shophouse",
+          "count": "1"
+        },
+        {
+          "value": "Terraced House",
+          "count": "17"
+        },
+        {
+          "value": "Walk-up Apartment",
+          "count": "2"
+        }
+      ]
+    },
+    {
+      "field": "region_code",
+      "values": [
+        {
+          "value": null,
+          "count": "475"
+        }
+      ]
+    },
+    {
+      "field": "tenure_category",
+      "values": [
+        {
+          "value": null,
+          "count": "475"
+        }
+      ]
+    }
+  ],
+  "interpretation": [
+    "bathrooms is a count, not a private-use-right or room/whole-unit label",
+    "0 bedrooms is preserved as a source count; do not infer studio or rental scope",
+    "empty regional, tenure and MRT fields are unknown; lack of a match does not prove failure",
+    "No private-bathroom evidence can be recovered from this snapshot: no column, description or populated raw JSON"
+  ]
+}

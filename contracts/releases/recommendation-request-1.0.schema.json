@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "conversation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "requirements_version": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "requirements": {
+      "type": "object",
+      "properties": {
+        "listing_type": {
+          "type": "string",
+          "const": "RENT"
+        },
+        "criteria": {
+          "maxItems": 40,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "criterion_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "field": {
+                "type": "string"
+              },
+              "operator": {
+                "type": "string",
+                "enum": [
+                  "eq",
+                  "in",
+                  "gte",
+                  "lte",
+                  "between"
+                ]
+              },
+              "value": {},
+              "unit": {
+                "type": "string"
+              },
+              "strength": {
+                "type": "string",
+                "enum": [
+                  "hard",
+                  "soft"
+                ]
+              },
+              "weight": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "target": {
+                "type": "object",
+                "properties": {
+                  "place_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "category": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "distance_type": {
+                "type": "string",
+                "enum": [
+                  "straight_line",
+                  "walking",
+                  "driving",
+                  "transit",
+                  "platform_reported"
+                ]
+              },
+              "transport_mode": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "criterion_id",
+              "field",
+              "operator",
+              "value",
+              "strength"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "listing_type",
+        "criteria"
+      ],
+      "additionalProperties": false
+    },
+    "feedback": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "listing_id": {
+            "type": "string",
+            "pattern": "^\\d+$"
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          },
+          "event_type": {
+            "type": "string",
+            "enum": [
+              "active_view",
+              "save",
+              "shortlist",
+              "explicit_attribute_feedback"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "event_id",
+          "listing_id",
+          "occurred_at",
+          "event_type",
+          "payload"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "previous_state_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "result_limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 20
+    }
+  },
+  "required": [
+    "contract_version",
+    "request_id",
+    "conversation_id",
+    "requirements_version",
+    "requirements",
+    "feedback",
+    "result_limit"
+  ],
+  "additionalProperties": false
+}

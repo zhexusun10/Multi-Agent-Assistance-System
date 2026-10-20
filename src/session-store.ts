@@ -1,4 +1,4 @@
-import type { Pool } from "pg";
+import type { Pool, PoolClient } from "pg";
 import type { MasterEvent } from "./types.js";
 
 export type SequencedEvent = { id: number; event: MasterEvent };
@@ -59,14 +59,26 @@ export class PostgresSessionEventStore implements SessionEventStore {
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
+      const entry = await this.appendInTx(client, sessionId, event, key);
+      await client.query("COMMIT");
+      return entry;
+    } catch (error) {
+      await client.query("ROLLBACK");
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  async appendInTx(client: PoolClient, sessionId: string, event: MasterEvent, key?: string): Promise<SequencedEvent> {
       const counter = await client.query<{ last_event_id: string }>(`
         INSERT INTO session_event_counters (session_id, last_event_id)
-        VALUES ($1, 1)
+        VALUES ($1, 0)
         ON CONFLICT (session_id) DO UPDATE
-        SET last_event_id = session_event_counters.last_event_id + 1
+        SET last_event_id = session_event_counters.last_event_id
         RETURNING last_event_id
       `, [sessionId]);
-      const id = Number(counter.rows[0].last_event_id);
+      const id = Number(counter.rows[0].last_event_id) + 1;
       if (!Number.isSafeInteger(id)) throw new Error("Session event cursor exceeds JavaScript's safe integer range");
       if (key !== undefined) {
         const existing = await client.query<{ event_id: string; event: MasterEvent }>(
@@ -74,22 +86,15 @@ export class PostgresSessionEventStore implements SessionEventStore {
           [sessionId, key],
         );
         if (existing.rows[0]) {
-          await client.query("ROLLBACK");
           return { id: Number(existing.rows[0].event_id), event: existing.rows[0].event };
         }
       }
+      await client.query('UPDATE session_event_counters SET last_event_id = $2 WHERE session_id = $1', [sessionId, id]);
       await client.query(
         "INSERT INTO session_events (session_id, event_id, event, event_key) VALUES ($1, $2, $3::jsonb, $4)",
         [sessionId, id, JSON.stringify(event), key ?? null],
       );
-      await client.query("COMMIT");
       return { id, event };
-    } catch (error) {
-      await client.query("ROLLBACK");
-      throw error;
-    } finally {
-      client.release();
-    }
   }
 
   async list(sessionId: string, after: number): Promise<SequencedEvent[]> {

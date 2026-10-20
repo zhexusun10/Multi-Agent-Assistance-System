@@ -1,0 +1,17 @@
+{
+  "contract_version": "1.0",
+  "request_id": "00000000-0000-4000-8000-000000000101",
+  "conversation_id": "fixture-conversation-001",
+  "requirements_version": 1,
+  "requirements": {
+    "listing_type": "RENT",
+    "criteria": [
+      {"criterion_id": "monthly-rent", "field": "price", "operator": "lte", "value": 3000, "unit": "SGD/month", "strength": "hard"},
+      {"criterion_id": "minimum-bedrooms", "field": "bedrooms", "operator": "gte", "value": 2, "unit": "count", "strength": "hard"},
+      {"criterion_id": "preferred-district", "field": "district", "operator": "in", "value": ["D05"], "strength": "hard"},
+      {"criterion_id": "near-supermarket", "field": "place_proximity", "operator": "lte", "value": 800, "unit": "m", "strength": "soft", "weight": 3, "target": {"category": "Supermarket"}, "distance_type": "straight_line"}
+    ]
+  },
+  "feedback": [],
+  "result_limit": 5
+}

@@ -1,0 +1,72 @@
+{
+  "releases": [],
+  "tags": [],
+  "largest_remote_files": [
+    {
+      "path": "data/exports/export_images.csv",
+      "bytes": 6656558
+    },
+    {
+      "path": "data/datasets/singapore_places.json",
+      "bytes": 3260520
+    },
+    {
+      "path": "data/exports/export_properties.csv",
+      "bytes": 256390
+    },
+    {
+      "path": "data/exports/export_properties_rent.csv",
+      "bytes": 203048
+    },
+    {
+      "path": "data/exports/export_price_history.csv",
+      "bytes": 163456
+    },
+    {
+      "path": "data/exports/export_properties_sale.csv",
+      "bytes": 53662
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 40218
+    },
+    {
+      "path": "data/service/app.py",
+      "bytes": 35001
+    },
+    {
+      "path": "data/exports/export_agents.csv",
+      "bytes": 34849
+    },
+    {
+      "path": "data/main.py",
+      "bytes": 30666
+    },
+    {
+      "path": "data/scraper/cleaner.py",
+      "bytes": 23624
+    },
+    {
+      "path": "data/NEO4J.md",
+      "bytes": 22452
+    }
+  ],
+  "database_or_archive_paths": [
+    {
+      "path": "data/docker/postgres-init.sql",
+      "bytes": 495
+    }
+  ],
+  "csv_row_counts": {
+    "export_agents.csv": 162,
+    "export_images.csv": 19097,
+    "export_price_history.csv": 1665,
+    "export_properties.csv": 593,
+    "export_properties_rent.csv": 475,
+    "export_properties_sale.csv": 118
+  },
+  "checked_at": "2026-10-19T14:19:13.600954+00:00",
+  "local_head": "0c45bf3d692710b79af95e5d3de69295e0a72f2b",
+  "remote_main": "0c45bf3d692710b79af95e5d3de69295e0a72f2b",
+  "remote_zhexu_data_diff": ""
+}

@@ -1,0 +1,358 @@
+{
+  "proposal_version": "1.1",
+  "contract_version": "1.0",
+  "repository_commit": "0c45bf3d692710b79af95e5d3de69295e0a72f2b",
+  "status": "proposed_not_team_frozen",
+  "listing_type": "RENT",
+  "notes": [
+    "Capability describes implementation target based on current source, not a live service guarantee.",
+    "Every nullable/missing value remains unknown.",
+    "Recommendation top-level wire fields remain the supplied Contract V1."
+  ],
+  "fields": [
+    {
+      "field": "price",
+      "source_fields": [
+        "properties.price",
+        "properties.currency",
+        "properties.listing_type"
+      ],
+      "value_kind": "number",
+      "operators": [
+        "eq",
+        "gte",
+        "lte",
+        "between"
+      ],
+      "data_capability": "snapshot_attribute",
+      "api_pushdown": {
+        "gte": "min_price",
+        "lte": "max_price"
+      },
+      "missing_policy": "unknown",
+      "unit": "SGD/month",
+      "warning": "Apply only to RENT and confirmed SGD."
+    },
+    {
+      "field": "bedrooms",
+      "source_fields": [
+        "properties.bedrooms"
+      ],
+      "value_kind": "integer",
+      "operators": [
+        "eq",
+        "gte",
+        "lte",
+        "between"
+      ],
+      "data_capability": "snapshot_attribute",
+      "api_pushdown": {
+        "gte": "min_bedrooms",
+        "lte": "max_bedrooms"
+      },
+      "missing_policy": "unknown",
+      "unit": "count"
+    },
+    {
+      "field": "bathrooms",
+      "source_fields": [
+        "properties.bathrooms"
+      ],
+      "value_kind": "integer",
+      "operators": [
+        "eq",
+        "gte",
+        "lte",
+        "between"
+      ],
+      "data_capability": "snapshot_attribute",
+      "api_pushdown": {},
+      "missing_policy": "unknown",
+      "unit": "count"
+    },
+    {
+      "field": "floor_area_sqft",
+      "source_fields": [
+        "properties.floor_area_sqft"
+      ],
+      "value_kind": "number",
+      "operators": [
+        "eq",
+        "gte",
+        "lte",
+        "between"
+      ],
+      "data_capability": "snapshot_attribute",
+      "api_pushdown": {},
+      "missing_policy": "unknown",
+      "unit": "sqft"
+    },
+    {
+      "field": "land_area_sqft",
+      "source_fields": [
+        "properties.land_area_sqft"
+      ],
+      "value_kind": "number",
+      "operators": [
+        "eq",
+        "gte",
+        "lte",
+        "between"
+      ],
+      "data_capability": "snapshot_attribute",
+      "api_pushdown": {},
+      "missing_policy": "unknown",
+      "unit": "sqft"
+    },
+    {
+      "field": "build_year",
+      "source_fields": [
+        "properties.build_year"
+      ],
+      "value_kind": "integer",
+      "operators": [
+        "eq",
+        "gte",
+        "lte",
+        "between"
+      ],
+      "data_capability": "snapshot_attribute",
+      "api_pushdown": {},
+      "missing_policy": "unknown",
+      "unit": "year"
+    },
+    {
+      "field": "district",
+      "source_fields": [
+        "properties.district_code",
+        "IN_DISTRICT.target.district_code"
+      ],
+      "value_kind": "string",
+      "operators": [
+        "eq",
+        "in"
+      ],
+      "data_capability": "snapshot_attribute",
+      "api_pushdown": {
+        "eq": "district"
+      },
+      "missing_policy": "unknown",
+      "warning": "Contract example alias district maps to source district_code; in requires union or post-evaluation."
+    },
+    {
+      "field": "region_code",
+      "source_fields": [
+        "properties.region_code"
+      ],
+      "value_kind": "string",
+      "operators": [
+        "eq",
+        "in"
+      ],
+      "data_capability": "snapshot_attribute",
+      "api_pushdown": {},
+      "missing_policy": "unknown",
+      "warning": "No native search filter; preserve postal leading zeroes and do not interpret tenure as rental lease duration."
+    },
+    {
+      "field": "postal_code",
+      "source_fields": [
+        "properties.postal_code"
+      ],
+      "value_kind": "string",
+      "operators": [
+        "eq",
+        "in"
+      ],
+      "data_capability": "snapshot_attribute",
+      "api_pushdown": {},
+      "missing_policy": "unknown",
+      "warning": "No native search filter; preserve postal leading zeroes and do not interpret tenure as rental lease duration."
+    },
+    {
+      "field": "tenure_category",
+      "source_fields": [
+        "properties.tenure_category"
+      ],
+      "value_kind": "string",
+      "operators": [
+        "eq",
+        "in"
+      ],
+      "data_capability": "snapshot_attribute",
+      "api_pushdown": {},
+      "missing_policy": "unknown",
+      "warning": "No native search filter; preserve postal leading zeroes and do not interpret tenure as rental lease duration."
+    },
+    {
+      "field": "property_type",
+      "source_fields": [
+        "properties.property_type"
+      ],
+      "value_kind": "catalog_string",
+      "operators": [
+        "eq",
+        "in"
+      ],
+      "data_capability": "snapshot_attribute",
+      "api_pushdown": {
+        "eq": "property_type"
+      },
+      "missing_policy": "unknown",
+      "warning": "Use reviewed source catalog; no implicit CONDO/HDB/LANDED group equality."
+    },
+    {
+      "field": "place_proximity",
+      "source_fields": [
+        "NEAR_PLACE.distance_m",
+        "Place.place_id",
+        "Place.category",
+        "Place.active"
+      ],
+      "value_kind": "number",
+      "operators": [
+        "lte",
+        "gte",
+        "between"
+      ],
+      "data_capability": "geodesic_to_recorded_reference_point",
+      "api_pushdown": {
+        "lte": "max_place_distance_m"
+      },
+      "missing_policy": "unknown",
+      "unit": "m",
+      "warning": "Require target and straight_line; preserve raw geodesic, route_verified=false; persisted radius and corpus limits apply; soft preference must not be pushed down."
+    },
+    {
+      "field": "mrt_distance_m",
+      "source_fields": [
+        "NEAR_MRT.distance_m",
+        "NEAR_MRT.distance_status",
+        "MRT.station_id"
+      ],
+      "value_kind": "number",
+      "operators": [
+        "lte",
+        "gte",
+        "between"
+      ],
+      "data_capability": "platform_reported_only",
+      "api_pushdown": {
+        "lte": "max_mrt_distance_m"
+      },
+      "missing_policy": "unknown",
+      "unit": "m",
+      "warning": "Require explicit acceptance of platform_reported semantics; not a verified walking or straight-line route."
+    },
+    {
+      "field": "mrt_walking_mins",
+      "source_fields": [
+        "NEAR_MRT.walking_mins",
+        "NEAR_MRT.walking_time_status"
+      ],
+      "value_kind": "number",
+      "operators": [
+        "lte",
+        "gte",
+        "between"
+      ],
+      "data_capability": "platform_reported_only",
+      "api_pushdown": {},
+      "missing_policy": "unknown",
+      "unit": "min",
+      "warning": "Platform-reported minutes only, not verified walking route or commute."
+    },
+    {
+      "field": "lease_months",
+      "source_fields": [],
+      "value_kind": "integer",
+      "operators": [
+        "eq",
+        "between"
+      ],
+      "data_capability": "unsupported_current_dataset",
+      "api_pushdown": {},
+      "missing_policy": "unknown",
+      "unit": "month",
+      "warning": "Retain user intent and clarify/flag unsupported verification. Do not infer from title/raw_json or unrelated fields."
+    },
+    {
+      "field": "furnishing",
+      "source_fields": [],
+      "value_kind": "string",
+      "operators": [
+        "eq",
+        "in"
+      ],
+      "data_capability": "unsupported_current_dataset",
+      "api_pushdown": {},
+      "missing_policy": "unknown",
+      "warning": "Retain user intent and clarify/flag unsupported verification. Do not infer from title/raw_json or unrelated fields."
+    },
+    {
+      "field": "rental_scope",
+      "source_fields": [],
+      "value_kind": "string",
+      "operators": [
+        "eq",
+        "in"
+      ],
+      "data_capability": "unsupported_current_dataset",
+      "api_pushdown": {},
+      "missing_policy": "unknown",
+      "warning": "Retain user intent and clarify/flag unsupported verification. Do not infer from title/raw_json or unrelated fields."
+    },
+    {
+      "field": "move_in_date",
+      "source_fields": [],
+      "value_kind": "date",
+      "operators": [
+        "eq",
+        "gte",
+        "lte"
+      ],
+      "data_capability": "unsupported_current_dataset",
+      "api_pushdown": {},
+      "missing_policy": "unknown",
+      "warning": "Retain user intent and clarify/flag unsupported verification. Do not infer from title/raw_json or unrelated fields."
+    },
+    {
+      "field": "amenities",
+      "source_fields": [],
+      "value_kind": "string",
+      "operators": [
+        "eq"
+      ],
+      "data_capability": "unsupported_current_dataset",
+      "api_pushdown": {},
+      "missing_policy": "unknown",
+      "warning": "Retain user intent and clarify/flag unsupported verification. Do not infer from title/raw_json or unrelated fields."
+    },
+    {
+      "field": "commute_time",
+      "source_fields": [],
+      "value_kind": "number",
+      "operators": [
+        "lte",
+        "between"
+      ],
+      "data_capability": "unsupported_current_dataset",
+      "api_pushdown": {},
+      "missing_policy": "unknown",
+      "unit": "min",
+      "warning": "Retain user intent and clarify/flag unsupported verification. Do not infer from title/raw_json or unrelated fields."
+    },
+    {
+      "field": "current_availability",
+      "source_fields": [],
+      "value_kind": "boolean",
+      "operators": [
+        "eq"
+      ],
+      "data_capability": "unsupported_current_dataset",
+      "api_pushdown": {},
+      "missing_policy": "unknown",
+      "warning": "Retain user intent and clarify/flag unsupported verification. Do not infer from title/raw_json or unrelated fields."
+    }
+  ]
+}

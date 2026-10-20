@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-10-20T08:48:57.179840+00:00",
+  "messages_sent_externally": 0,
+  "checks": [
+    "per-card bottom arrow folds to title only; independent expansion preserves photos/facts; Enter keyboard interaction works",
+    "exact pasted reply visibly resolves private bath, 6-month minimum, listed furniture, own bedding and included utilities; spatial evidence is separately attributed",
+    "generic next-follow-up button, reply-specific button and natural-message recompose all skip answered questions; save retains the revised draft",
+    "chat → actual orchestrator → Follow-up Agent preserves the same answered-topic memory",
+    "fold choices survive SSE refresh and tab changes; mobile390px folding/expansion has no horizontal overflow; no JavaScript errors"
+  ],
+  "model_status": "ok",
+  "model_verified": true,
+  "status": "passed"
+}

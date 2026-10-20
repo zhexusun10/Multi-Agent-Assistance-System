@@ -1,0 +1,1480 @@
+{
+  "planning_areas": 55,
+  "planning_regions": 5,
+  "mrt_stations": 188,
+  "mrt_exits": 613,
+  "sources": [
+    "https://data.gov.sg/datasets/d_b39d3a0871985372d7e1637193335da5/view",
+    "https://data.gov.sg/datasets/d_4765db0e87b9c86336792efe8a1f7a66/view"
+  ],
+  "areas": [
+    {
+      "id": "URA:AREA:BEDOK",
+      "name": "BEDOK",
+      "aliases": [
+        "勿洛"
+      ]
+    },
+    {
+      "id": "URA:AREA:BOON_LAY",
+      "name": "BOON LAY",
+      "aliases": [
+        "文礼"
+      ]
+    },
+    {
+      "id": "URA:AREA:BUKIT_BATOK",
+      "name": "BUKIT BATOK",
+      "aliases": [
+        "武吉巴督"
+      ]
+    },
+    {
+      "id": "URA:AREA:BUKIT_MERAH",
+      "name": "BUKIT MERAH",
+      "aliases": [
+        "红山"
+      ]
+    },
+    {
+      "id": "URA:AREA:BUKIT_PANJANG",
+      "name": "BUKIT PANJANG",
+      "aliases": [
+        "武吉班让"
+      ]
+    },
+    {
+      "id": "URA:AREA:BUKIT_TIMAH",
+      "name": "BUKIT TIMAH",
+      "aliases": [
+        "武吉知马"
+      ]
+    },
+    {
+      "id": "URA:AREA:CENTRAL_WATER_CATCHMENT",
+      "name": "CENTRAL WATER CATCHMENT",
+      "aliases": [
+        "中央集水区"
+      ]
+    },
+    {
+      "id": "URA:AREA:CHANGI",
+      "name": "CHANGI",
+      "aliases": [
+        "樟宜"
+      ]
+    },
+    {
+      "id": "URA:AREA:CHOA_CHU_KANG",
+      "name": "CHOA CHU KANG",
+      "aliases": [
+        "蔡厝港"
+      ]
+    },
+    {
+      "id": "URA:AREA:CLEMENTI",
+      "name": "CLEMENTI",
+      "aliases": [
+        "金文泰",
+        "克莱门特",
+        "克莱门蒂",
+        "克莱蒙蒂",
+        "金文台"
+      ]
+    },
+    {
+      "id": "URA:AREA:HOUGANG",
+      "name": "HOUGANG",
+      "aliases": [
+        "后港"
+      ]
+    },
+    {
+      "id": "URA:AREA:JURONG_EAST",
+      "name": "JURONG EAST",
+      "aliases": [
+        "裕廊东"
+      ]
+    },
+    {
+      "id": "URA:AREA:JURONG_WEST",
+      "name": "JURONG WEST",
+      "aliases": [
+        "裕廊西"
+      ]
+    },
+    {
+      "id": "URA:AREA:PASIR_RIS",
+      "name": "PASIR RIS",
+      "aliases": [
+        "巴西立"
+      ]
+    },
+    {
+      "id": "URA:AREA:PIONEER",
+      "name": "PIONEER",
+      "aliases": [
+        "先驱"
+      ]
+    },
+    {
+      "id": "URA:AREA:PUNGGOL",
+      "name": "PUNGGOL",
+      "aliases": [
+        "榜鹅"
+      ]
+    },
+    {
+      "id": "URA:AREA:QUEENSTOWN",
+      "name": "QUEENSTOWN",
+      "aliases": [
+        "女皇镇"
+      ]
+    },
+    {
+      "id": "URA:AREA:SELETAR",
+      "name": "SELETAR",
+      "aliases": [
+        "实里达"
+      ]
+    },
+    {
+      "id": "URA:AREA:SEMBAWANG",
+      "name": "SEMBAWANG",
+      "aliases": [
+        "三巴旺"
+      ]
+    },
+    {
+      "id": "URA:AREA:SENGKANG",
+      "name": "SENGKANG",
+      "aliases": [
+        "盛港"
+      ]
+    },
+    {
+      "id": "URA:AREA:SERANGOON",
+      "name": "SERANGOON",
+      "aliases": [
+        "实龙岗"
+      ]
+    },
+    {
+      "id": "URA:AREA:KALLANG",
+      "name": "KALLANG",
+      "aliases": [
+        "加冷"
+      ]
+    },
+    {
+      "id": "URA:AREA:LIM_CHU_KANG",
+      "name": "LIM CHU KANG",
+      "aliases": [
+        "林厝港"
+      ]
+    },
+    {
+      "id": "URA:AREA:NORTH-EASTERN_ISLANDS",
+      "name": "NORTH-EASTERN ISLANDS",
+      "aliases": [
+        "东北群岛"
+      ]
+    },
+    {
+      "id": "URA:AREA:NOVENA",
+      "name": "NOVENA",
+      "aliases": [
+        "诺维娜"
+      ]
+    },
+    {
+      "id": "URA:AREA:SIMPANG",
+      "name": "SIMPANG",
+      "aliases": [
+        "新邦"
+      ]
+    },
+    {
+      "id": "URA:AREA:SOUTHERN_ISLANDS",
+      "name": "SOUTHERN ISLANDS",
+      "aliases": [
+        "南部群岛"
+      ]
+    },
+    {
+      "id": "URA:AREA:SUNGEI_KADUT",
+      "name": "SUNGEI KADUT",
+      "aliases": [
+        "双溪加株"
+      ]
+    },
+    {
+      "id": "URA:AREA:TOA_PAYOH",
+      "name": "TOA PAYOH",
+      "aliases": [
+        "大巴窑"
+      ]
+    },
+    {
+      "id": "URA:AREA:TUAS",
+      "name": "TUAS",
+      "aliases": [
+        "大士"
+      ]
+    },
+    {
+      "id": "URA:AREA:WESTERN_ISLANDS",
+      "name": "WESTERN ISLANDS",
+      "aliases": [
+        "西部群岛"
+      ]
+    },
+    {
+      "id": "URA:AREA:WESTERN_WATER_CATCHMENT",
+      "name": "WESTERN WATER CATCHMENT",
+      "aliases": [
+        "西部集水区"
+      ]
+    },
+    {
+      "id": "URA:AREA:WOODLANDS",
+      "name": "WOODLANDS",
+      "aliases": [
+        "兀兰"
+      ]
+    },
+    {
+      "id": "URA:AREA:RIVER_VALLEY",
+      "name": "RIVER VALLEY",
+      "aliases": [
+        "里峇峇利"
+      ]
+    },
+    {
+      "id": "URA:AREA:ROCHOR",
+      "name": "ROCHOR",
+      "aliases": [
+        "梧槽"
+      ]
+    },
+    {
+      "id": "URA:AREA:SINGAPORE_RIVER",
+      "name": "SINGAPORE RIVER",
+      "aliases": [
+        "新加坡河"
+      ]
+    },
+    {
+      "id": "URA:AREA:STRAITS_VIEW",
+      "name": "STRAITS VIEW",
+      "aliases": [
+        "海峡景"
+      ]
+    },
+    {
+      "id": "URA:AREA:CHANGI_BAY",
+      "name": "CHANGI BAY",
+      "aliases": [
+        "樟宜湾"
+      ]
+    },
+    {
+      "id": "URA:AREA:MARINE_PARADE",
+      "name": "MARINE PARADE",
+      "aliases": [
+        "马林百列"
+      ]
+    },
+    {
+      "id": "URA:AREA:DOWNTOWN_CORE",
+      "name": "DOWNTOWN CORE",
+      "aliases": [
+        "市中心",
+        "核心市区"
+      ]
+    },
+    {
+      "id": "URA:AREA:MARINA_EAST",
+      "name": "MARINA EAST",
+      "aliases": [
+        "滨海东"
+      ]
+    },
+    {
+      "id": "URA:AREA:MARINA_SOUTH",
+      "name": "MARINA SOUTH",
+      "aliases": [
+        "滨海南"
+      ]
+    },
+    {
+      "id": "URA:AREA:MUSEUM",
+      "name": "MUSEUM",
+      "aliases": [
+        "博物馆规划区"
+      ]
+    },
+    {
+      "id": "URA:AREA:NEWTON",
+      "name": "NEWTON",
+      "aliases": [
+        "纽顿"
+      ]
+    },
+    {
+      "id": "URA:AREA:ORCHARD",
+      "name": "ORCHARD",
+      "aliases": [
+        "乌节"
+      ]
+    },
+    {
+      "id": "URA:AREA:OUTRAM",
+      "name": "OUTRAM",
+      "aliases": [
+        "欧南"
+      ]
+    },
+    {
+      "id": "URA:AREA:TAMPINES",
+      "name": "TAMPINES",
+      "aliases": [
+        "淡滨尼"
+      ]
+    },
+    {
+      "id": "URA:AREA:TANGLIN",
+      "name": "TANGLIN",
+      "aliases": [
+        "东陵"
+      ]
+    },
+    {
+      "id": "URA:AREA:TENGAH",
+      "name": "TENGAH",
+      "aliases": [
+        "登加"
+      ]
+    },
+    {
+      "id": "URA:AREA:MANDAI",
+      "name": "MANDAI",
+      "aliases": [
+        "万礼"
+      ]
+    },
+    {
+      "id": "URA:AREA:BISHAN",
+      "name": "BISHAN",
+      "aliases": [
+        "碧山"
+      ]
+    },
+    {
+      "id": "URA:AREA:ANG_MO_KIO",
+      "name": "ANG MO KIO",
+      "aliases": [
+        "宏茂桥"
+      ]
+    },
+    {
+      "id": "URA:AREA:GEYLANG",
+      "name": "GEYLANG",
+      "aliases": [
+        "芽笼"
+      ]
+    },
+    {
+      "id": "URA:AREA:PAYA_LEBAR",
+      "name": "PAYA LEBAR",
+      "aliases": [
+        "巴耶利峇"
+      ]
+    },
+    {
+      "id": "URA:AREA:YISHUN",
+      "name": "YISHUN",
+      "aliases": [
+        "义顺"
+      ]
+    },
+    {
+      "id": "URA:REGION:EAST",
+      "name": "EAST REGION",
+      "aliases": [
+        "东部",
+        "东区"
+      ]
+    },
+    {
+      "id": "URA:REGION:WEST",
+      "name": "WEST REGION",
+      "aliases": [
+        "西部",
+        "西区"
+      ]
+    },
+    {
+      "id": "URA:REGION:CENTRAL",
+      "name": "CENTRAL REGION",
+      "aliases": [
+        "中部",
+        "中央区"
+      ]
+    },
+    {
+      "id": "URA:REGION:NORTH",
+      "name": "NORTH REGION",
+      "aliases": [
+        "北部",
+        "北区"
+      ]
+    },
+    {
+      "id": "URA:REGION:NORTH-EAST",
+      "name": "NORTH-EAST REGION",
+      "aliases": [
+        "东北部",
+        "东北区"
+      ]
+    }
+  ],
+  "stations": [
+    {
+      "id": "LTA:MRT:ADMIRALTY",
+      "name": "ADMIRALTY MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:ALJUNIED",
+      "name": "ALJUNIED MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:ANG_MO_KIO",
+      "name": "ANG MO KIO MRT STATION",
+      "aliases": [
+        "宏茂桥",
+        "宏茂桥"
+      ]
+    },
+    {
+      "id": "LTA:LRT:BAKAU",
+      "name": "BAKAU LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:BANGKIT",
+      "name": "BANGKIT LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:BARTLEY",
+      "name": "BARTLEY MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:BAYFRONT",
+      "name": "BAYFRONT MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:BAYSHORE",
+      "name": "BAYSHORE MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:BEAUTY_WORLD",
+      "name": "BEAUTY WORLD MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:BEDOK",
+      "name": "BEDOK MRT STATION",
+      "aliases": [
+        "勿洛",
+        "勿洛"
+      ]
+    },
+    {
+      "id": "LTA:MRT:BEDOK_NORTH",
+      "name": "BEDOK NORTH MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:BEDOK_RESERVOIR",
+      "name": "BEDOK RESERVOIR MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:BENCOOLEN",
+      "name": "BENCOOLEN MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:BENDEMEER",
+      "name": "BENDEMEER MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:BISHAN",
+      "name": "BISHAN MRT STATION",
+      "aliases": [
+        "碧山",
+        "碧山"
+      ]
+    },
+    {
+      "id": "LTA:MRT:BOON_KENG",
+      "name": "BOON KENG MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:BOON_LAY",
+      "name": "BOON LAY MRT STATION",
+      "aliases": [
+        "文礼"
+      ]
+    },
+    {
+      "id": "LTA:MRT:BOTANIC_GARDENS",
+      "name": "BOTANIC GARDENS MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:BRADDELL",
+      "name": "BRADDELL MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:BRAS_BASAH",
+      "name": "BRAS BASAH MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:BRIGHT_HILL",
+      "name": "BRIGHT HILL MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:BUANGKOK",
+      "name": "BUANGKOK MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:BUGIS",
+      "name": "BUGIS MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:BUKIT_BATOK",
+      "name": "BUKIT BATOK MRT STATION",
+      "aliases": [
+        "武吉巴督"
+      ]
+    },
+    {
+      "id": "LTA:MRT:BUKIT_GOMBAK",
+      "name": "BUKIT GOMBAK MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:BUKIT_PANJANG",
+      "name": "BUKIT PANJANG LRT STATION",
+      "aliases": [
+        "武吉班让"
+      ]
+    },
+    {
+      "id": "LTA:MRT:BUKIT_PANJANG",
+      "name": "BUKIT PANJANG MRT STATION",
+      "aliases": [
+        "武吉班让"
+      ]
+    },
+    {
+      "id": "LTA:MRT:BUONA_VISTA",
+      "name": "BUONA VISTA MRT STATION",
+      "aliases": [
+        "波那维斯达",
+        "波纳维斯达"
+      ]
+    },
+    {
+      "id": "LTA:MRT:CALDECOTT",
+      "name": "CALDECOTT MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:CANBERRA",
+      "name": "CANBERRA MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:CANTONMENT",
+      "name": "CANTONMENT MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:CASHEW",
+      "name": "CASHEW MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:CHANGI_AIRPORT",
+      "name": "CHANGI AIRPORT MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:CHENG_LIM",
+      "name": "CHENG LIM LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:CHINATOWN",
+      "name": "CHINATOWN MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:CHINESE_GARDEN",
+      "name": "CHINESE GARDEN MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:CHOA_CHU_KANG",
+      "name": "CHOA CHU KANG LRT STATION",
+      "aliases": [
+        "蔡厝港"
+      ]
+    },
+    {
+      "id": "LTA:MRT:CHOA_CHU_KANG",
+      "name": "CHOA CHU KANG MRT STATION",
+      "aliases": [
+        "蔡厝港"
+      ]
+    },
+    {
+      "id": "LTA:MRT:CITY_HALL",
+      "name": "CITY HALL MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:CLARKE_QUAY",
+      "name": "CLARKE QUAY MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:CLEMENTI",
+      "name": "CLEMENTI MRT STATION",
+      "aliases": [
+        "金文泰",
+        "克莱门特",
+        "克莱门蒂",
+        "克莱蒙蒂",
+        "克莱门提",
+        "金文泰",
+        "克莱门特",
+        "克莱门蒂",
+        "克莱蒙蒂",
+        "金文台"
+      ]
+    },
+    {
+      "id": "LTA:MRT:COMMONWEALTH",
+      "name": "COMMONWEALTH MRT STATION",
+      "aliases": [
+        "联邦"
+      ]
+    },
+    {
+      "id": "LTA:LRT:COMPASSVALE",
+      "name": "COMPASSVALE LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:CORAL_EDGE",
+      "name": "CORAL EDGE LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:COVE",
+      "name": "COVE LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:DAKOTA",
+      "name": "DAKOTA MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:DAMAI",
+      "name": "DAMAI LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:DHOBY_GHAUT",
+      "name": "DHOBY GHAUT MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:DOVER",
+      "name": "DOVER MRT STATION",
+      "aliases": [
+        "杜佛",
+        "多佛"
+      ]
+    },
+    {
+      "id": "LTA:MRT:DOWNTOWN",
+      "name": "DOWNTOWN MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:ESPLANADE",
+      "name": "ESPLANADE MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:EUNOS",
+      "name": "EUNOS MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:EXPO",
+      "name": "EXPO MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:FAJAR",
+      "name": "FAJAR LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:FARMWAY",
+      "name": "FARMWAY LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:FARRER_PARK",
+      "name": "FARRER PARK MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:FARRER_ROAD",
+      "name": "FARRER ROAD MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:FERNVALE",
+      "name": "FERNVALE LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:FORT_CANNING",
+      "name": "FORT CANNING MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:GARDENS_BY_THE_BAY",
+      "name": "GARDENS BY THE BAY MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:GEYLANG_BAHRU",
+      "name": "GEYLANG BAHRU MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:GREAT_WORLD",
+      "name": "GREAT WORLD MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:GUL_CIRCLE",
+      "name": "GUL CIRCLE MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:HARBOURFRONT",
+      "name": "HARBOURFRONT MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:HAVELOCK",
+      "name": "HAVELOCK MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:HAW_PAR_VILLA",
+      "name": "HAW PAR VILLA MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:HILLVIEW",
+      "name": "HILLVIEW MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:HOLLAND_VILLAGE",
+      "name": "HOLLAND VILLAGE MRT STATION",
+      "aliases": [
+        "荷兰村"
+      ]
+    },
+    {
+      "id": "LTA:MRT:HOUGANG",
+      "name": "HOUGANG MRT STATION",
+      "aliases": [
+        "后港"
+      ]
+    },
+    {
+      "id": "LTA:MRT:HUME",
+      "name": "HUME MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:JALAN_BESAR",
+      "name": "JALAN BESAR MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:JELAPANG",
+      "name": "JELAPANG LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:JOO_KOON",
+      "name": "JOO KOON MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:JURONG_EAST",
+      "name": "JURONG EAST MRT STATION",
+      "aliases": [
+        "裕廊东",
+        "裕廊东"
+      ]
+    },
+    {
+      "id": "LTA:LRT:KADALOOR",
+      "name": "KADALOOR LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:KAKI_BUKIT",
+      "name": "KAKI BUKIT MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:KALLANG",
+      "name": "KALLANG MRT STATION",
+      "aliases": [
+        "加冷"
+      ]
+    },
+    {
+      "id": "LTA:LRT:KANGKAR",
+      "name": "KANGKAR LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:KATONG_PARK",
+      "name": "KATONG PARK MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:KEAT_HONG",
+      "name": "KEAT HONG LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:KEMBANGAN",
+      "name": "KEMBANGAN MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:KENT_RIDGE",
+      "name": "KENT RIDGE MRT STATION",
+      "aliases": [
+        "肯特岗",
+        "肯特岭"
+      ]
+    },
+    {
+      "id": "LTA:MRT:KEPPEL",
+      "name": "KEPPEL MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:KHATIB",
+      "name": "KHATIB MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:KING_ALBERT_PARK",
+      "name": "KING ALBERT PARK MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:KOVAN",
+      "name": "KOVAN MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:KRANJI",
+      "name": "KRANJI MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:KUPANG",
+      "name": "KUPANG LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:LABRADOR_PARK",
+      "name": "LABRADOR PARK MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:LAKESIDE",
+      "name": "LAKESIDE MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:LAVENDER",
+      "name": "LAVENDER MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:LAYAR",
+      "name": "LAYAR LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:LENTOR",
+      "name": "LENTOR MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:LITTLE_INDIA",
+      "name": "LITTLE INDIA MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:LORONG_CHUAN",
+      "name": "LORONG CHUAN MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:MACPHERSON",
+      "name": "MACPHERSON MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:MARINA_BAY",
+      "name": "MARINA BAY MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:MARINA_SOUTH",
+      "name": "MARINA SOUTH MRT STATION",
+      "aliases": [
+        "滨海南"
+      ]
+    },
+    {
+      "id": "LTA:MRT:MARINA_SOUTH_PIER",
+      "name": "MARINA SOUTH PIER MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:MARINE_PARADE",
+      "name": "MARINE PARADE MRT STATION",
+      "aliases": [
+        "马林百列"
+      ]
+    },
+    {
+      "id": "LTA:MRT:MARINE_TERRACE",
+      "name": "MARINE TERRACE MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:MARSILING",
+      "name": "MARSILING MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:MARYMOUNT",
+      "name": "MARYMOUNT MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:MATTAR",
+      "name": "MATTAR MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:MAXWELL",
+      "name": "MAXWELL MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:MAYFLOWER",
+      "name": "MAYFLOWER MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:MERIDIAN",
+      "name": "MERIDIAN LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:MOUNTBATTEN",
+      "name": "MOUNTBATTEN MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:NAPIER",
+      "name": "NAPIER MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:NEWTON",
+      "name": "NEWTON MRT STATION",
+      "aliases": [
+        "纽顿"
+      ]
+    },
+    {
+      "id": "LTA:LRT:NIBONG",
+      "name": "NIBONG LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:NICOLL_HIGHWAY",
+      "name": "NICOLL HIGHWAY MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:NOVENA",
+      "name": "NOVENA MRT STATION",
+      "aliases": [
+        "诺维娜"
+      ]
+    },
+    {
+      "id": "LTA:LRT:OASIS",
+      "name": "OASIS LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:ONE-NORTH",
+      "name": "ONE-NORTH MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:ORCHARD_BOULEVARD",
+      "name": "ORCHARD BOULEVARD MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:ORCHARD",
+      "name": "ORCHARD MRT STATION",
+      "aliases": [
+        "乌节"
+      ]
+    },
+    {
+      "id": "LTA:MRT:OUTRAM_PARK",
+      "name": "OUTRAM PARK MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:PASIR_PANJANG",
+      "name": "PASIR PANJANG MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:PASIR_RIS",
+      "name": "PASIR RIS MRT STATION",
+      "aliases": [
+        "巴西立",
+        "巴西立"
+      ]
+    },
+    {
+      "id": "LTA:MRT:PAYA_LEBAR",
+      "name": "PAYA LEBAR MRT STATION",
+      "aliases": [
+        "巴耶利峇"
+      ]
+    },
+    {
+      "id": "LTA:LRT:PENDING",
+      "name": "PENDING LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:PETIR",
+      "name": "PETIR LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:PHOENIX",
+      "name": "PHOENIX LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:PIONEER",
+      "name": "PIONEER MRT STATION",
+      "aliases": [
+        "先驱"
+      ]
+    },
+    {
+      "id": "LTA:MRT:POTONG_PASIR",
+      "name": "POTONG PASIR MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:PRINCE_EDWARD_ROAD",
+      "name": "PRINCE EDWARD ROAD MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:PROMENADE",
+      "name": "PROMENADE MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:PUNGGOL_COAST",
+      "name": "PUNGGOL COAST MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:PUNGGOL",
+      "name": "PUNGGOL LRT STATION",
+      "aliases": [
+        "榜鹅"
+      ]
+    },
+    {
+      "id": "LTA:MRT:PUNGGOL",
+      "name": "PUNGGOL MRT STATION",
+      "aliases": [
+        "榜鹅"
+      ]
+    },
+    {
+      "id": "LTA:LRT:PUNGGOL_POINT",
+      "name": "PUNGGOL POINT LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:QUEENSTOWN",
+      "name": "QUEENSTOWN MRT STATION",
+      "aliases": [
+        "女皇镇",
+        "女皇镇"
+      ]
+    },
+    {
+      "id": "LTA:MRT:RAFFLES_PLACE",
+      "name": "RAFFLES PLACE MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:RANGGUNG",
+      "name": "RANGGUNG LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:REDHILL",
+      "name": "REDHILL MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:RENJONG",
+      "name": "RENJONG LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:RIVIERA",
+      "name": "RIVIERA LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:ROCHOR",
+      "name": "ROCHOR MRT STATION",
+      "aliases": [
+        "梧槽"
+      ]
+    },
+    {
+      "id": "LTA:LRT:RUMBIA",
+      "name": "RUMBIA LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:SAM_KEE",
+      "name": "SAM KEE LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:SAMUDERA",
+      "name": "SAMUDERA LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:SEGAR",
+      "name": "SEGAR LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:SEMBAWANG",
+      "name": "SEMBAWANG MRT STATION",
+      "aliases": [
+        "三巴旺"
+      ]
+    },
+    {
+      "id": "LTA:MRT:SENGKANG",
+      "name": "SENGKANG MRT STATION",
+      "aliases": [
+        "盛港"
+      ]
+    },
+    {
+      "id": "LTA:LRT:SENJA",
+      "name": "SENJA LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:SERANGOON",
+      "name": "SERANGOON MRT STATION",
+      "aliases": [
+        "实龙岗",
+        "实龙岗"
+      ]
+    },
+    {
+      "id": "LTA:MRT:SHENTON_WAY",
+      "name": "SHENTON WAY MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:SIGLAP",
+      "name": "SIGLAP MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:SIMEI",
+      "name": "SIMEI MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:SIXTH_AVENUE",
+      "name": "SIXTH AVENUE MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:SOMERSET",
+      "name": "SOMERSET MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:SOO_TECK",
+      "name": "SOO TECK LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:SOUTH_VIEW",
+      "name": "SOUTH VIEW LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:SPRINGLEAF",
+      "name": "SPRINGLEAF MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:STADIUM",
+      "name": "STADIUM MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:STEVENS",
+      "name": "STEVENS MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:SUMANG",
+      "name": "SUMANG LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:TAI_SENG",
+      "name": "TAI SENG MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:TAMPINES_EAST",
+      "name": "TAMPINES EAST MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:TAMPINES",
+      "name": "TAMPINES MRT STATION",
+      "aliases": [
+        "淡滨尼",
+        "淡滨尼"
+      ]
+    },
+    {
+      "id": "LTA:MRT:TAMPINES_WEST",
+      "name": "TAMPINES WEST MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:TAN_KAH_KEE",
+      "name": "TAN KAH KEE MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:TANAH_MERAH",
+      "name": "TANAH MERAH MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:TANJONG_KATONG",
+      "name": "TANJONG KATONG MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:TANJONG_PAGAR",
+      "name": "TANJONG PAGAR MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:TANJONG_RHU",
+      "name": "TANJONG RHU MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:TECK_LEE",
+      "name": "TECK LEE LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:TECK_WHYE",
+      "name": "TECK WHYE LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:TELOK_AYER",
+      "name": "TELOK AYER MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:TELOK_BLANGAH",
+      "name": "TELOK BLANGAH MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:LRT:THANGGAM",
+      "name": "THANGGAM LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:TIONG_BAHRU",
+      "name": "TIONG BAHRU MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:TOA_PAYOH",
+      "name": "TOA PAYOH MRT STATION",
+      "aliases": [
+        "大巴窑"
+      ]
+    },
+    {
+      "id": "LTA:LRT:TONGKANG",
+      "name": "TONGKANG LRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:TUAS_CRESCENT",
+      "name": "TUAS CRESCENT MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:TUAS_LINK",
+      "name": "TUAS LINK MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:TUAS_WEST_ROAD",
+      "name": "TUAS WEST ROAD MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:UBI",
+      "name": "UBI MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:UPPER_CHANGI",
+      "name": "UPPER CHANGI MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:UPPER_THOMSON",
+      "name": "UPPER THOMSON MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:WOODLANDS",
+      "name": "WOODLANDS MRT STATION",
+      "aliases": [
+        "兀兰",
+        "兀兰"
+      ]
+    },
+    {
+      "id": "LTA:MRT:WOODLANDS_NORTH",
+      "name": "WOODLANDS NORTH MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:WOODLANDS_SOUTH",
+      "name": "WOODLANDS SOUTH MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:WOODLEIGH",
+      "name": "WOODLEIGH MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:YEW_TEE",
+      "name": "YEW TEE MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:YIO_CHU_KANG",
+      "name": "YIO CHU KANG MRT STATION",
+      "aliases": []
+    },
+    {
+      "id": "LTA:MRT:YISHUN",
+      "name": "YISHUN MRT STATION",
+      "aliases": [
+        "义顺",
+        "义顺"
+      ]
+    }
+  ]
+}

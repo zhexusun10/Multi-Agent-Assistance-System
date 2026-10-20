@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "session_id": "dd481405-0ea9-482b-aebb-9521da1ebe65",
+  "checks": [
+    "natural-language daily summary routes through Agent D without a prior recommendation",
+    "download preserves original conversation and allows null recommendation source",
+    "owner isolation, invalid month and unauthenticated public webhook blocked",
+    "missing credentials leave mode simulation with public configuration status only"
+  ]
+}

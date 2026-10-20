@@ -14,6 +14,17 @@ function unusedWorkers(): AgentRegistry {
   return { a: unexpected, b: unexpected, c: unexpected, d: unexpected };
 }
 
+test('business SSE never skips a committed domain event when runtime notifications race ahead',async()=>{
+  const events=new MemorySessionEventStore(),tasks=new MemoryAgentTaskStore();
+  const master=createMaster(undefined,unusedWorkers(),{events,tasks,checkpointer:new MemorySaver(),domain:{plan:async()=>({assignments:[],answer:'ok'}),apply:async()=>[]}});
+  const stream=master.subscribe('domain-order');const pending=stream.next();await new Promise(r=>setTimeout(r,10));
+  await events.append('domain-order',{type:'workflow_result',payload:{message:'must arrive first'}});
+  await master.acceptRuntimeEvent('domain-order',{type:'runtime_event',name:'later',payload:{}});
+  assert.equal((await pending).value?.id,1);
+  assert.equal((await stream.next()).value?.id,2);
+  await stream.return();
+});
+
 async function collect(stream: AsyncGenerator<MasterEvent>): Promise<MasterEvent[]> {
   const events: MasterEvent[] = [];
   for await (const event of stream) events.push(event);

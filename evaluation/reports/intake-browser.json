@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-10-19T14:13:20.741796+00:00",
+  "status": "passed",
+  "checks": [
+    "Nearby Clementi automatically resolves to a real area and ranks with no blocking radius question",
+    "Exact MRT 3km and transit follow-up updates location and commute while preserving budget/private-bathroom/30min",
+    "Unknown mandatory facts remain unverified; no internal validation errors reach the browser"
+  ],
+  "page_errors": [],
+  "screenshots": [
+    "05-nearby-area.png",
+    "06-nearby-mrt-3km.png"
+  ]
+}

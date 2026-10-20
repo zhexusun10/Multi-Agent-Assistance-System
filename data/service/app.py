@@ -21,7 +21,8 @@ from data.core.contracts import (Entity, GraphExpand, GraphPage, Item, ListingCo
 from data.graph.sync import LISTING_FIELDS, create_graph_driver
 from data.graph.source import load_graph_env, open_api_source
 from data.graph.places import ALL_CATEGORIES, CATEGORIES
-from data.storage.repository import listing_detail, listing_images, sql_readiness
+from data.storage.repository import assessment_rows, listing_detail, listing_images, sql_readiness
+from data.core.contracts import ListingAssessmentScan
 from data.storage.snapshot import SNAPSHOT_DATE, snapshot_info
 
 logger = logging.getLogger(__name__)
@@ -262,7 +263,7 @@ def graph_stats(driver, database):
                          "Missing listing coordinates mean unknown nearby coverage, not zero amenities."]}
 
 
-def create_app(driver=None, database=None, sql_engine=None, sqlite_path=None, database_url=None):
+def create_app(driver=None, database=None, sql_engine=None, sqlite_path=None, database_url=None, dataset_info=None):
     if sqlite_path is not None and database_url is not None:
         raise ValueError("Choose either sqlite_path or database_url, not both")
     load_graph_env()
@@ -361,13 +362,16 @@ def create_app(driver=None, database=None, sql_engine=None, sqlite_path=None, da
         records = execute(request, "MATCH (l:Listing {listing_id:$listing_id}) RETURN l.listing_id AS listing_id", listing_id=listing_id)
         if not records:
             raise HTTPException(503, {"code": "GRAPH_NOT_SYNCED", "message": "Canonical SQL listing is absent from Neo4j; run a full import."})
-        return {"status": "ok", "database": db_name, "sql_source": store, "listing_snapshot": snapshot_info()}
+        return {"status": "ok", "database": db_name, "sql_source": store, "listing_snapshot": dataset_info or snapshot_info()}
 
     @app.get("/api/stats")
     @app.get("/api/v1/stats", tags=["data"])
     def stats(request: Request):
         try:
-            return graph_stats(request.app.state.driver, db_name)
+            result = graph_stats(request.app.state.driver, db_name)
+            if dataset_info is not None:
+                result["listing_snapshot"] = dataset_info
+            return result
         except (Neo4jError, DriverError):
             logger.warning("Neo4j statistics failed", exc_info=True)
             raise HTTPException(503, "Neo4j unavailable. Check the service and NEO4J_* configuration.")
@@ -377,7 +381,8 @@ def create_app(driver=None, database=None, sql_engine=None, sqlite_path=None, da
         engine = request.app.state.sql_engine
         return {"api_version": "1", "read_only": True, "openapi": "/openapi.json", "page_size_max": 1000,
                 "sql_source": engine.dialect.name if engine is not None else None, "sql_fallback": False,
-                "listing_snapshot": snapshot_info(), "readiness": "/ready",
+                "canonical_assessment_scan": "/api/v1/listings/assessment/search",
+                "listing_snapshot": dataset_info or snapshot_info(), "readiness": "/ready",
                 "place_categories": list(ALL_CATEGORIES), "graph_ids": "entity_id is stable; graph node id is Neo4j elementId",
                 "distance_types": {"NEAR_MRT": "platform_reported (not route verified)", "NEAR_PLACE": "geodesic",
                                    "NEAR_LISTING": "geodesic (query-time only, not persisted)"},
@@ -403,6 +408,16 @@ def create_app(driver=None, database=None, sql_engine=None, sqlite_path=None, da
             warnings.append("POI filters use the persisted enrichment radius (see stats.datasets). Listings with unknown coordinates are excluded, not evidence of no amenities.")
         return page(items, "listings", filters, [r["l"]["listing_id"] for r in records], body.page_size,
                     warnings=warnings)
+
+    @app.post("/api/v1/listings/assessment/search", response_model=Page[Entity], tags=["listings"])
+    def scan_assessment(body: ListingAssessmentScan, request: Request):
+        binding = {"listing_type": body.listing_type,
+                   "snapshot": dataset_info or snapshot_info()}
+        after = number_cursor(body.cursor, "assessment", binding)
+        rows, store = sql(request, assessment_rows, body.listing_type, after, body.page_size)
+        items = [{"entity_id": f"Listing:{r['listing_id']}", "label": "Listing", "properties": r} for r in rows]
+        return page(items, "assessment", binding, [r["listing_id"] for r in rows], body.page_size,
+                    store=store, warnings=["Historical snapshot; NULLs retained; current availability unknown."])
 
     @app.get("/api/v1/listings/{listing_id}", response_model=Item[Entity], tags=["listings"])
     def get_listing(request: Request, listing_id: int = PathParam(ge=1, le=9223372036854775807)):

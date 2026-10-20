@@ -16,6 +16,7 @@ from data.storage.models import Property, PropertyImage
 DETAIL_FIELDS = ("listing_id",) + LISTING_FIELDS + (
     "project_id", "district_code", "district_text", "region_code", "region_text", "nearest_mrt",
     "detail_fetched", "posted_at", "created_at", "updated_at", "agent_id", "agent_name", "agency_name",
+    "full_address", "short_address", "street_name", "street_number", "floor_level", "thumbnail_url", "tenure",
 )
 
 
@@ -55,6 +56,20 @@ def listing_detail(engine, listing_id):
     result = {key: json_value(value) for key, value in row.items()}
     _, result["coordinate_status"] = location_for(row.get("latitude"), row.get("longitude"))
     return result
+
+
+def assessment_rows(engine, listing_type, after, page_size):
+    """Keyset scan of public SQL fields, without raw JSON/media/contact expansion.
+
+    Preserve NULLs and source sentinels: unknown hard conditions must not silently
+    disappear through SQL pushdown. The ranking layer validates numeric values.
+    """
+    with readonly_connection(engine) as connection:
+        rows = connection.execute(select(*(getattr(Property, f) for f in DETAIL_FIELDS))
+                                  .where(Property.listing_type == listing_type,
+                                         Property.listing_id > after)
+                                  .order_by(Property.listing_id).limit(page_size + 1)).mappings().all()
+    return [{key: json_value(value) for key, value in row.items()} for row in rows]
 
 
 def listing_images(engine, listing_id, after, page_size):
