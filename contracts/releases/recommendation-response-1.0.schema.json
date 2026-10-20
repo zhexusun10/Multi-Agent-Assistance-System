@@ -2,6 +2,217 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "properties": {
+    "native": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string",
+          "const": "jiangshan-native"
+        },
+        "upstream_commit": {
+          "type": "string"
+        },
+        "exchange_ref": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "success",
+            "needs_clarification",
+            "no_match",
+            "error"
+          ]
+        },
+        "state_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ranking": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scores": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "explicit_score": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "implicit_score": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "combined_score": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "explicit_weight": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "implicit_weight": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "evidence_coverage": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "contributions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "feature": {
+                      "type": "string"
+                    },
+                    "reference": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "raw_difference": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "scale": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "similarity": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "weight": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "contribution": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "unknown": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "feature",
+                    "reference",
+                    "raw_difference",
+                    "scale",
+                    "similarity",
+                    "weight",
+                    "contribution",
+                    "unknown"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "suppressed_features": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "ordering": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "explicit_score",
+              "implicit_score",
+              "combined_score",
+              "explicit_weight",
+              "implicit_weight",
+              "evidence_coverage",
+              "contributions",
+              "suppressed_features",
+              "ordering"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "criterion_results": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {}
+        },
+        "unsupported_criterion_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unscored_listing_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "provider",
+        "upstream_commit",
+        "exchange_ref",
+        "status",
+        "state_id",
+        "ranking",
+        "scores",
+        "criterion_results",
+        "unsupported_criterion_ids",
+        "unscored_listing_ids"
+      ],
+      "additionalProperties": false
+    },
     "contract_version": {
       "type": "string",
       "const": "1.0"

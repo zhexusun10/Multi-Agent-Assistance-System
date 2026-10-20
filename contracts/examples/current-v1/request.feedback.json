@@ -1,0 +1,87 @@
+{
+  "contract_version": "1.0",
+  "request_id": "10000000-0000-4000-8000-000000000003",
+  "conversation_id": "handoff-demo-session",
+  "requirements_version": 1,
+  "requirements": {
+    "listing_type": "RENT",
+    "criteria": [
+      {
+        "criterion_id": "monthly-rent",
+        "field": "price",
+        "operator": "lte",
+        "value": 3000,
+        "unit": "SGD/month",
+        "strength": "hard"
+      },
+      {
+        "criterion_id": "minimum-bedrooms",
+        "field": "bedrooms",
+        "operator": "gte",
+        "value": 2,
+        "unit": "count",
+        "strength": "hard"
+      },
+      {
+        "criterion_id": "preferred-district",
+        "field": "district",
+        "operator": "in",
+        "value": [
+          "D05"
+        ],
+        "strength": "hard"
+      },
+      {
+        "criterion_id": "near-supermarket",
+        "field": "place_proximity",
+        "operator": "lte",
+        "value": 800,
+        "unit": "m",
+        "strength": "soft",
+        "weight": 3,
+        "target": {
+          "category": "Supermarket"
+        },
+        "distance_type": "straight_line"
+      }
+    ]
+  },
+  "feedback": [
+    {
+      "event_id": "evt-view-001",
+      "listing_id": "900000000001",
+      "occurred_at": "2026-10-20T15:00:00+08:00",
+      "event_type": "active_view",
+      "payload": {
+        "active_duration_ms": 45000
+      }
+    },
+    {
+      "event_id": "evt-save-001",
+      "listing_id": "900000000001",
+      "occurred_at": "2026-10-20T15:01:00+08:00",
+      "event_type": "save",
+      "payload": {}
+    },
+    {
+      "event_id": "evt-shortlist-001",
+      "listing_id": "900000000001",
+      "occurred_at": "2026-10-20T15:02:00+08:00",
+      "event_type": "shortlist",
+      "payload": {}
+    },
+    {
+      "event_id": "evt-negative-001",
+      "listing_id": "900000000001",
+      "occurred_at": "2026-10-20T15:03:00+08:00",
+      "event_type": "explicit_attribute_feedback",
+      "payload": {
+        "attribute": "floor_area_sqft",
+        "sentiment": "negative",
+        "quote": "第一套面积太小"
+      }
+    }
+  ],
+  "result_limit": 5,
+  "previous_state_id": "fixture-rec-state-001"
+}

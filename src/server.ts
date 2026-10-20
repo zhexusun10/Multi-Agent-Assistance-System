@@ -135,6 +135,11 @@ const server=createServer(async(req,res)=>{
     }
     if(workflow&&req.method==='POST'&&url.pathname==='/feedback'){
       const body=z.object({session_id:z.string().min(1),source_request_id:z.string().uuid(),event:feedbackSchema}).strict().parse(await readBody(req));await store.assertOwner(body.session_id,owner);
+      if(process.env.RECOMMENDATION_MODE==='native'&&body.event.event_type==='active_view'&&body.event.payload.source==='sample'){
+        const p=z.object({source:z.literal('sample'),recommendation_request_id:z.string().uuid(),view_session_id:z.string().uuid(),active_duration_ms:z.number().finite().positive().max(3600000)}).strict().parse(body.event.payload);
+        const current=await store.state(body.session_id);
+        if(p.recommendation_request_id!==body.source_request_id||!current.recommendation?.native?.ranking.includes(body.event.listing_id))throw new BusinessError('INVALID_FEEDBACK','浏览样例必须引用当前原生推荐中的已验证房源。');
+      }
       await store.transaction(async tx=>{const s=await store.lock(tx,body.session_id);if(s.latest_request_id!==body.source_request_id||![...(s.recommendation?.recommendations||[]),...(s.recommendation?.unverified_candidates||[])].some(c=>c.listing.listing_id===body.event.listing_id))throw new BusinessError('FEEDBACK_STALE','反馈必须关联当前列表中的房源。');if(Date.parse(body.event.occurred_at)>Date.now()+60000)throw new BusinessError('INVALID_TIMESTAMP','反馈时间不能在未来。');const old=(await tx.query('SELECT body FROM listing_feedback WHERE session_id=$1 AND event_id=$2',[body.session_id,body.event.event_id])).rows[0];if(old&&hash(old.body)!==hash(body.event))throw new BusinessError('EVENT_ID_CONFLICT','相同反馈 ID 的内容不能改变。');await tx.query('INSERT INTO listing_feedback(session_id,event_id,body) VALUES($1,$2,$3) ON CONFLICT DO NOTHING',[body.session_id,body.event.event_id,JSON.stringify(body.event)]);});return send(202,{status:'recorded',ranking_applied:false});
     }
     if(req.method==='GET'&&url.pathname==='/events'){

@@ -1,0 +1,474 @@
+{
+  "upstream_commit": "907cfa839d2665b3702450eb40acd4c96fe9296c",
+  "base_commit": "501fb6cdb0aa64bdbabb947324bf845654a9a269",
+  "allowed_substitutions": [
+    [
+      "dev.sharedContract.recommendationSubagentContract",
+      "recommendation.contracts"
+    ],
+    [
+      "dev.recommendationSubagent",
+      "recommendation"
+    ],
+    [
+      "dev/recommendationSubagent",
+      "recommendation"
+    ],
+    [
+      "../../../src/model.js",
+      "../../src/model.js"
+    ],
+    [
+      "dataPreprocessing/tests",
+      "data/tests"
+    ]
+  ],
+  "file_specific_substitutions": {
+    "repositories/connections.py": [
+      [
+        "parents[3]",
+        "parents[2]"
+      ]
+    ],
+    "schemas.py": [
+      [
+        "Path(__file__).parents[1] / \"sharedContract/recommendationSubagentContract/schemas\"",
+        "Path(__file__).parent / \"contracts/schemas\""
+      ]
+    ],
+    "tests/test_recommendation.py": [
+      [
+        "k.startswith('recommendation')",
+        "k.startswith(('recommendation.service', 'recommendation.agent', 'recommendation.repositories', 'recommendation.ranking'))"
+      ]
+    ]
+  },
+  "files": [
+    {
+      "source": "dev/recommendationSubagent/__init__.py",
+      "target": "recommendation/__init__.py",
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ported_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "dev/recommendationSubagent/agent/__init__.py",
+      "target": "recommendation/agent/__init__.py",
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ported_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "dev/recommendationSubagent/agent/controller.py",
+      "target": "recommendation/agent/controller.py",
+      "upstream_sha256": "9528c8480c670f9d0634f77b157d40d5743c4975f3a918326cf3be3e778075c8",
+      "ported_sha256": "a17495fcca30a3fdfb35ad7f28db3468087b212ab21b57855b10eb6cc6bf4ede"
+    },
+    {
+      "source": "dev/recommendationSubagent/agent/model_bridge.ts",
+      "target": "recommendation/agent/model_bridge.ts",
+      "upstream_sha256": "a4817cad0574da4c429affcf37ffcc7c6eccfe8b71fe35e50134f0e5de6688f3",
+      "ported_sha256": "0a28eefddb79229411337bd037c62677192369775421c6fe9ba1b04443f4d331"
+    },
+    {
+      "source": "dev/recommendationSubagent/config.py",
+      "target": "recommendation/config.py",
+      "upstream_sha256": "bba098215912476b08bfeaa958e6c54c4292eeaa50dd0e4c1cd3aa47b2744c1d",
+      "ported_sha256": "3c972d05b50d3216829260d8362a56ed42e5e4046538d7276786093f04a4384b"
+    },
+    {
+      "source": "dev/recommendationSubagent/context/__init__.py",
+      "target": "recommendation/context/__init__.py",
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ported_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "dev/recommendationSubagent/context/manager.py",
+      "target": "recommendation/context/manager.py",
+      "upstream_sha256": "f8af832c65c836911d6388d0ec96eca7c8d4405c400493bb67217b735d63003a",
+      "ported_sha256": "0151d9ea01045a81e1ab97e00f9deda0b412982dff48d669f147876afd475953"
+    },
+    {
+      "source": "dev/recommendationSubagent/examples/__init__.py",
+      "target": "recommendation/examples/__init__.py",
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ported_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "dev/recommendationSubagent/examples/check_export.py",
+      "target": "recommendation/examples/check_export.py",
+      "upstream_sha256": "665bf2bf78d4f476c5b8e23e2f0620b1e0fc6481f838ebb4f6d9093dd8031d3d",
+      "ported_sha256": "75255bd0b2cb44832033159495fa80ed5e50528c6ac9b80fa36ab801769dc4aa"
+    },
+    {
+      "source": "dev/recommendationSubagent/examples/config.json",
+      "target": "recommendation/examples/config.json",
+      "upstream_sha256": "ad2a488dcb452890426f3842793dbd71875a55255745350990efd9b5a198aff2",
+      "ported_sha256": "ad2a488dcb452890426f3842793dbd71875a55255745350990efd9b5a198aff2"
+    },
+    {
+      "source": "dev/recommendationSubagent/examples/contracts/clarification.json",
+      "target": "recommendation/examples/contracts/clarification.json",
+      "upstream_sha256": "c25a275cef88371b9f71a6488e1620139817e0a55135d00dfe66be7bd248f633",
+      "ported_sha256": "c25a275cef88371b9f71a6488e1620139817e0a55135d00dfe66be7bd248f633"
+    },
+    {
+      "source": "dev/recommendationSubagent/examples/contracts/error.json",
+      "target": "recommendation/examples/contracts/error.json",
+      "upstream_sha256": "99d3a3a73be8047854bcf50ff6dcbdede0c833ab3797405f08b5d856146e3bc8",
+      "ported_sha256": "99d3a3a73be8047854bcf50ff6dcbdede0c833ab3797405f08b5d856146e3bc8"
+    },
+    {
+      "source": "dev/recommendationSubagent/examples/contracts/feedback-only-update.json",
+      "target": "recommendation/examples/contracts/feedback-only-update.json",
+      "upstream_sha256": "4ab96301f0a571f49dc7c6a3da25493cc1b1046efbb32c01d6f77434d3d8062e",
+      "ported_sha256": "4ab96301f0a571f49dc7c6a3da25493cc1b1046efbb32c01d6f77434d3d8062e"
+    },
+    {
+      "source": "dev/recommendationSubagent/examples/contracts/initial-search.json",
+      "target": "recommendation/examples/contracts/initial-search.json",
+      "upstream_sha256": "b3df49b60f851a597f2e048f44f19c325000af592f8097c582f12fd4ea3bfab0",
+      "ported_sha256": "b3df49b60f851a597f2e048f44f19c325000af592f8097c582f12fd4ea3bfab0"
+    },
+    {
+      "source": "dev/recommendationSubagent/examples/contracts/no-match.json",
+      "target": "recommendation/examples/contracts/no-match.json",
+      "upstream_sha256": "7a9db3082026ea76d6d3ed454d7cfe18f9cae8739004adc5371c1355874af780",
+      "ported_sha256": "7a9db3082026ea76d6d3ed454d7cfe18f9cae8739004adc5371c1355874af780"
+    },
+    {
+      "source": "dev/recommendationSubagent/examples/contracts/preference-update.json",
+      "target": "recommendation/examples/contracts/preference-update.json",
+      "upstream_sha256": "470c7af9064ae6ba25a1ceceb3e701a49c977c7e3f919c5415151f441d94c0f8",
+      "ported_sha256": "470c7af9064ae6ba25a1ceceb3e701a49c977c7e3f919c5415151f441d94c0f8"
+    },
+    {
+      "source": "dev/recommendationSubagent/examples/contracts/success.json",
+      "target": "recommendation/examples/contracts/success.json",
+      "upstream_sha256": "017f056380151e5c7cd748506691a28747551479f9266179b72ac5767a8166df",
+      "ported_sha256": "017f056380151e5c7cd748506691a28747551479f9266179b72ac5767a8166df"
+    },
+    {
+      "source": "dev/recommendationSubagent/examples/generate_contract_examples.py",
+      "target": "recommendation/examples/generate_contract_examples.py",
+      "upstream_sha256": "941a32c584cc63c14c46f0ef986153d20d14e26d2f7e831ad17ac7de44ec9e84",
+      "ported_sha256": "fdae8b42b499c47ea8ca3c53aec4f3b8e7cd614be25d5897527c30f3affe63ed"
+    },
+    {
+      "source": "dev/recommendationSubagent/examples/geography-csv.json",
+      "target": "recommendation/examples/geography-csv.json",
+      "upstream_sha256": "44612e82e37486639f37ea77cc5aff4909e8a7e09cc783a249c5a53c900f5900",
+      "ported_sha256": "44612e82e37486639f37ea77cc5aff4909e8a7e09cc783a249c5a53c900f5900"
+    },
+    {
+      "source": "dev/recommendationSubagent/examples/geography-fixture.json",
+      "target": "recommendation/examples/geography-fixture.json",
+      "upstream_sha256": "63cf9186b51a66aedbe2bab95971309b10c600f1fbc73b461b1533b23dd888a7",
+      "ported_sha256": "63cf9186b51a66aedbe2bab95971309b10c600f1fbc73b461b1533b23dd888a7"
+    },
+    {
+      "source": "dev/recommendationSubagent/examples/listings.json",
+      "target": "recommendation/examples/listings.json",
+      "upstream_sha256": "1da6e11176db6725772fcd99ce87831a5b54db7154704bbef97195c477f7a4ff",
+      "ported_sha256": "1da6e11176db6725772fcd99ce87831a5b54db7154704bbef97195c477f7a4ff"
+    },
+    {
+      "source": "dev/recommendationSubagent/examples/live_geography.py",
+      "target": "recommendation/examples/live_geography.py",
+      "upstream_sha256": "2729bebd72eabc9ce6745be1515b01f4f871638e8b44656a0f5310a4c637da9a",
+      "ported_sha256": "2729bebd72eabc9ce6745be1515b01f4f871638e8b44656a0f5310a4c637da9a"
+    },
+    {
+      "source": "dev/recommendationSubagent/examples/requirements-complex.json",
+      "target": "recommendation/examples/requirements-complex.json",
+      "upstream_sha256": "1f211a049399828d78bd632b8f873157e16b8b209d7db64423a1f909b8867d71",
+      "ported_sha256": "1f211a049399828d78bd632b8f873157e16b8b209d7db64423a1f909b8867d71"
+    },
+    {
+      "source": "dev/recommendationSubagent/examples/requirements-csv.json",
+      "target": "recommendation/examples/requirements-csv.json",
+      "upstream_sha256": "5ee7ab07a3ae3522bc229572da16f39bea2212ac4a8b3854d9da3dacd76b8392",
+      "ported_sha256": "5ee7ab07a3ae3522bc229572da16f39bea2212ac4a8b3854d9da3dacd76b8392"
+    },
+    {
+      "source": "dev/recommendationSubagent/examples/requirements.json",
+      "target": "recommendation/examples/requirements.json",
+      "upstream_sha256": "acfe7e7b79819a88333499935a7c700a196d1f7fafa003862062e58920968403",
+      "ported_sha256": "acfe7e7b79819a88333499935a7c700a196d1f7fafa003862062e58920968403"
+    },
+    {
+      "source": "dev/recommendationSubagent/examples/run.py",
+      "target": "recommendation/examples/run.py",
+      "upstream_sha256": "aafde7d1f9fa77595fe55c63e19abcf3226a5620a934bde4be2d41f513c39c71",
+      "ported_sha256": "132f877b8b7e6e686646ba8a8026645022ec26827c83187f11158ab3d24b883e"
+    },
+    {
+      "source": "dev/recommendationSubagent/models/__init__.py",
+      "target": "recommendation/models/__init__.py",
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ported_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "dev/recommendationSubagent/models/candidate.py",
+      "target": "recommendation/models/candidate.py",
+      "upstream_sha256": "bdeccf401f3c52f7487e32a912805d5265a0a77879056cc44cb35c6990441da5",
+      "ported_sha256": "a8cd420e9fab64ae83b0ce65a914bbe1b943179bbc592b1c4e35e803adfe5ddf"
+    },
+    {
+      "source": "dev/recommendationSubagent/models/listing_summary.py",
+      "target": "recommendation/models/listing_summary.py",
+      "upstream_sha256": "afec5e3bd647acb6596a85d29ffa3ccf1fd60cf8ba8a4e0ec376229bc27fcf1b",
+      "ported_sha256": "a698004ed4a1d169d1d54a30e6c37afe9f8388bc9bf05cfede6458f564e66f99"
+    },
+    {
+      "source": "dev/recommendationSubagent/models/score_breakdown.py",
+      "target": "recommendation/models/score_breakdown.py",
+      "upstream_sha256": "e0ecb5f665a4181b17208e49cba0cc9e972b8f454999fe3a3297eaccadb159bf",
+      "ported_sha256": "327f74de0a65605ee5cea7e0a13afce652e00a0295353193ae781149ffa0be05"
+    },
+    {
+      "source": "dev/recommendationSubagent/models/tool_results.py",
+      "target": "recommendation/models/tool_results.py",
+      "upstream_sha256": "224b5f3606d5c0679487f8e42663f9477803f691c6e983ffe446f1d313580236",
+      "ported_sha256": "7412d1557bafc3a4f77b26065896fb91376d0039a05fc3158f16237ca6d52947"
+    },
+    {
+      "source": "dev/recommendationSubagent/ranking/__init__.py",
+      "target": "recommendation/ranking/__init__.py",
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ported_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "dev/recommendationSubagent/ranking/metrics.py",
+      "target": "recommendation/ranking/metrics.py",
+      "upstream_sha256": "9127babd34dd22792f0b6628923be43a2bc1f3cdd8e1f98c3027784d5f2d4353",
+      "ported_sha256": "9127babd34dd22792f0b6628923be43a2bc1f3cdd8e1f98c3027784d5f2d4353"
+    },
+    {
+      "source": "dev/recommendationSubagent/ranking/ranker.py",
+      "target": "recommendation/ranking/ranker.py",
+      "upstream_sha256": "7f8466d27a35f91e8e31677d73985a2013b1c06f6f38f48a3f2af0e5c844a605",
+      "ported_sha256": "7f8466d27a35f91e8e31677d73985a2013b1c06f6f38f48a3f2af0e5c844a605"
+    },
+    {
+      "source": "dev/recommendationSubagent/README.md",
+      "target": "recommendation/README.md",
+      "upstream_sha256": "d3c3072eb06e82ce9f9ce607fb2dd46694a0659af8e4d65291b7aeadfbb3fb55",
+      "ported_sha256": "5f4d39f15ca3781ab4470f7fe905d3a3c91c8527b0fc007dd644c6c5dc17c3aa"
+    },
+    {
+      "source": "dev/recommendationSubagent/repositories/__init__.py",
+      "target": "recommendation/repositories/__init__.py",
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ported_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "dev/recommendationSubagent/repositories/connections.py",
+      "target": "recommendation/repositories/connections.py",
+      "upstream_sha256": "793c68f500785d7a57b48dc4c7fbbff0e9a7adc6585e43f37a07f41e43e579e7",
+      "ported_sha256": "93dc7992f6b30a885afc5895acde2d217b3e90777d8c34cce2e30bb06ad03de5"
+    },
+    {
+      "source": "dev/recommendationSubagent/repositories/geographic_repository.py",
+      "target": "recommendation/repositories/geographic_repository.py",
+      "upstream_sha256": "088e981401b56a41476211dbe9b97102782bc0c5f362683df415a5c45a3e3e45",
+      "ported_sha256": "407d791049d0b24af7770fd9b1fe9f01fdc740a6103387178caeddcb6c4205fb"
+    },
+    {
+      "source": "dev/recommendationSubagent/repositories/interfaces.py",
+      "target": "recommendation/repositories/interfaces.py",
+      "upstream_sha256": "df08bd58a028fa0cd75dfb12a2874d522ba6c67e9693425cf8b75b59202c11d0",
+      "ported_sha256": "faf4494e78cc2cc486d5c00a42361365375f2cc8732dd10934ae9754dbc5704a"
+    },
+    {
+      "source": "dev/recommendationSubagent/repositories/listing_repository.py",
+      "target": "recommendation/repositories/listing_repository.py",
+      "upstream_sha256": "ba98e3430caddd61c57391eefc89b3b4185cfe18139521bdd26cd7e9b468c7e0",
+      "ported_sha256": "a9fb02e6939b21aaefa020badf45d02014d87776aae82be459760d2fe4a8b1d6"
+    },
+    {
+      "source": "dev/recommendationSubagent/requirements.txt",
+      "target": "recommendation/requirements.txt",
+      "upstream_sha256": "08ef6a1b3ea71b30004759d3bc7c81a461c89cfee781a30becfb99a6719042ae",
+      "ported_sha256": "08ef6a1b3ea71b30004759d3bc7c81a461c89cfee781a30becfb99a6719042ae"
+    },
+    {
+      "source": "dev/recommendationSubagent/schemas.py",
+      "target": "recommendation/schemas.py",
+      "upstream_sha256": "af19bf5c17da8a4550e24368af558012907319efea13a44bc5f80f63255101b4",
+      "ported_sha256": "8f0b0e91121e51b4d60b39f25464c5d19445db06dc700c1ef1dd57fb797ebca7"
+    },
+    {
+      "source": "dev/recommendationSubagent/service.py",
+      "target": "recommendation/service.py",
+      "upstream_sha256": "480a0b710f8c9e730393a82cf8af0132ca429e1a01ee2dbe5803545d33ec9694",
+      "ported_sha256": "33fa52ebd3c41f3f8f33b883f0b4f10d70392610999173c571351711bdd41122"
+    },
+    {
+      "source": "dev/recommendationSubagent/state/__init__.py",
+      "target": "recommendation/state/__init__.py",
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ported_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "dev/recommendationSubagent/state/store.py",
+      "target": "recommendation/state/store.py",
+      "upstream_sha256": "bbad57dac198da99b016bf3b3fde446eb2d4c137abb1177b40d1ebd6cd59752c",
+      "ported_sha256": "b46ecd791302b3f40cbb552f28a004cde30c9a63641c1ff242180ec78d6898f7"
+    },
+    {
+      "source": "dev/recommendationSubagent/terminal/__init__.py",
+      "target": "recommendation/terminal/__init__.py",
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ported_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "dev/recommendationSubagent/terminal/__main__.py",
+      "target": "recommendation/terminal/__main__.py",
+      "upstream_sha256": "f0f32c0fd7b54010c824ee9899b2d8428097ba2f826100a4c353442fc63c9ee5",
+      "ported_sha256": "14277288e3cd570844b36f7b8006837b3509e7ae017b95e3444d06ec7bb69cdc"
+    },
+    {
+      "source": "dev/recommendationSubagent/terminal/acceptance.py",
+      "target": "recommendation/terminal/acceptance.py",
+      "upstream_sha256": "b281957a459a0cd83e2b114cc0f36932c64746f1d22837f6c38225ddde0152a9",
+      "ported_sha256": "afd0df82e3962b3f40db34e59f86073f63eb11c6a69ec24cc98a0a404531af78"
+    },
+    {
+      "source": "dev/recommendationSubagent/tests/__init__.py",
+      "target": "recommendation/tests/__init__.py",
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ported_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "dev/recommendationSubagent/tests/test_policy_controller.py",
+      "target": "recommendation/tests/test_policy_controller.py",
+      "upstream_sha256": "c763b43f88c38911000a6c0c44c136608eb29fa5438f4e1058ccb366708ea0fd",
+      "ported_sha256": "516366637a44438cb510c1c99add5e0f5c361c2699ecf05c8d8d45f8d377d45d"
+    },
+    {
+      "source": "dev/recommendationSubagent/tests/test_recommendation.py",
+      "target": "recommendation/tests/test_recommendation.py",
+      "upstream_sha256": "cfbe3ee1331295c62e5c3183bf0c9afd9793a7cfb05dac327ae5d1499fb4e0e2",
+      "ported_sha256": "fb4b0df776232cd35a9b321d5918d927c43cd6d6877f1379dcd4f437ac5b5f0a"
+    },
+    {
+      "source": "dev/recommendationSubagent/tests/test_terminal_repositories.py",
+      "target": "recommendation/tests/test_terminal_repositories.py",
+      "upstream_sha256": "39d39b29455bfd84aa25289a7c756c41a5a971bca95ab93cab5f31e55ac4fe83",
+      "ported_sha256": "db1f03d6d452a1736369c44ee05a59ddd055b31baf688635569255eae838cc19"
+    },
+    {
+      "source": "dev/recommendationSubagent/tools/__init__.py",
+      "target": "recommendation/tools/__init__.py",
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ported_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "dev/recommendationSubagent/tools/dispatcher.py",
+      "target": "recommendation/tools/dispatcher.py",
+      "upstream_sha256": "af10dd945e37728bab0c1d5c63d1aedf866d318ad9b10891df746e91a79e838e",
+      "ported_sha256": "f5284475f19de65fa2e1d470f2f7645c17403c433415592860d368363fc69af8"
+    },
+    {
+      "source": "dev/recommendationSubagent/tracing/__init__.py",
+      "target": "recommendation/tracing/__init__.py",
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ported_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "dev/recommendationSubagent/tracing/trace.py",
+      "target": "recommendation/tracing/trace.py",
+      "upstream_sha256": "bdf7c18b64b8893c1d9d8c052023db69c0dcda3b49c5b392e978ede1dfe7440e",
+      "ported_sha256": "bdf7c18b64b8893c1d9d8c052023db69c0dcda3b49c5b392e978ede1dfe7440e"
+    },
+    {
+      "source": "dev/recommendationSubagent/validation/__init__.py",
+      "target": "recommendation/validation/__init__.py",
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ported_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "dev/recommendationSubagent/validation/gate.py",
+      "target": "recommendation/validation/gate.py",
+      "upstream_sha256": "96d63e0db61605315dc0843fee36e142f5ec163611a073a00e9a21e4881057d5",
+      "ported_sha256": "d8a4ee4d1a0e20c8d1a64e8547329bf684844530e1625ae89895a6022302b2ad"
+    },
+    {
+      "source": "dev/recommendationSubagent/validation/rules.py",
+      "target": "recommendation/validation/rules.py",
+      "upstream_sha256": "ae6dcc42042c3332eaf26ebce591dcc9455995b7e6b74d805b58703aafc52cae",
+      "ported_sha256": "9af4bbe090b51bf3cd65dc11e32c22073ae4c7207ce30e75af1746ad29bd71f4"
+    },
+    {
+      "source": "dev/sharedContract/recommendationSubagentContract/__init__.py",
+      "target": "recommendation/contracts/__init__.py",
+      "upstream_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ported_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "dev/sharedContract/recommendationSubagentContract/errors.py",
+      "target": "recommendation/contracts/errors.py",
+      "upstream_sha256": "f9f2d0e752d316171678a56ab071e148aebdb70fabb3b45c35d2cf608354ad3d",
+      "ported_sha256": "f9f2d0e752d316171678a56ab071e148aebdb70fabb3b45c35d2cf608354ad3d"
+    },
+    {
+      "source": "dev/sharedContract/recommendationSubagentContract/evidence.py",
+      "target": "recommendation/contracts/evidence.py",
+      "upstream_sha256": "9ccb67de5adca1ea94f90c133f0eb8cecc23e485ad546a4f757ff372c1d7bb12",
+      "ported_sha256": "9ccb67de5adca1ea94f90c133f0eb8cecc23e485ad546a4f757ff372c1d7bb12"
+    },
+    {
+      "source": "dev/sharedContract/recommendationSubagentContract/feedback.py",
+      "target": "recommendation/contracts/feedback.py",
+      "upstream_sha256": "cdc47f196eea553c0a00121f1630a7a46747b263e9746a7c4b7e8fe6f1f93df3",
+      "ported_sha256": "cdc47f196eea553c0a00121f1630a7a46747b263e9746a7c4b7e8fe6f1f93df3"
+    },
+    {
+      "source": "dev/sharedContract/recommendationSubagentContract/README.md",
+      "target": "recommendation/contracts/README.md",
+      "upstream_sha256": "888b4f9c7167487f2e3cb88a7045f098bee9673e1779ea2fe6506af9e800d3fd",
+      "ported_sha256": "881182397f4045b67d12aa469b817becc46072e14841addf077eccbe3d89a823"
+    },
+    {
+      "source": "dev/sharedContract/recommendationSubagentContract/request.py",
+      "target": "recommendation/contracts/request.py",
+      "upstream_sha256": "7abf36d1fad2a92d5e2e8d9abefb7806f1d8c4051d4cdaa3269963cc04f8d2c7",
+      "ported_sha256": "7abf36d1fad2a92d5e2e8d9abefb7806f1d8c4051d4cdaa3269963cc04f8d2c7"
+    },
+    {
+      "source": "dev/sharedContract/recommendationSubagentContract/requirements.py",
+      "target": "recommendation/contracts/requirements.py",
+      "upstream_sha256": "f4eebcb6a5cc65dfe1dada1db2f2372864b6f106d8ba0c6ec9d21a50eed16924",
+      "ported_sha256": "f4eebcb6a5cc65dfe1dada1db2f2372864b6f106d8ba0c6ec9d21a50eed16924"
+    },
+    {
+      "source": "dev/sharedContract/recommendationSubagentContract/response.py",
+      "target": "recommendation/contracts/response.py",
+      "upstream_sha256": "ae15815679bfb187fc6be86478c82b4865134c19f3a40cb5fe617d5a487c9fe2",
+      "ported_sha256": "ae15815679bfb187fc6be86478c82b4865134c19f3a40cb5fe617d5a487c9fe2"
+    },
+    {
+      "source": "dev/sharedContract/recommendationSubagentContract/schemas/feedback.schema.json",
+      "target": "recommendation/contracts/schemas/feedback.schema.json",
+      "upstream_sha256": "c3ef20a566d11ae5029589c740a31d3d39aea185950a15d8af9954412ee1fb08",
+      "ported_sha256": "c3ef20a566d11ae5029589c740a31d3d39aea185950a15d8af9954412ee1fb08"
+    },
+    {
+      "source": "dev/sharedContract/recommendationSubagentContract/schemas/request.schema.json",
+      "target": "recommendation/contracts/schemas/request.schema.json",
+      "upstream_sha256": "6b17d14c209d8fe8f62e8937e4394c6611a24a1be51b965ab04ef9f0b9345036",
+      "ported_sha256": "6b17d14c209d8fe8f62e8937e4394c6611a24a1be51b965ab04ef9f0b9345036"
+    },
+    {
+      "source": "dev/sharedContract/recommendationSubagentContract/schemas/requirements.schema.json",
+      "target": "recommendation/contracts/schemas/requirements.schema.json",
+      "upstream_sha256": "6f282c2eb6de9e6d4b089131c5f8628509813c96fde8cc7c80f0c549eda26405",
+      "ported_sha256": "6f282c2eb6de9e6d4b089131c5f8628509813c96fde8cc7c80f0c549eda26405"
+    },
+    {
+      "source": "dev/sharedContract/recommendationSubagentContract/schemas/response.schema.json",
+      "target": "recommendation/contracts/schemas/response.schema.json",
+      "upstream_sha256": "a575ed3e057b5c355da2079f4aaedbec3ece14e85b146b15ed9396b2934e1e16",
+      "ported_sha256": "a575ed3e057b5c355da2079f4aaedbec3ece14e85b146b15ed9396b2934e1e16"
+    }
+  ]
+}

@@ -32,7 +32,6 @@ try {
         Set-LocalEnv 'DATASET_VERSION' 'historical-csv-main-0c45bf3'
         Set-LocalEnv 'DATA_API_URL' 'http://127.0.0.1:8089'
         Set-LocalEnv 'DATA_BUNDLE_MANIFEST_PATH' './data/.runtime/sample-data-bundle.json'
-        Set-LocalEnv 'RECOMMENDATION_MODE' 'baseline'
         docker compose --project-name real-estate-agent --env-file .env -f data/compose.yaml -f data/compose.local.yaml --profile sample up -d --wait --wait-timeout 300
         if($LASTEXITCODE -ne 0){throw 'Docker database startup failed'}
         $exists=docker exec real-estate-agent-postgres-1 psql -U postgres -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='propertyguru_sample'"
@@ -62,7 +61,14 @@ try {
     $appSettings=@{}
     foreach($line in Get-Content -LiteralPath '.env'){if($line -match '^([A-Z_]+)=(.*)$'){$appSettings[$matches[1]]=$matches[2]}}
     $appPort=if($appSettings['APP_PORT']){$appSettings['APP_PORT']}else{'8010'}
-    foreach($port in @($appPort,'3001','8089','8091')){if(Get-NetTCPConnection -State Listen -LocalPort $port -ErrorAction SilentlyContinue){throw "Port $port is occupied. Stop the owner or configure a separate environment."}}
+    foreach($port in @($appPort,'3001','8089','8091','8092')){if(Get-NetTCPConnection -State Listen -LocalPort $port -ErrorAction SilentlyContinue){throw "Port $port is occupied. Stop the owner or configure a separate environment."}}
+    if(-not $appSettings['RECOMMENDATION_MODE']){Set-LocalEnv 'RECOMMENDATION_MODE' 'native';$appSettings['RECOMMENDATION_MODE']='native'}
+    if($appSettings['RECOMMENDATION_MODE'] -eq 'native'){
+        if(-not $appSettings['RECOMMENDATION_SERVICE_TOKEN']){Set-LocalEnv 'RECOMMENDATION_SERVICE_TOKEN' ([Guid]::NewGuid().ToString('N')+[Guid]::NewGuid().ToString('N'))}
+        if(-not $appSettings['RECOMMENDATION_API_URL']){Set-LocalEnv 'RECOMMENDATION_API_URL' 'http://127.0.0.1:8092'}
+        if($DataMode -eq 'Sample'){Set-LocalEnv 'PROPERTYGURU_READ_DATABASE_URL' 'postgresql+psycopg2://propertyguru_scraper@127.0.0.1:5432/propertyguru_sample';Set-LocalEnv 'NEO4J_URI' 'bolt://127.0.0.1:7688'}
+        else{Set-LocalEnv 'PROPERTYGURU_READ_DATABASE_URL' 'postgresql+psycopg2://propertyguru_scraper@127.0.0.1:5432/propertyguru';Set-LocalEnv 'NEO4J_URI' 'bolt://127.0.0.1:7687'}
+    }
     $env:PYTHONUTF8='1'
     $env:GRAPH_SERVICE_URL='http://127.0.0.1:3001'
     $processes=@()
@@ -84,6 +90,11 @@ try {
     $processes+=Start-Helper 'data-api' $python @('-m','uvicorn',$dataModule,'--host','127.0.0.1','--port','8089')
     Save-Processes
     Wait-Ready 'http://127.0.0.1:8089/health'
+    if($appSettings['RECOMMENDATION_MODE'] -eq 'native'){
+        $processes+=Start-Helper 'recommendation' $python @('-m','uvicorn','recommendation.app:app','--host','127.0.0.1','--port','8092')
+        Save-Processes
+        Wait-Ready 'http://127.0.0.1:8092/health'
+    }
     $processes+=Start-Helper 'graph' (Get-Command node).Source @('--env-file=.env','dist/server.js')
     Save-Processes
     Wait-Ready 'http://127.0.0.1:3001/health'

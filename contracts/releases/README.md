@@ -1,6 +1,10 @@
 # Recommendation Contract V1 可执行联调模型
 
+> 当前默认提供方已切换为江山原生模块。本文原有字段表描述应用内部兼容模型 / 显式 baseline；不能将它作为原生 `/recommend` 规范。原生权威定义是 `recommendation/contracts/*.py`、`recommendation/models/*.py` 和 `recommendation/contracts/schemas/*.json`。双向映射与缺口见 [原生接入说明](../../docs/Recommendation_Agent_原生接入说明.md)。`recommendation-upstream-907cfa8.json` 保存原生文件来源及迁移后指纹。
+
 本目录把 Recommendation Agent Contract V1 的说明落实为可执行的本项目联调 profile，传输版本保持 `1.0`。它不是已经由四人共同冻结的新协议。主来源为 `D:\Real Estate Agent\design\sources\recommendation_agent_contract_v1.md`。
+
+完整字段交接表、原V1差异和逐节样例见[双向接口与V1差异](../../docs/Recommendation_Agent_双向接口与V1差异.md)；原始文档已原样备份到 [references](../references/recommendation_agent_contract_v1.original.md)。可执行的合成请求/响应示例位于 [examples/current-v1](../examples/current-v1/README.md)，运行 `node --import tsx scripts/validate-recommendation-examples.ts` 可校验报文及完整字段覆盖。
 
 - `recommendation-request-1.0.schema.json`：完整当前需求、反馈、previous_state_id、result_limit。
 - `recommendation-response-1.0.schema.json`：身份、状态、已验证/待核实候选、证据、澄清、调整建议、覆盖统计及追踪。
@@ -31,4 +35,4 @@
 
 远程 `/recommend` 当前假设同一可信本机/开发环境，未实现跨组织认证。队友接入时需共同确认 source_ref / candidate_pool_ref 的跨服务解析方式、保留期、失效规则、行为贡献及评分版本。当前前端证据解析器完整支持本项目生成的 data_api 引用；不能将远程任意字符串自动当成本地 UUID。
 
-当前基线返回的 `state_id=baseline:<request_id>` 是可回传状态标识，完整已评估候选 ID 集保存在 candidate_pool_ref，但基线每次仍重新核查样本，不承诺算法级候选复用。显式需求权重大于行为推断；基线对反馈只去重、保存和传输，不宣称已实现行为兴趣画像。
+当前基线返回的 `state_id=baseline:<request_id>` 是可回传状态标识，完整已评估候选 ID 集保存在 candidate_pool_ref，但基线每次仍重新核查当前数据集（full模式为21,431条完整快照），不承诺算法级候选复用。显式需求权重大于行为推断；基线对反馈只去重、保存和传输，不宣称已实现行为兴趣画像。

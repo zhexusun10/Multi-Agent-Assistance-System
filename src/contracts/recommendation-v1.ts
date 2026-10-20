@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import {nativeScoresSchema} from './recommendation-native.js';
 
 export const FIELD_RULES: Record<string, { kind: 'number'|'integer'|'string'|'boolean'|'date'; ops: string[]; unit?: string; unsupported?: boolean }> = {
   price: {kind:'number',ops:['eq','gte','lte','between'],unit:'SGD/month'},
@@ -72,6 +73,7 @@ const listingSchema=z.object({listing_id:z.string().regex(/^\d+$/),title:z.strin
 const candidateSchema=z.object({listing:listingSchema,rank:z.number().int().positive(),score:z.number().min(0).max(1),criterion_results:z.array(resultSchema),score_breakdown:z.array(z.object({criterion_id:z.string(),origin:z.enum(['stated_preference','inferred_interest']),utility:z.number().min(0).max(1),weight:z.number().positive(),normalized_weight:z.number().min(0).max(1),contribution:z.number().min(0).max(1),evidence_ids:z.array(z.string())}).strict()),explanation_evidence:z.object({strengths:z.array(z.object({criterion_ids:z.array(z.string()),evidence_ids:z.array(z.string())})),compromises:z.array(z.object({criterion_ids:z.array(z.string()),evidence_ids:z.array(z.string())})),unknowns:z.array(z.object({field:z.string(),evidence_ids:z.array(z.string())}))}).strict()}).strict();
 export type Candidate=z.infer<typeof candidateSchema>;
 export const recommendationResponseSchema=z.object({
+  native:z.object({provider:z.literal('jiangshan-native'),upstream_commit:z.string(),exchange_ref:z.string().uuid(),status:z.enum(['success','needs_clarification','no_match','error']),state_id:z.string().nullable(),ranking:z.array(z.string()),scores:z.record(z.string(),nativeScoresSchema),criterion_results:z.record(z.string(),z.unknown()),unsupported_criterion_ids:z.array(z.string()),unscored_listing_ids:z.array(z.string())}).strict().optional(),
   contract_version:z.literal('1.0'),request_id:z.string(),conversation_id:z.string(),requirements_version:z.number().int(),
   status:z.enum(['success','needs_clarification','no_match','error']),recommendations:z.array(candidateSchema),unverified_candidates:z.array(candidateSchema),evidence:z.array(evidenceSchema),
   clarifications:z.array(z.object({criterion_ids:z.array(z.string()),question:z.string()}).strict()),
@@ -107,7 +109,7 @@ export function validateResponse(raw:unknown,req:RecommendationRequest):Recommen
           if(check.observed_value===null||check.observed_value===undefined||FIELD_RULES[c.field].unsupported)throw Error('Unsupported or missing fact passed as known');
           if((check.status==='pass')!==compare(check.observed_value,c))throw Error('Incorrect criterion outcome');
           const kind=FIELD_RULES[c.field].kind;
-          if((kind==='number'||kind==='integer')&&(typeof check.observed_value!=='number'||!Number.isFinite(check.observed_value)||check.observed_value<0||(kind==='integer'&&!Number.isInteger(check.observed_value))))throw Error('Invalid observed numeric fact');
+          if((kind==='number'||kind==='integer')&&(typeof check.observed_value!=='number'||!Number.isFinite(check.observed_value)||check.observed_value<0||(kind==='integer'&&!(r.native&&c.field==='bedrooms')&&!Number.isInteger(check.observed_value))))throw Error('Invalid observed numeric fact');
           if((kind==='string'||kind==='date')&&typeof check.observed_value!=='string')throw Error('Invalid observed text fact');
           if(c.field==='place_proximity'&&(c.distance_type!=='straight_line'||check.evidence_ids.some(id=>ev.get(id)?.distance_type!=='straight_line')))throw Error('Distance semantics mismatch');
         }

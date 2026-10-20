@@ -1,0 +1,47 @@
+{
+  "status": "passed",
+  "checked_at": "2026-10-20T14:55:29.451513+00:00",
+  "upstream": "907cfa839d2665b3702450eb40acd4c96fe9296c",
+  "git_changed_paths_reviewed": 145,
+  "ported_upstream_files": 71,
+  "native_business_logic_changes": 0,
+  "original_upstream_pytest_pass": 40,
+  "node": {
+    "passed": 149,
+    "failed": 0,
+    "opt_in_skipped": 19
+  },
+  "python": {
+    "passed": 48,
+    "failed": 0
+  },
+  "protected_files_unchanged": {
+    "src/domain/workflow.ts": true,
+    "src/domain/requirements.ts": true,
+    "src/domain/manual-followup.ts": true,
+    "src/domain/followup.ts": true,
+    "src/domain/knowledge.ts": true,
+    "src/domain/geo-intake.ts": true,
+    "skills/evidence-based-explanation/SKILL.md": true,
+    "skills/rental-requirement-intake/SKILL.md": true,
+    "skills/salesperson-followup/SKILL.md": true,
+    "skills/viewing-coordination/SKILL.md": true,
+    "src/agents/orchestrator/agent-orchestrator.ts": true,
+    "src/agents/orchestrator/intent-recognizer.ts": true,
+    "src/agents/orchestrator/intent-templates.ts": true
+  },
+  "live_reports": {
+    "native-integration-live.json": "passed",
+    "native-geographic-oracle.json": "passed",
+    "native-original-live-acceptance.json": "passed",
+    "native-ui.json": "passed",
+    "native-upstream-parity.json": "passed"
+  },
+  "snapshot_properties": 21431,
+  "external_salesperson_messages_sent": 0,
+  "capability_gaps": [
+    "Native contract does not represent private bathrooms and other app-only fields; preserved and shown as unknown",
+    "Native geography resolves OSM Place points, not URA polygons or LTA exit catalogs",
+    "Only source=sample completed duration events enter the native implicit model; saved/liked events are not converted"
+  ]
+}

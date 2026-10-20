@@ -1,0 +1,94 @@
+{
+  "started_at": "2026-10-20T14:27:03.537272+00:00",
+  "conversation_id": "4a956675-a570-4892-840c-a6ab1426846b",
+  "data_mode": "database",
+  "controller_mode": "live",
+  "live_modes": true,
+  "steps": {
+    "connections": {
+      "status": "passed",
+      "details": {
+        "listing": {
+          "contacted": true,
+          "source": "postgresql:properties",
+          "rental_count": 21431
+        },
+        "neo4j": {
+          "contacted": true,
+          "database": "neo4j",
+          "places": 3716
+        },
+        "llm": {
+          "mode": "live",
+          "model": "openai:deepseek-flash",
+          "configured": true,
+          "contacted": false,
+          "note": "Model execution is tested by recommend, not by configuration inspection."
+        }
+      }
+    },
+    "initial_search": {
+      "status": "passed",
+      "request_id": "8c4ace00-54bc-4a3f-bf1c-18df90c94fa8",
+      "response_status": "success",
+      "verified_count": 4,
+      "assessed_count": 3042,
+      "model_identifier": "openai:deepseek-flash",
+      "model_calls": 4,
+      "tool_calls": 4
+    },
+    "geographic_lookup": {
+      "status": "passed",
+      "request_id": "f0fb80df-beb2-46f6-869a-7c9801520b32",
+      "response_status": "success",
+      "verified_count": 4,
+      "assessed_count": 414,
+      "model_identifier": "openai:deepseek-flash",
+      "model_calls": 4,
+      "tool_calls": 4
+    },
+    "feedback": {
+      "status": "passed",
+      "request_id": "30c3bf6f-b842-4af1-a7cc-2a3a7e8c9294",
+      "response_status": "success",
+      "verified_count": 4,
+      "assessed_count": 3042,
+      "model_identifier": "openai:deepseek-flash",
+      "model_calls": 4,
+      "tool_calls": 4
+    },
+    "duplicate_feedback": {
+      "status": "passed",
+      "request_id": "18e04362-9811-4063-914b-a8ca1749b05d",
+      "response_status": "success",
+      "verified_count": 4,
+      "assessed_count": 3042,
+      "model_identifier": "openai:deepseek-flash",
+      "model_calls": 4,
+      "tool_calls": 4
+    },
+    "tighter_requirements": {
+      "status": "passed",
+      "request_id": "288ef2d7-db66-44cf-afaf-450443be62ed",
+      "response_status": "success",
+      "verified_count": 4,
+      "assessed_count": 841,
+      "model_identifier": "openai:deepseek-flash",
+      "model_calls": 4,
+      "tool_calls": 4,
+      "acceptance_budget_cap": 3199.0
+    },
+    "trace_inspection": {
+      "status": "passed",
+      "trace_id": "5bbd1396-719e-430a-8299-7634dd4720f4"
+    },
+    "restart": {
+      "status": "passed",
+      "state_id": "ed570532-3b12-4f72-9f20-a7ef67638339"
+    }
+  },
+  "note": "Automated companion; does not replace the interactive manual walkthrough.",
+  "status": "passed",
+  "database_acceptance": "passed",
+  "live_acceptance": "passed"
+}

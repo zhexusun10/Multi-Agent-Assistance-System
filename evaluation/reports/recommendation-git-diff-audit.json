@@ -1,0 +1,1288 @@
+{
+  "base": "501fb6cdb0aa64bdbabb947324bf845654a9a269",
+  "upstream": "907cfa839d2665b3702450eb40acd4c96fe9296c",
+  "changed_paths": 145,
+  "same_name_modifications": [
+    ".env.example",
+    ".gitignore",
+    "README.md",
+    "data/datasets/README.md",
+    "package.json"
+  ],
+  "files": [
+    {
+      "status": "M",
+      "before": ".env.example",
+      "after": ".env.example",
+      "before_sha256": "98e831333b72d6a6c08dd1c8925a9862cdd83f23696c179170d6a083a3950555",
+      "before_bytes": 3500,
+      "after_sha256": "63417a232e6d3317e6a1c68cc25835f5c5afd9622e0aa072054d8f5316940332",
+      "after_bytes": 3827,
+      "integration": "reviewed by content; relevant dependency/config/docs adapted to original app layout"
+    },
+    {
+      "status": "M",
+      "before": ".gitignore",
+      "after": ".gitignore",
+      "before_sha256": "0176726aeef95edeffc0a0680b341c5d936391d98ca947d32802e1104f6335e0",
+      "before_bytes": 501,
+      "after_sha256": "af95540f22fed5401ecb3712cce2db88edbeac0f191fa8c49cf4fdcf3a6a2182",
+      "after_bytes": 614,
+      "integration": "reviewed by content; relevant dependency/config/docs adapted to original app layout"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": ".vscode/settings.json",
+      "after_sha256": "796b8ee090f3210993bef34495df4163189274e506f8cc1faf325ab6aee7377c",
+      "after_bytes": 222,
+      "integration": "reference inspected; not substituted for existing app behavior"
+    },
+    {
+      "status": "M",
+      "before": "README.md",
+      "after": "README.md",
+      "before_sha256": "8e5b66e0f74a70fdb07a59b1deec48a7e268af58782af085a5786f41fb090430",
+      "before_bytes": 8259,
+      "after_sha256": "c9e40aeea1f5c998cb30b5f06dabd4c4fdfbf1603d97e21ee3e5729539790176",
+      "after_bytes": 15644,
+      "integration": "reviewed by content; relevant dependency/config/docs adapted to original app layout"
+    },
+    {
+      "status": "D",
+      "before": "data/__init__.py",
+      "after": null,
+      "before_sha256": "5e874b0b88265ec468be38f175d588380ce790bad342c09a301139ab18492cce",
+      "before_bytes": 632,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "M",
+      "before": "data/datasets/README.md",
+      "after": "data/datasets/README.md",
+      "before_sha256": "0e5ef7065def1ec0d73eb7abea402a55a8f7d7c541cc062da687a7f10a2b5043",
+      "before_bytes": 2353,
+      "after_sha256": "d583a5128fd32b62db39ea5377ab57056b0b4bf1456bdfe02b1bb5d4fd66f07f",
+      "after_bytes": 2410,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R100",
+      "before": "data/sample_export.csv",
+      "after": "data/exports/sample_export.csv",
+      "before_sha256": "3fbfaa70e9e8531dba2ac3aa6add89f3307cba1adea735f6f09380e5496b5c2b",
+      "before_bytes": 1999,
+      "after_sha256": "3fbfaa70e9e8531dba2ac3aa6add89f3307cba1adea735f6f09380e5496b5c2b",
+      "after_bytes": 1999,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "data/propertyguru(1).zip",
+      "after_sha256": "d279ce8e07d5100b68eae7939794b1f8ddf908405ef18066a2c027355d4a3d35",
+      "after_bytes": 67325490,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "D",
+      "before": "data/scraper/__init__.py",
+      "after": null,
+      "before_sha256": "c69f60c0104ad59b85203a414c2faf03e088bbabef27dead8a55d8d9fdb25be1",
+      "before_bytes": 403,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dataPreprocessing/README.md",
+      "after_sha256": "29a07fed99ab5f258c97f18c1a03c6041b3580e574fb607ede4ed9172661e7b2",
+      "after_bytes": 1081,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dataPreprocessing/__init__.py",
+      "after_sha256": "739fea0492ed4168b602fd4c6fb675692bc9f7c30020c6a807deafa8e9563135",
+      "after_bytes": 710,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R099",
+      "before": "data/compose.yaml",
+      "after": "dataPreprocessing/compose.yaml",
+      "before_sha256": "e302dd1681cbeb534f51257dfd6d4c1a0d9f0bdc549f68c40dc5f35c992140a1",
+      "before_bytes": 1544,
+      "after_sha256": "a67825a496f3ac7b25c0f4cd3fceed881dbde00b151b1ee6d08b830e304e73c0",
+      "after_bytes": 1555,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R087",
+      "before": "data/core/__init__.py",
+      "after": "dataPreprocessing/core/__init__.py",
+      "before_sha256": "8a82f35690d907613ba5d5b212bfa1c30209358ea25de83571ed5acb3ede3361",
+      "before_bytes": 1124,
+      "after_sha256": "4a5d6a00c18cf4a187b940e5b8d64b8017679a2b05bde84be7bd2064a3e7ce4d",
+      "after_bytes": 1163,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R096",
+      "before": "data/core/config.py",
+      "after": "dataPreprocessing/core/config.py",
+      "before_sha256": "08a91c70f5edf44b1944f86888be8a5e0084df47012c0d9752be27e4f4c01f0d",
+      "before_bytes": 1421,
+      "after_sha256": "7c9ac4f0c7fca43871c87121d93861b44680389d50c44d53fcff18192b52a3dd",
+      "after_bytes": 1434,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R100",
+      "before": "data/core/contracts.py",
+      "after": "dataPreprocessing/core/contracts.py",
+      "before_sha256": "68b09b5f51042f6b97e1ce56400e8f489e475a7e0ffbd94822c0755260c182cf",
+      "before_bytes": 6222,
+      "after_sha256": "68b09b5f51042f6b97e1ce56400e8f489e475a7e0ffbd94822c0755260c182cf",
+      "after_bytes": 6222,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R062",
+      "before": "data/core/paths.py",
+      "after": "dataPreprocessing/core/paths.py",
+      "before_sha256": "cbfca531b377bb6e96f755bdb6bcc61946a8ff1d61be875bacae1e75d3bdb70d",
+      "before_bytes": 584,
+      "after_sha256": "288a1acd8fb2a0c642fb3faaa5c27af803a6903e2ebb2204534716707db48b5f",
+      "after_bytes": 647,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dataPreprocessing/csv_sample.py",
+      "after_sha256": "d48bdc6faef17f5b5b44f52dff79683a85cd0200aad27a722c0b78709ca939ce",
+      "after_bytes": 10143,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R100",
+      "before": "data/docker/postgres-init.sql",
+      "after": "dataPreprocessing/docker/postgres-init.sql",
+      "before_sha256": "241f3967cc18b100907eb62d17737901765384bbfc990d4014a91cdf209526e7",
+      "before_bytes": 495,
+      "after_sha256": "241f3967cc18b100907eb62d17737901765384bbfc990d4014a91cdf209526e7",
+      "after_bytes": 495,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R089",
+      "before": "data/graph/__init__.py",
+      "after": "dataPreprocessing/graph/__init__.py",
+      "before_sha256": "37ef10dbc0e5c6d45aa7ff0d7b0f05cc6ab2fd0fcaa731cfc545af7e209c74dc",
+      "before_bytes": 2490,
+      "after_sha256": "6bdad0fd1c5ea0462c315f3e36c023297858a7824cc16355d66d1209df556f53",
+      "after_bytes": 2568,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R096",
+      "before": "data/graph/browser.py",
+      "after": "dataPreprocessing/graph/browser.py",
+      "before_sha256": "e4c84ff1cc9b69ff34841794eefc0b9a51751fc5988e6ddbabe36c6e1b63d343",
+      "before_bytes": 5301,
+      "after_sha256": "36ec2319585d3a781dd0f57abd5e4f4f2b3ac0704f3d7ff789830ae21e80d702",
+      "after_bytes": 5327,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R095",
+      "before": "data/graph/campus.py",
+      "after": "dataPreprocessing/graph/campus.py",
+      "before_sha256": "808dc80b8c856bed0e7291e99426ba56727de77ceb470bf4fa0b3e3d40868e7d",
+      "before_bytes": 8128,
+      "after_sha256": "7f99c54fc01aa7047b9693b67ee3c9ce020fc0b7256288a2af8858e9430591d6",
+      "after_bytes": 8206,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R099",
+      "before": "data/graph/places.py",
+      "after": "dataPreprocessing/graph/places.py",
+      "before_sha256": "cf47426458cbb4ffc24fa7161986a20b5173dc02b8c41fbbfa241b86cf3c9225",
+      "before_bytes": 21650,
+      "after_sha256": "89cdf48ce693a5a9482e3b90d808a59674b493c03cd3acc11e6bdf0db82d6d6a",
+      "after_bytes": 21676,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R100",
+      "before": "data/graph/semantics.py",
+      "after": "dataPreprocessing/graph/semantics.py",
+      "before_sha256": "b2af2e7d185bfac0d0028b0c47db1c32dbe671d007111f0279e205f12b84792a",
+      "before_bytes": 4541,
+      "after_sha256": "b2af2e7d185bfac0d0028b0c47db1c32dbe671d007111f0279e205f12b84792a",
+      "after_bytes": 4541,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R097",
+      "before": "data/graph/source.py",
+      "after": "dataPreprocessing/graph/source.py",
+      "before_sha256": "7711179916b4bbc97592375934c630a12e033d1baa9109f95660af7bbb04dacb",
+      "before_bytes": 2149,
+      "after_sha256": "cd0a7b115e61fb8f2d4236aa3010976dc7e6cb052185537344f9ddcb2ec8e074",
+      "after_bytes": 2162,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R098",
+      "before": "data/graph/sync.py",
+      "after": "dataPreprocessing/graph/sync.py",
+      "before_sha256": "186ec7e411c19bcf1b725a5ab8379f8e032d9a3cfe8274669bed50783b6889a9",
+      "before_bytes": 12913,
+      "after_sha256": "58d8f23604204cbc60bb87dbbba87c2dad76d258effc904eff95504b1a4f1ff3",
+      "after_bytes": 12952,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R100",
+      "before": "data/graph_browser_requirements.txt",
+      "after": "dataPreprocessing/graph_browser_requirements.txt",
+      "before_sha256": "4b5d3ed5888dfa274d18ea9a42bfdd9ccb8aa36b7834aec1d82af9d47fddf77f",
+      "before_bytes": 210,
+      "after_sha256": "4b5d3ed5888dfa274d18ea9a42bfdd9ccb8aa36b7834aec1d82af9d47fddf77f",
+      "after_bytes": 210,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R100",
+      "before": "data/graph_requirements.txt",
+      "after": "dataPreprocessing/graph_requirements.txt",
+      "before_sha256": "275c909e79dac7b9b0721b581e0d3d5d6844e57d21b39168236d0e2893e63c11",
+      "before_bytes": 280,
+      "after_sha256": "275c909e79dac7b9b0721b581e0d3d5d6844e57d21b39168236d0e2893e63c11",
+      "after_bytes": 280,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R091",
+      "before": "data/knowledge_graph.py",
+      "after": "dataPreprocessing/knowledge_graph.py",
+      "before_sha256": "a4bd5d980dcfdc14af3dce3a710da35dceaba91810083f903145cb6d5b225764",
+      "before_bytes": 12462,
+      "after_sha256": "18d043e0ad880ea409a15b5ea04f3e4d7bad52026ae981e11372753616444a29",
+      "after_bytes": 12644,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R096",
+      "before": "data/main.py",
+      "after": "dataPreprocessing/main.py",
+      "before_sha256": "0dbae123f5cd4a0b5d3cc4ff9e492147311cad9316e2bc3895f522deae07799c",
+      "before_bytes": 30666,
+      "after_sha256": "c5d8a4a8196ee236c440ad1a8760b159a1f462f972f583c31ba9dfd220d00f8a",
+      "after_bytes": 30809,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R100",
+      "before": "data/open_neo4j_browser.cmd",
+      "after": "dataPreprocessing/open_neo4j_browser.cmd",
+      "before_sha256": "c13e2543e7cbdadcdd559b4988005e0ab6788b8949c51ff5adf1bd48e94688b2",
+      "before_bytes": 155,
+      "after_sha256": "c13e2543e7cbdadcdd559b4988005e0ab6788b8949c51ff5adf1bd48e94688b2",
+      "after_bytes": 155,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R100",
+      "before": "data/requirements.txt",
+      "after": "dataPreprocessing/requirements.txt",
+      "before_sha256": "d84919834e8df617ec4d762f954d635ef91f90b37e7f2e42a63993b17636521c",
+      "before_bytes": 186,
+      "after_sha256": "d84919834e8df617ec4d762f954d635ef91f90b37e7f2e42a63993b17636521c",
+      "after_bytes": 186,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dataPreprocessing/scraper/__init__.py",
+      "after_sha256": "ff77214a4aa9c2a2ddadad7546153d4e18ab60a1edf3c06a656da52246cb1d92",
+      "after_bytes": 442,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R100",
+      "before": "data/scraper/cleaner.py",
+      "after": "dataPreprocessing/scraper/cleaner.py",
+      "before_sha256": "0750f841e6c29ef2b2faf8f5567188c0922d8d1eed75cf5ebf13f8158d626307",
+      "before_bytes": 23624,
+      "after_sha256": "0750f841e6c29ef2b2faf8f5567188c0922d8d1eed75cf5ebf13f8158d626307",
+      "after_bytes": 23624,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R098",
+      "before": "data/scraper/pipeline.py",
+      "after": "dataPreprocessing/scraper/pipeline.py",
+      "before_sha256": "184c76a0832d89818295713d06ed28e80ffcc98b0ab5cd34c434539810c358ea",
+      "before_bytes": 12193,
+      "after_sha256": "9ee959d971c22e4b2f7a21e0cfbd6bf25f19d76da93e37ff1fdd8cbbc0bf6068",
+      "after_bytes": 12232,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R099",
+      "before": "data/scraper/scraper.py",
+      "after": "dataPreprocessing/scraper/scraper.py",
+      "before_sha256": "34ac06e23ab7b6854c2491ee047cc8e0d6dd2db166d52d98928b718635c8fcf9",
+      "before_bytes": 11591,
+      "after_sha256": "1e62028e041f4623d8a97dd96c03951b5dbd9cf8b59b9f408dd5319e432c3367",
+      "after_bytes": 11604,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R070",
+      "before": "data/service/__init__.py",
+      "after": "dataPreprocessing/service/__init__.py",
+      "before_sha256": "ca9c8f90b9ecc2d7d28d16d1817e979bf82c92d81423d604049062d6cabf683c",
+      "before_bytes": 413,
+      "after_sha256": "fa05761de96843964c2b2855f24b077626903112b672255c4f5c6abfbcd0710e",
+      "after_bytes": 439,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R098",
+      "before": "data/service/app.py",
+      "after": "dataPreprocessing/service/app.py",
+      "before_sha256": "bcc28991441998c605a4b596aeef77c69ff98b630dc5bda40365f5f338ebea34",
+      "before_bytes": 36110,
+      "after_sha256": "7a9f1ef8c2ae39504c8fb7cbe390f3aefbf97975db628a55b1373307013e937d",
+      "after_bytes": 36201,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R097",
+      "before": "data/service/validation.py",
+      "after": "dataPreprocessing/service/validation.py",
+      "before_sha256": "baee31dade7b181ca7d7072616f50cbb1666a4b33042384f0f1a93a60cd70c0e",
+      "before_bytes": 12741,
+      "after_sha256": "17026b3df564c72ead0e1de7a67f83ae8348179da275a9825cbfa06a92465430",
+      "after_bytes": 12806,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R089",
+      "before": "data/start_knowledge_graph.ps1",
+      "after": "dataPreprocessing/start_knowledge_graph.ps1",
+      "before_sha256": "1e5abe9bd43c27db586a50549bbf492136587b8a1f59f1534fe8570b40546845",
+      "before_bytes": 16297,
+      "after_sha256": "e86b6a6e44eb6d755d4299c09f433674a88516e7d83c9fca565dea647ebaffdb",
+      "after_bytes": 16518,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R098",
+      "before": "data/start_postgres.ps1",
+      "after": "dataPreprocessing/start_postgres.ps1",
+      "before_sha256": "3ed7f061f0f45ba43c5ff125ac86fcece6564ae5c6eb153a58eb303a59ca31c2",
+      "before_bytes": 7980,
+      "after_sha256": "a77502144c3e186d99f3c03331e38618859251ab2c5e7e28324af4d624db8c4d",
+      "after_bytes": 7993,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R094",
+      "before": "data/stop_knowledge_graph.ps1",
+      "after": "dataPreprocessing/stop_knowledge_graph.ps1",
+      "before_sha256": "3171f79b70a810ccc4cf7dd5b8fcdd538442fdd71f4188d724fb228d8fa019be",
+      "before_bytes": 1509,
+      "after_sha256": "5991de4c7b94721665e7c576a72958392a7768d26c4e19bb38e9de912bca0def",
+      "after_bytes": 1522,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R100",
+      "before": "data/stop_postgres.ps1",
+      "after": "dataPreprocessing/stop_postgres.ps1",
+      "before_sha256": "7e56bbf9ad03514ef3ee65f8f1d76d0626be9b85a3241196f986602828690419",
+      "before_bytes": 1078,
+      "after_sha256": "7e56bbf9ad03514ef3ee65f8f1d76d0626be9b85a3241196f986602828690419",
+      "after_bytes": 1078,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R069",
+      "before": "data/storage/__init__.py",
+      "after": "dataPreprocessing/storage/__init__.py",
+      "before_sha256": "47ac8329ca0620bfb6fd8a66f0b0e8119429c885c967d81d320e861c2ad4d461",
+      "before_bytes": 1151,
+      "after_sha256": "e939c6490335950717a7986740d39fcb1335ca788cdf9f97868e1d799e0a91d7",
+      "after_bytes": 1216,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R098",
+      "before": "data/storage/database.py",
+      "after": "dataPreprocessing/storage/database.py",
+      "before_sha256": "05cc1db5a1124f131cf0efddf1e353e952c1ebdf9b87052da1cc590178b8502c",
+      "before_bytes": 11980,
+      "after_sha256": "b2bd6038975782aa1a511e15a37bfbb739990dc6903f3d774139a71e878fa5ea",
+      "after_bytes": 12006,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R097",
+      "before": "data/storage/migration.py",
+      "after": "dataPreprocessing/storage/migration.py",
+      "before_sha256": "1bef5c847acc21476c8ce3fe404ae649cc57175a1d03e1296c9ac7e5e1976ccb",
+      "before_bytes": 9353,
+      "after_sha256": "48218b1206255561394ab4ce363e5940a28479b75812374d89dab206b2b4906f",
+      "after_bytes": 9405,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R100",
+      "before": "data/storage/models.py",
+      "after": "dataPreprocessing/storage/models.py",
+      "before_sha256": "b1ebc999adfa70b51cd2fc8a0689876cf2939107db1e88f139d6310323eee22b",
+      "before_bytes": 11432,
+      "after_sha256": "b1ebc999adfa70b51cd2fc8a0689876cf2939107db1e88f139d6310323eee22b",
+      "after_bytes": 11432,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R096",
+      "before": "data/storage/repository.py",
+      "after": "dataPreprocessing/storage/repository.py",
+      "before_sha256": "286a6a4c69da915a6de3da1c8514eef6a725ec2e8f4d2143f7d47d0bbd01ec00",
+      "before_bytes": 3896,
+      "after_sha256": "fb1987d2fb15f27e9661b22fe362d3e01bb3c44269b6a1fc973075f5f6f960ac",
+      "after_bytes": 3922,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R088",
+      "before": "data/storage/snapshot.py",
+      "after": "dataPreprocessing/storage/snapshot.py",
+      "before_sha256": "a65568f6dbeadb81828487d4810ca095292024912b31fb8bfd3bc5972bc16289",
+      "before_bytes": 3067,
+      "after_sha256": "6fe899f62ee3842d505f5cbf29be4ee6ca805457c9fae09fad796cae0b565ce1",
+      "after_bytes": 3132,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R100",
+      "before": "data/tests/conftest.py",
+      "after": "dataPreprocessing/tests/conftest.py",
+      "before_sha256": "a1e03794b50cf0bbbb5066c505d7262e6a3d7901092b6c97508e77b630999aff",
+      "before_bytes": 267,
+      "after_sha256": "a1e03794b50cf0bbbb5066c505d7262e6a3d7901092b6c97508e77b630999aff",
+      "after_bytes": 267,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R099",
+      "before": "data/tests/test_cleaner.py",
+      "after": "dataPreprocessing/tests/test_cleaner.py",
+      "before_sha256": "16941cf252a9b953f1560b9b59c2abe2e2ac568d1d06c609366c60dd9c66b41e",
+      "before_bytes": 10175,
+      "after_sha256": "aca97dff72ac31ed1b08a39d828036f607a291787089b365ee4b1d55f9f4c0fe",
+      "after_bytes": 10188,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dataPreprocessing/tests/test_csv_sample.py",
+      "after_sha256": "bac321a5ba8090cd50ea588e3b14eff42089b807da2969216b02687dffc0b925",
+      "after_bytes": 2131,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R095",
+      "before": "data/tests/test_data_api.py",
+      "after": "dataPreprocessing/tests/test_data_api.py",
+      "before_sha256": "dc233bbfaa8c42ebcccca5437613a2666bcd053459202f18c991f0189efce098",
+      "before_bytes": 10926,
+      "after_sha256": "9bc728e58c1a06bb9dbabe70eeea0930c1b9bab13dbce266aa5d731594127551",
+      "after_bytes": 10991,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R095",
+      "before": "data/tests/test_data_validation.py",
+      "after": "dataPreprocessing/tests/test_data_validation.py",
+      "before_sha256": "7c38704555f65d03f596c2ad5cac87a1dc13d758c129f08ba2636aa04280e053",
+      "before_bytes": 6494,
+      "after_sha256": "2ac1a429ddf40cd29787d77f0240513bd56eeb868cc2987c22e5d5672e660d31",
+      "after_bytes": 6559,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R095",
+      "before": "data/tests/test_graph.py",
+      "after": "dataPreprocessing/tests/test_graph.py",
+      "before_sha256": "a4003463cae98033fb037d2b238422a6260ff582a90b9ad917592bd13594effc",
+      "before_bytes": 7422,
+      "after_sha256": "bb5be647a27afcec44c4d49e7df286f1ed0c837a1f8182937b1ee2195ba4cd01",
+      "after_bytes": 7487,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R096",
+      "before": "data/tests/test_graph_browser.py",
+      "after": "dataPreprocessing/tests/test_graph_browser.py",
+      "before_sha256": "891484471307ca1c4d61bc25adc46b8a78403033df0175f18bd979693361a50a",
+      "before_bytes": 4847,
+      "after_sha256": "0d4f2ceb068d4762f7aade32b77ca0d7e0939f8d13b6804ebf889476b1671971",
+      "after_bytes": 4886,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R097",
+      "before": "data/tests/test_graph_spatial.py",
+      "after": "dataPreprocessing/tests/test_graph_spatial.py",
+      "before_sha256": "2eb112f2211f2af4b5320cb51b066fb3019ad92b346e9a973401f45fb9521bd2",
+      "before_bytes": 9564,
+      "after_sha256": "ff267f66bae2c85be8695c9c63bb0270c855a2f7e97259793ae5e79d3099ec7a",
+      "after_bytes": 9603,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R097",
+      "before": "data/tests/test_knowledge_graph.py",
+      "after": "dataPreprocessing/tests/test_knowledge_graph.py",
+      "before_sha256": "432755976fd6e69b397db48b229688e993653bc467b7d1b1572b49b9be3e9951",
+      "before_bytes": 10459,
+      "after_sha256": "83cf8dbd0f9ad8fa0ac5055a888076410714ea262f99f628e3683a6266ba1ab0",
+      "after_bytes": 10524,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R084",
+      "before": "data/tests/test_live_data.py",
+      "after": "dataPreprocessing/tests/test_live_data.py",
+      "before_sha256": "ada9ebd48945dcc7ef0d621b8a4eb6922c32d3a80a0bcdfbb5e6d68bbbbbcdd4",
+      "before_bytes": 1581,
+      "after_sha256": "9ff0c5b8942a72a9970aab6c735f3a38f569ae62d556676d4253aa9d00a919e3",
+      "after_bytes": 1633,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R091",
+      "before": "data/tests/test_migration.py",
+      "after": "dataPreprocessing/tests/test_migration.py",
+      "before_sha256": "692dc939d68ca272dd1e74520c353b027a7c6e136f9593ddec46a5dcddf85c1e",
+      "before_bytes": 2337,
+      "after_sha256": "b7d2ffb0daaa708123154ffd73edbecd9c86d4a035fe592e032c2d3c9f5d80c3",
+      "after_bytes": 2363,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R093",
+      "before": "data/tests/test_persistence.py",
+      "after": "dataPreprocessing/tests/test_persistence.py",
+      "before_sha256": "48b91884fb74d152938edfcb701ffae6cf66b189e09bf297a786c21fdf27d168",
+      "before_bytes": 13410,
+      "after_sha256": "e203ddddde29a74dbefa1301fdab6426ecc67c895678f4b6664e7709a7210002",
+      "after_bytes": 13579,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R097",
+      "before": "data/tests/test_places.py",
+      "after": "dataPreprocessing/tests/test_places.py",
+      "before_sha256": "5f1124766acded91edf5d955f36cca78c659281a530ae2f7c15416748778366e",
+      "before_bytes": 11818,
+      "after_sha256": "1d11d4d032c6a57ac3f2f5498ae51c10aba151a87d96371b1e85d79fa060b7db",
+      "after_bytes": 11883,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R095",
+      "before": "data/tests/test_snapshot.py",
+      "after": "dataPreprocessing/tests/test_snapshot.py",
+      "before_sha256": "e325c6ac307409e6e5de4f75af1adb6b108bba3d182f171a0b535ef5ae52f0e6",
+      "before_bytes": 6390,
+      "after_sha256": "bdc890dad7bb6d4106a0e6f2090fc94b705cf5966d4d33a8aa747bbac360add9",
+      "after_bytes": 6455,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R083",
+      "before": "data/tests/test_sparsity.py",
+      "after": "dataPreprocessing/tests/test_sparsity.py",
+      "before_sha256": "4eef12eaa2a2b404819c308a89b18977a5f178969926d02ddaf5255659978afe",
+      "before_bytes": 1135,
+      "after_sha256": "0436c22ff29d86ca04f59ca22cc8d85bd6ec1c8fecce3ce158a9c62c8d8aa38d",
+      "after_bytes": 1170,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/__init__.py",
+      "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_bytes": 0,
+      "integration": "reference inspected; not substituted for existing app behavior"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/README.md",
+      "after_sha256": "d3c3072eb06e82ce9f9ce607fb2dd46694a0659af8e4d65291b7aeadfbb3fb55",
+      "after_bytes": 14347,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/__init__.py",
+      "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_bytes": 0,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/agent/__init__.py",
+      "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_bytes": 0,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/agent/controller.py",
+      "after_sha256": "9528c8480c670f9d0634f77b157d40d5743c4975f3a918326cf3be3e778075c8",
+      "after_bytes": 7197,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/agent/model_bridge.ts",
+      "after_sha256": "a4817cad0574da4c429affcf37ffcc7c6eccfe8b71fe35e50134f0e5de6688f3",
+      "after_bytes": 1156,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/config.py",
+      "after_sha256": "bba098215912476b08bfeaa958e6c54c4292eeaa50dd0e4c1cd3aa47b2744c1d",
+      "after_bytes": 2851,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/context/__init__.py",
+      "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_bytes": 0,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/context/manager.py",
+      "after_sha256": "f8af832c65c836911d6388d0ec96eca7c8d4405c400493bb67217b735d63003a",
+      "after_bytes": 3584,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/examples/__init__.py",
+      "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_bytes": 0,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/examples/check_export.py",
+      "after_sha256": "665bf2bf78d4f476c5b8e23e2f0620b1e0fc6481f838ebb4f6d9093dd8031d3d",
+      "after_bytes": 2422,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/examples/config.json",
+      "after_sha256": "ad2a488dcb452890426f3842793dbd71875a55255745350990efd9b5a198aff2",
+      "after_bytes": 644,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/examples/contracts/clarification.json",
+      "after_sha256": "c25a275cef88371b9f71a6488e1620139817e0a55135d00dfe66be7bd248f633",
+      "after_bytes": 2369,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/examples/contracts/error.json",
+      "after_sha256": "99d3a3a73be8047854bcf50ff6dcbdede0c833ab3797405f08b5d856146e3bc8",
+      "after_bytes": 1110,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/examples/contracts/feedback-only-update.json",
+      "after_sha256": "4ab96301f0a571f49dc7c6a3da25493cc1b1046efbb32c01d6f77434d3d8062e",
+      "after_bytes": 3332,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/examples/contracts/initial-search.json",
+      "after_sha256": "b3df49b60f851a597f2e048f44f19c325000af592f8097c582f12fd4ea3bfab0",
+      "after_bytes": 1483,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/examples/contracts/no-match.json",
+      "after_sha256": "7a9db3082026ea76d6d3ed454d7cfe18f9cae8739004adc5371c1355874af780",
+      "after_bytes": 1255,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/examples/contracts/preference-update.json",
+      "after_sha256": "470c7af9064ae6ba25a1ceceb3e701a49c977c7e3f919c5415151f441d94c0f8",
+      "after_bytes": 1520,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/examples/contracts/success.json",
+      "after_sha256": "017f056380151e5c7cd748506691a28747551479f9266179b72ac5767a8166df",
+      "after_bytes": 9496,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/examples/generate_contract_examples.py",
+      "after_sha256": "941a32c584cc63c14c46f0ef986153d20d14e26d2f7e831ad17ac7de44ec9e84",
+      "after_bytes": 3825,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/examples/geography-csv.json",
+      "after_sha256": "44612e82e37486639f37ea77cc5aff4909e8a7e09cc783a249c5a53c900f5900",
+      "after_bytes": 612,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/examples/geography-fixture.json",
+      "after_sha256": "63cf9186b51a66aedbe2bab95971309b10c600f1fbc73b461b1533b23dd888a7",
+      "after_bytes": 569,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/examples/listings.json",
+      "after_sha256": "1da6e11176db6725772fcd99ce87831a5b54db7154704bbef97195c477f7a4ff",
+      "after_bytes": 4742,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/examples/live_geography.py",
+      "after_sha256": "2729bebd72eabc9ce6745be1515b01f4f871638e8b44656a0f5310a4c637da9a",
+      "after_bytes": 2420,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/examples/requirements-complex.json",
+      "after_sha256": "1f211a049399828d78bd632b8f873157e16b8b209d7db64423a1f909b8867d71",
+      "after_bytes": 1764,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/examples/requirements-csv.json",
+      "after_sha256": "5ee7ab07a3ae3522bc229572da16f39bea2212ac4a8b3854d9da3dacd76b8392",
+      "after_bytes": 545,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/examples/requirements.json",
+      "after_sha256": "acfe7e7b79819a88333499935a7c700a196d1f7fafa003862062e58920968403",
+      "after_bytes": 545,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/examples/run.py",
+      "after_sha256": "aafde7d1f9fa77595fe55c63e19abcf3226a5620a934bde4be2d41f513c39c71",
+      "after_bytes": 2817,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/models/__init__.py",
+      "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_bytes": 0,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/models/candidate.py",
+      "after_sha256": "bdeccf401f3c52f7487e32a912805d5265a0a77879056cc44cb35c6990441da5",
+      "after_bytes": 1417,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/models/listing_summary.py",
+      "after_sha256": "afec5e3bd647acb6596a85d29ffa3ccf1fd60cf8ba8a4e0ec376229bc27fcf1b",
+      "after_bytes": 780,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/models/score_breakdown.py",
+      "after_sha256": "e0ecb5f665a4181b17208e49cba0cc9e972b8f454999fe3a3297eaccadb159bf",
+      "after_bytes": 913,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/models/tool_results.py",
+      "after_sha256": "224b5f3606d5c0679487f8e42663f9477803f691c6e983ffe446f1d313580236",
+      "after_bytes": 1430,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/ranking/__init__.py",
+      "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_bytes": 0,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/ranking/metrics.py",
+      "after_sha256": "9127babd34dd22792f0b6628923be43a2bc1f3cdd8e1f98c3027784d5f2d4353",
+      "after_bytes": 982,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/ranking/ranker.py",
+      "after_sha256": "7f8466d27a35f91e8e31677d73985a2013b1c06f6f38f48a3f2af0e5c844a605",
+      "after_bytes": 5995,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/repositories/__init__.py",
+      "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_bytes": 0,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/repositories/connections.py",
+      "after_sha256": "793c68f500785d7a57b48dc4c7fbbff0e9a7adc6585e43f37a07f41e43e579e7",
+      "after_bytes": 1936,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/repositories/geographic_repository.py",
+      "after_sha256": "088e981401b56a41476211dbe9b97102782bc0c5f362683df415a5c45a3e3e45",
+      "after_bytes": 8070,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/repositories/interfaces.py",
+      "after_sha256": "df08bd58a028fa0cd75dfb12a2874d522ba6c67e9693425cf8b75b59202c11d0",
+      "after_bytes": 708,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/repositories/listing_repository.py",
+      "after_sha256": "ba98e3430caddd61c57391eefc89b3b4185cfe18139521bdd26cd7e9b468c7e0",
+      "after_bytes": 5214,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/requirements.txt",
+      "after_sha256": "08ef6a1b3ea71b30004759d3bc7c81a461c89cfee781a30becfb99a6719042ae",
+      "after_bytes": 130,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/schemas.py",
+      "after_sha256": "af19bf5c17da8a4550e24368af558012907319efea13a44bc5f80f63255101b4",
+      "after_bytes": 1429,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/service.py",
+      "after_sha256": "480a0b710f8c9e730393a82cf8af0132ca429e1a01ee2dbe5803545d33ec9694",
+      "after_bytes": 12856,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/state/__init__.py",
+      "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_bytes": 0,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/state/store.py",
+      "after_sha256": "bbad57dac198da99b016bf3b3fde446eb2d4c137abb1177b40d1ebd6cd59752c",
+      "after_bytes": 5451,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/terminal/__init__.py",
+      "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_bytes": 0,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/terminal/__main__.py",
+      "after_sha256": "f0f32c0fd7b54010c824ee9899b2d8428097ba2f826100a4c353442fc63c9ee5",
+      "after_bytes": 14070,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/terminal/acceptance.py",
+      "after_sha256": "b281957a459a0cd83e2b114cc0f36932c64746f1d22837f6c38225ddde0152a9",
+      "after_bytes": 13896,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/tests/__init__.py",
+      "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_bytes": 0,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/tests/test_policy_controller.py",
+      "after_sha256": "c763b43f88c38911000a6c0c44c136608eb29fa5438f4e1058ccb366708ea0fd",
+      "after_bytes": 11202,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/tests/test_recommendation.py",
+      "after_sha256": "cfbe3ee1331295c62e5c3183bf0c9afd9793a7cfb05dac327ae5d1499fb4e0e2",
+      "after_bytes": 13964,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/tests/test_terminal_repositories.py",
+      "after_sha256": "39d39b29455bfd84aa25289a7c756c41a5a971bca95ab93cab5f31e55ac4fe83",
+      "after_bytes": 5597,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/tools/__init__.py",
+      "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_bytes": 0,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/tools/dispatcher.py",
+      "after_sha256": "af10dd945e37728bab0c1d5c63d1aedf866d318ad9b10891df746e91a79e838e",
+      "after_bytes": 8939,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/tracing/__init__.py",
+      "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_bytes": 0,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/tracing/trace.py",
+      "after_sha256": "bdf7c18b64b8893c1d9d8c052023db69c0dcda3b49c5b392e978ede1dfe7440e",
+      "after_bytes": 728,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/validation/__init__.py",
+      "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_bytes": 0,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/validation/gate.py",
+      "after_sha256": "96d63e0db61605315dc0843fee36e142f5ec163611a073a00e9a21e4881057d5",
+      "after_bytes": 4186,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/recommendationSubagent/validation/rules.py",
+      "after_sha256": "ae6dcc42042c3332eaf26ebce591dcc9455995b7e6b74d805b58703aafc52cae",
+      "after_bytes": 2200,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/sharedContract/__init__.py",
+      "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_bytes": 0,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/sharedContract/recommendationSubagentContract/README.md",
+      "after_sha256": "888b4f9c7167487f2e3cb88a7045f098bee9673e1779ea2fe6506af9e800d3fd",
+      "after_bytes": 1820,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/sharedContract/recommendationSubagentContract/__init__.py",
+      "after_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_bytes": 0,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/sharedContract/recommendationSubagentContract/errors.py",
+      "after_sha256": "f9f2d0e752d316171678a56ab071e148aebdb70fabb3b45c35d2cf608354ad3d",
+      "after_bytes": 338,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/sharedContract/recommendationSubagentContract/evidence.py",
+      "after_sha256": "9ccb67de5adca1ea94f90c133f0eb8cecc23e485ad546a4f757ff372c1d7bb12",
+      "after_bytes": 750,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/sharedContract/recommendationSubagentContract/feedback.py",
+      "after_sha256": "cdc47f196eea553c0a00121f1630a7a46747b263e9746a7c4b7e8fe6f1f93df3",
+      "after_bytes": 814,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/sharedContract/recommendationSubagentContract/request.py",
+      "after_sha256": "7abf36d1fad2a92d5e2e8d9abefb7806f1d8c4051d4cdaa3269963cc04f8d2c7",
+      "after_bytes": 817,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/sharedContract/recommendationSubagentContract/requirements.py",
+      "after_sha256": "f4eebcb6a5cc65dfe1dada1db2f2372864b6f106d8ba0c6ec9d21a50eed16924",
+      "after_bytes": 6404,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/sharedContract/recommendationSubagentContract/response.py",
+      "after_sha256": "ae15815679bfb187fc6be86478c82b4865134c19f3a40cb5fe617d5a487c9fe2",
+      "after_bytes": 2105,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/sharedContract/recommendationSubagentContract/schemas/feedback.schema.json",
+      "after_sha256": "c3ef20a566d11ae5029589c740a31d3d39aea185950a15d8af9954412ee1fb08",
+      "after_bytes": 1653,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/sharedContract/recommendationSubagentContract/schemas/request.schema.json",
+      "after_sha256": "6b17d14c209d8fe8f62e8937e4394c6611a24a1be51b965ab04ef9f0b9345036",
+      "after_bytes": 7471,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/sharedContract/recommendationSubagentContract/schemas/requirements.schema.json",
+      "after_sha256": "6f282c2eb6de9e6d4b089131c5f8628509813c96fde8cc7c80f0c549eda26405",
+      "after_bytes": 4189,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "dev/sharedContract/recommendationSubagentContract/schemas/response.schema.json",
+      "after_sha256": "a575ed3e057b5c355da2079f4aaedbec3ece14e85b146b15ed9396b2934e1e16",
+      "after_bytes": 18755,
+      "integration": "ported in full, namespace/path-only changes recorded in recommendation-upstream-907cfa8.json"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "docs/README.md",
+      "after_sha256": "253dc8c7c336d9053af95d63a21a48074a024e2a733a318adee1cc45f7f08cbe",
+      "after_bytes": 3909,
+      "integration": "reference inspected; not substituted for existing app behavior"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "docs/preprocessing/migration.md",
+      "after_sha256": "ddfe0deedf93bbcec06c5fdbf9a8cd54d42850b025fed7edf0ef40524c7f0adf",
+      "after_bytes": 1879,
+      "integration": "reference inspected; not substituted for existing app behavior"
+    },
+    {
+      "status": "R084",
+      "before": "data/NEO4J.md",
+      "after": "docs/preprocessing/neo4j.md",
+      "before_sha256": "cba292dec3ac5f752758613912e18f696874eca3e797e8cd90738e43198a623e",
+      "before_bytes": 22452,
+      "after_sha256": "01a9f03d3eac34cdca52e097d77cb1457be44db37ae7b46070d6e04844456977",
+      "after_bytes": 22902,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "R079",
+      "before": "data/README.md",
+      "after": "docs/preprocessing/postgresql.md",
+      "before_sha256": "37a674e5e05475e2a4b1a526f893764dae04b806bc887cc643b4dc3e0c567d5c",
+      "before_bytes": 15923,
+      "after_sha256": "995b400782da932b4d2723b8562ccbb75a36d8a559070d43f020454923a546ae",
+      "after_bytes": 16454,
+      "integration": "original local data layout retained; preprocessing rename does not implement recommendation runtime"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "docs/recommendation/acceptance-notes.md",
+      "after_sha256": "47ca66500aad18de824e9fac03efc1bba93f0bdc18bf691a7197d95475efa1b4",
+      "after_bytes": 11088,
+      "integration": "reference inspected; not substituted for existing app behavior"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "docs/testing/csv-sample.md",
+      "after_sha256": "e376b858722c1f3b56a7df110521344985a8d0d5add6d2f9ea7b5e96d0b5bb45",
+      "after_bytes": 4358,
+      "integration": "reference inspected; not substituted for existing app behavior"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "docs/testing/sqlite-import.md",
+      "after_sha256": "a211f4ce4b397c5b68f9d3c962cf2ccd00f455b5bcb3abe7489345aa1819c70f",
+      "after_bytes": 2738,
+      "integration": "reference inspected; not substituted for existing app behavior"
+    },
+    {
+      "status": "M",
+      "before": "package.json",
+      "after": "package.json",
+      "before_sha256": "e5bcf3edd55c0e608774b519f9333a64f532f73313f64e44b882186ee12db03d",
+      "before_bytes": 1042,
+      "after_sha256": "f83628ef4ad80381b31f7127df714a980c7b11cd822dea71dde7c41d3c77c367",
+      "after_bytes": 1113,
+      "integration": "reviewed by content; relevant dependency/config/docs adapted to original app layout"
+    },
+    {
+      "status": "A",
+      "before": null,
+      "after": "tsconfig.recommendation.json",
+      "after_sha256": "b4ff7ad32bd2b28c003c595f712c933a876ecc506af1883e8d3181149c7eeae0",
+      "after_bytes": 161,
+      "integration": "reviewed by content; relevant dependency/config/docs adapted to original app layout"
+    }
+  ]
+}

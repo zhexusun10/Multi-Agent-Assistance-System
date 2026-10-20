@@ -1,0 +1,61 @@
+{
+  "contract_version": "1.0",
+  "request_id": "10000000-0000-4000-8000-000000000001",
+  "conversation_id": "handoff-demo-session",
+  "requirements_version": 1,
+  "status": "error",
+  "recommendations": [],
+  "unverified_candidates": [],
+  "evidence": [],
+  "clarifications": [],
+  "relaxation_suggestions": [],
+  "warnings": [
+    {
+      "code": "FIXTURE_ONLY",
+      "message": "合成设计样例，不是真实房源或推荐执行结果。"
+    },
+    {
+      "code": "AVAILABILITY_UNVERIFIED",
+      "message": "当前可租状态未核实。",
+      "listing_ids": [
+        "900000000001"
+      ]
+    },
+    {
+      "code": "DATA_COVERAGE_LIMITED",
+      "message": "仅有一个合成候选，不表示市场覆盖。"
+    }
+  ],
+  "state": {
+    "state_id": "fixture-failed-state",
+    "candidate_pool_ref": "fixture-design-v1/not-assessed",
+    "coverage": {
+      "dataset_version": "fixture-design-v1",
+      "dataset_scope": "one synthetic listing",
+      "retrieval_scope": "all fixture candidates",
+      "complete_within_dataset": false,
+      "truncated": false
+    },
+    "counts": {
+      "assessed": null,
+      "eligible": null,
+      "unverified": null,
+      "excluded": null
+    }
+  },
+  "execution": {
+    "strategy": "fixture_only",
+    "trace_ref": null,
+    "tool_calls": [],
+    "timing": {
+      "total_ms": null
+    },
+    "scoring_version": "baseline-explicit-soft-v2-geospatial-pivot",
+    "score_semantics": "illustrative_preference_fit_not_probability"
+  },
+  "error": {
+    "code": "RETRIEVAL_UNAVAILABLE",
+    "message": "房源数据服务暂不可用，本次没有完成评估。",
+    "retryable": true
+  }
+}

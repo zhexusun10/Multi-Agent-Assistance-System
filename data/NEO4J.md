@@ -35,7 +35,7 @@ NEO4J_DATABASE=neo4j
 
 ### Windows：一条命令启动 PG → Neo4j → API
 
-需要 Python 3.11+。PG 还没有房源时，先取得团队的 `2026-10-09` 版 `data/propertyguru.db`；快照被 Git 忽略，**clone 不会自带**。已有准备好的 PG 房源库则不需要本地 SQLite。首次执行需网络下载依赖、便携数据库 / Java，之后复用本地安装。
+需要 Python 3.11+。PG还没有房源时，先将仓库的 `data/snapshots/propertyguru-2026-10-09.zip` 解压到 `data/` 并校验哈希，得到 `data/propertyguru.db`，见 [快照说明](snapshots/README.md)。解压后的1GB文件被Git忽略，压缩快照随仓库提供。已有准备好的PG房源库则不需要本地SQLite。首次执行需网络下载依赖、便携数据库 / Java，之后复用本地安装。
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File data/start_knowledge_graph.ps1 -WithPostgres

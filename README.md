@@ -6,11 +6,15 @@
 
 推荐卡片除需求匹配外，还独立展示已收录的房型、卧室与卫浴数量、面积、地址、照片及周边地点；未提及的属性也会展示。桌面采用约35%对话、65%工作台布局，手机上下排列。补充资料不改变硬条件筛选、软偏好排序和证据，详见[房源展示与数据来源](docs/房源展示与数据来源.md)。
 
-当前交付实现周树晖负责的编排、Requirement、Explanation、Follow-up 和外部工具边界；Recommendation 采用可替换的 Contract V1 接口。为便于独立联调，附有支持完整快照扫描、明确标记的确定性推荐基线，尚未接入崔江山的最终推荐 Agent。
+当前交付已接入 GitHub main `907cfa8` 中崔江山的原生 Recommendation Agent：完整候选池、四工具 Agent、硬条件验证、显式/样例浏览兴趣融合评分、最终重读校验和 SQLite 状态恢复均保留。默认 `RECOMMENDATION_MODE=native`；原基线仅供显式配置的回归使用。接入边界、算法、接口和验收见 [原生推荐接入说明](docs/Recommendation_Agent_原生接入说明.md)。
+
+原生接口不能表达独立卫浴等部分原有需求，也不能解析 URA 区域边界 / LTA 出口目录；这些条件保留并显示待核实，原生报文不改写、不用旧基线补排。原生每组最多4条；不把其待核实候选的占位0分解释为原生评分。
 
 ## 直接使用
 
 本机应用入口：**<http://127.0.0.1:8010/>**。
+
+首次克隆的组员可先解压仓库自带的完整快照 `data/snapshots/propertyguru-2026-10-09.zip`，再安装依赖及导入数据库；文件哈希与操作见 [快照说明](data/snapshots/README.md) 和 [部署说明](LOCAL_DEPLOYMENT.md)。
 
 先打开 Docker Desktop，在 PowerShell 中运行：
 
@@ -49,7 +53,7 @@ Set-Location 'D:\Real Estate Agent\Multi-Agent-Assistance-System'
 | 当前图谱 | 正式 Neo4j：21,431 个 Listing、3,716 个 OSM Place、710,468 条 NEAR_PLACE；另有 URA 区域、LTA 出口和校园关系 |
 | 距离 | 官方区域边界、站点出口或 OSM 参考点的 geodesic / 直线距离；不能证明真实步行或通勤路线 |
 | 地名目录 | 55 规划区、5 大区、188 站及 613 个有效具名出口；区域与站点分开解析，附近默认更近优先 |
-| 推荐 | 本地可解释基线；支持接入队友远程 `/recommend` 服务 |
+| 推荐 | 江山原生服务 `8092`，LLM 四工具 + 完整候选池 + weighted-v1 融合评分；原生请求/返回保留在会话隔离的证据存档 |
 | 跟进与看房 | 可编辑草稿与协商诉求、审核实际正文；WhatsApp Cloud / Telegram Bot 适配器、持久发送队列、回执与回复、月历及ICS、双方确认、独立跟进提醒与日总结；未配凭证时仅模拟 |
 | 总结 | 可下载 Markdown、HTML，包含需求版本、结果、未知项及证据索引 |
 | 意图与编排 | Orchestrator 三路融合：LLM 70%、Chroma 模板向量20%、关键词10%；可直接解释、知识问答与跟进 |
@@ -69,6 +73,7 @@ src/agents/               LangGraph master 和 A/B/C/D 角色图
 src/domain/               需求、编排、解释、动作、知识业务规则
 src/contracts/            Contract V1 Zod 模型与语义校验
 src/adapters/             真实数据 API、远程推荐接口、本地推荐基线
+recommendation/           江山原生 Python 推荐模块、契约、算法、工具、状态及测试
 src/stores/               事务状态、版本、引用与哈希
 src/tools/                权限、预算、缓存、熔断、执行追踪
 skills/                   应用角色技能及边界
@@ -84,7 +89,10 @@ data/                     原团队数据模块：采集、SQL、图谱、只读
 
 ```powershell
 npm run typecheck
+npm run typecheck:recommendation
 npm test
+.venv\Scripts\python.exe -m pytest recommendation/tests tests/test_native_transport.py -q
+.venv\Scripts\python.exe scripts/import-recommendation-upstream.py --check
 node --env-file=.env --import tsx --test tests/postgres-session.test.ts
 .venv\Scripts\python.exe -m pytest tests/test_api.py -q
 $env:BUSINESS_LIVE='1'

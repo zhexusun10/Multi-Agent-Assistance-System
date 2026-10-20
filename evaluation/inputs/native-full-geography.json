@@ -1,0 +1,9 @@
+{
+  "listing_type": "RENT",
+  "criteria": [
+    {"criterion_id":"budget","field":"price","operator":"lte","value":3000,"unit":"SGD/month","strength":"hard"},
+    {"criterion_id":"district","field":"district_code","operator":"eq","value":"D05","strength":"hard"},
+    {"criterion_id":"nus-radius","field":"distance","operator":"lte","value":3000,"unit":"m","strength":"hard","destination_id":"OSM:way:54519165","distance_type":"straight_line"},
+    {"criterion_id":"nearer-nus","field":"distance","operator":"lte","value":1000,"unit":"m","strength":"soft","weight":1,"utility":"proximity","destination_id":"OSM:way:54519165","distance_type":"straight_line"}
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "started_at": "2026-10-20T14:42:55.088Z",
+  "checks": [
+    {
+      "query": "帮我找租房，预算不超过5000新币，至少2房，D05",
+      "elapsed_ms": 66329,
+      "request": "fc03965f-d1ea-4a80-a7bc-856cbc0af0c2",
+      "counts": {
+        "assessed": 21431,
+        "eligible": 161,
+        "excluded": 21264,
+        "unverified": 6
+      },
+      "ids": [
+        "12885293",
+        "18074957",
+        "18689152",
+        "18885948",
+        "20283326",
+        "24039352",
+        "500186462",
+        "500278815"
+      ]
+    },
+    {
+      "query": "解释一下第一套为什么推荐，为什么排在前面",
+      "elapsed_ms": 2218,
+      "request": "fc03965f-d1ea-4a80-a7bc-856cbc0af0c2",
+      "counts": {
+        "assessed": 21431,
+        "eligible": 161,
+        "excluded": 21264,
+        "unverified": 6
+      },
+      "ids": [
+        "12885293",
+        "18074957",
+        "18689152",
+        "18885948",
+        "20283326",
+        "24039352",
+        "500186462",
+        "500278815"
+      ]
+    },
+    {
+      "query": "请为第1套房源生成看房询问草稿",
+      "elapsed_ms": 1487,
+      "request": "fc03965f-d1ea-4a80-a7bc-856cbc0af0c2",
+      "counts": {
+        "assessed": 21431,
+        "eligible": 161,
+        "excluded": 21264,
+        "unverified": 6
+      },
+      "ids": [
+        "12885293",
+        "18074957",
+        "18689152",
+        "18885948",
+        "20283326",
+        "24039352",
+        "500186462",
+        "500278815"
+      ]
+    },
+    {
+      "query": "生成当前推荐的总结文档",
+      "elapsed_ms": 1301,
+      "request": "fc03965f-d1ea-4a80-a7bc-856cbc0af0c2",
+      "counts": {
+        "assessed": 21431,
+        "eligible": 161,
+        "excluded": 21264,
+        "unverified": 6
+      },
+      "ids": [
+        "12885293",
+        "18074957",
+        "18689152",
+        "18885948",
+        "20283326",
+        "24039352",
+        "500186462",
+        "500278815"
+      ]
+    },
+    {
+      "query": "请按当前需求重新推荐，参考新增的浏览样例",
+      "elapsed_ms": 33586,
+      "request": "84a16ef5-9f69-4938-916e-c73726dd8108",
+      "counts": {
+        "assessed": 21431,
+        "eligible": 161,
+        "excluded": 21264,
+        "unverified": 6
+      },
+      "ids": [
+        "12885293",
+        "18074957",
+        "500251234",
+        "500265058",
+        "20283326",
+        "24039352",
+        "500186462",
+        "500278815"
+      ]
+    },
+    {
+      "query": "预算改为4500新币，其余要求保持",
+      "elapsed_ms": 48181,
+      "request": "69c0c80b-e1ba-42ba-8108-1e416f8d2fbc",
+      "counts": {
+        "assessed": 21431,
+        "eligible": 129,
+        "excluded": 21296,
+        "unverified": 6
+      },
+      "ids": [
+        "12885293",
+        "18074957",
+        "500251234",
+        "500265058",
+        "20283326",
+        "24039352",
+        "500186462",
+        "500278815"
+      ]
+    },
+    {
+      "name": "A native run committed without UI adoption is reconciled at the transport reference boundary; native stale/requirement checks and request replay remain unchanged"
+    },
+    {
+      "name": "Independent 21,431-row eligibility, lexicographic tie order and duration-based implicit scores match exactly; immutable HTTP replay, photo/context, direct C/D routing passed"
+    }
+  ],
+  "provider": "jiangshan-native",
+  "upstream": "907cfa8",
+  "status": "passed",
+  "session_id": "4f412554-66e5-47fc-97f7-adea52f19e12",
+  "finished_at": "2026-10-20T14:45:59.694Z"
+}

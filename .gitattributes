@@ -1,0 +1,4 @@
+# Preserve the reviewed upstream fingerprints across Windows/Linux checkouts.
+recommendation/** text eol=lf
+# The original handoff contract is a byte-preserved reference, including Markdown breaks.
+contracts/references/recommendation_agent_contract_v1.original.md whitespace=-blank-at-eol,-blank-at-eof

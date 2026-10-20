@@ -1,0 +1,29 @@
+{
+  "contract_version": "1.0",
+  "request_id": "10000000-0000-4000-8000-000000000004",
+  "conversation_id": "handoff-conflict-demo",
+  "requirements_version": 1,
+  "requirements": {
+    "listing_type": "RENT",
+    "criteria": [
+      {
+        "criterion_id": "budget-floor",
+        "field": "price",
+        "operator": "gte",
+        "value": 4000,
+        "unit": "SGD/month",
+        "strength": "hard"
+      },
+      {
+        "criterion_id": "budget-ceiling",
+        "field": "price",
+        "operator": "lte",
+        "value": 3000,
+        "unit": "SGD/month",
+        "strength": "hard"
+      }
+    ]
+  },
+  "feedback": [],
+  "result_limit": 5
+}

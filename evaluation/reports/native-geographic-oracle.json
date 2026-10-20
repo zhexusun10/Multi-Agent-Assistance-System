@@ -1,0 +1,49 @@
+{
+  "status": "passed",
+  "dataset": "2026-10-09",
+  "assessed": 21431,
+  "eligible": 180,
+  "native_ids": [
+    "500281070",
+    "60094463",
+    "500228649",
+    "500262756"
+  ],
+  "selected": [
+    {
+      "listing_id": "500281070",
+      "score": 0.5100237534890987,
+      "oracle_distance_m": 960.6929935303144
+    },
+    {
+      "listing_id": "60094463",
+      "score": 0.5100237534890987,
+      "oracle_distance_m": 960.6929935303144
+    },
+    {
+      "listing_id": "500228649",
+      "score": 0.507197189280064,
+      "oracle_distance_m": 971.6197588151825
+    },
+    {
+      "listing_id": "500262756",
+      "score": 0.507197189280064,
+      "oracle_distance_m": 971.6197588151825
+    }
+  ],
+  "preserved_native_response": true,
+  "unsupported_hard_guard": true,
+  "execution": {
+    "trace_id": "2f80f2c5-3dea-44d4-8469-932ca32567f1",
+    "trace_ref": "sqlite:2f80f2c5-3dea-44d4-8469-932ca32567f1",
+    "strategy": "complete-pool weighted ranking",
+    "scoring_version": "weighted-v1",
+    "model_identifier": "openai:deepseek-flash",
+    "model_calls": 4,
+    "tool_calls": 4,
+    "duration_ms": 14297.00000002049,
+    "tokens": 20457,
+    "data_mode": "database",
+    "controller_mode": "live"
+  }
+}

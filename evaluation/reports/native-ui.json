@@ -1,0 +1,13 @@
+{
+  "checked_at": "2026-10-20T14:52:48.590958+00:00",
+  "checks": [
+    "21,431-row coverage, native verified/unverified groups, photos and actual fused/unscored labels render",
+    "Card collapse, native provider mode and data presentation remain usable",
+    "Typing explanation in real chat uses the existing result and renders native behavioral score",
+    "Manual SAMPLE duration entry completes feedback reranking through the real chat workflow",
+    "Native recommendation can start the existing manual viewing follow-up workflow"
+  ],
+  "external_messages_sent": 0,
+  "status": "passed",
+  "browser_errors": []
+}

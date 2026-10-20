@@ -5,6 +5,7 @@ dist/
 __pycache__/
 .pytest_cache/
 data/.runtime/
+recommendation/.runtime/
 data/*.db
 data/*.db-*
 # Full-snapshot exports are regenerated with `python data/main.py export`; only small samples are tracked.

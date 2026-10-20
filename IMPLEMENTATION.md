@@ -1,5 +1,7 @@
 # V1.1 实现与运维说明
 
+> 2026-10-20 更新：默认推荐已切换为江山原生模块，新增loopback 8092服务和独立SQLite状态。当前推荐接口以 `recommendation/contracts/` 为准；原有章节中的baseline公式/5条限额属于保留的基线模式。迁移、字段映射、真实验收和能力边界见 [原生接入说明](docs/Recommendation_Agent_原生接入说明.md)。
+
 本实现依照 `D:\Real Estate Agent\design` 下的 V1.1 蓝图和 Recommendation Agent Contract V1。保留仓库既有 FastAPI → TypeScript LangGraph → PostgreSQL 架构，落实真实租赁业务，不另建一套 Python 编排。项目文档中的 Contract V1 是接口优先依据；原分工交接文档只用于理解职责。
 
 ## 1. 角色与执行链

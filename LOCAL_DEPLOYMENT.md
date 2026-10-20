@@ -95,9 +95,14 @@ RETURN b, r, c LIMIT 50;
 
 ## 补齐完整房源数据
 
-实际 `.gitignore` 没有忽略整个 `data/`，而是忽略 `data/*.db`、临时目录及部分完整导出文件。修改这些规则只会影响以后哪些本地文件可以提交，不会让未上传的数据库出现在远端，也不会改变 `git clone` 能下载的内容。已检查当前远端分支、Git 历史中的数据库文件、LFS 和公开 Release；未找到完整数据库附件。管理员权限不能读取组员电脑上未上传的文件。
+当前仓库已保留团队上传的完整快照，统一命名为 `data/snapshots/propertyguru-2026-10-09.zip`。已逐字节核对其解压后数据库SHA-256，与本地实际使用的完整数据一致。首次克隆后，在项目根目录执行：
 
-需要数据负责人提供 **2026-10-09 的完整 `propertyguru.db`，或对应 PostgreSQL 备份**。可以通过共享盘或 GitHub Release 提供下载链接；不必为了交接修改 `.gitignore`。本次没有使用旧 CSV 样本冒充完整快照，也没有重新运行爬虫生成不同日期的数据。
+```powershell
+Expand-Archive -LiteralPath '.\data\snapshots\propertyguru-2026-10-09.zip' -DestinationPath '.\data'
+Get-FileHash -LiteralPath '.\data\propertyguru.db' -Algorithm SHA256
+```
+
+预期SHA-256为 `3fb6bdd8bc1b677d44abf1b3bb036692a00ccfa002613970bf5860529b82a2e5`。已有数据库时先校验，不覆盖正在使用的文件。`.gitignore`仍忽略解压后的1GB数据库、临时目录及可再生的大型导出；不需要修改忽略规则。没有使用旧CSV样本代替完整快照，也没有重新运行爬虫生成不同日期的数据。更多说明见 [快照目录](data/snapshots/README.md)。
 
 SQLite 快照的四表预期数量：
 

@@ -44,7 +44,7 @@ Windows 便携版的 `psql` 不会加入 PATH，可直接运行：
 
 只选一种启动方式，**不要同时启动便携 PostgreSQL 和 Docker PostgreSQL**。已有服务和数据时，跳过依赖安装、建表及导入。
 
-首次导入需要团队提供的 `2026-10-09` 版 `data/propertyguru.db`（约 1 GB，**被 Git 忽略，clone 不会自带**），或对应的 PG 备份。没有本地文件时直接连接团队已准备好的房源库；**不要重新抓取来代替固定快照，也不要把空库误认为全量数据**。
+首次导入使用 `2026-10-09` 版 `data/propertyguru.db`（约1GB）。仓库随附完整压缩包 `data/snapshots/propertyguru-2026-10-09.zip`，首次克隆后解压到 `data/`；哈希及解压命令见 [快照说明](snapshots/README.md)。解压后的 `.db` 被Git忽略；已有准备好的PG房源库时也可直接连接。**不要重新抓取来代替固定快照，也不要把空库误认为全量数据**。
 
 只想一次启动完整 PG → Neo4j → API 链路的 Windows 用户，执行 `powershell -NoProfile -ExecutionPolicy Bypass -File data/start_knowledge_graph.ps1 -WithPostgres` 即可；步骤见 [Neo4j 指南](NEO4J.md#2-首次启动选一个数据源)。
 

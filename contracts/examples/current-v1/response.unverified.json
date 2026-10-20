@@ -1,0 +1,242 @@
+{
+  "contract_version": "1.0",
+  "request_id": "10000000-0000-4000-8000-000000000002",
+  "conversation_id": "handoff-demo-session",
+  "requirements_version": 2,
+  "status": "no_match",
+  "recommendations": [],
+  "unverified_candidates": [
+    {
+      "listing": {
+        "listing_id": "900000000001",
+        "title": "合成示例房源 A",
+        "price": 2800,
+        "price_unit": "SGD/month",
+        "bedrooms": 2,
+        "district": "D05",
+        "source_url": null,
+        "availability_status": "unknown",
+        "floor_area_sqft": 800,
+        "property_type": "Condominium",
+        "thumbnail_url": null
+      },
+      "rank": 1,
+      "score": 0.5517241379310345,
+      "criterion_results": [
+        {
+          "criterion_id": "monthly-rent",
+          "status": "pass",
+          "observed_value": 2800,
+          "unit": "SGD/month",
+          "evidence_ids": [
+            "fixture-price-a"
+          ]
+        },
+        {
+          "criterion_id": "minimum-bedrooms",
+          "status": "pass",
+          "observed_value": 2,
+          "unit": "count",
+          "evidence_ids": [
+            "fixture-bedrooms-a"
+          ]
+        },
+        {
+          "criterion_id": "preferred-district",
+          "status": "pass",
+          "observed_value": "D05",
+          "evidence_ids": [
+            "fixture-district-a"
+          ]
+        },
+        {
+          "criterion_id": "near-supermarket",
+          "status": "pass",
+          "observed_value": 650,
+          "unit": "m",
+          "evidence_ids": [
+            "fixture-supermarket-a"
+          ]
+        },
+        {
+          "criterion_id": "amenities:private_bathroom",
+          "status": "unknown",
+          "observed_value": null,
+          "evidence_ids": [
+            "fixture-private-bath-a"
+          ],
+          "reason": "快照没有独立卫浴专用使用权记录；卫浴数量不能证明是否共用。"
+        }
+      ],
+      "score_breakdown": [
+        {
+          "criterion_id": "near-supermarket",
+          "origin": "stated_preference",
+          "utility": 0.5517241379310345,
+          "weight": 3,
+          "normalized_weight": 1,
+          "contribution": 0.5517241379310345,
+          "evidence_ids": [
+            "fixture-supermarket-a"
+          ]
+        }
+      ],
+      "explanation_evidence": {
+        "strengths": [
+          {
+            "criterion_ids": [
+              "monthly-rent",
+              "minimum-bedrooms",
+              "preferred-district"
+            ],
+            "evidence_ids": [
+              "fixture-price-a",
+              "fixture-bedrooms-a",
+              "fixture-district-a"
+            ]
+          }
+        ],
+        "compromises": [],
+        "unknowns": [
+          {
+            "field": "availability_status",
+            "evidence_ids": [
+              "fixture-availability-a"
+            ]
+          },
+          {
+            "field": "amenities",
+            "evidence_ids": [
+              "fixture-private-bath-a"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "fixture-price-a",
+      "listing_id": "900000000001",
+      "field_path": "price",
+      "value": 2800,
+      "unit": "SGD/month",
+      "source_kind": "fixture",
+      "source_ref": "fixture-design-v1/listing-a/price",
+      "dataset_version": "fixture-design-v1",
+      "retrieved_at": "2026-10-19T06:00:00Z",
+      "verified_at": null
+    },
+    {
+      "evidence_id": "fixture-bedrooms-a",
+      "listing_id": "900000000001",
+      "field_path": "bedrooms",
+      "value": 2,
+      "unit": "count",
+      "source_kind": "fixture",
+      "source_ref": "fixture-design-v1/listing-a/bedrooms",
+      "dataset_version": "fixture-design-v1",
+      "retrieved_at": "2026-10-19T06:00:00Z",
+      "verified_at": null
+    },
+    {
+      "evidence_id": "fixture-district-a",
+      "listing_id": "900000000001",
+      "field_path": "district",
+      "value": "D05",
+      "source_kind": "fixture",
+      "source_ref": "fixture-design-v1/listing-a/district",
+      "dataset_version": "fixture-design-v1",
+      "retrieved_at": "2026-10-19T06:00:00Z",
+      "verified_at": null
+    },
+    {
+      "evidence_id": "fixture-supermarket-a",
+      "listing_id": "900000000001",
+      "field_path": "place_proximity",
+      "value": 650,
+      "unit": "m",
+      "distance_type": "straight_line",
+      "target": {
+        "category": "Supermarket"
+      },
+      "source_kind": "fixture",
+      "source_ref": "fixture-design-v1/listing-a/supermarket-straight-line",
+      "dataset_version": "fixture-design-v1",
+      "retrieved_at": "2026-10-19T06:00:00Z",
+      "verified_at": null,
+      "raw_distance_type": "geodesic",
+      "route_verified": false,
+      "measurement_method": "haversine.WGS84_spherical"
+    },
+    {
+      "evidence_id": "fixture-availability-a",
+      "listing_id": "900000000001",
+      "field_path": "availability_status",
+      "value": null,
+      "source_kind": "fixture",
+      "source_ref": "fixture-design-v1/listing-a/availability",
+      "dataset_version": "fixture-design-v1",
+      "retrieved_at": "2026-10-19T06:00:00Z",
+      "verified_at": null
+    },
+    {
+      "evidence_id": "fixture-private-bath-a",
+      "listing_id": "900000000001",
+      "field_path": "amenities",
+      "value": null,
+      "source_kind": "fixture",
+      "source_ref": "fixture-design-v1/listing-a/private-bathroom",
+      "dataset_version": "fixture-design-v1",
+      "retrieved_at": "2026-10-19T06:00:00Z",
+      "verified_at": null
+    }
+  ],
+  "clarifications": [],
+  "relaxation_suggestions": [],
+  "warnings": [
+    {
+      "code": "FIXTURE_ONLY",
+      "message": "合成设计样例，不是真实房源或推荐执行结果。"
+    },
+    {
+      "code": "AVAILABILITY_UNVERIFIED",
+      "message": "当前可租状态未核实。",
+      "listing_ids": [
+        "900000000001"
+      ]
+    },
+    {
+      "code": "DATA_COVERAGE_LIMITED",
+      "message": "仅有一个合成候选，不表示市场覆盖。"
+    }
+  ],
+  "state": {
+    "state_id": "fixture-rec-state-002",
+    "candidate_pool_ref": "fixture-design-v1/candidate-pool-001",
+    "coverage": {
+      "dataset_version": "fixture-design-v1",
+      "dataset_scope": "one synthetic listing",
+      "retrieval_scope": "all fixture candidates",
+      "complete_within_dataset": true,
+      "truncated": false
+    },
+    "counts": {
+      "assessed": 1,
+      "eligible": 0,
+      "unverified": 1,
+      "excluded": 0
+    }
+  },
+  "execution": {
+    "strategy": "fixture_only",
+    "trace_ref": null,
+    "tool_calls": [],
+    "timing": {
+      "total_ms": null
+    },
+    "scoring_version": "baseline-explicit-soft-v2-geospatial-pivot",
+    "score_semantics": "illustrative_preference_fit_not_probability"
+  },
+  "error": null
+}

@@ -5,6 +5,7 @@ import { FIELD_RULES,compare,validateResponse,type Criterion,type Evidence,type 
 import type {LocationService} from './locations.js';
 import {geodesic,distanceToEntity,proximityUtility} from '../domain/spatial.js';
 import {unknownReason} from '../domain/field-capabilities.js';
+import {callNative} from './native-recommendation.js';
 export {geodesic} from '../domain/spatial.js';
 
 function numeric(v:unknown){return typeof v==='number'&&Number.isFinite(v)&&v>=0?v:null;}
@@ -22,6 +23,7 @@ export function classify(results:Candidate['criterion_results'],criteria:Criteri
 export class RecommendationGateway {
   constructor(private data:DataHttpAdapter,private save:(ctx:ToolContext,body:unknown)=>Promise<string>,private mode:string,private remoteUrl:string|undefined,private locations?:LocationService){}
   async recommend(req:RecommendationRequest,ctx:ToolContext):Promise<RecommendationResponse>{
+    if(this.mode==='native')return callNative(req,ctx,this.remoteUrl||'http://127.0.0.1:8092',this.save);
     if(this.mode==='remote'){
       if(!this.remoteUrl)throw Error('RECOMMENDATION_API_URL is required');
       // Logical retries use the exact persisted request body and ID.

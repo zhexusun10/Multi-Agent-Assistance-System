@@ -1,0 +1,342 @@
+{
+  "$defs": {
+    "Criterion": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Category"
+        },
+        "criterion_id": {
+          "minLength": 1,
+          "title": "Criterion Id",
+          "type": "string"
+        },
+        "destination_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Destination Id"
+        },
+        "destination_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Destination Name"
+        },
+        "distance_type": {
+          "anyOf": [
+            {
+              "enum": [
+                "straight_line",
+                "walking",
+                "transit"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Distance Type"
+        },
+        "field": {
+          "enum": [
+            "price",
+            "bedrooms",
+            "floor_area_sqft",
+            "district_code",
+            "property_type",
+            "distance",
+            "commute",
+            "furnishing",
+            "availability",
+            "lease_months"
+          ],
+          "title": "Field",
+          "type": "string"
+        },
+        "operator": {
+          "enum": [
+            "eq",
+            "in",
+            "gte",
+            "lte",
+            "between"
+          ],
+          "title": "Operator",
+          "type": "string"
+        },
+        "strength": {
+          "enum": [
+            "hard",
+            "soft"
+          ],
+          "title": "Strength",
+          "type": "string"
+        },
+        "transport_mode": {
+          "anyOf": [
+            {
+              "enum": [
+                "walk",
+                "transit",
+                "drive"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Transport Mode"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "utility": {
+          "default": "threshold",
+          "enum": [
+            "threshold",
+            "proximity",
+            "minimize",
+            "maximize"
+          ],
+          "title": "Utility",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          ],
+          "title": "Value"
+        },
+        "weight": {
+          "default": 1,
+          "exclusiveMinimum": 0,
+          "title": "Weight",
+          "type": "number"
+        }
+      },
+      "required": [
+        "criterion_id",
+        "field",
+        "operator",
+        "value",
+        "strength"
+      ],
+      "title": "Criterion",
+      "type": "object"
+    },
+    "Requirements": {
+      "additionalProperties": false,
+      "properties": {
+        "criteria": {
+          "items": {
+            "$ref": "#/$defs/Criterion"
+          },
+          "title": "Criteria",
+          "type": "array"
+        },
+        "listing_type": {
+          "const": "RENT",
+          "default": "RENT",
+          "title": "Listing Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "criteria"
+      ],
+      "title": "Requirements",
+      "type": "object"
+    },
+    "ViewPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "duration_seconds": {
+          "minimum": 0,
+          "title": "Duration Seconds",
+          "type": "number"
+        },
+        "view_session_id": {
+          "minLength": 1,
+          "title": "View Session Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "view_session_id",
+        "duration_seconds"
+      ],
+      "title": "ViewPayload",
+      "type": "object"
+    },
+    "ViewingEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "conversation_id": {
+          "minLength": 1,
+          "title": "Conversation Id",
+          "type": "string"
+        },
+        "event_id": {
+          "minLength": 1,
+          "title": "Event Id",
+          "type": "string"
+        },
+        "event_type": {
+          "const": "listing_view_duration",
+          "default": "listing_view_duration",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "listing_id": {
+          "minLength": 1,
+          "title": "Listing Id",
+          "type": "string"
+        },
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/ViewPayload"
+        },
+        "recommendation_request_id": {
+          "minLength": 1,
+          "title": "Recommendation Request Id",
+          "type": "string"
+        },
+        "source": {
+          "const": "sample",
+          "default": "sample",
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "conversation_id",
+        "recommendation_request_id",
+        "listing_id",
+        "occurred_at",
+        "payload"
+      ],
+      "title": "ViewingEvent",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "contract_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Contract Version",
+      "type": "string"
+    },
+    "conversation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Conversation Id",
+      "type": "string"
+    },
+    "feedback": {
+      "items": {
+        "$ref": "#/$defs/ViewingEvent"
+      },
+      "title": "Feedback",
+      "type": "array"
+    },
+    "previous_state_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Previous State Id"
+    },
+    "request_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Request Id",
+      "type": "string"
+    },
+    "requirements": {
+      "$ref": "#/$defs/Requirements"
+    },
+    "requirements_version": {
+      "minimum": 1,
+      "title": "Requirements Version",
+      "type": "integer"
+    },
+    "result_limit": {
+      "default": 4,
+      "maximum": 4,
+      "minimum": 1,
+      "title": "Result Limit",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "request_id",
+    "conversation_id",
+    "requirements_version",
+    "requirements"
+  ],
+  "title": "RecommendationRequest",
+  "type": "object"
+}

@@ -16,7 +16,7 @@ if record_path.exists():
     kernel.GetProcessTimes.argtypes = [wintypes.HANDLE] + [ctypes.POINTER(wintypes.FILETIME)]*4
     kernel.CloseHandle.argtypes = [wintypes.HANDLE]
     for item in reversed(record.get('processes', [])):
-        if item.get('name') not in ('data-api','graph','web','retrieval'):
+        if item.get('name') not in ('data-api','graph','web','retrieval','recommendation'):
             continue
         handle = kernel.OpenProcess(0x1000, False, int(item['id']))
         if not handle:

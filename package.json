@@ -8,6 +8,7 @@
     "test:live": "node --env-file=.env --import tsx --test tests/business-live.test.ts tests/advanced-live.test.ts tests/intake-live.test.ts",
     "build": "tsc",
     "typecheck": "tsc --noEmit",
+    "typecheck:recommendation": "tsc --noEmit -p tsconfig.recommendation.json",
     "test": "node --import tsx --test tests/*.test.ts"
   },
   "dependencies": {
