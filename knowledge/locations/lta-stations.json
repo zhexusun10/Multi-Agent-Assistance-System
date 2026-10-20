@@ -1,0 +1,4817 @@
+{
+  "version": "lta-mrt-exits-7a57cb14cf7c-rail-v2",
+  "source_url": "https://data.gov.sg/datasets/d_b39d3a0871985372d7e1637193335da5/view",
+  "dataset_id": "d_b39d3a0871985372d7e1637193335da5",
+  "raw_sha256": "7a57cb14cf7c621203938e944f99b41891284e5e67876c43d9f8f3ee3aa88ee6",
+  "license_url": "https://data.gov.sg/open-data-licence",
+  "retrieved_at": "2026-10-19T12:37:39.142995+00:00",
+  "measurement": "nearest_recorded_station_exit_straight_line_not_route",
+  "stations": [
+    {
+      "place_id": "LTA:MRT:ADMIRALTY",
+      "name": "ADMIRALTY MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24671,
+          "latitude": 1.4403456612830383,
+          "longitude": 103.80098952191813
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 25033,
+          "latitude": 1.4405962856579384,
+          "longitude": 103.80054245816031
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25193,
+          "latitude": 1.440152396746762,
+          "longitude": 103.80053346325835
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 25194,
+          "latitude": 1.4405333880722966,
+          "longitude": 103.80136453445112
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:ALJUNIED",
+      "name": "ALJUNIED MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24659,
+          "latitude": 1.3164879303040784,
+          "longitude": 103.88247288778244
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24660,
+          "latitude": 1.316238485344709,
+          "longitude": 103.88249665045747
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:ANG_MO_KIO",
+      "name": "ANG MO KIO MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit D",
+          "object_id": 25156,
+          "latitude": 1.3698823752681695,
+          "longitude": 103.84982457247968
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 25195,
+          "latitude": 1.3694405305965007,
+          "longitude": 103.84934327370465
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25211,
+          "latitude": 1.3696853221997212,
+          "longitude": 103.84959610065526
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25212,
+          "latitude": 1.369464706505095,
+          "longitude": 103.84993900074095
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:BAKAU",
+      "name": "BAKAU LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25238,
+          "latitude": 1.3881853854521522,
+          "longitude": 103.9054456307135
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25239,
+          "latitude": 1.3878407992569977,
+          "longitude": 103.90548212404298
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:BANGKIT",
+      "name": "BANGKIT LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25090,
+          "latitude": 1.3798533467645455,
+          "longitude": 103.77259057420869
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BARTLEY",
+      "name": "BARTLEY MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24926,
+          "latitude": 1.3435010615293341,
+          "longitude": 103.8789086939245
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24927,
+          "latitude": 1.342248749216091,
+          "longitude": 103.88025589326459
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BAYFRONT",
+      "name": "BAYFRONT MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 25003,
+          "latitude": 1.2828349086889401,
+          "longitude": 103.85959687218748
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25004,
+          "latitude": 1.2827052247082797,
+          "longitude": 103.85975918022659
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25196,
+          "latitude": 1.2809674239716435,
+          "longitude": 103.8587319247403
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 25197,
+          "latitude": 1.2811046370918653,
+          "longitude": 103.85844100365208
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 25198,
+          "latitude": 1.2828343544709762,
+          "longitude": 103.85949384661112
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BAYSHORE",
+      "name": "BAYSHORE MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 1",
+          "object_id": 25142,
+          "latitude": 1.3118987186917346,
+          "longitude": 103.94126172566517
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 25143,
+          "latitude": 1.3121838590996928,
+          "longitude": 103.94067346766076
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 25144,
+          "latitude": 1.31356798026815,
+          "longitude": 103.94072100418352
+        },
+        {
+          "exit_code": "Exit 4",
+          "object_id": 25145,
+          "latitude": 1.3135263973574927,
+          "longitude": 103.94267591982259
+        },
+        {
+          "exit_code": "Exit 5",
+          "object_id": 25146,
+          "latitude": 1.3128967114776557,
+          "longitude": 103.94258441308978
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BEAUTY_WORLD",
+      "name": "BEAUTY WORLD MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24887,
+          "latitude": 1.3416961499328006,
+          "longitude": 103.7759842962261
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24888,
+          "latitude": 1.3399818737845794,
+          "longitude": 103.7757615456262
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25005,
+          "latitude": 1.341582214549837,
+          "longitude": 103.77545067944088
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BEDOK",
+      "name": "BEDOK MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 25076,
+          "latitude": 1.3240746458654598,
+          "longitude": 103.92940427968887
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25209,
+          "latitude": 1.3235686361563497,
+          "longitude": 103.92915714309531
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25210,
+          "latitude": 1.3242683427611412,
+          "longitude": 103.92967308999474
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BEDOK_NORTH",
+      "name": "BEDOK NORTH MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24710,
+          "latitude": 1.3351262662136352,
+          "longitude": 103.91804982398726
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24712,
+          "latitude": 1.3341660744472075,
+          "longitude": 103.91906282344867
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24717,
+          "latitude": 1.3343724902032656,
+          "longitude": 103.91913430266187
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 25105,
+          "latitude": 1.3344225765515134,
+          "longitude": 103.9178105260292
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BEDOK_RESERVOIR",
+      "name": "BEDOK RESERVOIR MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24951,
+          "latitude": 1.336347760899778,
+          "longitude": 103.93288682250619
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25098,
+          "latitude": 1.3365549033286315,
+          "longitude": 103.93348718985506
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BENCOOLEN",
+      "name": "BENCOOLEN MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24972,
+          "latitude": 1.2981994004556694,
+          "longitude": 103.84956047759098
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 25099,
+          "latitude": 1.2976991176544332,
+          "longitude": 103.8492717038725
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25100,
+          "latitude": 1.2991951960301853,
+          "longitude": 103.85084338471715
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BENDEMEER",
+      "name": "BENDEMEER MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24713,
+          "latitude": 1.3134807250255989,
+          "longitude": 103.86321923143063
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25104,
+          "latitude": 1.3138525056222503,
+          "longitude": 103.86307400593707
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BISHAN",
+      "name": "BISHAN MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit D",
+          "object_id": 25006,
+          "latitude": 1.3510532199332945,
+          "longitude": 103.85020108196488
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25007,
+          "latitude": 1.350579598712016,
+          "longitude": 103.8483049917219
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25213,
+          "latitude": 1.3510644392737419,
+          "longitude": 103.84831225598012
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 25214,
+          "latitude": 1.3510348377710364,
+          "longitude": 103.84843292387485
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 25215,
+          "latitude": 1.3505849115398918,
+          "longitude": 103.84820928129376
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BOON_KENG",
+      "name": "BOON KENG MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 24876,
+          "latitude": 1.317914816472307,
+          "longitude": 103.86070683328751
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24935,
+          "latitude": 1.3192351959974773,
+          "longitude": 103.86190367551879
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25008,
+          "latitude": 1.3201068759913108,
+          "longitude": 103.86150235706886
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BOON_LAY",
+      "name": "BOON LAY MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24757,
+          "latitude": 1.338420695657893,
+          "longitude": 103.70614554796673
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24758,
+          "latitude": 1.3387381087333912,
+          "longitude": 103.70595515261101
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24759,
+          "latitude": 1.3382799880819698,
+          "longitude": 103.7054089949691
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24812,
+          "latitude": 1.3386295077959716,
+          "longitude": 103.70565003803485
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 24813,
+          "latitude": 1.338514120931197,
+          "longitude": 103.70535335319977
+        },
+        {
+          "exit_code": "Exit F",
+          "object_id": 24814,
+          "latitude": 1.3382732219770168,
+          "longitude": 103.70579503136489
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BOTANIC_GARDENS",
+      "name": "BOTANIC GARDENS MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24879,
+          "latitude": 1.3225346329493606,
+          "longitude": 103.81497690573431
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24892,
+          "latitude": 1.3226846123363898,
+          "longitude": 103.81591414579154
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BRADDELL",
+      "name": "BRADDELL MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 25216,
+          "latitude": 1.3406721639431691,
+          "longitude": 103.84744083059097
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25217,
+          "latitude": 1.3407443190144652,
+          "longitude": 103.84640649723127
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25218,
+          "latitude": 1.341068992069514,
+          "longitude": 103.84642954072108
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BRAS_BASAH",
+      "name": "BRAS BASAH MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24940,
+          "latitude": 1.2960462130772386,
+          "longitude": 103.85047427550748
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24941,
+          "latitude": 1.296858921771042,
+          "longitude": 103.85132725338609
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24942,
+          "latitude": 1.2970144329639453,
+          "longitude": 103.85024985270456
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24943,
+          "latitude": 1.2975514851835557,
+          "longitude": 103.8501575209801
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 24944,
+          "latitude": 1.297535451717088,
+          "longitude": 103.85042319251075
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BRIGHT_HILL",
+      "name": "BRIGHT HILL MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 1",
+          "object_id": 24899,
+          "latitude": 1.3640371821656152,
+          "longitude": 103.83363541399386
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 24900,
+          "latitude": 1.3632827623551678,
+          "longitude": 103.83351063156859
+        },
+        {
+          "exit_code": "Exit 4",
+          "object_id": 24901,
+          "latitude": 1.3631639565255047,
+          "longitude": 103.83195382945166
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 24902,
+          "latitude": 1.3621838048498118,
+          "longitude": 103.83237571105509
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BUANGKOK",
+      "name": "BUANGKOK MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24781,
+          "latitude": 1.3834097909898952,
+          "longitude": 103.89288383673062
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25017,
+          "latitude": 1.382649722820209,
+          "longitude": 103.89346315223678
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BUGIS",
+      "name": "BUGIS MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 24693,
+          "latitude": 1.3000069406998658,
+          "longitude": 103.85568570391386
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24696,
+          "latitude": 1.3007821987656956,
+          "longitude": 103.85633662767292
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24697,
+          "latitude": 1.3012040895646393,
+          "longitude": 103.85592408146064
+        },
+        {
+          "exit_code": "Exit G",
+          "object_id": 24766,
+          "latitude": 1.298956504761158,
+          "longitude": 103.8570674271026
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 24767,
+          "latitude": 1.2993046168253164,
+          "longitude": 103.85740802281678
+        },
+        {
+          "exit_code": "Exit F",
+          "object_id": 24768,
+          "latitude": 1.299638234031808,
+          "longitude": 103.85714752525624
+        },
+        {
+          "exit_code": "Exit H",
+          "object_id": 24769,
+          "latitude": 1.3003434851398612,
+          "longitude": 103.8560351842958
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 25077,
+          "latitude": 1.2990788488867298,
+          "longitude": 103.85689065486714
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BUKIT_BATOK",
+      "name": "BUKIT BATOK MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24815,
+          "latitude": 1.349389587768077,
+          "longitude": 103.7499369555793
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24946,
+          "latitude": 1.3495200607327413,
+          "longitude": 103.74976656493072
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24948,
+          "latitude": 1.3484053759049566,
+          "longitude": 103.74911839418894
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24949,
+          "latitude": 1.3495610753524367,
+          "longitude": 103.7499739902577
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BUKIT_GOMBAK",
+      "name": "BUKIT GOMBAK MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 24754,
+          "latitude": 1.3590649797518373,
+          "longitude": 103.75172661484677
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24755,
+          "latitude": 1.359069846241564,
+          "longitude": 103.75207638937478
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24756,
+          "latitude": 1.3592978528191881,
+          "longitude": 103.75195099052644
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25083,
+          "latitude": 1.3586952612690937,
+          "longitude": 103.75209299569798
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:BUKIT_PANJANG",
+      "name": "BUKIT PANJANG LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24843,
+          "latitude": 1.378020383749656,
+          "longitude": 103.76306355524726
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24844,
+          "latitude": 1.3778632485675977,
+          "longitude": 103.76317852054554
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24861,
+          "latitude": 1.3779279277525465,
+          "longitude": 103.76272252355642
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24862,
+          "latitude": 1.378024102648342,
+          "longitude": 103.76325185195583
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BUKIT_PANJANG",
+      "name": "BUKIT PANJANG MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24828,
+          "latitude": 1.3787662376388572,
+          "longitude": 103.76203436087093
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24885,
+          "latitude": 1.3786188940125126,
+          "longitude": 103.76137050495701
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25018,
+          "latitude": 1.379007969740763,
+          "longitude": 103.76192293420945
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25087,
+          "latitude": 1.3807451173057772,
+          "longitude": 103.75959784357276
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:BUONA_VISTA",
+      "name": "BUONA VISTA MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24867,
+          "latitude": 1.3073094507702407,
+          "longitude": 103.79044917530257
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24868,
+          "latitude": 1.3071972570585428,
+          "longitude": 103.79065661943288
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24869,
+          "latitude": 1.3069128886104584,
+          "longitude": 103.79059939037006
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 25167,
+          "latitude": 1.3062981416247745,
+          "longitude": 103.79093006515394
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:CALDECOTT",
+      "name": "CALDECOTT MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 2",
+          "object_id": 24908,
+          "latitude": 1.3382597299418082,
+          "longitude": 103.84038749923758
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 24909,
+          "latitude": 1.3378320231792558,
+          "longitude": 103.84046474529944
+        },
+        {
+          "exit_code": "Exit 4",
+          "object_id": 24910,
+          "latitude": 1.3367508751106454,
+          "longitude": 103.83988242975174
+        },
+        {
+          "exit_code": "Exit 1",
+          "object_id": 25190,
+          "latitude": 1.337105316695643,
+          "longitude": 103.83940673122467
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:CANBERRA",
+      "name": "CANBERRA MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit D",
+          "object_id": 24911,
+          "latitude": 1.443511338844814,
+          "longitude": 103.82925464394748
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24912,
+          "latitude": 1.443630141060561,
+          "longitude": 103.82952797586145
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24913,
+          "latitude": 1.4428044654120509,
+          "longitude": 103.82970029333653
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24914,
+          "latitude": 1.4429351481829502,
+          "longitude": 103.82996174120925
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 24915,
+          "latitude": 1.4432559135570144,
+          "longitude": 103.83011623317348
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:CANTONMENT",
+      "name": "CANTONMENT MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 1",
+          "object_id": 24777,
+          "latitude": 1.2721320701886019,
+          "longitude": 103.83570263425636
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 24778,
+          "latitude": 1.2737364875563113,
+          "longitude": 103.83599830791842
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 24779,
+          "latitude": 1.2736397754772506,
+          "longitude": 103.83849204384164
+        },
+        {
+          "exit_code": "Exit 4",
+          "object_id": 24780,
+          "latitude": 1.2726821629250715,
+          "longitude": 103.8377136424707
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:CASHEW",
+      "name": "CASHEW MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25250,
+          "latitude": 1.3698333185962925,
+          "longitude": 103.76423448071098
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:CHANGI_AIRPORT",
+      "name": "CHANGI AIRPORT MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24962,
+          "latitude": 1.3563414210048035,
+          "longitude": 103.98927664241383
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24963,
+          "latitude": 1.3572202560601727,
+          "longitude": 103.98730457979791
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:CHENG_LIM",
+      "name": "CHENG LIM LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24793,
+          "latitude": 1.3961869711232995,
+          "longitude": 103.89392033157345
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24871,
+          "latitude": 1.3963732182354105,
+          "longitude": 103.89368487427694
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:CHINATOWN",
+      "name": "CHINATOWN MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 24837,
+          "latitude": 1.284674897368101,
+          "longitude": 103.8428128535836
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 24839,
+          "latitude": 1.2850440806089183,
+          "longitude": 103.84442811940502
+        },
+        {
+          "exit_code": "Exit G",
+          "object_id": 24883,
+          "latitude": 1.284736083637029,
+          "longitude": 103.8444585417297
+        },
+        {
+          "exit_code": "Exit F",
+          "object_id": 24884,
+          "latitude": 1.2842747760727764,
+          "longitude": 103.84546253179646
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24947,
+          "latitude": 1.285406459986675,
+          "longitude": 103.84347621052814
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25179,
+          "latitude": 1.2837127704301896,
+          "longitude": 103.84379788809954
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:CHINESE_GARDEN",
+      "name": "CHINESE GARDEN MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 24668,
+          "latitude": 1.3415658263325776,
+          "longitude": 103.73339313576297
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24669,
+          "latitude": 1.3419820895649266,
+          "longitude": 103.73274182554528
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24670,
+          "latitude": 1.3424387432399767,
+          "longitude": 103.73222015482936
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:CHOA_CHU_KANG",
+      "name": "CHOA CHU KANG LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24838,
+          "latitude": 1.3849796641871803,
+          "longitude": 103.7445951430258
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 24979,
+          "latitude": 1.3849999997274485,
+          "longitude": 103.74462000044716
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:CHOA_CHU_KANG",
+      "name": "CHOA CHU KANG MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 24684,
+          "latitude": 1.3857361854031247,
+          "longitude": 103.74451779877056
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24685,
+          "latitude": 1.385431280875975,
+          "longitude": 103.7445571353678
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24818,
+          "latitude": 1.3857053906700119,
+          "longitude": 103.7442235839257
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24975,
+          "latitude": 1.3853999999695223,
+          "longitude": 103.744560000291
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24976,
+          "latitude": 1.3845999997090193,
+          "longitude": 103.74447000005159
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24977,
+          "latitude": 1.385729999564578,
+          "longitude": 103.74447000018996
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24978,
+          "latitude": 1.3853699997077467,
+          "longitude": 103.74411000039194
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:CITY_HALL",
+      "name": "CITY HALL MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 25148,
+          "latitude": 1.2930418479082573,
+          "longitude": 103.85298028770758
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24694,
+          "latitude": 1.2932271103418318,
+          "longitude": 103.85302041355058
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24695,
+          "latitude": 1.2930999185799508,
+          "longitude": 103.8519602177464
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 25119,
+          "latitude": 1.2934548259513226,
+          "longitude": 103.85180233380913
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:CLARKE_QUAY",
+      "name": "CLARKE QUAY MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 24833,
+          "latitude": 1.289383851872467,
+          "longitude": 103.84666583385501
+        },
+        {
+          "exit_code": "Exit F",
+          "object_id": 24834,
+          "latitude": 1.2894055668026585,
+          "longitude": 103.84712974273279
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24835,
+          "latitude": 1.2868987878357088,
+          "longitude": 103.84606454377302
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 24836,
+          "latitude": 1.2890001830713862,
+          "longitude": 103.84703264329924
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25180,
+          "latitude": 1.2878057526558389,
+          "longitude": 103.84590343273553
+        },
+        {
+          "exit_code": "Exit G",
+          "object_id": 25181,
+          "latitude": 1.2891992578180935,
+          "longitude": 103.84659390916543
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:CLEMENTI",
+      "name": "CLEMENTI MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit D",
+          "object_id": 25153,
+          "latitude": 1.3140784143450015,
+          "longitude": 103.76557011618358
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 25154,
+          "latitude": 1.3141622981069079,
+          "longitude": 103.76574981571945
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24865,
+          "latitude": 1.3153735578744434,
+          "longitude": 103.76498210259511
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24866,
+          "latitude": 1.3154691294316818,
+          "longitude": 103.76518556672941
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:COMMONWEALTH",
+      "name": "COMMONWEALTH MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 25151,
+          "latitude": 1.3020770458031892,
+          "longitude": 103.7987785726048
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 25152,
+          "latitude": 1.3020127193513336,
+          "longitude": 103.7987202587723
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24644,
+          "latitude": 1.3027527769977458,
+          "longitude": 103.79805788203096
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24645,
+          "latitude": 1.3026481614077343,
+          "longitude": 103.79795829226589
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:COMPASSVALE",
+      "name": "COMPASSVALE LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25168,
+          "latitude": 1.3943275215100395,
+          "longitude": 103.90061646960031
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25169,
+          "latitude": 1.394534172299889,
+          "longitude": 103.90070659755264
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:CORAL_EDGE",
+      "name": "CORAL EDGE LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24856,
+          "latitude": 1.3939708071108299,
+          "longitude": 103.91270874436744
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24857,
+          "latitude": 1.3936846522216244,
+          "longitude": 103.91265223396981
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:COVE",
+      "name": "COVE LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24805,
+          "latitude": 1.3991243935090023,
+          "longitude": 103.90592873577582
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24858,
+          "latitude": 1.3993026566088154,
+          "longitude": 103.90617601360019
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:DAKOTA",
+      "name": "DAKOTA MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25069,
+          "latitude": 1.308814187524259,
+          "longitude": 103.88930721534395
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25070,
+          "latitude": 1.3080967504054488,
+          "longitude": 103.88797933768159
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:DAMAI",
+      "name": "DAMAI LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24800,
+          "latitude": 1.4052846134337436,
+          "longitude": 103.90879222699208
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24851,
+          "latitude": 1.4050460283087411,
+          "longitude": 103.90861385602817
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:DHOBY_GHAUT",
+      "name": "DHOBY GHAUT MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24689,
+          "latitude": 1.2984450920481716,
+          "longitude": 103.84678797178553
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24690,
+          "latitude": 1.2990558907089098,
+          "longitude": 103.84522955892908
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 24691,
+          "latitude": 1.2997484706698177,
+          "longitude": 103.84537229423007
+        },
+        {
+          "exit_code": "Exit F",
+          "object_id": 24692,
+          "latitude": 1.299634891911056,
+          "longitude": 103.84584231801777
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24705,
+          "latitude": 1.29993066561743,
+          "longitude": 103.8450301318641
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 25189,
+          "latitude": 1.299649242161315,
+          "longitude": 103.8447478571907
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:DOVER",
+      "name": "DOVER MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24810,
+          "latitude": 1.3114154334487695,
+          "longitude": 103.7783047152878
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24811,
+          "latitude": 1.3116931916796435,
+          "longitude": 103.7784647713041
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:DOWNTOWN",
+      "name": "DOWNTOWN MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 24820,
+          "latitude": 1.2794443683916052,
+          "longitude": 103.85315209196104
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24821,
+          "latitude": 1.2791760407808874,
+          "longitude": 103.85301375913124
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24896,
+          "latitude": 1.2797734552829652,
+          "longitude": 103.85264656001088
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 24897,
+          "latitude": 1.2795279106323079,
+          "longitude": 103.85247804639863
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24898,
+          "latitude": 1.2796013182822525,
+          "longitude": 103.85290812847026
+        },
+        {
+          "exit_code": "Exit F",
+          "object_id": 25020,
+          "latitude": 1.2797962396920595,
+          "longitude": 103.85242774644063
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:ESPLANADE",
+      "name": "ESPLANADE MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24945,
+          "latitude": 1.2933705482768734,
+          "longitude": 103.8563055547391
+        },
+        {
+          "exit_code": "Exit G",
+          "object_id": 24964,
+          "latitude": 1.2935864007363411,
+          "longitude": 103.85492020244
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24965,
+          "latitude": 1.2929043369195197,
+          "longitude": 103.85585520377214
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24966,
+          "latitude": 1.2929271873364572,
+          "longitude": 103.85617567093513
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 25060,
+          "latitude": 1.2931288136602324,
+          "longitude": 103.85556784106937
+        },
+        {
+          "exit_code": "Exit F",
+          "object_id": 25061,
+          "latitude": 1.2938195073126744,
+          "longitude": 103.85510463211058
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 25062,
+          "latitude": 1.2926237434666497,
+          "longitude": 103.85583375578965
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:EUNOS",
+      "name": "EUNOS MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 24959,
+          "latitude": 1.3195299188012677,
+          "longitude": 103.90321518697834
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25205,
+          "latitude": 1.3195172748993538,
+          "longitude": 103.9028941378417
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25206,
+          "latitude": 1.3195625452697972,
+          "longitude": 103.90258207761774
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:EXPO",
+      "name": "EXPO MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 24988,
+          "latitude": 1.3359509717156908,
+          "longitude": 103.96216102186416
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24989,
+          "latitude": 1.3348348883432715,
+          "longitude": 103.96310068176199
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 24991,
+          "latitude": 1.3348633135054835,
+          "longitude": 103.96212337687385
+        },
+        {
+          "exit_code": "Exit G",
+          "object_id": 24993,
+          "latitude": 1.3350193203868175,
+          "longitude": 103.96304900743186
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24994,
+          "latitude": 1.3354828221659554,
+          "longitude": 103.96183679508403
+        },
+        {
+          "exit_code": "Exit F",
+          "object_id": 24995,
+          "latitude": 1.3347119482410732,
+          "longitude": 103.96286574628039
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25191,
+          "latitude": 1.3353217243389148,
+          "longitude": 103.96194295822608
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25192,
+          "latitude": 1.3352529442369512,
+          "longitude": 103.96207528759587
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:FAJAR",
+      "name": "FAJAR LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25091,
+          "latitude": 1.3844650711796456,
+          "longitude": 103.77067551844488
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:FARMWAY",
+      "name": "FARMWAY LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24921,
+          "latitude": 1.3972003445750807,
+          "longitude": 103.88940744788181
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24922,
+          "latitude": 1.3971334775058415,
+          "longitude": 103.88911501684758
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:FARRER_PARK",
+      "name": "FARRER PARK MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24662,
+          "latitude": 1.313543965975699,
+          "longitude": 103.85476376775568
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 24663,
+          "latitude": 1.3118835372381634,
+          "longitude": 103.85265097067983
+        },
+        {
+          "exit_code": "Exit F",
+          "object_id": 24664,
+          "latitude": 1.3114220464813349,
+          "longitude": 103.85319939114183
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24872,
+          "latitude": 1.312326909037027,
+          "longitude": 103.85477274737836
+        },
+        {
+          "exit_code": "Exit G",
+          "object_id": 24873,
+          "latitude": 1.3122590364129927,
+          "longitude": 103.85550098237228
+        },
+        {
+          "exit_code": "Exit I",
+          "object_id": 24874,
+          "latitude": 1.311765877296202,
+          "longitude": 103.85580665725489
+        },
+        {
+          "exit_code": "Exit H",
+          "object_id": 24875,
+          "latitude": 1.3118835080609075,
+          "longitude": 103.8560988521155
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 25185,
+          "latitude": 1.3124536063930647,
+          "longitude": 103.85297463523698
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 25186,
+          "latitude": 1.311910678691349,
+          "longitude": 103.85326682482192
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:FARRER_ROAD",
+      "name": "FARRER ROAD MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24999,
+          "latitude": 1.31749372589551,
+          "longitude": 103.80796523070785
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25000,
+          "latitude": 1.3175520161722278,
+          "longitude": 103.80738923455762
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:FERNVALE",
+      "name": "FERNVALE LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24860,
+          "latitude": 1.3921582676260966,
+          "longitude": 103.87626165389224
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:FORT_CANNING",
+      "name": "FORT CANNING MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24716,
+          "latitude": 1.2928302759457175,
+          "longitude": 103.84442503156531
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24719,
+          "latitude": 1.2924060955782486,
+          "longitude": 103.84417003419682
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:GARDENS_BY_THE_BAY",
+      "name": "GARDENS BY THE BAY MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 3",
+          "object_id": 24745,
+          "latitude": 1.2783034399681215,
+          "longitude": 103.86715412214197
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 24746,
+          "latitude": 1.2788262233339731,
+          "longitude": 103.86796876727624
+        },
+        {
+          "exit_code": "Exit 1",
+          "object_id": 24747,
+          "latitude": 1.280370755955639,
+          "longitude": 103.86858673411133
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:GEYLANG_BAHRU",
+      "name": "GEYLANG BAHRU MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25095,
+          "latitude": 1.3215616987402512,
+          "longitude": 103.87155560756929
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25107,
+          "latitude": 1.3211091157953243,
+          "longitude": 103.87179427142719
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:GREAT_WORLD",
+      "name": "GREAT WORLD MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 5",
+          "object_id": 25040,
+          "latitude": 1.2965525945647354,
+          "longitude": 103.83340550437103
+        },
+        {
+          "exit_code": "Exit 1",
+          "object_id": 25041,
+          "latitude": 1.2933209760726394,
+          "longitude": 103.83390463124832
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 25042,
+          "latitude": 1.2928694999212986,
+          "longitude": 103.83262710318911
+        },
+        {
+          "exit_code": "Exit 6",
+          "object_id": 25043,
+          "latitude": 1.293184344647582,
+          "longitude": 103.83284101464868
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 25044,
+          "latitude": 1.2938199765544345,
+          "longitude": 103.83273405917555
+        },
+        {
+          "exit_code": "Exit 4",
+          "object_id": 25045,
+          "latitude": 1.296029832789246,
+          "longitude": 103.83303710057669
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:GUL_CIRCLE",
+      "name": "GUL CIRCLE MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24980,
+          "latitude": 1.31903226656851,
+          "longitude": 103.6604441438593
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24981,
+          "latitude": 1.3188371831334533,
+          "longitude": 103.65943494551723
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:HARBOURFRONT",
+      "name": "HARBOURFRONT MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 24648,
+          "latitude": 1.265259883734691,
+          "longitude": 103.82253165162558
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24649,
+          "latitude": 1.2651546823431958,
+          "longitude": 103.82050881113204
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24859,
+          "latitude": 1.2650850346118385,
+          "longitude": 103.82250980721876
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 25176,
+          "latitude": 1.2649719595912232,
+          "longitude": 103.82158029169962
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 25177,
+          "latitude": 1.2659792549959068,
+          "longitude": 103.82139885715415
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25178,
+          "latitude": 1.2660131831978316,
+          "longitude": 103.82046835046091
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:HAVELOCK",
+      "name": "HAVELOCK MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 3",
+          "object_id": 25046,
+          "latitude": 1.2888435633535371,
+          "longitude": 103.83336952027848
+        },
+        {
+          "exit_code": "Exit 1",
+          "object_id": 25115,
+          "latitude": 1.2866767448179222,
+          "longitude": 103.83383975335771
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 25116,
+          "latitude": 1.2869440669876508,
+          "longitude": 103.8334951182318
+        },
+        {
+          "exit_code": "Exit 5",
+          "object_id": 25117,
+          "latitude": 1.289560964282313,
+          "longitude": 103.8339619016366
+        },
+        {
+          "exit_code": "Exit 4",
+          "object_id": 25118,
+          "latitude": 1.2901668941642899,
+          "longitude": 103.83400349617219
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:HAW_PAR_VILLA",
+      "name": "HAW PAR VILLA MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25245,
+          "latitude": 1.2830552735417646,
+          "longitude": 103.7820063970724
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:HILLVIEW",
+      "name": "HILLVIEW MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24886,
+          "latitude": 1.3624742379450678,
+          "longitude": 103.76768829010308
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25253,
+          "latitude": 1.3620843399177323,
+          "longitude": 103.76710845993587
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:HOLLAND_VILLAGE",
+      "name": "HOLLAND VILLAGE MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24807,
+          "latitude": 1.3110694836596164,
+          "longitude": 103.79576910839042
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 25001,
+          "latitude": 1.3107112013327236,
+          "longitude": 103.79575377011341
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25002,
+          "latitude": 1.3112202657771888,
+          "longitude": 103.79613910248287
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:HOUGANG",
+      "name": "HOUGANG MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24961,
+          "latitude": 1.3719461165527262,
+          "longitude": 103.89297240097162
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 25200,
+          "latitude": 1.372141834832888,
+          "longitude": 103.89197502913501
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25201,
+          "latitude": 1.370208578260921,
+          "longitude": 103.89244572315859
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:HUME",
+      "name": "HUME MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 1",
+          "object_id": 24762,
+          "latitude": 1.3550632998007643,
+          "longitude": 103.76869550039065
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 24763,
+          "latitude": 1.3548287003188688,
+          "longitude": 103.7686516998054
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:JALAN_BESAR",
+      "name": "JALAN BESAR MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24709,
+          "latitude": 1.3054672798932725,
+          "longitude": 103.85524456461457
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25103,
+          "latitude": 1.304889894129293,
+          "longitude": 103.8552961254143
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:JELAPANG",
+      "name": "JELAPANG LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25093,
+          "latitude": 1.3868326995309255,
+          "longitude": 103.76467679284494
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:JOO_KOON",
+      "name": "JOO KOON MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24816,
+          "latitude": 1.3275020844586545,
+          "longitude": 103.67852070901132
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24817,
+          "latitude": 1.3279561114378626,
+          "longitude": 103.67864407707678
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:JURONG_EAST",
+      "name": "JURONG EAST MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit D",
+          "object_id": 25155,
+          "latitude": 1.3335813310891886,
+          "longitude": 103.74229819330705
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24829,
+          "latitude": 1.3327486846258436,
+          "longitude": 103.74276208165342
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24830,
+          "latitude": 1.3339896039381867,
+          "longitude": 103.74175989830943
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25078,
+          "latitude": 1.3325262356481666,
+          "longitude": 103.74264016298261
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:KADALOOR",
+      "name": "KADALOOR LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24802,
+          "latitude": 1.3998092631501848,
+          "longitude": 103.91638745848152
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24853,
+          "latitude": 1.399411467180394,
+          "longitude": 103.91651713032786
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:KAKI_BUKIT",
+      "name": "KAKI BUKIT MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 25097,
+          "latitude": 1.3349218903427178,
+          "longitude": 103.90914627626276
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25101,
+          "latitude": 1.3353112063695616,
+          "longitude": 103.90940509862578
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:KALLANG",
+      "name": "KALLANG MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24657,
+          "latitude": 1.311781770543804,
+          "longitude": 103.87158707586144
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24658,
+          "latitude": 1.3115404829755273,
+          "longitude": 103.87173056416847
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:KANGKAR",
+      "name": "KANGKAR LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25236,
+          "latitude": 1.3840745028734758,
+          "longitude": 103.90214755814063
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25237,
+          "latitude": 1.3837652031672463,
+          "longitude": 103.90227636802918
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:KATONG_PARK",
+      "name": "KATONG PARK MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 2",
+          "object_id": 25120,
+          "latitude": 1.2983796827911394,
+          "longitude": 103.88506921760501
+        },
+        {
+          "exit_code": "Exit 1",
+          "object_id": 25121,
+          "latitude": 1.2975385117765033,
+          "longitude": 103.88709207500811
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:KEAT_HONG",
+      "name": "KEAT HONG LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25084,
+          "latitude": 1.3784649670168292,
+          "longitude": 103.74922684160637
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:KEMBANGAN",
+      "name": "KEMBANGAN MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 25207,
+          "latitude": 1.3211521080554456,
+          "longitude": 103.91289928874629
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25208,
+          "latitude": 1.3209237602820207,
+          "longitude": 103.91294107940732
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:KENT_RIDGE",
+      "name": "KENT RIDGE MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 24825,
+          "latitude": 1.2939847851670137,
+          "longitude": 103.784490451682
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24826,
+          "latitude": 1.2932188028411657,
+          "longitude": 103.78453465663856
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25243,
+          "latitude": 1.292428115908549,
+          "longitude": 103.78480963188217
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25244,
+          "latitude": 1.2943158870094893,
+          "longitude": 103.78446589536516
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:KEPPEL",
+      "name": "KEPPEL MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 1",
+          "object_id": 24772,
+          "latitude": 1.2696653261809359,
+          "longitude": 103.82959534031491
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 24773,
+          "latitude": 1.2705454759594066,
+          "longitude": 103.82962481278612
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 24774,
+          "latitude": 1.2709494322028136,
+          "longitude": 103.8311098360443
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:KHATIB",
+      "name": "KHATIB MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 24676,
+          "latitude": 1.4175447068525804,
+          "longitude": 103.83288691369441
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24677,
+          "latitude": 1.4170582124269768,
+          "longitude": 103.83292241700968
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24678,
+          "latitude": 1.4171434179297155,
+          "longitude": 103.83270666774294
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 25074,
+          "latitude": 1.4178690371168612,
+          "longitude": 103.83323102003853
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:KING_ALBERT_PARK",
+      "name": "KING ALBERT PARK MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24889,
+          "latitude": 1.33597604551556,
+          "longitude": 103.78456158478065
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25252,
+          "latitude": 1.335537077669763,
+          "longitude": 103.78303026021548
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:KOVAN",
+      "name": "KOVAN MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 25202,
+          "latitude": 1.3602056230632658,
+          "longitude": 103.88472173212224
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 25203,
+          "latitude": 1.3600280101444633,
+          "longitude": 103.88545057800044
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25204,
+          "latitude": 1.3597075887012466,
+          "longitude": 103.8843074286358
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:KRANJI",
+      "name": "KRANJI MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit D",
+          "object_id": 24819,
+          "latitude": 1.4251249593550084,
+          "longitude": 103.76249677052948
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24842,
+          "latitude": 1.4251259491570445,
+          "longitude": 103.76175468556137
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25024,
+          "latitude": 1.4248526446610568,
+          "longitude": 103.76194060609642
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25025,
+          "latitude": 1.4247391712175417,
+          "longitude": 103.76201851559114
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:KUPANG",
+      "name": "KUPANG LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24796,
+          "latitude": 1.3982841977600906,
+          "longitude": 103.88113916979948
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24797,
+          "latitude": 1.3981587914724123,
+          "longitude": 103.88113793620703
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:LABRADOR_PARK",
+      "name": "LABRADOR PARK MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25247,
+          "latitude": 1.2721069580543352,
+          "longitude": 103.80235555366292
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:LAKESIDE",
+      "name": "LAKESIDE MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24667,
+          "latitude": 1.3439833412621969,
+          "longitude": 103.720448529393
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24840,
+          "latitude": 1.3443041699686624,
+          "longitude": 103.72171282700319
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24841,
+          "latitude": 1.344081457519484,
+          "longitude": 103.72107541274288
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:LAVENDER",
+      "name": "LAVENDER MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24655,
+          "latitude": 1.307169460472736,
+          "longitude": 103.86304306290333
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24656,
+          "latitude": 1.3076185391316715,
+          "longitude": 103.86265031662273
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:LAYAR",
+      "name": "LAYAR LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24923,
+          "latitude": 1.3920261721317324,
+          "longitude": 103.88015973051905
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25023,
+          "latitude": 1.3921445374146684,
+          "longitude": 103.88014279914344
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:LENTOR",
+      "name": "LENTOR MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 2",
+          "object_id": 24784,
+          "latitude": 1.3858909900868417,
+          "longitude": 103.83582345202382
+        },
+        {
+          "exit_code": "Exit 1",
+          "object_id": 24785,
+          "latitude": 1.3854098299074886,
+          "longitude": 103.8353599767011
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 24786,
+          "latitude": 1.38460195423691,
+          "longitude": 103.83739808002932
+        },
+        {
+          "exit_code": "Exit 4",
+          "object_id": 24787,
+          "latitude": 1.3836277515432962,
+          "longitude": 103.83733866006392
+        },
+        {
+          "exit_code": "Exit 5",
+          "object_id": 24788,
+          "latitude": 1.384162375361772,
+          "longitude": 103.83683953269572
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:LITTLE_INDIA",
+      "name": "LITTLE INDIA MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24661,
+          "latitude": 1.306563555357783,
+          "longitude": 103.84898508971142
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24827,
+          "latitude": 1.3068547371908685,
+          "longitude": 103.84899998224137
+        },
+        {
+          "exit_code": "Exit F",
+          "object_id": 24894,
+          "latitude": 1.307683536558851,
+          "longitude": 103.84830439913581
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25182,
+          "latitude": 1.3056052510392235,
+          "longitude": 103.84936002946029
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 25183,
+          "latitude": 1.3063515540862423,
+          "longitude": 103.84970482293288
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 25184,
+          "latitude": 1.3074264443989476,
+          "longitude": 103.85032215995454
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:LORONG_CHUAN",
+      "name": "LORONG CHUAN MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24933,
+          "latitude": 1.3517385379127682,
+          "longitude": 103.86291829995642
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24934,
+          "latitude": 1.3514391035751394,
+          "longitude": 103.86493367346459
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:MACPHERSON",
+      "name": "MACPHERSON MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit E",
+          "object_id": 24990,
+          "latitude": 1.3261927775504818,
+          "longitude": 103.88861521167733
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24992,
+          "latitude": 1.3251454586796771,
+          "longitude": 103.88845483437636
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25227,
+          "latitude": 1.3266787588073006,
+          "longitude": 103.88979333652624
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25228,
+          "latitude": 1.325855030181965,
+          "longitude": 103.89066567522076
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 25229,
+          "latitude": 1.32548152990651,
+          "longitude": 103.89026256557356
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:MARINA_BAY",
+      "name": "MARINA BAY MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 1",
+          "object_id": 24735,
+          "latitude": 1.2773530329779264,
+          "longitude": 103.85447003295413
+        },
+        {
+          "exit_code": "Exit 5",
+          "object_id": 24736,
+          "latitude": 1.2746932644544062,
+          "longitude": 103.85431950195625
+        },
+        {
+          "exit_code": "Exit 4",
+          "object_id": 24737,
+          "latitude": 1.2736342091095512,
+          "longitude": 103.85648883626318
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 24738,
+          "latitude": 1.2754163658971882,
+          "longitude": 103.85537174149034
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 24739,
+          "latitude": 1.2761589313162336,
+          "longitude": 103.85500333791994
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:MARINA_SOUTH",
+      "name": "MARINA SOUTH MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 1",
+          "object_id": 24748,
+          "latitude": 1.2735748044859307,
+          "longitude": 103.8615038787278
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 24749,
+          "latitude": 1.2738599495197072,
+          "longitude": 103.86177721011121
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 24750,
+          "latitude": 1.273135205086787,
+          "longitude": 103.86289430462864
+        },
+        {
+          "exit_code": "Exit 4",
+          "object_id": 24751,
+          "latitude": 1.2755114146116426,
+          "longitude": 103.86266850887442
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:MARINA_SOUTH_PIER",
+      "name": "MARINA SOUTH PIER MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24881,
+          "latitude": 1.2705299895186322,
+          "longitude": 103.86233005096989
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24882,
+          "latitude": 1.2714378371622164,
+          "longitude": 103.86357966976392
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:MARINE_PARADE",
+      "name": "MARINE PARADE MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 2",
+          "object_id": 25123,
+          "latitude": 1.302531699392386,
+          "longitude": 103.90459124473303
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 25124,
+          "latitude": 1.303593996641583,
+          "longitude": 103.90605286229047
+        },
+        {
+          "exit_code": "Exit 4",
+          "object_id": 25125,
+          "latitude": 1.3045658550115677,
+          "longitude": 103.90762749031286
+        },
+        {
+          "exit_code": "Exit 6",
+          "object_id": 25126,
+          "latitude": 1.3042985347100633,
+          "longitude": 103.90778792411058
+        },
+        {
+          "exit_code": "Exit 5",
+          "object_id": 25127,
+          "latitude": 1.3055802189000016,
+          "longitude": 103.90909370848797
+        },
+        {
+          "exit_code": "Exit 1",
+          "object_id": 25122,
+          "latitude": 1.3020932936434937,
+          "longitude": 103.9059103666293
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:MARINE_TERRACE",
+      "name": "MARINE TERRACE MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 4",
+          "object_id": 25128,
+          "latitude": 1.3068953217431258,
+          "longitude": 103.91502013985657
+        },
+        {
+          "exit_code": "Exit 1",
+          "object_id": 25129,
+          "latitude": 1.3063987001480175,
+          "longitude": 103.91505222707929
+        },
+        {
+          "exit_code": "Exit 5",
+          "object_id": 25130,
+          "latitude": 1.307438278403651,
+          "longitude": 103.91708914206795
+        },
+        {
+          "exit_code": "Exit 6",
+          "object_id": 25131,
+          "latitude": 1.3070628420288448,
+          "longitude": 103.91694534600546
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 25132,
+          "latitude": 1.3057892098989736,
+          "longitude": 103.91325299089799
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 25133,
+          "latitude": 1.3065792892039465,
+          "longitude": 103.91308661583462
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:MARSILING",
+      "name": "MARSILING MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 25026,
+          "latitude": 1.4324695224000648,
+          "longitude": 103.7738204510363
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25027,
+          "latitude": 1.4328016943533108,
+          "longitude": 103.77421049331159
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25174,
+          "latitude": 1.432751371720061,
+          "longitude": 103.77441052069655
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 25175,
+          "latitude": 1.4327513609845839,
+          "longitude": 103.77399713337503
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:MARYMOUNT",
+      "name": "MARYMOUNT MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 25187,
+          "latitude": 1.3478660721730777,
+          "longitude": 103.84005891807723
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25188,
+          "latitude": 1.3489803864213659,
+          "longitude": 103.83908795680053
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:MATTAR",
+      "name": "MATTAR MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24718,
+          "latitude": 1.3264635221670715,
+          "longitude": 103.88374838731283
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24974,
+          "latitude": 1.327251414091795,
+          "longitude": 103.88273206724486
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:MAXWELL",
+      "name": "MAXWELL MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 3",
+          "object_id": 24726,
+          "latitude": 1.2801915223809375,
+          "longitude": 103.84291630554293
+        },
+        {
+          "exit_code": "Exit 1",
+          "object_id": 24727,
+          "latitude": 1.2810342552625935,
+          "longitude": 103.84416441347508
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 24728,
+          "latitude": 1.2809194365909107,
+          "longitude": 103.84489545926178
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:MAYFLOWER",
+      "name": "MAYFLOWER MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 3",
+          "object_id": 24789,
+          "latitude": 1.3735320920974323,
+          "longitude": 103.83746104124462
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 24790,
+          "latitude": 1.3737197610491918,
+          "longitude": 103.837031676998
+        },
+        {
+          "exit_code": "Exit 1",
+          "object_id": 24791,
+          "latitude": 1.3727039723470345,
+          "longitude": 103.83671675130967
+        },
+        {
+          "exit_code": "Exit 7",
+          "object_id": 24792,
+          "latitude": 1.3713773076184756,
+          "longitude": 103.83628496724023
+        },
+        {
+          "exit_code": "Exit 4",
+          "object_id": 25035,
+          "latitude": 1.3712763229015377,
+          "longitude": 103.83679597809743
+        },
+        {
+          "exit_code": "Exit 5",
+          "object_id": 25036,
+          "latitude": 1.3707773381548525,
+          "longitude": 103.83676032658745
+        },
+        {
+          "exit_code": "Exit 6",
+          "object_id": 25037,
+          "latitude": 1.370896144193217,
+          "longitude": 103.83630873474603
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:MERIDIAN",
+      "name": "MERIDIAN LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24803,
+          "latitude": 1.3966810501386635,
+          "longitude": 103.90896583318727
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24804,
+          "latitude": 1.397121689799433,
+          "longitude": 103.90886949615401
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:MOUNTBATTEN",
+      "name": "MOUNTBATTEN MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 25067,
+          "latitude": 1.3060459256607546,
+          "longitude": 103.88324829270354
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25068,
+          "latitude": 1.3067527102284724,
+          "longitude": 103.8825975357342
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:NAPIER",
+      "name": "NAPIER MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 1",
+          "object_id": 25047,
+          "latitude": 1.3069359879223381,
+          "longitude": 103.81948377777624
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 25048,
+          "latitude": 1.3063449793684014,
+          "longitude": 103.8195066211851
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:NEWTON",
+      "name": "NEWTON MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24652,
+          "latitude": 1.312597796688079,
+          "longitude": 103.83788132539095
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24653,
+          "latitude": 1.3120754621212656,
+          "longitude": 103.83821906936093
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24893,
+          "latitude": 1.313617269149807,
+          "longitude": 103.83824238163545
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:NIBONG",
+      "name": "NIBONG LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25172,
+          "latitude": 1.4117727733571026,
+          "longitude": 103.90007380805265
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25173,
+          "latitude": 1.4119103237022979,
+          "longitude": 103.90053155420699
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:NICOLL_HIGHWAY",
+      "name": "NICOLL HIGHWAY MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24878,
+          "latitude": 1.2996607596837686,
+          "longitude": 103.86415174770211
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25064,
+          "latitude": 1.3001696897088442,
+          "longitude": 103.8635059552432
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:NOVENA",
+      "name": "NOVENA MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 25221,
+          "latitude": 1.3198958860347805,
+          "longitude": 103.84333973347628
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25222,
+          "latitude": 1.321094868302358,
+          "longitude": 103.84438933387052
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:OASIS",
+      "name": "OASIS LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24801,
+          "latitude": 1.4025071314475719,
+          "longitude": 103.91264613306079
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24852,
+          "latitude": 1.4021037193748016,
+          "longitude": 103.91275457379543
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:ONE-NORTH",
+      "name": "ONE-NORTH MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24808,
+          "latitude": 1.3003594934794571,
+          "longitude": 103.78792780616781
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24824,
+          "latitude": 1.3000747028842092,
+          "longitude": 103.78778481055383
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24939,
+          "latitude": 1.2997146976063356,
+          "longitude": 103.78756545620355
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25242,
+          "latitude": 1.2990274987228132,
+          "longitude": 103.78690746632078
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:ORCHARD_BOULEVARD",
+      "name": "ORCHARD BOULEVARD MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 1",
+          "object_id": 25038,
+          "latitude": 1.3036239533903895,
+          "longitude": 103.82363789843602
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 25039,
+          "latitude": 1.3024633242845058,
+          "longitude": 103.82389561211956
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:ORCHARD",
+      "name": "ORCHARD MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 4",
+          "object_id": 24650,
+          "latitude": 1.3045604741192454,
+          "longitude": 103.83203980088224
+        },
+        {
+          "exit_code": "Exit 1",
+          "object_id": 24651,
+          "latitude": 1.304892178137147,
+          "longitude": 103.83252425937934
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 24654,
+          "latitude": 1.3043543985604196,
+          "longitude": 103.8326196115145
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 24686,
+          "latitude": 1.304161137655932,
+          "longitude": 103.83277079650809
+        },
+        {
+          "exit_code": "Exit 7",
+          "object_id": 24687,
+          "latitude": 1.3031675344788836,
+          "longitude": 103.83217160123877
+        },
+        {
+          "exit_code": "Exit 12",
+          "object_id": 25049,
+          "latitude": 1.302857614748984,
+          "longitude": 103.8306630989529
+        },
+        {
+          "exit_code": "Exit 11",
+          "object_id": 25050,
+          "latitude": 1.3042179790540407,
+          "longitude": 103.83049672354741
+        },
+        {
+          "exit_code": "Exit 10",
+          "object_id": 25051,
+          "latitude": 1.3040457054348609,
+          "longitude": 103.83112657424772
+        },
+        {
+          "exit_code": "Exit 9",
+          "object_id": 25052,
+          "latitude": 1.3036655162164055,
+          "longitude": 103.83150686184108
+        },
+        {
+          "exit_code": "Exit 8",
+          "object_id": 25053,
+          "latitude": 1.303445719589311,
+          "longitude": 103.83178613555991
+        },
+        {
+          "exit_code": "Exit 13",
+          "object_id": 25054,
+          "latitude": 1.3022992113235183,
+          "longitude": 103.83212482963054
+        },
+        {
+          "exit_code": "Exit 5",
+          "object_id": 25055,
+          "latitude": 1.303944717459933,
+          "longitude": 103.83202381515746
+        },
+        {
+          "exit_code": "Exit 6",
+          "object_id": 25109,
+          "latitude": 1.3036476952659275,
+          "longitude": 103.83232091515383
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:OUTRAM_PARK",
+      "name": "OUTRAM PARK MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 1",
+          "object_id": 24698,
+          "latitude": 1.2816024282435041,
+          "longitude": 103.83865770171187
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 24699,
+          "latitude": 1.2816753456885712,
+          "longitude": 103.8389348372173
+        },
+        {
+          "exit_code": "Exit 8",
+          "object_id": 24724,
+          "latitude": 1.2823216309524463,
+          "longitude": 103.83811712967395
+        },
+        {
+          "exit_code": "Exit 7",
+          "object_id": 24725,
+          "latitude": 1.2810220177189033,
+          "longitude": 103.83864019518941
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 24809,
+          "latitude": 1.280993276156108,
+          "longitude": 103.83978923248007
+        },
+        {
+          "exit_code": "Exit 5",
+          "object_id": 24831,
+          "latitude": 1.2789469557328974,
+          "longitude": 103.83954924144093
+        },
+        {
+          "exit_code": "Exit 6",
+          "object_id": 24832,
+          "latitude": 1.27905123851202,
+          "longitude": 103.83853725196758
+        },
+        {
+          "exit_code": "Exit 4",
+          "object_id": 25034,
+          "latitude": 1.280213353869118,
+          "longitude": 103.84038678709574
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:PASIR_PANJANG",
+      "name": "PASIR PANJANG MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25246,
+          "latitude": 1.276003232785054,
+          "longitude": 103.79203018692041
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:PASIR_RIS",
+      "name": "PASIR RIS MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24680,
+          "latitude": 1.372886236352008,
+          "longitude": 103.94913694034909
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24681,
+          "latitude": 1.3728419690805276,
+          "longitude": 103.94933342664457
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:PAYA_LEBAR",
+      "name": "PAYA LEBAR MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit E",
+          "object_id": 24760,
+          "latitude": 1.318287499415408,
+          "longitude": 103.89323439978084
+        },
+        {
+          "exit_code": "Exit F",
+          "object_id": 24761,
+          "latitude": 1.3167375002646893,
+          "longitude": 103.89260940023549
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25028,
+          "latitude": 1.3182159921500778,
+          "longitude": 103.89278832410525
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25029,
+          "latitude": 1.3183474668988477,
+          "longitude": 103.89221716863163
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 25071,
+          "latitude": 1.3181492854313128,
+          "longitude": 103.8917211215916
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 25072,
+          "latitude": 1.3165877194692752,
+          "longitude": 103.89207769924559
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:PENDING",
+      "name": "PENDING LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25089,
+          "latitude": 1.376297117193637,
+          "longitude": 103.77132784229688
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:PETIR",
+      "name": "PETIR LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25088,
+          "latitude": 1.37760322809516,
+          "longitude": 103.76679301496294
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:PHOENIX",
+      "name": "PHOENIX LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25086,
+          "latitude": 1.378614068213967,
+          "longitude": 103.75825247510643
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:PIONEER",
+      "name": "PIONEER MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25022,
+          "latitude": 1.3373446269204403,
+          "longitude": 103.69715537341133
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25165,
+          "latitude": 1.3378316280054785,
+          "longitude": 103.69712945287633
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:POTONG_PASIR",
+      "name": "POTONG PASIR MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24877,
+          "latitude": 1.3328013522428703,
+          "longitude": 103.86896644470293
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24936,
+          "latitude": 1.3310667109798315,
+          "longitude": 103.86870389318757
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24937,
+          "latitude": 1.3311481407339933,
+          "longitude": 103.86933323936297
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:PRINCE_EDWARD_ROAD",
+      "name": "PRINCE EDWARD ROAD MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 1",
+          "object_id": 24775,
+          "latitude": 1.27303384497102,
+          "longitude": 103.84557526142366
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 24776,
+          "latitude": 1.273435421768412,
+          "longitude": 103.84686122154847
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:PROMENADE",
+      "name": "PROMENADE MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24665,
+          "latitude": 1.2917116609988615,
+          "longitude": 103.86067361130195
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25063,
+          "latitude": 1.2938620878762646,
+          "longitude": 103.86013688440227
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 25073,
+          "latitude": 1.2941027563615055,
+          "longitude": 103.86023648411177
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:PUNGGOL_COAST",
+      "name": "PUNGGOL COAST MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 1",
+          "object_id": 24770,
+          "latitude": 1.414836116762752,
+          "longitude": 103.90953285042141
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 24771,
+          "latitude": 1.4150889312124821,
+          "longitude": 103.91068131895568
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:PUNGGOL",
+      "name": "PUNGGOL LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit D",
+          "object_id": 25014,
+          "latitude": 1.404438336178063,
+          "longitude": 103.90179852436347
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 25016,
+          "latitude": 1.4043006257297816,
+          "longitude": 103.90211563918285
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:PUNGGOL",
+      "name": "PUNGGOL MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25013,
+          "latitude": 1.405339576226845,
+          "longitude": 103.90230599665618
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25015,
+          "latitude": 1.4051862417636451,
+          "longitude": 103.90259819698754
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:PUNGGOL_POINT",
+      "name": "PUNGGOL POINT LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 25170,
+          "latitude": 1.4166640679409692,
+          "longitude": 103.9066933049236
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25171,
+          "latitude": 1.4169147679142875,
+          "longitude": 103.90681779233337
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:QUEENSTOWN",
+      "name": "QUEENSTOWN MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 25149,
+          "latitude": 1.2954462560700986,
+          "longitude": 103.80558472989604
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 25150,
+          "latitude": 1.2953829305261282,
+          "longitude": 103.80549220488795
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24641,
+          "latitude": 1.2942472621509544,
+          "longitude": 103.80618277713309
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24870,
+          "latitude": 1.2943299089060527,
+          "longitude": 103.80631147275847
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:RAFFLES_PLACE",
+      "name": "RAFFLES PLACE MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit H",
+          "object_id": 24704,
+          "latitude": 1.285258281201247,
+          "longitude": 103.85162171586596
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 24740,
+          "latitude": 1.2832115821243628,
+          "longitude": 103.8515225951546
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24741,
+          "latitude": 1.2846068745370232,
+          "longitude": 103.85147997829907
+        },
+        {
+          "exit_code": "Exit G",
+          "object_id": 24742,
+          "latitude": 1.2850168973017784,
+          "longitude": 103.85147813199741
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24743,
+          "latitude": 1.2841251477036855,
+          "longitude": 103.85143835365814
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24744,
+          "latitude": 1.283641390877421,
+          "longitude": 103.85135321456237
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24967,
+          "latitude": 1.2836305207274084,
+          "longitude": 103.8515625354869
+        },
+        {
+          "exit_code": "Exit J",
+          "object_id": 24968,
+          "latitude": 1.28262623356678,
+          "longitude": 103.85129603343073
+        },
+        {
+          "exit_code": "Exit F",
+          "object_id": 24969,
+          "latitude": 1.2825385749191898,
+          "longitude": 103.85096090209325
+        },
+        {
+          "exit_code": "Exit I",
+          "object_id": 24970,
+          "latitude": 1.282382307297459,
+          "longitude": 103.85143330239858
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:RANGGUNG",
+      "name": "RANGGUNG LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25234,
+          "latitude": 1.3841763860698961,
+          "longitude": 103.89732172381714
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25235,
+          "latitude": 1.3841048834051197,
+          "longitude": 103.8972239380547
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:REDHILL",
+      "name": "REDHILL MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24642,
+          "latitude": 1.2893707046735148,
+          "longitude": 103.81699445855267
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24643,
+          "latitude": 1.2894858753609895,
+          "longitude": 103.81724937307973
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:RENJONG",
+      "name": "RENJONG LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25232,
+          "latitude": 1.3866979558885189,
+          "longitude": 103.89040916173235
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25233,
+          "latitude": 1.386814144215554,
+          "longitude": 103.89043819212365
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:RIVIERA",
+      "name": "RIVIERA LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24854,
+          "latitude": 1.3945590659696856,
+          "longitude": 103.91593547052074
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24855,
+          "latitude": 1.3943256111183955,
+          "longitude": 103.91626309852711
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:ROCHOR",
+      "name": "ROCHOR MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24895,
+          "latitude": 1.304214777033743,
+          "longitude": 103.85310433564943
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25019,
+          "latitude": 1.3034041065355197,
+          "longitude": 103.85237502163348
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:RUMBIA",
+      "name": "RUMBIA LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25240,
+          "latitude": 1.3913404864174224,
+          "longitude": 103.9060187916516
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25241,
+          "latitude": 1.3914142417871276,
+          "longitude": 103.90610581936582
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:SAM_KEE",
+      "name": "SAM KEE LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24849,
+          "latitude": 1.4097025000417631,
+          "longitude": 103.90503857100495
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24850,
+          "latitude": 1.4098276724417222,
+          "longitude": 103.9047922799363
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:SAMUDERA",
+      "name": "SAMUDERA LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24845,
+          "latitude": 1.4158653604828477,
+          "longitude": 103.90191150962721
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24846,
+          "latitude": 1.41590585709171,
+          "longitude": 103.90236156011096
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:SEGAR",
+      "name": "SEGAR LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25092,
+          "latitude": 1.3878115559952267,
+          "longitude": 103.76940991480218
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:SEMBAWANG",
+      "name": "SEMBAWANG MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24672,
+          "latitude": 1.4488373194331288,
+          "longitude": 103.82010973575841
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24673,
+          "latitude": 1.4487682603258423,
+          "longitude": 103.81979020457172
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24679,
+          "latitude": 1.448927331537594,
+          "longitude": 103.82040156029227
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24960,
+          "latitude": 1.44915683716069,
+          "longitude": 103.81975896600352
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:SENGKANG",
+      "name": "SENGKANG MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit D",
+          "object_id": 25009,
+          "latitude": 1.3923708436315307,
+          "longitude": 103.89570545661016
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25010,
+          "latitude": 1.3917956376620702,
+          "longitude": 103.89563689436537
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25011,
+          "latitude": 1.3918291197182173,
+          "longitude": 103.89540572075428
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 25012,
+          "latitude": 1.3908815860944936,
+          "longitude": 103.89520939988465
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:SENJA",
+      "name": "SENJA LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24952,
+          "latitude": 1.3828754471752023,
+          "longitude": 103.76232576657173
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:SERANGOON",
+      "name": "SERANGOON MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit H",
+          "object_id": 24928,
+          "latitude": 1.3497276995143592,
+          "longitude": 103.873546495734
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24929,
+          "latitude": 1.3494816802550018,
+          "longitude": 103.87395739539099
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24930,
+          "latitude": 1.3499015921064987,
+          "longitude": 103.87432194657637
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24931,
+          "latitude": 1.350595104421425,
+          "longitude": 103.87369401449845
+        },
+        {
+          "exit_code": "Exit F",
+          "object_id": 24932,
+          "latitude": 1.3509482779369533,
+          "longitude": 103.87144934034903
+        },
+        {
+          "exit_code": "Exit G",
+          "object_id": 24955,
+          "latitude": 1.3507901994138853,
+          "longitude": 103.87286669539574
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24956,
+          "latitude": 1.3498337382561254,
+          "longitude": 103.87364132190379
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 24957,
+          "latitude": 1.3508202454303972,
+          "longitude": 103.87290211634077
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:SHENTON_WAY",
+      "name": "SHENTON WAY MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 1",
+          "object_id": 24729,
+          "latitude": 1.2774620583356546,
+          "longitude": 103.85183570738151
+        },
+        {
+          "exit_code": "Exit 5",
+          "object_id": 24730,
+          "latitude": 1.2771436461188985,
+          "longitude": 103.85180797805077
+        },
+        {
+          "exit_code": "Exit 4",
+          "object_id": 24731,
+          "latitude": 1.2776559417698303,
+          "longitude": 103.85103408604942
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 24732,
+          "latitude": 1.2770030544242335,
+          "longitude": 103.85091509462848
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 24733,
+          "latitude": 1.277629581126691,
+          "longitude": 103.85012877107079
+        },
+        {
+          "exit_code": "Exit 6",
+          "object_id": 24734,
+          "latitude": 1.2779292050949722,
+          "longitude": 103.84989322327651
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:SIGLAP",
+      "name": "SIGLAP MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 1",
+          "object_id": 25138,
+          "latitude": 1.3088503155584577,
+          "longitude": 103.9287926248893
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 25139,
+          "latitude": 1.309776570718989,
+          "longitude": 103.92858629687198
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 25140,
+          "latitude": 1.310589222582442,
+          "longitude": 103.93124593288341
+        },
+        {
+          "exit_code": "Exit 4",
+          "object_id": 25141,
+          "latitude": 1.3102017218908424,
+          "longitude": 103.9312910608542
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:SIMEI",
+      "name": "SIMEI MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25075,
+          "latitude": 1.3426617945337078,
+          "longitude": 103.953818676297
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:SIXTH_AVENUE",
+      "name": "SIXTH AVENUE MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24890,
+          "latitude": 1.3315213014357175,
+          "longitude": 103.7968481782287
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25251,
+          "latitude": 1.330780469946184,
+          "longitude": 103.79656608212053
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:SOMERSET",
+      "name": "SOMERSET MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 25157,
+          "latitude": 1.3004362205899318,
+          "longitude": 103.83876558428138
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24688,
+          "latitude": 1.300766518771738,
+          "longitude": 103.838458985164
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24880,
+          "latitude": 1.3002411386798598,
+          "longitude": 103.83973414808479
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24938,
+          "latitude": 1.3000284884873998,
+          "longitude": 103.83839932657575
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:SOO_TECK",
+      "name": "SOO TECK LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24798,
+          "latitude": 1.4050149248670734,
+          "longitude": 103.897029921817
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24799,
+          "latitude": 1.4052448994991427,
+          "longitude": 103.89740857212135
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:SOUTH_VIEW",
+      "name": "SOUTH VIEW LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24806,
+          "latitude": 1.3803176569910298,
+          "longitude": 103.74510113107972
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:SPRINGLEAF",
+      "name": "SPRINGLEAF MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 1",
+          "object_id": 24783,
+          "latitude": 1.3987872483653485,
+          "longitude": 103.81800341495403
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 24996,
+          "latitude": 1.3978208040575055,
+          "longitude": 103.81839060713808
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 24997,
+          "latitude": 1.3976841788785623,
+          "longitude": 103.81808162380058
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:STADIUM",
+      "name": "STADIUM MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 25065,
+          "latitude": 1.3033702260202458,
+          "longitude": 103.87622623397485
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25066,
+          "latitude": 1.3025110877234043,
+          "longitude": 103.87439998828935
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:STEVENS",
+      "name": "STEVENS MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 5",
+          "object_id": 25110,
+          "latitude": 1.320937743414412,
+          "longitude": 103.8263225771446
+        },
+        {
+          "exit_code": "Exit 4",
+          "object_id": 25111,
+          "latitude": 1.321519904255611,
+          "longitude": 103.82588286965881
+        },
+        {
+          "exit_code": "Exit 1",
+          "object_id": 25112,
+          "latitude": 1.319951635106423,
+          "longitude": 103.82572837817727
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 25113,
+          "latitude": 1.3188288961882542,
+          "longitude": 103.82601359358057
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 25114,
+          "latitude": 1.3194704609951542,
+          "longitude": 103.82499157064271
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:SUMANG",
+      "name": "SUMANG LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24752,
+          "latitude": 1.4083684310204716,
+          "longitude": 103.89833568007762
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24753,
+          "latitude": 1.4084879018383736,
+          "longitude": 103.8987571239555
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:TAI_SENG",
+      "name": "TAI SENG MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 24765,
+          "latitude": 1.3357723930680265,
+          "longitude": 103.88826122803613
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24925,
+          "latitude": 1.3346208772307528,
+          "longitude": 103.88821406777215
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24958,
+          "latitude": 1.3359140849264504,
+          "longitude": 103.88762743726211
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:TAMPINES_EAST",
+      "name": "TAMPINES EAST MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24708,
+          "latitude": 1.3555882263947188,
+          "longitude": 103.95517001422066
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24973,
+          "latitude": 1.3555531715017815,
+          "longitude": 103.95570471137918
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 25056,
+          "latitude": 1.3569701935566743,
+          "longitude": 103.95571743792196
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25096,
+          "latitude": 1.356460761667418,
+          "longitude": 103.95454044078075
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:TAMPINES",
+      "name": "TAMPINES MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24682,
+          "latitude": 1.3537640125402173,
+          "longitude": 103.94476631210706
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24683,
+          "latitude": 1.353398312649212,
+          "longitude": 103.9449039578947
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 24706,
+          "latitude": 1.355853444764249,
+          "longitude": 103.94265881069441
+        },
+        {
+          "exit_code": "Exit G",
+          "object_id": 24950,
+          "latitude": 1.3545963387281112,
+          "longitude": 103.94272349669535
+        },
+        {
+          "exit_code": "Exit F",
+          "object_id": 25094,
+          "latitude": 1.3541939276064219,
+          "longitude": 103.94265368187834
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 25108,
+          "latitude": 1.354870574817919,
+          "longitude": 103.94367818203155
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25199,
+          "latitude": 1.3535390816670922,
+          "longitude": 103.94508956333436
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:TAMPINES_WEST",
+      "name": "TAMPINES WEST MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24714,
+          "latitude": 1.3456305876139147,
+          "longitude": 103.93819674000568
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25102,
+          "latitude": 1.3449991975144835,
+          "longitude": 103.93894850378165
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:TAN_KAH_KEE",
+      "name": "TAN KAH KEE MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24891,
+          "latitude": 1.3261461588254935,
+          "longitude": 103.80780087370651
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25249,
+          "latitude": 1.3253330690801757,
+          "longitude": 103.80779911907287
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:TANAH_MERAH",
+      "name": "TANAH MERAH MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24863,
+          "latitude": 1.3270612758143558,
+          "longitude": 103.9457230415822
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24864,
+          "latitude": 1.3268577483881843,
+          "longitude": 103.94579472792945
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:TANJONG_KATONG",
+      "name": "TANJONG KATONG MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 1",
+          "object_id": 25136,
+          "latitude": 1.2990386927771713,
+          "longitude": 103.89704545419403
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 25137,
+          "latitude": 1.2990161196075827,
+          "longitude": 103.89769313140535
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 25147,
+          "latitude": 1.300229200662339,
+          "longitude": 103.89771528877114
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:TANJONG_PAGAR",
+      "name": "TANJONG PAGAR MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24700,
+          "latitude": 1.2766717422526974,
+          "longitude": 103.8465445904738
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24701,
+          "latitude": 1.2764085007399384,
+          "longitude": 103.84483401420995
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24702,
+          "latitude": 1.2760892299950208,
+          "longitude": 103.84653355796422
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24703,
+          "latitude": 1.276064828263426,
+          "longitude": 103.84690880020437
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 24971,
+          "latitude": 1.2762591011325783,
+          "longitude": 103.84709579119706
+        },
+        {
+          "exit_code": "Exit F",
+          "object_id": 25057,
+          "latitude": 1.2773794881071403,
+          "longitude": 103.84692758023486
+        },
+        {
+          "exit_code": "Exit G",
+          "object_id": 25058,
+          "latitude": 1.277784540365026,
+          "longitude": 103.8469531475443
+        },
+        {
+          "exit_code": "Exit H",
+          "object_id": 25059,
+          "latitude": 1.2754509043453175,
+          "longitude": 103.8464450884119
+        },
+        {
+          "exit_code": "Exit I",
+          "object_id": 25166,
+          "latitude": 1.2764479679167846,
+          "longitude": 103.84565600388527
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:TANJONG_RHU",
+      "name": "TANJONG RHU MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 1",
+          "object_id": 25134,
+          "latitude": 1.296459488281608,
+          "longitude": 103.87347790491667
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 25135,
+          "latitude": 1.2982000462876002,
+          "longitude": 103.8736026871191
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:TECK_LEE",
+      "name": "TECK LEE LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24847,
+          "latitude": 1.4128757347357002,
+          "longitude": 103.90678152950578
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24848,
+          "latitude": 1.41292900309077,
+          "longitude": 103.90651078993365
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:TECK_WHYE",
+      "name": "TECK WHYE LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25085,
+          "latitude": 1.3765641949369936,
+          "longitude": 103.75382610234246
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:TELOK_AYER",
+      "name": "TELOK AYER MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit E",
+          "object_id": 24764,
+          "latitude": 1.282700000363803,
+          "longitude": 103.84750000000379
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24782,
+          "latitude": 1.2826000004195686,
+          "longitude": 103.84809999968618
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24822,
+          "latitude": 1.282250664264074,
+          "longitude": 103.84884165606141
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24823,
+          "latitude": 1.2824972750387271,
+          "longitude": 103.84877332815995
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25021,
+          "latitude": 1.2818873892355847,
+          "longitude": 103.84850654389615
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:TELOK_BLANGAH",
+      "name": "TELOK BLANGAH MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 25248,
+          "latitude": 1.2707212262114045,
+          "longitude": 103.80988373092025
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:THANGGAM",
+      "name": "THANGGAM LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24794,
+          "latitude": 1.3971980359239675,
+          "longitude": 103.87556636438234
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24795,
+          "latitude": 1.3971924583386544,
+          "longitude": 103.87568683695845
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:TIONG_BAHRU",
+      "name": "TIONG BAHRU MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24646,
+          "latitude": 1.285759455898818,
+          "longitude": 103.82699059514609
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24647,
+          "latitude": 1.286361941390426,
+          "longitude": 103.8274964133934
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:TOA_PAYOH",
+      "name": "TOA PAYOH MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24666,
+          "latitude": 1.3323764420302064,
+          "longitude": 103.84772380431387
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25219,
+          "latitude": 1.3323155366467678,
+          "longitude": 103.847577567476
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 25220,
+          "latitude": 1.3329941018374794,
+          "longitude": 103.84731977363178
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 25223,
+          "latitude": 1.3332787459863253,
+          "longitude": 103.84651740615568
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:LRT:TONGKANG",
+      "name": "TONGKANG LRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 25230,
+          "latitude": 1.3893790079485524,
+          "longitude": 103.88608435738307
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25231,
+          "latitude": 1.3891801609980827,
+          "longitude": 103.88596211411945
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:TUAS_CRESCENT",
+      "name": "TUAS CRESCENT MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24982,
+          "latitude": 1.3207638171122238,
+          "longitude": 103.64895874126714
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24983,
+          "latitude": 1.3212435963986766,
+          "longitude": 103.64928678910867
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:TUAS_LINK",
+      "name": "TUAS LINK MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24986,
+          "latitude": 1.3404268992051425,
+          "longitude": 103.63724572002151
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24987,
+          "latitude": 1.3409400722685778,
+          "longitude": 103.63684066747358
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:TUAS_WEST_ROAD",
+      "name": "TUAS WEST ROAD MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24984,
+          "latitude": 1.3298724241392643,
+          "longitude": 103.63928434470874
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24985,
+          "latitude": 1.3301823302320677,
+          "longitude": 103.6397907112947
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:UBI",
+      "name": "UBI MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 24715,
+          "latitude": 1.329830770674731,
+          "longitude": 103.89858557091625
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24720,
+          "latitude": 1.3299508282897736,
+          "longitude": 103.89987669085686
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:UPPER_CHANGI",
+      "name": "UPPER CHANGI MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24707,
+          "latitude": 1.3418611973421342,
+          "longitude": 103.9613284805394
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 24711,
+          "latitude": 1.3420065422681042,
+          "longitude": 103.96096063018997
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24721,
+          "latitude": 1.3419926673422482,
+          "longitude": 103.96161727307985
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24722,
+          "latitude": 1.3410376791225642,
+          "longitude": 103.96147626842628
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 25106,
+          "latitude": 1.3408404740643267,
+          "longitude": 103.96104308070888
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:UPPER_THOMSON",
+      "name": "UPPER THOMSON MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 2",
+          "object_id": 24903,
+          "latitude": 1.3557365747065533,
+          "longitude": 103.8318330090042
+        },
+        {
+          "exit_code": "Exit 1",
+          "object_id": 24904,
+          "latitude": 1.354833644682351,
+          "longitude": 103.8319161968925
+        },
+        {
+          "exit_code": "Exit 5",
+          "object_id": 24905,
+          "latitude": 1.3544178218637264,
+          "longitude": 103.83263517825011
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 24906,
+          "latitude": 1.3541445663788472,
+          "longitude": 103.83392459060627
+        },
+        {
+          "exit_code": "Exit 4",
+          "object_id": 24907,
+          "latitude": 1.3535030102965167,
+          "longitude": 103.83379386731406
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:WOODLANDS",
+      "name": "WOODLANDS MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 5",
+          "object_id": 25159,
+          "latitude": 1.4358439359358868,
+          "longitude": 103.78896432811273
+        },
+        {
+          "exit_code": "Exit 7",
+          "object_id": 25160,
+          "latitude": 1.4344955258377818,
+          "longitude": 103.78797676882189
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 24916,
+          "latitude": 1.436673114687528,
+          "longitude": 103.7865080837622
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 24917,
+          "latitude": 1.4372433670398619,
+          "longitude": 103.78710822541109
+        },
+        {
+          "exit_code": "Exit 4",
+          "object_id": 24918,
+          "latitude": 1.4375403735797483,
+          "longitude": 103.78800546566868
+        },
+        {
+          "exit_code": "Exit 1",
+          "object_id": 24919,
+          "latitude": 1.4366968752462377,
+          "longitude": 103.78573562446458
+        },
+        {
+          "exit_code": "Exit 6",
+          "object_id": 24920,
+          "latitude": 1.4348151751388867,
+          "longitude": 103.78908910975163
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:WOODLANDS_NORTH",
+      "name": "WOODLANDS NORTH MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 2",
+          "object_id": 25158,
+          "latitude": 1.4490472997072523,
+          "longitude": 103.78510227142458
+        },
+        {
+          "exit_code": "Exit 1",
+          "object_id": 24998,
+          "latitude": 1.4479365024965063,
+          "longitude": 103.7854290806745
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:WOODLANDS_SOUTH",
+      "name": "WOODLANDS SOUTH MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit 1",
+          "object_id": 25161,
+          "latitude": 1.4273020172478001,
+          "longitude": 103.79302746334568
+        },
+        {
+          "exit_code": "Exit 2",
+          "object_id": 25162,
+          "latitude": 1.4276049641345527,
+          "longitude": 103.79341369273166
+        },
+        {
+          "exit_code": "Exit 5",
+          "object_id": 24723,
+          "latitude": 1.4258433869092755,
+          "longitude": 103.79436521102042
+        },
+        {
+          "exit_code": "Exit 3",
+          "object_id": 25163,
+          "latitude": 1.4274267600356203,
+          "longitude": 103.7945604978579
+        },
+        {
+          "exit_code": "Exit 4",
+          "object_id": 25164,
+          "latitude": 1.4266842408027618,
+          "longitude": 103.7944238317872
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:WOODLEIGH",
+      "name": "WOODLEIGH MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 25224,
+          "latitude": 1.339867219941902,
+          "longitude": 103.87105380415785
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25225,
+          "latitude": 1.3385106544114485,
+          "longitude": 103.87094060456803
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25226,
+          "latitude": 1.3385831494601297,
+          "longitude": 103.87050846814451
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:YEW_TEE",
+      "name": "YEW TEE MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit B",
+          "object_id": 25079,
+          "latitude": 1.3980677680600264,
+          "longitude": 103.74732988003458
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25080,
+          "latitude": 1.3976554793526916,
+          "longitude": 103.74719516647077
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 25081,
+          "latitude": 1.3970007717306616,
+          "longitude": 103.74743189325034
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 25082,
+          "latitude": 1.3972725119722809,
+          "longitude": 103.74711143100039
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:YIO_CHU_KANG",
+      "name": "YIO CHU KANG MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit C",
+          "object_id": 25030,
+          "latitude": 1.3819536213060495,
+          "longitude": 103.84464576043435
+        },
+        {
+          "exit_code": "Exit A",
+          "object_id": 25031,
+          "latitude": 1.3816444074306995,
+          "longitude": 103.84483419549113
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 25032,
+          "latitude": 1.381547520536042,
+          "longitude": 103.84494684754169
+        }
+      ]
+    },
+    {
+      "place_id": "LTA:MRT:YISHUN",
+      "name": "YISHUN MRT STATION",
+      "reference_points": [
+        {
+          "exit_code": "Exit A",
+          "object_id": 24674,
+          "latitude": 1.429397167315948,
+          "longitude": 103.83478360318439
+        },
+        {
+          "exit_code": "Exit D",
+          "object_id": 24675,
+          "latitude": 1.4291065074428853,
+          "longitude": 103.83486348521703
+        },
+        {
+          "exit_code": "Exit C",
+          "object_id": 24924,
+          "latitude": 1.4291168143137056,
+          "longitude": 103.8350908427129
+        },
+        {
+          "exit_code": "Exit B",
+          "object_id": 24953,
+          "latitude": 1.4296362919100813,
+          "longitude": 103.83486553346143
+        },
+        {
+          "exit_code": "Exit E",
+          "object_id": 24954,
+          "latitude": 1.4296655971646168,
+          "longitude": 103.83564365493329
+        }
+      ]
+    }
+  ]
+}

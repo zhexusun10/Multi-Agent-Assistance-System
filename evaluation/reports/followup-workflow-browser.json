@@ -1,0 +1,18 @@
+{
+  "checked_at": "2026-10-19T23:13:52.421034",
+  "status": "passed",
+  "session_id": "6db3e076-e3d1-4b32-a21f-65a8a58a4640",
+  "selected_listing_id": "24508067",
+  "provider_mode": "simulation; no actual provider messages",
+  "checks": [
+    "pending candidates remain actionable; result count and area-distance meaning match the visible list",
+    "listing contact hints do not infer a messaging channel; both provider configuration states are visible",
+    "calendar uses real Singapore date, selects a future slot and preserves unsaved contact/negotiation edits",
+    "explicit review includes real wire text and recipient; simulation creates no external send",
+    "post-execution follow-up can be created, revised and completed without changing the sent message",
+    "bilateral confirmation is separate; owned calendar reflects it and simulated ICS remains tentative",
+    "daily summary download contains conversation, negotiation, unknown facts, confirmation and simulation provenance",
+    "action, confirmation, completed follow-up and artifact survive page reload"
+  ],
+  "page_errors": []
+}

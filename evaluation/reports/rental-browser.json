@@ -1,0 +1,16 @@
+{
+  "checked_at": "2026-10-19T14:12:45.512822+00:00",
+  "status": "passed",
+  "checks": [
+    "1B1B produces exact bedroom/bathroom counts without inventing private use or rental scope",
+    "Existing historical matches are actually displayed",
+    "Adding private bathroom separates candidates and explicitly explains absent private-use evidence",
+    "The page uses user-facing terms rather than amenities equality",
+    "Removing private bathroom preserves bathroom count and budget and restores verified historical matches"
+  ],
+  "page_errors": [],
+  "screenshots": [
+    "07-layout-1b1b.png",
+    "08-private-bathroom-unavailable.png"
+  ]
+}

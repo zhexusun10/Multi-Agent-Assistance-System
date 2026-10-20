@@ -1,0 +1,23 @@
+{
+  "checked_at": "2026-10-20T12:04:19.306Z",
+  "session_id": "1540ecaf-2abb-4aee-ac8b-f52c75efe745",
+  "checks": [
+    {
+      "name": "Compound search -> verified recommendation -> explanation -> summary runs A/B/C/D in dependency order",
+      "passed": true
+    },
+    {
+      "name": "Actual Neo4j Supermarket points independently reproduce distances and top-5 soft ranking without excluding hard matches",
+      "passed": true,
+      "detail": {
+        "places": 554,
+        "eligible": 65,
+        "tolerance_m": 0.01
+      }
+    },
+    {
+      "name": "Rapid correction supersedes older work; replaying the same message ID creates no new recommendation",
+      "passed": true
+    }
+  ]
+}

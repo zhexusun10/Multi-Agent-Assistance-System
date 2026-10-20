@@ -1,0 +1,10 @@
+-r requirements.txt
+-r data/graph_requirements.txt
+-r data/requirements.txt
+playwright>=1.50,<2
+chromadb==0.5.23
+numpy>=1.26,<2
+rank-bm25==0.2.2
+jieba==0.42.1
+fastembed==0.7.4
+posthog>=3,<6

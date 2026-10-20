@@ -1,0 +1,292 @@
+{
+  "rows": [
+    {
+      "query": "我想租新加坡国立大学附近3公里内的房子，要求房子3公里内附近有MRT，预算3000新币每月，要求有独立浴室",
+      "session_id": "7b5ebaeb-b459-4294-84ca-59b9fe259dec",
+      "requirements": {
+        "criteria": [
+          {
+            "field": "amenities",
+            "value": "private_bathroom",
+            "operator": "eq",
+            "strength": "hard",
+            "criterion_id": "amenities:private_bathroom"
+          },
+          {
+            "unit": "SGD/month",
+            "field": "price",
+            "value": 3000,
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "monthly-rent"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 3000,
+            "target": {
+              "name": "最近的MRT地铁站",
+              "category": "MRTStation"
+            },
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "place_proximity:MRTStation",
+            "distance_type": "straight_line"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 1000,
+            "target": {
+              "name": "最近的MRT地铁站",
+              "category": "MRTStation"
+            },
+            "weight": 1,
+            "operator": "lte",
+            "strength": "soft",
+            "criterion_id": "place_proximity:MRTStation-preference",
+            "distance_type": "straight_line"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 3000,
+            "target": {
+              "name": "National University of Singapore",
+              "place_id": "OSM:way:54519165"
+            },
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "place_proximity:OSM:way:54519165",
+            "distance_type": "straight_line"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 1000,
+            "target": {
+              "name": "National University of Singapore",
+              "place_id": "OSM:way:54519165"
+            },
+            "weight": 1,
+            "operator": "lte",
+            "strength": "soft",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "distance_type": "straight_line"
+          }
+        ],
+        "listing_type": "RENT"
+      },
+      "pending": null,
+      "counts": {
+        "assessed": 475,
+        "eligible": 0,
+        "excluded": 299,
+        "unverified": 176
+      },
+      "message": "“新加坡国立大学”已匹配到地点目录 National University of Singapore；默认采用直线距离，未验证实际路线。\n距离范围 3000 米按直线口径处理；在范围内继续优先更近的房源。\n“MRT”按地铁站类别处理，使用官方已收录MRT站点出口计算最近直线距离，不要求指定站名，也不代替实际步行路线。\n\n已找到待核实候选：本次评估中有 176 套因部分硬条件缺少证据而需要确认，下面展示 5 套。尚未标为全部条件满足，也未自动放宽你的要求。\n可以从待核实候选点击“我想看这套”或“核实并咨询”，生成逐项核实和看房询问草稿；这不会将未知条件改成已满足。"
+    },
+    {
+      "query": "我想租新加坡国立大学附近3公里内的房子，预算3000新币每月，要求有独立浴室",
+      "session_id": "6496cdac-d77c-4aa3-8609-432f060b036c",
+      "requirements": {
+        "criteria": [
+          {
+            "field": "amenities",
+            "value": "private_bathroom",
+            "operator": "eq",
+            "strength": "hard",
+            "criterion_id": "amenities:private_bathroom"
+          },
+          {
+            "unit": "SGD/month",
+            "field": "price",
+            "value": 3000,
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "monthly-rent"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 3000,
+            "target": {
+              "name": "National University of Singapore",
+              "place_id": "OSM:way:54519165"
+            },
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "place_proximity:OSM:way:54519165",
+            "distance_type": "straight_line"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 1000,
+            "target": {
+              "name": "National University of Singapore",
+              "place_id": "OSM:way:54519165"
+            },
+            "weight": 1,
+            "operator": "lte",
+            "strength": "soft",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "distance_type": "straight_line"
+          }
+        ],
+        "listing_type": "RENT"
+      },
+      "pending": null,
+      "counts": {
+        "assessed": 475,
+        "eligible": 0,
+        "excluded": 299,
+        "unverified": 176
+      },
+      "message": "“新加坡国立大学”已匹配到地点目录 National University of Singapore；默认采用直线距离，未验证实际路线。\n距离范围 3000 米按直线口径处理；在范围内继续优先更近的房源。\n\n已找到待核实候选：本次评估中有 176 套因部分硬条件缺少证据而需要确认，下面展示 5 套。尚未标为全部条件满足，也未自动放宽你的要求。\n可以从待核实候选点击“我想看这套”或“核实并咨询”，生成逐项核实和看房询问草稿；这不会将未知条件改成已满足。"
+    },
+    {
+      "query": "我想租新加坡国立大学附近3公里内的房子，预算3000新币每月，要求有独立浴室",
+      "session_id": "a1322f6b-937d-4f1d-b13f-c5a0b55b8814",
+      "requirements": {
+        "criteria": [
+          {
+            "field": "amenities",
+            "value": "private_bathroom",
+            "operator": "eq",
+            "strength": "hard",
+            "criterion_id": "amenities:private_bathroom"
+          },
+          {
+            "unit": "SGD/month",
+            "field": "price",
+            "value": 3000,
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "monthly-rent"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 3000,
+            "target": {
+              "name": "最近的MRT地铁站",
+              "category": "MRTStation"
+            },
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "place_proximity:MRTStation",
+            "distance_type": "straight_line"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 1000,
+            "target": {
+              "name": "最近的MRT地铁站",
+              "category": "MRTStation"
+            },
+            "weight": 1,
+            "operator": "lte",
+            "strength": "soft",
+            "criterion_id": "place_proximity:MRTStation-preference",
+            "distance_type": "straight_line"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 3000,
+            "target": {
+              "name": "National University of Singapore",
+              "place_id": "OSM:way:54519165"
+            },
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "place_proximity:OSM:way:54519165",
+            "distance_type": "straight_line"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 1000,
+            "target": {
+              "name": "National University of Singapore",
+              "place_id": "OSM:way:54519165"
+            },
+            "weight": 1,
+            "operator": "lte",
+            "strength": "soft",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "distance_type": "straight_line"
+          }
+        ],
+        "listing_type": "RENT"
+      },
+      "pending": null,
+      "counts": {
+        "assessed": 475,
+        "eligible": 0,
+        "excluded": 299,
+        "unverified": 176
+      },
+      "message": "“新加坡国立大学”已匹配到地点目录 National University of Singapore；默认采用直线距离，未验证实际路线。\n距离范围 3000 米按直线口径处理；在范围内继续优先更近的房源。\n\n已找到待核实候选：本次评估中有 176 套因部分硬条件缺少证据而需要确认，下面展示 5 套。尚未标为全部条件满足，也未自动放宽你的要求。\n可以从待核实候选点击“我想看这套”或“核实并咨询”，生成逐项核实和看房询问草稿；这不会将未知条件改成已满足。"
+    },
+    {
+      "query": "我想租新加坡国立大学附近3公里内的房子，预算3000新币每月",
+      "session_id": "72263cb0-93c9-4dfa-8cf9-539526a74921",
+      "requirements": {
+        "criteria": [
+          {
+            "unit": "SGD/month",
+            "field": "price",
+            "value": 3000,
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "monthly-rent"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 3000,
+            "target": {
+              "name": "National University of Singapore",
+              "place_id": "OSM:way:54519165"
+            },
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "place_proximity:OSM:way:54519165",
+            "distance_type": "straight_line"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 1000,
+            "target": {
+              "name": "National University of Singapore",
+              "place_id": "OSM:way:54519165"
+            },
+            "weight": 1,
+            "operator": "lte",
+            "strength": "soft",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "distance_type": "straight_line"
+          }
+        ],
+        "listing_type": "RENT"
+      },
+      "pending": null,
+      "counts": {
+        "assessed": 475,
+        "eligible": 176,
+        "excluded": 299,
+        "unverified": 0
+      },
+      "message": "“新加坡国立大学”已匹配到地点目录 National University of Singapore；默认采用直线距离，未验证实际路线。\n距离范围 3000 米按直线口径处理；在范围内继续优先更近的房源。\n\n在 historical-csv-main-0c45bf3 已评估的 475 套候选中，176 套通过全部硬条件，下面按推荐方原排名展示 5 套。"
+    }
+  ],
+  "oracle": {
+    "mrt_exits": 541,
+    "with_mrt": 176,
+    "without_mrt": 176
+  }
+}

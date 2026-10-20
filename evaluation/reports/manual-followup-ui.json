@@ -1,0 +1,12 @@
+{
+  "checked_at": "2026-10-20T05:56:03.427544+00:00",
+  "messages_sent_externally": 0,
+  "checks": [
+    "manual default; no channel/address requirement; saved negotiation notes; clipboard exact match; explicit sent acknowledgement",
+    "real configured DeepSeek reply analysis; exact raw reply; both rent and private bathroom conflicts visible in card and chat; other rental terms retained; no automatic booking",
+    "owner isolation; reload persistence; reply-based follow-on draft; day summary generated",
+    "desktop/mobile layout; no horizontal overflow at390px; no browser JavaScript errors"
+  ],
+  "status": "passed",
+  "model": "configured project model (no credentials in report)"
+}

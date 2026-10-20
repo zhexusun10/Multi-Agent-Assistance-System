@@ -1,0 +1,308 @@
+{
+  "checked_at": "2026-10-19T15:13:39.822Z",
+  "status": "passed",
+  "cases": 25,
+  "scope": "Real chat + DeepSeek + SQL-backed data API; independent SQL oracle does not import production compare/classify",
+  "results": [
+    {
+      "id": "R001",
+      "query": "预算2500",
+      "session_id": "1efd1bc8-0a27-4d27-aedf-0b7f3f9e0714",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 192,
+        "excluded": 283,
+        "unverified": 0
+      }
+    },
+    {
+      "id": "R013",
+      "query": "1B1B",
+      "session_id": "41c7c6e0-6243-4e08-a3e8-2063e018bad5",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 36,
+        "excluded": 429,
+        "unverified": 10
+      }
+    },
+    {
+      "id": "R014",
+      "query": "找个1b1b，预算2500",
+      "session_id": "5b740e98-2a66-4557-92d7-00280497e375",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 4,
+        "excluded": 470,
+        "unverified": 1
+      }
+    },
+    {
+      "id": "R019",
+      "query": "恰好两间卧室",
+      "session_id": "f93d3c0c-7884-4b73-a86f-1f491dbba2e1",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 78,
+        "excluded": 387,
+        "unverified": 10
+      }
+    },
+    {
+      "id": "R021",
+      "query": "最多三间卧室",
+      "session_id": "d3488d3d-5e42-4dd3-a526-e406cd5bdb22",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 399,
+        "excluded": 66,
+        "unverified": 10
+      }
+    },
+    {
+      "id": "R031",
+      "query": "找condo",
+      "session_id": "1cb7aecd-f351-40a7-97c0-582680d00db3",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 268,
+        "excluded": 207,
+        "unverified": 0
+      }
+    },
+    {
+      "id": "R034",
+      "query": "walk-up apartment",
+      "session_id": "e12d365c-e66a-4292-94be-ee98f1b88723",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 2,
+        "excluded": 473,
+        "unverified": 0
+      }
+    },
+    {
+      "id": "R039",
+      "query": "面积至少80平方米",
+      "session_id": "e04cbf05-afa3-4e7d-b54f-eed354cfcb5f",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 184,
+        "excluded": 98,
+        "unverified": 193
+      }
+    },
+    {
+      "id": "R040",
+      "query": "面积不超过900sqft",
+      "session_id": "4ae7fb13-aa59-4f67-80e0-0d88884fc54b",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 105,
+        "excluded": 177,
+        "unverified": 193
+      }
+    },
+    {
+      "id": "R041",
+      "query": "室内面积800到1000平方英尺",
+      "session_id": "e4e87127-ac5d-4486-ab24-7ab972d50c4c",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 38,
+        "excluded": 244,
+        "unverified": 193
+      }
+    },
+    {
+      "id": "R044",
+      "query": "land area at least 2000 sqft",
+      "session_id": "dc9bfa03-80eb-43cd-abc3-5549faf65c3e",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 0,
+        "excluded": 0,
+        "unverified": 475
+      }
+    },
+    {
+      "id": "R045",
+      "query": "建成于2015年以后",
+      "session_id": "c7aa6ff1-dac5-461b-b1d5-0404d9fbbf7f",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 0,
+        "excluded": 0,
+        "unverified": 475
+      }
+    },
+    {
+      "id": "R047",
+      "query": "freehold",
+      "session_id": "0a10e7ad-feb5-45b8-b255-420d3a9a3d9a",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 0,
+        "excluded": 0,
+        "unverified": 475
+      }
+    },
+    {
+      "id": "R052",
+      "query": "邮编012345",
+      "session_id": "360b7f93-4e00-4c19-a3d4-1db26a476e09",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 0,
+        "excluded": 475,
+        "unverified": 0
+      }
+    },
+    {
+      "id": "R059",
+      "query": "离地铁站步行不超过10分钟",
+      "session_id": "68722e2b-3b7b-40f2-9f80-98f8d60c3a53",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 0,
+        "excluded": 0,
+        "unverified": 475
+      }
+    },
+    {
+      "id": "R067",
+      "query": "必须整租",
+      "session_id": "3b00131b-370e-4d0d-8b3a-1da9cc2979e8",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 0,
+        "excluded": 0,
+        "unverified": 475
+      }
+    },
+    {
+      "id": "R083",
+      "query": "预算2500，1B1B",
+      "session_id": "84ee8d28-b1c7-4c39-a4e2-45593ed106aa",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 4,
+        "excluded": 470,
+        "unverified": 1
+      }
+    },
+    {
+      "id": "R084",
+      "query": "D05，至少2间卧室，租金5000以内",
+      "session_id": "136fa4df-2815-41f3-ba8d-fa0a172449ec",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 65,
+        "excluded": 400,
+        "unverified": 10
+      }
+    },
+    {
+      "id": "R086",
+      "query": "一室一卫，整租，家具齐全",
+      "session_id": "1d6c0052-6bd4-4d82-ba36-d403a561dcc9",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 0,
+        "excluded": 429,
+        "unverified": 46
+      }
+    },
+    {
+      "id": "R090",
+      "query": "HDB，至少两间卧室，至少一个卫生间，预算3500",
+      "session_id": "bd9c4e8c-25be-49bf-bc21-5fd94e7ad694",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 9,
+        "excluded": 466,
+        "unverified": 0
+      }
+    },
+    {
+      "id": "R094",
+      "query": "预算5000，2B2B，condo，D05，面积至少800sqft",
+      "session_id": "72061893-24a2-4d33-b6df-a429bee90aee",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 12,
+        "excluded": 463,
+        "unverified": 0
+      }
+    },
+    {
+      "id": "R095",
+      "query": "预算3000，1B1B，整租，全家具，租一年，2026-12-01入住",
+      "session_id": "07fe91bf-3fec-4053-9d17-f519982755dc",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 0,
+        "excluded": 466,
+        "unverified": 9
+      }
+    },
+    {
+      "id": "R099",
+      "query": "月租2000到3000，恰好1房，卫浴至少1个",
+      "session_id": "9f9a2bcc-ef75-4b9f-93ad-d865a3334d9a",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 4,
+        "excluded": 469,
+        "unverified": 2
+      }
+    },
+    {
+      "id": "R101",
+      "query": "邮编012345，1B1B，预算2800",
+      "session_id": "2544a7dd-caa1-4ff5-b40d-d524a3918e2b",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 0,
+        "excluded": 475,
+        "unverified": 0
+      }
+    },
+    {
+      "id": "R102",
+      "query": "平台MRT步行10分钟内，预算2500，至少1间卧室",
+      "session_id": "2c8f374f-3c19-4ebc-9214-313067434a61",
+      "passed": true,
+      "counts": {
+        "assessed": 475,
+        "eligible": 0,
+        "excluded": 469,
+        "unverified": 6
+      }
+    }
+  ]
+}

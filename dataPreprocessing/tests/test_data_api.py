@@ -93,6 +93,33 @@ def test_sql_canonical_detail_images_no_sensitive_fields_or_writes(sql_source):
         second=client.get("/api/v1/listings/10/images",params={"page_size":2,"cursor":first["next_cursor"]}).json()
         assert len(first["items"])+len(second["items"])==3 and not second["has_more"]
         assert client.get("/api/v1/listings/0").status_code==422
+
+
+def test_assessment_scan_retains_unknowns_binds_cursor_and_omits_contacts(sql_source):
+    # The source itself remains read-only; add fixture rows through a separate writer.
+    # Reuse the fixture's exact source path via SQLite PRAGMA, not a guessed file.
+    with sql_source.connect() as conn:
+        path=conn.execute(text("PRAGMA database_list")).first()[2]
+    writable=create_engine("sqlite:///"+path)
+    with writable.begin() as conn:
+        conn.execute(insert(Property),[
+            {"listing_id":20,"listing_type":"RENT","title":"Unknown","price":None,"bedrooms":-1,"agent_phone":"secret","raw_json":{"private":True}},
+            {"listing_id":30,"listing_type":"SALE","title":"Excluded sale","price":1,"bedrooms":1,"agent_phone":None,"raw_json":None},
+        ])
+    writable.dispose()
+    with TestClient(graph_api.create_app(driver=Mock(),sql_engine=sql_source)) as client:
+        path="/api/v1/listings/assessment/search"
+        first=client.post(path,json={"page_size":1}).json()
+        second=client.post(path,json={"page_size":1,"cursor":first["next_cursor"]}).json()
+        assert [p["properties"]["listing_id"] for p in first["items"]+second["items"]]==[10,20]
+        assert first["source"]['role']=="canonical_listings" and not second["has_more"]
+        p=second["items"][0]["properties"]
+        assert p["price"] is None and p["latitude"] is None and p["bedrooms"]==-1
+        assert "raw_json" not in p and "agent_phone" not in p and "unit" not in p
+        changed=client.post(path,json={"listing_type":"SALE","cursor":first["next_cursor"]})
+        assert changed.status_code==422
+        assert client.post(path,json={"page_size":1001}).status_code==422
+        assert client.post(path,json={"filters":{"max_price":5000}}).status_code==422
         assert client.get("/api/v1/listings/99").status_code==404
         assert client.post("/api/v1/listings/10",json={"price":1}).status_code==405
     with sql_source.connect() as conn:

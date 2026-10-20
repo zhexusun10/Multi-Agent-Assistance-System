@@ -1,0 +1,13 @@
+{
+  "checked_at": "2026-10-20T07:23:49.202132+00:00",
+  "messages_sent_externally": 0,
+  "checks": [
+    "real candidate photos load from recorded PropertyGuru CDN URLs; all cards show unmentioned rooms/bathrooms/address; matching requirements appear first; desktop ratio ~35/65",
+    "photo carousel and all-photo dialog work; simulated CDN failure gets an explicit fallback without removing property facts or match checks",
+    "viewing card and copy agree on the conversational invitation for SG15:05–18:05; no raw candidate-time label or ISO timestamp; no send acknowledgement",
+    "mobile stacks conversation and detailed property cards with no horizontal overflow; no JavaScript errors"
+  ],
+  "status": "passed",
+  "candidate_count": 5,
+  "desktop_conversation_ratio": 0.35
+}

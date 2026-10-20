@@ -1,0 +1,973 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "conversation_id": {
+      "type": "string"
+    },
+    "requirements_version": {
+      "type": "integer",
+      "minimum": -9007199254740991,
+      "maximum": 9007199254740991
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "needs_clarification",
+        "no_match",
+        "error"
+      ]
+    },
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "listing": {
+            "type": "object",
+            "properties": {
+              "listing_id": {
+                "type": "string",
+                "pattern": "^\\d+$"
+              },
+              "title": {
+                "type": "string"
+              },
+              "price": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "price_unit": {
+                "type": "string",
+                "const": "SGD/month"
+              },
+              "bedrooms": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "district": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "source_url": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "availability_status": {
+                "type": "string",
+                "const": "unknown"
+              },
+              "floor_area_sqft": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "property_type": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "thumbnail_url": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "listing_id",
+              "title",
+              "price",
+              "price_unit",
+              "bedrooms",
+              "district",
+              "source_url",
+              "availability_status"
+            ],
+            "additionalProperties": false
+          },
+          "rank": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "criterion_results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "criterion_id": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "pass",
+                    "fail",
+                    "unknown"
+                  ]
+                },
+                "observed_value": {},
+                "unit": {
+                  "type": "string"
+                },
+                "evidence_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "reason": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "criterion_id",
+                "status",
+                "observed_value",
+                "evidence_ids"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "score_breakdown": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "criterion_id": {
+                  "type": "string"
+                },
+                "origin": {
+                  "type": "string",
+                  "enum": [
+                    "stated_preference",
+                    "inferred_interest"
+                  ]
+                },
+                "utility": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "weight": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "normalized_weight": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "contribution": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "evidence_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "criterion_id",
+                "origin",
+                "utility",
+                "weight",
+                "normalized_weight",
+                "contribution",
+                "evidence_ids"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "explanation_evidence": {
+            "type": "object",
+            "properties": {
+              "strengths": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "criterion_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "evidence_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "criterion_ids",
+                    "evidence_ids"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "compromises": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "criterion_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "evidence_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "criterion_ids",
+                    "evidence_ids"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "unknowns": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "field": {
+                      "type": "string"
+                    },
+                    "evidence_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "field",
+                    "evidence_ids"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "strengths",
+              "compromises",
+              "unknowns"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "listing",
+          "rank",
+          "score",
+          "criterion_results",
+          "score_breakdown",
+          "explanation_evidence"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "unverified_candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "listing": {
+            "type": "object",
+            "properties": {
+              "listing_id": {
+                "type": "string",
+                "pattern": "^\\d+$"
+              },
+              "title": {
+                "type": "string"
+              },
+              "price": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "price_unit": {
+                "type": "string",
+                "const": "SGD/month"
+              },
+              "bedrooms": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "district": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "source_url": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "availability_status": {
+                "type": "string",
+                "const": "unknown"
+              },
+              "floor_area_sqft": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "property_type": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "thumbnail_url": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "listing_id",
+              "title",
+              "price",
+              "price_unit",
+              "bedrooms",
+              "district",
+              "source_url",
+              "availability_status"
+            ],
+            "additionalProperties": false
+          },
+          "rank": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "criterion_results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "criterion_id": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "pass",
+                    "fail",
+                    "unknown"
+                  ]
+                },
+                "observed_value": {},
+                "unit": {
+                  "type": "string"
+                },
+                "evidence_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "reason": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "criterion_id",
+                "status",
+                "observed_value",
+                "evidence_ids"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "score_breakdown": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "criterion_id": {
+                  "type": "string"
+                },
+                "origin": {
+                  "type": "string",
+                  "enum": [
+                    "stated_preference",
+                    "inferred_interest"
+                  ]
+                },
+                "utility": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "weight": {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                "normalized_weight": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "contribution": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "evidence_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "criterion_id",
+                "origin",
+                "utility",
+                "weight",
+                "normalized_weight",
+                "contribution",
+                "evidence_ids"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "explanation_evidence": {
+            "type": "object",
+            "properties": {
+              "strengths": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "criterion_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "evidence_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "criterion_ids",
+                    "evidence_ids"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "compromises": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "criterion_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "evidence_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "criterion_ids",
+                    "evidence_ids"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "unknowns": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "field": {
+                      "type": "string"
+                    },
+                    "evidence_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "field",
+                    "evidence_ids"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "strengths",
+              "compromises",
+              "unknowns"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "listing",
+          "rank",
+          "score",
+          "criterion_results",
+          "score_breakdown",
+          "explanation_evidence"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "evidence_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "listing_id": {
+            "type": "string",
+            "pattern": "^\\d+$"
+          },
+          "field_path": {
+            "type": "string"
+          },
+          "value": {},
+          "unit": {
+            "type": "string"
+          },
+          "distance_type": {
+            "type": "string"
+          },
+          "raw_distance_type": {
+            "type": "string"
+          },
+          "target": {
+            "type": "object",
+            "properties": {
+              "place_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "category": {
+                "type": "string",
+                "minLength": 1
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          },
+          "source_kind": {
+            "type": "string",
+            "enum": [
+              "data_api",
+              "fixture",
+              "recommendation_service"
+            ]
+          },
+          "source_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "dataset_version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "retrieved_at": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          },
+          "verified_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "route_verified": {
+            "type": "boolean"
+          },
+          "measurement_method": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "evidence_id",
+          "listing_id",
+          "field_path",
+          "value",
+          "source_kind",
+          "source_ref",
+          "dataset_version",
+          "retrieved_at",
+          "verified_at"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "clarifications": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "criterion_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "question": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "criterion_ids",
+          "question"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "relaxation_suggestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "criterion_id": {
+            "type": "string"
+          },
+          "proposed_value": {},
+          "reason": {
+            "type": "string"
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "criterion_id",
+          "proposed_value",
+          "reason"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "listing_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "state": {
+      "type": "object",
+      "properties": {
+        "state_id": {
+          "type": "string"
+        },
+        "candidate_pool_ref": {
+          "type": "string"
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "dataset_version": {
+              "type": "string"
+            },
+            "dataset_scope": {
+              "type": "string"
+            },
+            "retrieval_scope": {
+              "type": "string"
+            },
+            "complete_within_dataset": {
+              "type": "boolean"
+            },
+            "truncated": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "dataset_version",
+            "dataset_scope",
+            "retrieval_scope",
+            "complete_within_dataset",
+            "truncated"
+          ],
+          "additionalProperties": false
+        },
+        "counts": {
+          "type": "object",
+          "properties": {
+            "assessed": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "eligible": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "unverified": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "excluded": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "assessed",
+            "eligible",
+            "unverified",
+            "excluded"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "state_id",
+        "candidate_pool_ref",
+        "coverage",
+        "counts"
+      ],
+      "additionalProperties": false
+    },
+    "execution": {
+      "type": "object",
+      "properties": {
+        "strategy": {
+          "type": "string"
+        },
+        "trace_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": {}
+        },
+        "timing": {
+          "type": "object",
+          "properties": {
+            "total_ms": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "total_ms"
+          ],
+          "additionalProperties": false
+        },
+        "scoring_version": {
+          "type": "string"
+        },
+        "score_semantics": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "strategy",
+        "trace_ref",
+        "tool_calls",
+        "timing",
+        "scoring_version",
+        "score_semantics"
+      ],
+      "additionalProperties": false
+    },
+    "error": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            },
+            "retryable": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "code",
+            "message"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "contract_version",
+    "request_id",
+    "conversation_id",
+    "requirements_version",
+    "status",
+    "recommendations",
+    "unverified_candidates",
+    "evidence",
+    "clarifications",
+    "relaxation_suggestions",
+    "warnings",
+    "state",
+    "execution",
+    "error"
+  ],
+  "additionalProperties": false
+}

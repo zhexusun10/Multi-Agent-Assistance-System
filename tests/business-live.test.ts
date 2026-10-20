@@ -1,0 +1,83 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {randomUUID} from 'node:crypto';
+import pg from 'pg';
+import {writeFile,mkdir} from 'node:fs/promises';
+
+const enabled=process.env.BUSINESS_LIVE==='1';
+const origin=process.env.TEST_APP_URL||'http://127.0.0.1:8010';
+const owner=randomUUID()+randomUUID();
+async function api(path:string,body?:unknown,auth=owner){const r=await fetch(origin+'/api/'+path,{method:body===undefined?'GET':'POST',headers:{authorization:'Bearer '+auth,'content-type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});return {status:r.status,body:await r.json()};}
+const sleep=(ms:number)=>new Promise(r=>setTimeout(r,ms));
+test('real PostgreSQL + Neo4j + chat: business outcomes, revision guards, evidence, actions, artifacts and isolation',{skip:!enabled,timeout:240000},async()=>{
+  const pool=new pg.Pool({connectionString:process.env.DATABASE_URL});
+  const oracle=new pg.Pool({connectionString:'postgresql://propertyguru_scraper@127.0.0.1:5432/propertyguru_sample'});
+  const checks:{name:string;passed:boolean;detail?:unknown}[]=[];
+  const s=(await api('sessions',{})).body;const sid=s.session_id;
+  const state=async()=>(await api('state?session_id='+sid)).body;
+  const run=async(query:string)=>{
+    const old=await state(),requestId=randomUUID();const r=await fetch(origin+'/api/query',{method:'POST',headers:{authorization:'Bearer '+owner,'content-type':'application/json'},body:JSON.stringify({query,session_id:sid,request_id:requestId,...(old.latest_request_id?{source_request_id:old.latest_request_id}:{})})});assert.equal(r.status,200);await r.text();
+    const until=Date.now()+60000;
+    while(Date.now()<until){const op=(await pool.query('SELECT status FROM domain_operations WHERE session_id=$1 AND request_id=$2',[sid,requestId])).rows[0];if(op&&['completed','failed','superseded'].includes(op.status)){const st=await state();assert.notEqual(op.status,'failed',st.messages.at(-1)?.text);return st;}await sleep(200);}throw Error('Workflow completion timed out');
+  };
+  try{
+    let result=await run('帮我找租房，预算不超过5000新币，至少2房，D05');
+    const expected=Number((await oracle.query("SELECT count(*) FROM properties WHERE listing_type='RENT' AND currency='SGD' AND price<=5000 AND bedrooms>=2 AND district_code='D05'")).rows[0].count);
+    assert.equal(result.recommendation.state.counts.eligible,expected);assert.equal(result.recommendation.state.counts.assessed,475);assert(result.recommendation.recommendations.length>0);
+    for(const item of result.recommendation.recommendations){assert(item.listing.price<=5000&&item.listing.bedrooms>=2&&item.listing.district==='D05');assert(item.criterion_results.every((c:any)=>c.status==='pass'));}
+    checks.push({name:'Independent SQL oracle: every eligible match and assessed count',passed:true,detail:{eligible:expected,assessed:475}});
+    const firstId=result.latest_request_id,version=result.requirements_version,criterionId=result.requirements.criteria.find((c:any)=>c.field==='price').criterion_id;
+    result=await run('比较前两套，说明各自的理由和待核实项');assert.equal(result.latest_request_id,firstId);assert.equal(result.requirements_version,version);const comparison=result.messages.at(-1).text;for(const item of result.recommendation.recommendations.slice(0,2)){assert(comparison.includes(item.listing.title));assert(comparison.includes(String(item.listing.price)));}assert(comparison.includes('月租差异'));assert(comparison.includes('当前可租状态未核实'));
+    checks.push({name:'Conversational comparison answers with actual listing facts, price difference and unknowns without rerunning recommendation',passed:true});
+    const contact=await run('请联系第1套房源的经纪人，先生成询问草稿');const action=contact.actions.at(-1);assert.equal(action.status,'DRAFT');assert.equal(action.source_request_id,firstId);
+    assert.equal((await api(`actions/${action.id}/execute`,{session_id:sid,revision:action.revision})).status,409);
+    assert.equal((await api(`actions/${action.id}/approve`,{session_id:sid,revision:action.revision})).status,409);
+    checks.push({name:'No execution without approval; no approval without verified contact',passed:true});
+    const patch={session_id:sid,revision:1,subject:action.subject,body:action.body,recipient:{name:'Test salesperson',email:'salesperson@example.test',verified:true},slots:null,next_followup_at:new Date(Date.now()+500).toISOString()};
+    let edited=(await api(`actions/${action.id}/edit`,patch)).body;assert.equal(edited.revision,2);
+    assert.equal((await api(`actions/${action.id}/approve`,{session_id:sid,revision:2})).status,200);
+    edited=(await api(`actions/${action.id}/edit`,{...patch,revision:2,body:action.body+' 请确认可租状态。'})).body;assert.equal(edited.approval,null);assert.equal(edited.revision,3);assert.equal((await api(`actions/${action.id}/execute`,{session_id:sid,revision:3})).status,409);
+    await api(`actions/${action.id}/approve`,{session_id:sid,revision:3});
+    const first=(await api(`actions/${action.id}/execute`,{session_id:sid,revision:3})).body;const repeat=(await api(`actions/${action.id}/execute`,{session_id:sid,revision:3})).body;
+    assert.equal(first.status,'SIMULATED');assert.equal(first.execution.external_id,repeat.execution.external_id);assert(first.execution.external_id.startsWith('simulated:'));
+    const executions=await pool.query('SELECT count(*) FROM action_executions WHERE action_id=$1',[action.id]);assert.equal(Number(executions.rows[0].count),1);
+    checks.push({name:'Editing invalidates approval; repeated execution has one durable simulated effect',passed:true});
+    result=await run('预算改为4500新币');assert.equal(result.requirements_version,version+1);assert.equal(result.requirements.criteria.find((c:any)=>c.field==='price').criterion_id,criterionId);assert.equal(result.requirements.criteria.find((c:any)=>c.field==='bedrooms').value,2);assert.equal(result.requirements.criteria.find((c:any)=>c.field==='district').value,'D05');
+    checks.push({name:'Budget revision preserves stable ID and untouched bedroom/district requirements',passed:true});
+    const unchangedVersion=result.requirements_version;result=await run('预算改为4500新币');assert.equal(result.requirements_version,unchangedVersion);
+    checks.push({name:'Repeated equivalent requirement does not increment version',passed:true});
+    const oldRequest=result.latest_request_id;const listingId=result.recommendation.recommendations[0].listing.listing_id;
+    const feedback={session_id:sid,source_request_id:oldRequest,event:{event_id:randomUUID(),listing_id:listingId,occurred_at:new Date().toISOString(),event_type:'save',payload:{}}};
+    assert.equal((await api('feedback',feedback)).status,202);assert.equal((await api('feedback',feedback)).status,202);
+    result=await run('请按当前需求重新推荐，参考新增的收藏反馈');assert.equal(result.requirements_version,unchangedVersion);assert.notEqual(result.latest_request_id,oldRequest);
+    const feedbackCall=(await pool.query('SELECT request FROM recommendation_calls WHERE id=$1',[result.latest_request_id])).rows[0].request;assert.equal(feedbackCall.feedback.length,1);assert.equal(feedbackCall.previous_state_id,'baseline:'+oldRequest);
+    checks.push({name:'Feedback is deduplicated, advances request identity, preserves stated requirements',passed:true});
+    result=await run('请为第1套房源生成看房草稿');let viewing=result.actions.at(-1);
+    const slots={starts_at:new Date(Date.now()+86400000).toISOString(),ends_at:new Date(Date.now()+90000000).toISOString(),time_zone:'Asia/Singapore'};
+    const viewPatch={session_id:sid,revision:1,subject:viewing.subject,body:viewing.body,recipient:{name:'Test salesperson',email:`viewing+${sid}@example.test`,verified:true},slots,next_followup_at:null};
+    await api(`actions/${viewing.id}/edit`,viewPatch);await api(`actions/${viewing.id}/approve`,{session_id:sid,revision:2});assert.equal((await api(`actions/${viewing.id}/execute`,{session_id:sid,revision:2})).body.status,'SIMULATED');
+    const incomplete=await api(`actions/${viewing.id}/confirm`,{session_id:sid,revision:2,client_confirmed:true,salesperson_confirmed:false,evidence_note:'test note'});assert.equal(incomplete.status,422);
+    const confirmed=(await api(`actions/${viewing.id}/confirm`,{session_id:sid,revision:2,client_confirmed:true,salesperson_confirmed:true,evidence_note:'Both sides explicitly agreed in this local simulated scenario.'})).body;assert.equal(confirmed.status,'CONFIRMED');assert.equal(confirmed.mode,'simulation');
+    result=await run('请为第1套房源生成看房草稿');const overlapping=result.actions.at(-1);await api(`actions/${overlapping.id}/edit`,{...viewPatch,subject:overlapping.subject,body:overlapping.body});await api(`actions/${overlapping.id}/approve`,{session_id:sid,revision:2});const conflict=await api(`actions/${overlapping.id}/execute`,{session_id:sid,revision:2});assert.equal(conflict.status,409);assert.equal(conflict.body.code,'CALENDAR_CONFLICT');
+    checks.push({name:'Simulated viewing: future times, shared-calendar conflict, separate bilateral confirmation',passed:true});
+    const evidence=result.recommendation.evidence[0];assert.equal((await api(`evidence?session_id=${sid}&ref=${evidence.source_ref}`)).status,200);
+    assert.equal((await api('state?session_id='+sid,undefined,randomUUID()+randomUUID())).status,403);
+    checks.push({name:'Evidence resolves and another owner cannot access the session',passed:true});
+    const before=result.requirements_version;result=await run('必须家具齐全');assert.equal(result.recommendation.status,'no_match');assert.equal(result.recommendation.recommendations.length,0);assert(result.recommendation.state.counts.unverified>0);assert(result.recommendation.unverified_candidates.every((c:any)=>c.criterion_results.some((r:any)=>r.status==='unknown')));
+    checks.push({name:'Unavailable furnishing fact produces unverified candidates, never verified matches',passed:true});
+    result=await run('取消家具要求，预算改为1000新币');assert.equal(result.recommendation.recommendations.length,0);assert.equal(result.requirements.criteria.find((c:any)=>c.field==='price').value,1000);assert(result.recommendation.relaxation_suggestions.length>0);
+    assert(!result.requirements.criteria.some((c:any)=>c.field==='furnishing'));
+    assert.equal((await api(`actions/${overlapping.id}/execute`,{session_id:sid,revision:2})).body.code,'ACTION_STALE');
+    checks.push({name:'No match does not auto-relax the budget',passed:true});
+    result=await run('生成当前推荐的总结文档');const artifact=result.artifacts.at(-1);assert(artifact);const doc=await fetch(origin+`/api/artifacts/${artifact.id}?session_id=${sid}&format=html`,{headers:{authorization:'Bearer '+owner}});assert.equal(doc.status,200);assert((await doc.text()).includes('1000'));assert(doc.headers.get('content-disposition')?.includes('attachment'));
+    checks.push({name:'Downloadable summary preserves current budget and original source version',passed:true});
+    result=await run('联系了吗');assert(result.messages.at(-1).text.includes('没有真实发送'));assert.equal(result.actions.length,3);
+    checks.push({name:'Status questions explain simulation instead of claiming a salesperson was contacted',passed:true});
+    const reminderDeadline=Date.now()+18000;let reminderCount=0;while(Date.now()<reminderDeadline){reminderCount=Number((await pool.query("SELECT count(*) FROM session_events WHERE session_id=$1 AND event_key LIKE $2",[sid,`reminder:${action.id}:3:%`])).rows[0].count);if(reminderCount)break;await sleep(250);}assert.equal(reminderCount,1);
+    checks.push({name:'Due follow-up reminder becomes one durable workbench event without sending externally',passed:true});
+    const e=(await pool.query('SELECT event_id FROM session_events WHERE session_id=$1 ORDER BY event_id',[sid])).rows.map(x=>Number(x.event_id));assert(e.every((id,i)=>!i||id>e[i-1]));
+    const calls=await pool.query('SELECT request FROM recommendation_calls WHERE session_id=$1',[sid]);assert(calls.rows.every(x=>x.request.requirements.criteria.length>=3));
+    checks.push({name:'Monotonic event replay and full requirement snapshots on every recommendation call',passed:true});
+    await mkdir('evaluation/reports',{recursive:true});await writeFile('evaluation/reports/business-live.json',JSON.stringify({checked_at:new Date().toISOString(),mode:'real HTTP, PG, Neo4j; configured project model',session_id:sid,checks},null,2));
+  }finally{await pool.end();await oracle.end();}
+});

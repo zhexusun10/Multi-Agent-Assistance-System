@@ -1,0 +1,743 @@
+{
+  "rows": [
+    {
+      "query": "HDB卧室和普通公寓最短租期分别是多少？",
+      "expected": "knowledge",
+      "operation": {
+        "kind": "knowledge",
+        "status": "completed",
+        "intent_plan": {
+          "kind": "knowledge",
+          "agent": "d",
+          "intent": {
+            "intent": "rental_knowledge",
+            "urgency": 1,
+            "channels": {
+              "llm": {
+                "intent": "rental_knowledge",
+                "reasoning": "用户询问HDB卧室与普通公寓的最短租期规则，属于通用租房知识，不是找房或修改条件。",
+                "confidence": 0.97,
+                "requested_tasks": [
+                  "knowledge"
+                ]
+              },
+              "pattern": {
+                "intent": "rental_knowledge",
+                "confidence": 0.5
+              },
+              "embedding": {
+                "intent": "rental_knowledge",
+                "source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                "reasoning": "Chroma cosine nearest template",
+                "confidence": 0.8159408587751821
+              }
+            },
+            "entities": {
+              "date": [],
+              "amount": [],
+              "listing_id": []
+            },
+            "cache_hit": false,
+            "reasoning": "用户询问HDB卧室与普通公寓的最短租期规则，属于通用租房知识，不是找房或修改条件。",
+            "confidence": 0.8921881717550364,
+            "latency_ms": 812.2808999999997,
+            "intent_group": "knowledge",
+            "source_scores": {
+              "llm": 0.97,
+              "pattern": 0.5,
+              "embedding": 0.8159408587751821
+            },
+            "requested_tasks": [
+              "knowledge"
+            ],
+            "embedding_source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            "template_version": "ce9dad379be2e6517d6ed83be4014b4f95604ba5dda89a65229bacfa6acd7985"
+          },
+          "deferred_summary": false
+        }
+      },
+      "assistant": {
+        "at": "2026-10-20T10:59:54.228Z",
+        "role": "assistant",
+        "text": "HDB卧室出租的最低租期为每名租客每次申请六个月。 [1]\n\n普通私人住宅每次出租至少连续三个月。 [2]\n\nHDB组屋与私人住宅适用不同要求，不能把公寓的三个月规则用于组屋。 [3]\n\n三个月是规则下限，实际可接受的最短租期还要询问房东并写入租约。 [4]",
+        "knowledge": {
+          "trace": {
+            "rrf_k": 60,
+            "rerank": "llm",
+            "queries": [
+              "HDB卧室和普通公寓最短租期分别是多少？",
+              "HDB flat bedroom minimum rental period vs private apartment minimum lease term",
+              "HDB 卧室 最短租期 普通公寓 最短租期",
+              "minimum rental period for HDB bedroom and private apartment in Singapore"
+            ],
+            "channel_rankings": {
+              "bm25": [
+                "hdb-rental:0:d07578ac89f5",
+                "hdb-rental:3:f13ff9d45f4d",
+                "hdb-rental:2:f0dbb5553a1c",
+                "private-rental:1:e2b4c55777d2",
+                "hdb-rental:1:b360725c25ea",
+                "hdb-rental:4:407ca0f1cf59"
+              ],
+              "fused": [
+                "hdb-rental:0:d07578ac89f5",
+                "private-rental:1:e2b4c55777d2",
+                "hdb-rental:4:407ca0f1cf59",
+                "hdb-rental:2:f0dbb5553a1c",
+                "hdb-rental:3:f13ff9d45f4d",
+                "private-rental:0:724ee7d0ea4e",
+                "hdb-rental:1:b360725c25ea",
+                "private-rental:2:fa96d0876e58",
+                "handover-disputes:3:c1419c021791",
+                "private-rental:4:fdad2d8e1983"
+              ],
+              "vector": [
+                "hdb-rental:0:d07578ac89f5",
+                "private-rental:1:e2b4c55777d2",
+                "private-rental:0:724ee7d0ea4e",
+                "hdb-rental:4:407ca0f1cf59",
+                "private-rental:2:fa96d0876e58",
+                "handover-disputes:3:c1419c021791",
+                "private-rental:4:fdad2d8e1983",
+                "hdb-rental:2:f0dbb5553a1c"
+              ]
+            }
+          },
+          "answer": "HDB卧室出租的最低租期为每名租客每次申请六个月。 [1]\n\n普通私人住宅每次出租至少连续三个月。 [2]\n\nHDB组屋与私人住宅适用不同要求，不能把公寓的三个月规则用于组屋。 [3]\n\n三个月是规则下限，实际可接受的最短租期还要询问房东并写入租约。 [4]",
+          "method": "llm_grounded_verified",
+          "status": "ok",
+          "degraded": [],
+          "citations": [
+            {
+              "quote": "HDB 卧室出租的最低租期为每名租客每次申请六个月。",
+              "scope": "policy_guidance",
+              "title": "HDB组屋租期、租客资格和卧室出租",
+              "heading": "最短六个月以及事先批准",
+              "sources": [
+                {
+                  "url": "https://www.hdb.gov.sg/managing-my-home/home-ownership/renting-out-a-flat-or-bedrooms/renting-out-bedrooms/regulations",
+                  "title": "HDB Bedroom Rental Regulations"
+                },
+                {
+                  "url": "https://www.hdb.gov.sg/apply-manage-and-renew-rental-of-bedroom/terms-and-conditions",
+                  "title": "HDB Bedroom Rental Terms and Conditions"
+                }
+              ],
+              "chunk_id": "hdb-rental:0:d07578ac89f5",
+              "revision": "2026-10-20.1",
+              "checked_at": "2026-10-20",
+              "source_ref": "knowledge/rental/hdb-rental.md",
+              "document_id": "hdb-rental",
+              "review_after": "2027-01-20"
+            },
+            {
+              "quote": "根据 URA 的私人住宅出租规则，普通私人住宅每次出租至少连续三个月。",
+              "scope": "policy_guidance",
+              "title": "私人住宅租赁与最短租期",
+              "heading": "私人住宅的最低租期",
+              "sources": [
+                {
+                  "url": "https://www.ura.gov.sg/guidelines/property-and-business-owners/property/renting-property/",
+                  "title": "URA Renting Property"
+                },
+                {
+                  "url": "https://www.ura.gov.sg/guidelines/property-and-business-owners/property/short-term-accommodation/",
+                  "title": "URA Short-Term Accommodation"
+                }
+              ],
+              "chunk_id": "private-rental:0:724ee7d0ea4e",
+              "revision": "2026-10-20.1",
+              "checked_at": "2026-10-20",
+              "source_ref": "knowledge/rental/private-rental.md",
+              "document_id": "private-rental",
+              "review_after": "2027-01-20"
+            },
+            {
+              "quote": "HDB 组屋与私人住宅适用不同要求；不能把公寓的三个月规则用于组屋。",
+              "scope": "policy_guidance",
+              "title": "私人住宅租赁与最短租期",
+              "heading": "不同住房类别不能混用规则",
+              "sources": [
+                {
+                  "url": "https://www.ura.gov.sg/guidelines/property-and-business-owners/property/renting-property/",
+                  "title": "URA Renting Property"
+                },
+                {
+                  "url": "https://www.ura.gov.sg/guidelines/property-and-business-owners/property/short-term-accommodation/",
+                  "title": "URA Short-Term Accommodation"
+                }
+              ],
+              "chunk_id": "private-rental:1:e2b4c55777d2",
+              "revision": "2026-10-20.1",
+              "checked_at": "2026-10-20",
+              "source_ref": "knowledge/rental/private-rental.md",
+              "document_id": "private-rental",
+              "review_after": "2027-01-20"
+            },
+            {
+              "quote": "三个月是规则下限，不意味着每套房东都愿意签三个月；实际可接受的最短租期还要询问房东并写入租约。",
+              "scope": "policy_guidance",
+              "title": "私人住宅租赁与最短租期",
+              "heading": "私人住宅的最低租期",
+              "sources": [
+                {
+                  "url": "https://www.ura.gov.sg/guidelines/property-and-business-owners/property/renting-property/",
+                  "title": "URA Renting Property"
+                },
+                {
+                  "url": "https://www.ura.gov.sg/guidelines/property-and-business-owners/property/short-term-accommodation/",
+                  "title": "URA Short-Term Accommodation"
+                }
+              ],
+              "chunk_id": "private-rental:0:724ee7d0ea4e",
+              "revision": "2026-10-20.1",
+              "checked_at": "2026-10-20",
+              "source_ref": "knowledge/rental/private-rental.md",
+              "document_id": "private-rental",
+              "review_after": "2027-01-20"
+            }
+          ],
+          "retrieval": "chroma_bm25_rrf",
+          "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+          "bm25_enabled": true,
+          "vector_enabled": true
+        }
+      }
+    },
+    {
+      "query": "我要租新加坡国立大学三公里内的房子，预算每月2000新币，必须独立卫浴",
+      "expected": "search",
+      "operation": {
+        "kind": "search",
+        "status": "completed",
+        "intent_plan": {
+          "kind": "search",
+          "agent": "a",
+          "intent": {
+            "intent": "property_search",
+            "urgency": 1,
+            "channels": {
+              "llm": {
+                "intent": "property_search",
+                "reasoning": "用户给出地点、预算和独立卫浴等筛选条件，明确要找出租房，属于新的房源搜索。",
+                "confidence": 0.97,
+                "requested_tasks": [
+                  "search"
+                ]
+              },
+              "pattern": {
+                "intent": "property_search",
+                "confidence": 0.5
+              },
+              "embedding": {
+                "intent": "property_search",
+                "source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                "reasoning": "Chroma cosine nearest template",
+                "confidence": 0.7126230244476177
+              }
+            },
+            "entities": {
+              "date": [],
+              "amount": [
+                "2000新币"
+              ],
+              "listing_id": []
+            },
+            "cache_hit": false,
+            "reasoning": "用户给出地点、预算和独立卫浴等筛选条件，明确要找出租房，属于新的房源搜索。",
+            "confidence": 0.8715246048895235,
+            "latency_ms": 926.800299999999,
+            "intent_group": "search",
+            "source_scores": {
+              "llm": 0.97,
+              "pattern": 0.5,
+              "embedding": 0.7126230244476177
+            },
+            "requested_tasks": [
+              "search"
+            ],
+            "embedding_source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            "template_version": "ce9dad379be2e6517d6ed83be4014b4f95604ba5dda89a65229bacfa6acd7985"
+          },
+          "deferred_summary": false
+        }
+      },
+      "assistant": {
+        "at": "2026-10-20T11:00:01.377Z",
+        "role": "assistant",
+        "text": "“新加坡国立大学”已匹配到地点目录 National University of Singapore；默认采用直线距离，未验证实际路线。\n距离范围 3000 米按直线口径处理；在范围内继续优先更近的房源。\n\n本次已评估范围内没有已验证匹配；158 套仍存在未知硬条件。未自动放宽需求，也不表示全市场没有合适房源。\n可以从待核实候选点击“我想看这套”或“核实并咨询”，生成逐项核实和看房询问草稿；这不会将未知条件改成已满足。"
+      }
+    },
+    {
+      "query": "请解释第一套为什么排在前面，用目前的推荐就好",
+      "expected": "explain",
+      "operation": {
+        "kind": "explain",
+        "status": "completed",
+        "intent_plan": {
+          "kind": "explain",
+          "agent": "c",
+          "intent": {
+            "intent": "recommendation_explanation",
+            "urgency": 1,
+            "channels": {
+              "llm": {
+                "intent": "recommendation_explanation",
+                "reasoning": "用户要求解释现有推荐中第一套为何排在前面，属于解释已有推荐，无需重新搜索。",
+                "confidence": 0.97,
+                "requested_tasks": [
+                  "explain"
+                ]
+              },
+              "pattern": {
+                "intent": "explanation",
+                "confidence": 0.5
+              },
+              "embedding": {
+                "intent": "explanation",
+                "source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                "reasoning": "Chroma cosine nearest template",
+                "confidence": 0.7509521065327989
+              }
+            },
+            "entities": {
+              "date": [],
+              "amount": [],
+              "listing_id": []
+            },
+            "cache_hit": false,
+            "reasoning": "用户要求解释现有推荐中第一套为何排在前面，属于解释已有推荐，无需重新搜索。",
+            "confidence": 0.8791904213065598,
+            "latency_ms": 958.5159000000003,
+            "intent_group": "explanation",
+            "source_scores": {
+              "llm": 0.97,
+              "pattern": 0.5,
+              "embedding": 0.7509521065327989
+            },
+            "requested_tasks": [
+              "explain"
+            ],
+            "embedding_source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            "template_version": "ce9dad379be2e6517d6ed83be4014b4f95604ba5dda89a65229bacfa6acd7985"
+          },
+          "deferred_summary": false
+        }
+      },
+      "assistant": {
+        "at": "2026-10-20T11:00:03.521Z",
+        "role": "assistant",
+        "text": "“新加坡国立大学”已匹配到地点目录 National University of Singapore；默认采用直线距离，未验证实际路线。\n距离范围 3000 米按直线口径处理；在范围内继续优先更近的房源。\n\n本次已评估范围内没有已验证匹配；158 套仍存在未知硬条件。未自动放宽需求，也不表示全市场没有合适房源。\n可以从待核实候选点击“我想看这套”或“核实并咨询”，生成逐项核实和看房询问草稿；这不会将未知条件改成已满足。\n\n第 1 套 Gold Coast Condo（23583402）是待核实候选，不代表全部硬条件已通过：快照月租 SGD 1600/月；0 间卧室；D05。\n独立卫浴（专用，不与他人共用），必须满足：待核实；记录值 未知；数据未收录：当前快照没有独立卫浴或专用使用权信息；卫浴数量不能证明是否共用。 [证据 e:b27b1f9b-535f-4f06-9608-2a996b95f073:23583402:amenities:private_bathroom]\n月租不超过 2000 SGD/month，必须满足：通过；记录值 1600 SGD/month [证据 e:b27b1f9b-535f-4f06-9608-2a996b95f073:23583402:monthly-rent]\n地点距离不超过 3000 m（National University of Singapore；直线距离），必须满足：通过；记录值 716.36 m，按已收录地点/区域的直线距离，未验证实际步行路线 [证据 e:b27b1f9b-535f-4f06-9608-2a996b95f073:23583402:place_proximity:OSM:way:54519165]\n更靠近 National University of Singapore（越近越好，软偏好；不设硬半径）：已计入就近排序；记录值 716.36 m，按已收录地点/区域的直线距离，未验证实际步行路线 [证据 e:b27b1f9b-535f-4f06-9608-2a996b95f073:23583402:place_proximity:OSM:way:54519165-preference]\n软偏好匹配分 0.5826；place_proximity:OSM:way:54519165-preference 权重 1、贡献 0.5826\n待核实：当前可租状态未核实、室内设施。"
+      }
+    },
+    {
+      "query": "请为房源ID 23583402 生成看房询问草稿，逐项询问尚未核实的条件。",
+      "expected": "viewing",
+      "operation": {
+        "kind": "viewing",
+        "status": "completed",
+        "intent_plan": {
+          "kind": "viewing",
+          "agent": "d",
+          "intent": {
+            "intent": "arrange_viewing",
+            "urgency": 1,
+            "channels": {
+              "llm": {
+                "intent": "arrange_viewing",
+                "reasoning": "用户明确要求为指定房源生成看房询问草稿，属于对选定房源表达看房意向。",
+                "confidence": 0.95,
+                "requested_tasks": [
+                  "viewing"
+                ]
+              },
+              "pattern": {
+                "intent": "arrange_viewing",
+                "confidence": 0.5
+              },
+              "embedding": {
+                "intent": "arrange_viewing",
+                "source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                "reasoning": "Chroma cosine nearest template",
+                "confidence": 0.7193692109535521
+              }
+            },
+            "entities": {
+              "date": [],
+              "amount": [],
+              "listing_id": [
+                "23583402"
+              ]
+            },
+            "cache_hit": false,
+            "reasoning": "用户明确要求为指定房源生成看房询问草稿，属于对选定房源表达看房意向。",
+            "confidence": 0.8588738421907104,
+            "latency_ms": 966.7698999999993,
+            "intent_group": "followup",
+            "source_scores": {
+              "llm": 0.95,
+              "pattern": 0.5,
+              "embedding": 0.7193692109535521
+            },
+            "requested_tasks": [
+              "viewing"
+            ],
+            "embedding_source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            "template_version": "ce9dad379be2e6517d6ed83be4014b4f95604ba5dda89a65229bacfa6acd7985"
+          },
+          "deferred_summary": false
+        }
+      },
+      "assistant": {
+        "at": "2026-10-20T11:00:04.833Z",
+        "role": "assistant",
+        "text": "已为房源 23583402 准备看房询问草稿。待核实事项已逐项写入草稿，房源仍保持待核实状态。请到跟进工作台编辑并复制草稿，自行发送后点击“确认已发送”；收到回复后粘贴并确认，系统会继续理解和总结。看房仍须双方明确同意。"
+      }
+    },
+    {
+      "query": "给房源ID 23583402 的经纪人写一份联系草稿，询问押金能不能协商。",
+      "expected": "message",
+      "operation": {
+        "kind": "message",
+        "status": "completed",
+        "intent_plan": {
+          "kind": "message",
+          "agent": "d",
+          "intent": {
+            "intent": "contact_salesperson",
+            "urgency": 1,
+            "channels": {
+              "llm": {
+                "intent": "contact_salesperson",
+                "reasoning": "用户明确要求为指定房源经纪人写联系草稿并询问押金协商，属于代联系/写草稿。",
+                "confidence": 0.97,
+                "requested_tasks": [
+                  "message"
+                ]
+              },
+              "pattern": {
+                "intent": "contact_salesperson",
+                "confidence": 0.75
+              },
+              "embedding": {
+                "intent": "contact_salesperson",
+                "source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                "reasoning": "Chroma cosine nearest template",
+                "confidence": 0.6902360719302557
+              }
+            },
+            "entities": {
+              "date": [],
+              "amount": [],
+              "listing_id": [
+                "23583402"
+              ]
+            },
+            "cache_hit": false,
+            "reasoning": "用户明确要求为指定房源经纪人写联系草稿并询问押金协商，属于代联系/写草稿。",
+            "confidence": 0.8920472143860512,
+            "latency_ms": 1014.0071000000025,
+            "intent_group": "followup",
+            "source_scores": {
+              "llm": 0.97,
+              "pattern": 0.75,
+              "embedding": 0.6902360719302557
+            },
+            "requested_tasks": [
+              "message"
+            ],
+            "embedding_source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            "template_version": "ce9dad379be2e6517d6ed83be4014b4f95604ba5dda89a65229bacfa6acd7985"
+          },
+          "deferred_summary": false
+        }
+      },
+      "assistant": {
+        "at": "2026-10-20T11:00:06.177Z",
+        "role": "assistant",
+        "text": "已为房源 23583402 准备联系核实草稿。待核实事项已逐项写入草稿，房源仍保持待核实状态。请到跟进工作台编辑并复制草稿，自行发送后点击“确认已发送”；收到回复后粘贴并确认，系统会继续理解和总结。看房仍须双方明确同意。"
+      }
+    },
+    {
+      "query": "请根据我们前面的对话和跟进记录生成当天的会话总结文档。",
+      "expected": "daily",
+      "operation": {
+        "kind": "daily",
+        "status": "completed",
+        "intent_plan": {
+          "kind": "daily",
+          "agent": "d",
+          "intent": {
+            "intent": "conversation_summary",
+            "urgency": 1,
+            "channels": {
+              "llm": {
+                "intent": "conversation_summary",
+                "reasoning": "用户明确要求根据前面的对话和跟进记录生成当天的会话总结文档。",
+                "confidence": 0.98,
+                "requested_tasks": [
+                  "summary",
+                  "daily"
+                ]
+              },
+              "pattern": {
+                "intent": "conversation_summary",
+                "confidence": 0.5
+              },
+              "embedding": {
+                "intent": "conversation_summary",
+                "source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                "reasoning": "Chroma cosine nearest template",
+                "confidence": 0.7787284614795571
+              }
+            },
+            "entities": {
+              "date": [],
+              "amount": [],
+              "listing_id": []
+            },
+            "cache_hit": false,
+            "reasoning": "用户明确要求根据前面的对话和跟进记录生成当天的会话总结文档。",
+            "confidence": 0.8917456922959114,
+            "latency_ms": 733.2906999999977,
+            "intent_group": "followup",
+            "source_scores": {
+              "llm": 0.98,
+              "pattern": 0.5,
+              "embedding": 0.7787284614795571
+            },
+            "requested_tasks": [
+              "summary",
+              "daily"
+            ],
+            "embedding_source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            "template_version": "ce9dad379be2e6517d6ed83be4014b4f95604ba5dda89a65229bacfa6acd7985"
+          },
+          "deferred_summary": false
+        }
+      },
+      "assistant": {
+        "at": "2026-10-20T11:00:07.287Z",
+        "role": "assistant",
+        "text": "已生成 2026-10-20 的会话与跟进总结，可到总结文档下载。日期按 Asia/Singapore 计算。"
+      }
+    },
+    {
+      "query": "为什么有一个卫生间，独立卫浴还是待核实？",
+      "expected": "knowledge",
+      "operation": {
+        "kind": "knowledge",
+        "status": "completed",
+        "intent_plan": {
+          "kind": "knowledge",
+          "agent": "d",
+          "intent": {
+            "intent": "rental_knowledge",
+            "urgency": 1,
+            "channels": {
+              "llm": {
+                "intent": "rental_knowledge",
+                "reasoning": "用户询问已有房源中独立卫浴为何仍标记为待核实，属于系统概念/通用知识解释，不是重新搜索或修改条件。",
+                "confidence": 0.95,
+                "requested_tasks": [
+                  "knowledge"
+                ]
+              },
+              "pattern": {
+                "intent": "other",
+                "confidence": 0
+              },
+              "embedding": {
+                "intent": "requirement_update",
+                "source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                "reasoning": "Chroma cosine nearest template",
+                "confidence": 0.611786945182098
+              }
+            },
+            "entities": {
+              "date": [],
+              "amount": [],
+              "listing_id": []
+            },
+            "cache_hit": false,
+            "reasoning": "用户询问已有房源中独立卫浴为何仍标记为待核实，属于系统概念/通用知识解释，不是重新搜索或修改条件。",
+            "confidence": 0.6649999999999999,
+            "latency_ms": 1150.1647000000012,
+            "intent_group": "knowledge",
+            "source_scores": {
+              "llm": 0.95,
+              "pattern": 0,
+              "embedding": 0.611786945182098
+            },
+            "requested_tasks": [
+              "knowledge"
+            ],
+            "embedding_source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            "template_version": "ce9dad379be2e6517d6ed83be4014b4f95604ba5dda89a65229bacfa6acd7985"
+          },
+          "deferred_summary": false
+        }
+      },
+      "assistant": {
+        "at": "2026-10-20T11:00:13.210Z",
+        "role": "assistant",
+        "text": "一个卫生间、1B1B、主卧等标注不能单独证明卫生间专用、不与他人共用。 [1]\n\n独立卫浴需要问是否仅由该房间住户使用，不能只数卫生间个数。 [2]\n\n待核实可能因为历史数据缺失、描述不能证明该具体条件、数据能力不支持，或外部服务尚未接通。 [3]\n\n待核实不是通过，也不一定是原始字段为空。 [4]\n\n“配备独立卫浴”在经纪人回复理解中可以明确该项肯定陈述，但仍属于用户提供的回复内容，不是平台独立查验的房源事实。 [5]",
+        "knowledge": {
+          "trace": {
+            "rrf_k": 60,
+            "rerank": "llm",
+            "queries": [
+              "为什么有一个卫生间，独立卫浴还是待核实？",
+              "独立卫浴 待核实 原因 卫生间 数量",
+              "why independent bathroom status pending verification one bathroom",
+              "独立卫浴 核实 状态 租房 卫生间"
+            ],
+            "channel_rankings": {
+              "bm25": [
+                "system-evidence:1:2ff8b42809aa",
+                "handover-disputes:0:ac15a576ddbf",
+                "system-followup:2:52af12482942",
+                "system-evidence:4:f47965ccb57c",
+                "agent-and-scams:1:7e76068e8a2b",
+                "agent-and-scams:4:ea42253c9451",
+                "system-evidence:0:8f2098621c17",
+                "system-evidence:3:b9f1ab042591"
+              ],
+              "fused": [
+                "system-evidence:1:2ff8b42809aa",
+                "handover-disputes:0:ac15a576ddbf",
+                "system-followup:2:52af12482942",
+                "agent-and-scams:1:7e76068e8a2b",
+                "system-evidence:4:f47965ccb57c",
+                "tenancy-terms:2:77d1e0cc1648",
+                "tenancy-terms:3:e29f9467aab0",
+                "agent-and-scams:4:ea42253c9451",
+                "hdb-rental:4:407ca0f1cf59",
+                "system-evidence:0:8f2098621c17",
+                "tenancy-terms:4:fc3535b62c97",
+                "system-evidence:3:b9f1ab042591",
+                "handover-disputes:1:ee423209cda7"
+              ],
+              "vector": [
+                "system-evidence:1:2ff8b42809aa",
+                "handover-disputes:0:ac15a576ddbf",
+                "system-followup:2:52af12482942",
+                "tenancy-terms:2:77d1e0cc1648",
+                "tenancy-terms:3:e29f9467aab0",
+                "hdb-rental:4:407ca0f1cf59",
+                "tenancy-terms:4:fc3535b62c97",
+                "agent-and-scams:1:7e76068e8a2b",
+                "handover-disputes:1:ee423209cda7"
+              ]
+            }
+          },
+          "answer": "一个卫生间、1B1B、主卧等标注不能单独证明卫生间专用、不与他人共用。 [1]\n\n独立卫浴需要问是否仅由该房间住户使用，不能只数卫生间个数。 [2]\n\n待核实可能因为历史数据缺失、描述不能证明该具体条件、数据能力不支持，或外部服务尚未接通。 [3]\n\n待核实不是通过，也不一定是原始字段为空。 [4]\n\n“配备独立卫浴”在经纪人回复理解中可以明确该项肯定陈述，但仍属于用户提供的回复内容，不是平台独立查验的房源事实。 [5]",
+          "method": "llm_grounded_verified",
+          "status": "ok",
+          "degraded": [],
+          "citations": [
+            {
+              "quote": "一个卫生间、1B1B、主卧等标注不能单独证明卫生间专用、不与他人共用。",
+              "scope": "system_help",
+              "title": "本系统的推荐、距离、待核实与房源事实",
+              "heading": "待核实不是通过，也不一定是原始字段为空",
+              "sources": [
+                {
+                  "url": "project://knowledge/rental/system-evidence.md",
+                  "title": "项目资料 knowledge/rental/system-evidence.md"
+                }
+              ],
+              "chunk_id": "system-evidence:1:2ff8b42809aa",
+              "revision": "2026-10-20.1",
+              "checked_at": "2026-10-20",
+              "source_ref": "knowledge/rental/system-evidence.md",
+              "document_id": "system-evidence",
+              "review_after": "2027-01-20"
+            },
+            {
+              "quote": "独立卫浴需要问是否仅由该房间住户使用，不能只数卫生间个数。",
+              "scope": "policy_guidance",
+              "title": "看房交接、押金争议与小额索偿范围",
+              "heading": "看房时整理可观察事实",
+              "sources": [
+                {
+                  "url": "https://www.judiciary.gov.sg/civil/cases-eligible-small-claim",
+                  "title": "Singapore Courts Cases Eligible for a Small Claim"
+                }
+              ],
+              "chunk_id": "handover-disputes:0:ac15a576ddbf",
+              "revision": "2026-10-20.1",
+              "checked_at": "2026-10-20",
+              "source_ref": "knowledge/rental/handover-disputes.md",
+              "document_id": "handover-disputes",
+              "review_after": "2027-01-20"
+            },
+            {
+              "quote": "待核实可能因为历史数据缺失、描述不能证明该具体条件、数据能力不支持，或外部服务尚未接通。",
+              "scope": "system_help",
+              "title": "本系统的推荐、距离、待核实与房源事实",
+              "heading": "待核实不是通过，也不一定是原始字段为空",
+              "sources": [
+                {
+                  "url": "project://knowledge/rental/system-evidence.md",
+                  "title": "项目资料 knowledge/rental/system-evidence.md"
+                }
+              ],
+              "chunk_id": "system-evidence:1:2ff8b42809aa",
+              "revision": "2026-10-20.1",
+              "checked_at": "2026-10-20",
+              "source_ref": "knowledge/rental/system-evidence.md",
+              "document_id": "system-evidence",
+              "review_after": "2027-01-20"
+            },
+            {
+              "quote": "待核实不是通过，也不一定是原始字段为空",
+              "scope": "system_help",
+              "title": "本系统的推荐、距离、待核实与房源事实",
+              "heading": "待核实不是通过，也不一定是原始字段为空",
+              "sources": [
+                {
+                  "url": "project://knowledge/rental/system-evidence.md",
+                  "title": "项目资料 knowledge/rental/system-evidence.md"
+                }
+              ],
+              "chunk_id": "system-evidence:1:2ff8b42809aa",
+              "revision": "2026-10-20.1",
+              "checked_at": "2026-10-20",
+              "source_ref": "knowledge/rental/system-evidence.md",
+              "document_id": "system-evidence",
+              "review_after": "2027-01-20"
+            },
+            {
+              "quote": "“配备独立卫浴”在经纪人回复理解中可以明确该项肯定陈述，但仍属于用户提供的回复内容，不是平台独立查验的房源事实。",
+              "scope": "system_help",
+              "title": "本系统的推荐、距离、待核实与房源事实",
+              "heading": "待核实不是通过，也不一定是原始字段为空",
+              "sources": [
+                {
+                  "url": "project://knowledge/rental/system-evidence.md",
+                  "title": "项目资料 knowledge/rental/system-evidence.md"
+                }
+              ],
+              "chunk_id": "system-evidence:1:2ff8b42809aa",
+              "revision": "2026-10-20.1",
+              "checked_at": "2026-10-20",
+              "source_ref": "knowledge/rental/system-evidence.md",
+              "document_id": "system-evidence",
+              "review_after": "2027-01-20"
+            }
+          ],
+          "retrieval": "chroma_bm25_rrf",
+          "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+          "bm25_enabled": true,
+          "vector_enabled": true
+        }
+      }
+    },
+    {
+      "query": "超过32条未完成上下文的编排",
+      "expected": "failed_without_recovery_loop",
+      "correct": true
+    }
+  ]
+}

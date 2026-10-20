@@ -1,0 +1,60 @@
+{
+  "query": "我想租新加坡国立大学附近3公里内的房子，要求房子3公里内附近有MRT，预算3000新币每月，要求有独立浴室",
+  "draft": {
+    "upsert": [
+      {
+        "criterion_id": "monthly-rent",
+        "field": "price",
+        "operator": "lte",
+        "value": 3000,
+        "unit": "SGD/month",
+        "strength": "hard"
+      },
+      {
+        "criterion_id": "amenities",
+        "field": "amenities",
+        "operator": "eq",
+        "value": "private_bathroom",
+        "strength": "hard"
+      }
+    ],
+    "remove_fields": [],
+    "clarifications": [
+      "地点目录暂未找到“房子”，请确认名称或换一个常用名称。"
+    ],
+    "sources": [
+      {
+        "field": "price",
+        "quote": "我想租新加坡国立大学附近3公里内的房子，要求房子3公里内附近有MRT，预算3000新币每月，要求有独立浴室"
+      },
+      {
+        "field": "amenities",
+        "quote": "我想租新加坡国立大学附近3公里内的房子，要求房子3公里内附近有MRT，预算3000新币每月，要求有独立浴室"
+      }
+    ],
+    "supported": true,
+    "location_intents": [
+      {
+        "name": "新加坡国立大学",
+        "quote": "我想租新加坡国立大学附近3公里内的房子",
+        "radius_m": 3000,
+        "strength": "hard",
+        "distance_type": "straight_line",
+        "explicit_station": false
+      },
+      {
+        "name": "房子",
+        "quote": "要求房子3公里内附近有MRT",
+        "radius_m": 3000,
+        "strength": "hard",
+        "distance_type": "straight_line",
+        "explicit_station": false
+      }
+    ],
+    "remove_criterion_ids": []
+  },
+  "simple_query": "我想租新加坡国立大学附近3公里内的房子，预算3000新币每月，要求有独立浴室",
+  "remaining_questions": [
+    "地点目录暂未找到“房子”，请确认名称或换一个常用名称。"
+  ]
+}

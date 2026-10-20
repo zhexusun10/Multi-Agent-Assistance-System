@@ -1,0 +1,71 @@
+{
+  "checked_at": "2026-10-20T10:58:37.370Z",
+  "mode": "real HTTP, PG, Neo4j; configured project model",
+  "session_id": "a7a454e3-667a-4800-b3d2-579096a8d059",
+  "checks": [
+    {
+      "name": "Independent SQL oracle: every eligible match and assessed count",
+      "passed": true,
+      "detail": {
+        "eligible": 65,
+        "assessed": 475
+      }
+    },
+    {
+      "name": "Conversational comparison answers with actual listing facts, price difference and unknowns without rerunning recommendation",
+      "passed": true
+    },
+    {
+      "name": "No execution without approval; no approval without verified contact",
+      "passed": true
+    },
+    {
+      "name": "Editing invalidates approval; repeated execution has one durable simulated effect",
+      "passed": true
+    },
+    {
+      "name": "Budget revision preserves stable ID and untouched bedroom/district requirements",
+      "passed": true
+    },
+    {
+      "name": "Repeated equivalent requirement does not increment version",
+      "passed": true
+    },
+    {
+      "name": "Feedback is deduplicated, advances request identity, preserves stated requirements",
+      "passed": true
+    },
+    {
+      "name": "Simulated viewing: future times, shared-calendar conflict, separate bilateral confirmation",
+      "passed": true
+    },
+    {
+      "name": "Evidence resolves and another owner cannot access the session",
+      "passed": true
+    },
+    {
+      "name": "Unavailable furnishing fact produces unverified candidates, never verified matches",
+      "passed": true
+    },
+    {
+      "name": "No match does not auto-relax the budget",
+      "passed": true
+    },
+    {
+      "name": "Downloadable summary preserves current budget and original source version",
+      "passed": true
+    },
+    {
+      "name": "Status questions explain simulation instead of claiming a salesperson was contacted",
+      "passed": true
+    },
+    {
+      "name": "Due follow-up reminder becomes one durable workbench event without sending externally",
+      "passed": true
+    },
+    {
+      "name": "Monotonic event replay and full requirement snapshots on every recommendation call",
+      "passed": true
+    }
+  ]
+}

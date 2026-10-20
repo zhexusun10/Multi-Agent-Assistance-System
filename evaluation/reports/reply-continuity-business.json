@@ -1,0 +1,17 @@
+{
+  "checked_at": "2026-10-20T08:55:34.229Z",
+  "status": "passed",
+  "model_verified": true,
+  "messages_sent_externally": 0,
+  "input": "你好，房子最短租6个月，房间配备床、椅子和书桌，被褥还需要自行准备。水电费是包含在房租里的。房间配备独立卫浴。",
+  "summary": "最短租期：对方表示至少 6 个月（原文：“房子最短租6个月，”）\n家具配置：对方已说明所配家具，具体物品见原文（原文：“房间配备床、椅子和书桌，”）\n被褥 / 床品：对方表示需自行准备 / 不提供（原文：“被褥还需要自行准备。”）\n水电费用：对方表示已包含，项目见原文（原文：“水电费是包含在房租里的。”）\n独立卫浴：对方表示有独立卫浴（原文：“房间配备独立卫浴。”）",
+  "next_draft": "你好，谢谢回复。\n\n了解，最短租期是6个月，房间有独立卫浴。被褥我会自行准备。\n\n这套房现在还可以租吗？\n现在的月租是多少？我的预算是2000新币以内。\n除了房租，是否还有押金、网络或清洁等其他费用？\n\n我也想找个时间去看看，请问你最近什么时候方便？\n\n谢谢！",
+  "checks": [
+    "exact reported text resolves five rental topics; both reply-specific and generic recompose skip answered questions; place evidence remains distinct; next draft is idempotent",
+    "second message adds current availability/rent/fees without forgetting first-round lease/furniture/private bath; no answered questions repeated; older replies cannot generate stale drafts; no property/requirement mutation or outbound sends",
+    "different session and different listing do not inherit correspondence memory",
+    "old persisted analysis is upgraded on use; already sent snapshots remain unchanged",
+    "untouched cached drafts repair with a new revision and SSE event; copied snapshots remain recordable without automatic rewriting",
+    "configured real model returns grounded claims; exact positive bathroom assertion remains positive"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "checked_at": "2026-10-20T07:23:09.736Z",
+  "status": "passed",
+  "query": "我要租新加坡国立大学附近五公里内的房子，预算2000新币每月，越近越好。",
+  "candidates": 5,
+  "messages_sent_externally": 0,
+  "checks": [
+    "real NUS5km + SGD2000 search preserves hard price/radius and soft proximity; enrichment leaves ranks, scores, evidence and requirements untouched",
+    "every candidate bathroom/bedroom/type/address/area compared independently with canonical SQL; saved photos and explicit distance semantics returned",
+    "session ownership, current-list membership and source-version guards remain enforced"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "checked_at": "2026-10-19T14:42:35.308958+00:00",
+  "status": "passed",
+  "listing_id": "24508067",
+  "checks": [
+    "Original Queenstown request renders pending candidates with both inquiry and viewing controls",
+    "Area zero is explicitly labeled containment, not station distance",
+    "Click binds a stable listing ID and automatically opens the follow-up workbench",
+    "Unknown hard conditions are carried into the inquiry without becoming passed",
+    "24-hour reminder can be set, then contact/slots edited and current revision approved",
+    "Execution is visibly simulation and survives reload; listing remains pending"
+  ],
+  "page_errors": [],
+  "screenshots": [
+    "09-queenstown-area-distance.png",
+    "10-unverified-viewing-workbench.png"
+  ]
+}

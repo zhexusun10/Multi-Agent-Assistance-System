@@ -1,0 +1,1103 @@
+{
+  "cases": 40,
+  "queries": "original only, no model rewrite or reranking (retrieval ablation)",
+  "metrics": {
+    "vector": {
+      "section_recall_at_5": 0.95,
+      "document_recall_at_5": 0.95,
+      "mrr": 0.7975
+    },
+    "bm25": {
+      "section_recall_at_5": 0.95,
+      "document_recall_at_5": 0.975,
+      "mrr": 0.8841666666666667
+    },
+    "fused": {
+      "section_recall_at_5": 1.0,
+      "document_recall_at_5": 1.0,
+      "mrr": 0.8833333333333334
+    }
+  },
+  "rows": [
+    {
+      "query": "公寓只住一个月可以吗？",
+      "expected_document": "private-rental",
+      "expected_heading": "私人住宅的最低租期",
+      "latency_ms": 2887,
+      "channels": {
+        "vector": {
+          "section_rank": 2,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.5
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "普通私人住宅可以按周出租吗",
+      "expected_document": "private-rental",
+      "expected_heading": "私人住宅的最低租期",
+      "latency_ms": 19,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "广告写co-living就能短住吗",
+      "expected_document": "private-rental",
+      "expected_heading": "不同住房类别不能混用规则",
+      "latency_ms": 22,
+      "channels": {
+        "vector": {
+          "section_rank": 2,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.5
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "Does a condo have a minimum lease duration?",
+      "expected_document": "private-rental",
+      "expected_heading": "私人住宅的最低租期",
+      "latency_ms": 22,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 3,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.3333333333333333
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "私人住宅最低三个月是不是房东一定肯租三个月",
+      "expected_document": "private-rental",
+      "expected_heading": "私人住宅的最低租期",
+      "latency_ms": 19,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "HDB房间最短要租半年还是三个月",
+      "expected_document": "hdb-rental",
+      "expected_heading": "最短六个月以及事先批准",
+      "latency_ms": 20,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "学生准证只剩四个月，HDB卧室出租资格怎么核对",
+      "expected_document": "hdb-rental",
+      "expected_heading": "外籍学生和准证条件",
+      "latency_ms": 23,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "组屋房东把房间锁起来搬走，这样算一起住吗",
+      "expected_document": "hdb-rental",
+      "expected_heading": "出租卧室与整套出租有差别",
+      "latency_ms": 24,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "Can a tourist rent an HDB bedroom as a long term tenant?",
+      "expected_document": "hdb-rental",
+      "expected_heading": "外籍学生和准证条件",
+      "latency_ms": 22,
+      "channels": {
+        "vector": {
+          "section_rank": 4,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.25
+        },
+        "bm25": {
+          "section_rank": 2,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.5
+        },
+        "fused": {
+          "section_rank": 3,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.3333333333333333
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "HDB卧室续租要重新办理批准吗",
+      "expected_document": "hdb-rental",
+      "expected_heading": "最短六个月以及事先批准",
+      "latency_ms": 22,
+      "channels": {
+        "vector": {
+          "section_rank": 2,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.5
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "押金必须是一月租金吗？退的时候怎么约定",
+      "expected_document": "tenancy-terms",
+      "expected_heading": "押金怎样问清楚",
+      "latency_ms": 20,
+      "channels": {
+        "vector": {
+          "section_rank": null,
+          "section_recall_at_5": false,
+          "document_recall_at_5": false,
+          "mrr": 0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 2,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.5
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "带床和桌子是不是也包被子床单",
+      "expected_document": "tenancy-terms",
+      "expected_heading": "家具与被褥分开核实",
+      "latency_ms": 22,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": null,
+          "section_recall_at_5": false,
+          "document_recall_at_5": true,
+          "mrr": 0
+        },
+        "fused": {
+          "section_rank": 2,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.5
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "水电包了就意味着网络和空调清洗也免费吗",
+      "expected_document": "tenancy-terms",
+      "expected_heading": "水电网络和其他费用",
+      "latency_ms": 24,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "租房合同和中介服务协议是一回事吗",
+      "expected_document": "tenancy-terms",
+      "expected_heading": "租约和经纪服务协议",
+      "latency_ms": 23,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "What should I clarify about the security deposit refund?",
+      "expected_document": "tenancy-terms",
+      "expected_heading": "押金怎样问清楚",
+      "latency_ms": 23,
+      "channels": {
+        "vector": {
+          "section_rank": null,
+          "section_recall_at_5": false,
+          "document_recall_at_5": false,
+          "mrr": 0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 3,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.3333333333333333
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "租房印花税的税率是多少",
+      "expected_document": "stamp-duty",
+      "expected_heading": "税率和计税基础",
+      "latency_ms": 22,
+      "channels": {
+        "vector": {
+          "section_rank": 2,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.5
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "租约在海外签字，三十天期限从什么时候算",
+      "expected_document": "stamp-duty",
+      "expected_heading": "签署地点影响缴纳期限",
+      "latency_ms": 25,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "两千月租签一年，印花税示例怎么算",
+      "expected_document": "stamp-duty",
+      "expected_heading": "一个仅用于理解的计算例子",
+      "latency_ms": 27,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "What happens to lease duty for a term longer than four years?",
+      "expected_document": "stamp-duty",
+      "expected_heading": "税率和计税基础",
+      "latency_ms": 26,
+      "channels": {
+        "vector": {
+          "section_rank": 5,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.2
+        },
+        "bm25": {
+          "section_rank": 3,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.3333333333333333
+        },
+        "fused": {
+          "section_rank": 3,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.3333333333333333
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "签约后可以等入住再交印花税吗",
+      "expected_document": "stamp-duty",
+      "expected_heading": "签署地点影响缴纳期限",
+      "latency_ms": 23,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "中介还没让我看房就催转钱给助理，怎么办",
+      "expected_document": "agent-and-scams",
+      "expected_heading": "还没看房就被要求转钱",
+      "latency_ms": 23,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "有CEA注册号码就能认定聊天的人是真经纪吗",
+      "expected_document": "agent-and-scams",
+      "expected_heading": "不只核对名字",
+      "latency_ms": 23,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "新加坡租房中介费有统一规定的费率吗",
+      "expected_document": "agent-and-scams",
+      "expected_heading": "佣金没有统一固定费率",
+      "latency_ms": 23,
+      "channels": {
+        "vector": {
+          "section_rank": 5,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.2
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "How can I check that a property agent is not an impersonator?",
+      "expected_document": "agent-and-scams",
+      "expected_heading": "不只核对名字",
+      "latency_ms": 23,
+      "channels": {
+        "vector": {
+          "section_rank": 2,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.5
+        },
+        "bm25": {
+          "section_rank": null,
+          "section_recall_at_5": false,
+          "document_recall_at_5": false,
+          "mrr": 0
+        },
+        "fused": {
+          "section_rank": 3,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.3333333333333333
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "房源里有电话是否能证明支持WhatsApp联系",
+      "expected_document": "agent-and-scams",
+      "expected_heading": "本项目中的联系方式证据",
+      "latency_ms": 24,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "两年租约的押金纠纷能走小额索偿吗",
+      "expected_document": "handover-disputes",
+      "expected_heading": "小额索偿审裁庭 SCT 的范围",
+      "latency_ms": 23,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "SCT两万和三万的上限有什么区别",
+      "expected_document": "handover-disputes",
+      "expected_heading": "小额索偿审裁庭 SCT 的范围",
+      "latency_ms": 22,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "房东扣押金，先要准备什么材料",
+      "expected_document": "handover-disputes",
+      "expected_heading": "押金被扣时先取得依据",
+      "latency_ms": 29,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "退房怎么保留家具损坏争议的记录",
+      "expected_document": "handover-disputes",
+      "expected_heading": "入住和退租留存相同维度的记录",
+      "latency_ms": 29,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "Does the pre-filing assessment guarantee that SCT will accept my case?",
+      "expected_document": "handover-disputes",
+      "expected_heading": "先评估，不能保证受理与结果",
+      "latency_ms": 27,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "geodesic是公交时间还是实际路线",
+      "expected_document": "system-evidence",
+      "expected_heading": "OSM、geodesic 与校园关系",
+      "latency_ms": 21,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "为什么区域距离0米，不会正好就在地铁口吧",
+      "expected_document": "system-evidence",
+      "expected_heading": "区域距离为零的含义",
+      "latency_ms": 22,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "卫浴数量1为什么独卫仍显示待核实",
+      "expected_document": "system-evidence",
+      "expected_heading": "待核实不是通过，也不一定是原始字段为空",
+      "latency_ms": 24,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "说Clementi附近一定要提供几公里吗",
+      "expected_document": "system-evidence",
+      "expected_heading": "硬条件和偏好",
+      "latency_ms": 25,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "历史挂牌信息能保证今天还能租吗",
+      "expected_document": "system-evidence",
+      "expected_heading": "历史快照和当前状态",
+      "latency_ms": 23,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 5,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.2
+        },
+        "fused": {
+          "section_rank": 2,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.5
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "没有WhatsApp API密钥怎么继续联系经纪人",
+      "expected_document": "system-followup",
+      "expected_heading": "复制、自己发送、记录发送",
+      "latency_ms": 23,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "复制草稿是不是已经发出去了",
+      "expected_document": "system-followup",
+      "expected_heading": "复制、自己发送、记录发送",
+      "latency_ms": 23,
+      "channels": {
+        "vector": {
+          "section_rank": 4,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.25
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 2,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.5
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "经纪人回复要粘到哪里，下一轮还会重复问吗",
+      "expected_document": "system-followup",
+      "expected_heading": "粘贴回复与逐轮理解",
+      "latency_ms": 23,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "选好看房时间就是预约成功了吗",
+      "expected_document": "system-followup",
+      "expected_heading": "看房不是选了时间就预约成功",
+      "latency_ms": 21,
+      "channels": {
+        "vector": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    },
+    {
+      "query": "我能不重新搜房直接总结之前的对话吗",
+      "expected_document": "system-followup",
+      "expected_heading": "总结与工作流中途跳转",
+      "latency_ms": 23,
+      "channels": {
+        "vector": {
+          "section_rank": 2,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 0.5
+        },
+        "bm25": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        },
+        "fused": {
+          "section_rank": 1,
+          "section_recall_at_5": true,
+          "document_recall_at_5": true,
+          "mrr": 1.0
+        }
+      },
+      "degraded": []
+    }
+  ]
+}

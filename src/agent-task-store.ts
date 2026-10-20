@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import type { Pool } from "pg";
+import type { Pool, PoolClient } from "pg";
 import type { AgentId, Assignment } from "./types.js";
 
 export type AgentTask = {
@@ -124,20 +124,16 @@ export class PostgresAgentTaskStore implements AgentTaskStore {
       ON agent_tasks (session_id, agent, created_at, id)
       WHERE status = 'queued' OR delivered_at IS NULL
     `);
+    await this.pool.query("ALTER TABLE agent_tasks ADD COLUMN IF NOT EXISTS step_key TEXT");
+    await this.pool.query("ALTER TABLE agent_tasks ADD COLUMN IF NOT EXISTS metadata JSONB NOT NULL DEFAULT '{}'::jsonb");
+    await this.pool.query('CREATE UNIQUE INDEX IF NOT EXISTS agent_tasks_step_idx ON agent_tasks(step_key)');
   }
 
   async enqueue(sessionId: string, assignments: Assignment[]): Promise<AgentTask[]> {
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
-      const tasks: AgentTask[] = [];
-      for (const { agent, prompt } of assignments) {
-        const result = await client.query<TaskRow>(`
-          INSERT INTO agent_tasks (id, session_id, agent, prompt, status)
-          VALUES ($1, $2, $3, $4, 'queued') RETURNING *
-        `, [randomUUID(), sessionId, agent, prompt]);
-        tasks.push(toTask(result.rows[0]));
-      }
+      const tasks = await this.enqueueInTx(client, sessionId, assignments);
       await client.query("COMMIT");
       return tasks;
     } catch (error) {
@@ -146,6 +142,19 @@ export class PostgresAgentTaskStore implements AgentTaskStore {
     } finally {
       client.release();
     }
+  }
+
+  async enqueueInTx(client: PoolClient, sessionId: string, assignments: Assignment[], options?: {stepKey:string; metadata:unknown}): Promise<AgentTask[]> {
+      const tasks: AgentTask[] = [];
+      for (const { agent, prompt } of assignments) {
+        const result = await client.query<TaskRow>(`
+          INSERT INTO agent_tasks (id, session_id, agent, prompt, status, step_key, metadata)
+          VALUES ($1, $2, $3, $4, 'queued', $5, $6::jsonb)
+          ON CONFLICT (step_key) DO NOTHING RETURNING *
+        `, [randomUUID(), sessionId, agent, prompt, options?`${options.stepKey}:${agent}`:null, JSON.stringify(options?.metadata??{})]);
+        if(result.rows[0])tasks.push(toTask(result.rows[0]));
+      }
+      return tasks;
   }
 
   async requeueRunning(sessionId?: string, agent?: AgentId): Promise<void> {

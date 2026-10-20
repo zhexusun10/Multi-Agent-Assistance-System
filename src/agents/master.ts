@@ -18,7 +18,7 @@ type GraphEvent = { type: "dispatch"; assignments: Assignment[] } | { type: "run
   Extract<MasterEvent, { type: "master_answer" | "runtime_answer" }>;
 type MasterInput =
   | { kind: "user"; query: string; runningAgentStatus: string | null;
-      runtimeEvents: Array<{ event: WakeEvent; eventKey?: string }> }
+      runtimeEvents: Array<{ event: WakeEvent; eventKey?: string }>; requestId?: string; sourceRequestId?: string }
   | { kind: "runtime"; event: WakeEvent; eventKey?: string };
 type SessionJob = { run: () => Promise<void> };
 type SessionQueue = {
@@ -94,15 +94,16 @@ function runtimeMessage(event: WakeEvent): HumanMessage {
 }
 
 export function createMaster(
-  model: BaseChatModel,
+  model: BaseChatModel | undefined,
   registry: AgentRegistry,
-  persistence: { checkpointer: BaseCheckpointSaver; events: SessionEventStore; tasks: AgentTaskStore } = {
+  persistence: { checkpointer: BaseCheckpointSaver; events: SessionEventStore; tasks: AgentTaskStore;
+    domain?: {plan:(query:string,sessionId:string,requestId?:string,sourceRequestId?:string)=>Promise<{assignments:Assignment[];answer:string}>;apply:(task:AgentTask)=>Promise<Array<{sessionId:string;agent:AgentId}>>} } = {
     checkpointer: new MemorySaver(), events: new MemorySessionEventStore(), tasks: new MemoryAgentTaskStore(),
   },
 ) {
-  if (!model.bindTools) throw new Error("The master model must support tool calling");
+  if (!persistence.domain && !model?.bindTools) throw new Error("The master model must support tool calling");
 
-  const routingModel = model.bindTools([createSpawnAgentTool()]);
+  const routingModel = model?.bindTools?.([createSpawnAgentTool()]);
   const sessionQueues = new Map<string, SessionQueue>();
   const pendingRuntime = new Map<string, Set<PendingRuntime>>();
   const activePairs = new Map<string, Promise<void>>();
@@ -110,7 +111,10 @@ export function createMaster(
 
   async function publish(sessionId: string, event: MasterEvent, key?: string): Promise<void> {
     const entry = await persistence.events.append(sessionId, event, key);
-    for (const subscriber of subscribers.get(sessionId) ?? []) subscriber.push(entry);
+    // Domain transactions can commit event N before a legacy runtime publish N+1.
+    // Broadcasting N+1 directly would advance the cursor past N. In business mode
+    // all delivery comes from the ordered durable log; the poll also catches recovery writes.
+    if(!persistence.domain)for (const subscriber of subscribers.get(sessionId) ?? []) subscriber.push(entry);
   }
 
   async function* subscribe(sessionId: string, after = 0, signal?: AbortSignal): AsyncGenerator<SequencedEvent> {
@@ -121,6 +125,14 @@ export function createMaster(
     const listeners = subscribers.get(sessionId) ?? new Set<EventQueue<SequencedEvent>>();
     listeners.add(queue);
     subscribers.set(sessionId, listeners);
+    let polling = false;
+    const poll = setInterval(async () => {
+      if(polling) return;
+      polling=true;
+      try { for(const entry of await persistence.events.list(sessionId, after)) queue.push(entry); }
+      catch { queue.close(); }
+      finally { polling=false; }
+    }, 500);
     try {
       // Register before reading so events committed during replay also reach this subscriber.
       for (const entry of await persistence.events.list(sessionId, after)) {
@@ -137,6 +149,7 @@ export function createMaster(
         }
       }
     } finally {
+      clearInterval(poll);
       signal?.removeEventListener("abort", abort);
       listeners.delete(queue);
       if (!listeners.size) subscribers.delete(sessionId);
@@ -228,6 +241,12 @@ export function createMaster(
 
   const masterGraph = new StateGraph(MasterState)
     .addNode("master", async (state, config) => {
+      if(persistence.domain){
+        if(state.input.kind==='runtime') return {assignments:null,routeCall:null,answerMessage:new AIMessage('阶段处理已完成，业务结果已写入会话。'),alreadyProcessed:false,alreadySteered:false};
+        const plan=await persistence.domain.plan(state.input.query,String(config.configurable?.thread_id),state.input.requestId,state.input.sourceRequestId);
+        if(plan.assignments.length) config.writer?.({type:'dispatch',assignments:plan.assignments} satisfies GraphEvent);
+        return {assignments:plan.assignments.length?plan.assignments:null,routeCall:null,answerMessage:new AIMessage(plan.answer)};
+      }
       if (state.input.kind === "runtime") {
         if (state.input.eventKey && state.steeredRuntime[state.input.eventKey]) {
           return { assignments: null, routeCall: null, answerMessage: null, alreadySteered: true };
@@ -237,12 +256,12 @@ export function createMaster(
           return { assignments: null, routeCall: null, answerMessage: new AIMessage(previous),
             alreadyProcessed: true, alreadySteered: false };
         }
-        const response = await model.invoke([...state.messages, runtimeMessage(state.input.event)], config);
+        const response = await model!.invoke([...state.messages, runtimeMessage(state.input.event)], config);
         if (!(response instanceof AIMessage)) throw new Error("master returned an invalid runtime answer");
         return { assignments: null, routeCall: null, answerMessage: response,
           alreadyProcessed: false, alreadySteered: false };
       }
-      const response = await routingModel.invoke([
+      const response = await routingModel!.invoke([
         ...state.messages,
         ...state.input.runtimeEvents.map(({ event }) => runtimeMessage(event)),
         currentQueryMessage(state.input.query, state.input.runningAgentStatus),
@@ -289,7 +308,7 @@ export function createMaster(
         });
       }
       const response = recordedCall && success
-        ? await model.invoke([
+        ? await model!.invoke([
           ...state.messages, ...state.input.runtimeEvents.map(({ event }) => runtimeMessage(event)),
           currentQueryMessage(query, runningAgentStatus), recordedCall, success,
         ], config)
@@ -394,6 +413,7 @@ export function createMaster(
   }
 
   function taskEvent(task: AgentTask): WorkerEvent {
+    if(persistence.domain){return task.status==='failed'?{type:'agent_error',agent:task.agent,prompt:'',detail:'阶段执行失败，请查看业务错误说明。'}:{type:'agent_result',result:{agent:task.agent,prompt:'',output:JSON.stringify({status:'completed'})}};}
     if (task.status === "failed") {
       return { type: "agent_error", agent: task.agent, prompt: task.prompt, detail: task.error ?? "Agent failed" };
     }
@@ -409,6 +429,7 @@ export function createMaster(
         while (true) {
           const finished = await persistence.tasks.nextUndelivered(sessionId, agent);
           if (finished) {
+            if(persistence.domain){for(const next of await persistence.domain.apply(finished))kickAgent(next.sessionId,next.agent);}
             await receiveRuntimeEvent(sessionId, taskEvent(finished), finished.id);
             await persistence.tasks.markDelivered(finished.id);
             continue;
@@ -419,7 +440,7 @@ export function createMaster(
           try {
             output = await registry[agent](task.prompt, sessionId, task.id);
           } catch (error) {
-            const detail = error instanceof Error ? error.message : String(error);
+            const detail = (error instanceof Error ? error.message : String(error)).replace(/sk-[A-Za-z0-9_-]+/g,'[REDACTED]');
             await persistence.tasks.finish(task.id, null, detail);
             continue;
           }
@@ -448,6 +469,10 @@ export function createMaster(
 
   async function resumePendingTasks(): Promise<void> {
     await persistence.tasks.requeueRunning();
+    await wakePendingTasks();
+  }
+
+  async function wakePendingTasks(): Promise<void> {
     for (const { sessionId, agent } of await persistence.tasks.pendingPairs()) {
       kickAgent(sessionId, agent);
     }
@@ -457,7 +482,7 @@ export function createMaster(
     await Promise.all(activePairs.values());
   }
 
-  async function* stream(query: string, sessionId: string): AsyncGenerator<MasterEvent> {
+  async function* stream(query: string, sessionId: string, options?:{requestId?:string;sourceRequestId?:string}): AsyncGenerator<MasterEvent> {
     const events = new EventQueue<MasterEvent>();
     events.push({ type: "session", session_id: sessionId });
 
@@ -476,6 +501,7 @@ export function createMaster(
           for await (const chunk of await masterGraph.stream(
             { input: {
               kind: "user", query, runningAgentStatus: await runningAgentStatus(sessionId),
+              requestId:options?.requestId,sourceRequestId:options?.sourceRequestId,
               runtimeEvents: steered.map(({ event, eventKey }) => ({ event, eventKey })),
             } },
             { configurable: { thread_id: sessionId }, streamMode: "custom", durability: "sync" },
@@ -483,7 +509,7 @@ export function createMaster(
             const event = chunk as GraphEvent;
             if (event.type === "dispatch") {
               spawnedAgents = event.assignments.map(({ agent }) => agent);
-              await persistence.tasks.enqueue(sessionId, event.assignments);
+              if(!persistence.domain) await persistence.tasks.enqueue(sessionId, event.assignments);
               for (const agent of spawnedAgents) kickAgent(sessionId, agent);
             } else if (event.type === "master_answer") {
               answer = event.answer;
@@ -513,5 +539,5 @@ export function createMaster(
     for await (const event of events) yield event;
   }
 
-  return { stream, subscribe, receiveRuntimeEvent, acceptRuntimeEvent, resumePendingTasks, waitForTaskIdle };
+  return { stream, subscribe, receiveRuntimeEvent, acceptRuntimeEvent, resumePendingTasks, wakePendingTasks, waitForTaskIdle };
 }

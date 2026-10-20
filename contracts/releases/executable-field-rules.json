@@ -1,0 +1,181 @@
+{
+  "price": {
+    "kind": "number",
+    "ops": [
+      "eq",
+      "gte",
+      "lte",
+      "between"
+    ],
+    "unit": "SGD/month"
+  },
+  "bedrooms": {
+    "kind": "integer",
+    "ops": [
+      "eq",
+      "gte",
+      "lte",
+      "between"
+    ],
+    "unit": "count"
+  },
+  "bathrooms": {
+    "kind": "integer",
+    "ops": [
+      "eq",
+      "gte",
+      "lte",
+      "between"
+    ],
+    "unit": "count"
+  },
+  "floor_area_sqft": {
+    "kind": "number",
+    "ops": [
+      "eq",
+      "gte",
+      "lte",
+      "between"
+    ],
+    "unit": "sqft"
+  },
+  "land_area_sqft": {
+    "kind": "number",
+    "ops": [
+      "eq",
+      "gte",
+      "lte",
+      "between"
+    ],
+    "unit": "sqft"
+  },
+  "build_year": {
+    "kind": "integer",
+    "ops": [
+      "eq",
+      "gte",
+      "lte",
+      "between"
+    ],
+    "unit": "year"
+  },
+  "district": {
+    "kind": "string",
+    "ops": [
+      "eq",
+      "in"
+    ]
+  },
+  "region_code": {
+    "kind": "string",
+    "ops": [
+      "eq",
+      "in"
+    ]
+  },
+  "postal_code": {
+    "kind": "string",
+    "ops": [
+      "eq",
+      "in"
+    ]
+  },
+  "tenure_category": {
+    "kind": "string",
+    "ops": [
+      "eq",
+      "in"
+    ]
+  },
+  "property_type": {
+    "kind": "string",
+    "ops": [
+      "eq",
+      "in"
+    ]
+  },
+  "place_proximity": {
+    "kind": "number",
+    "ops": [
+      "lte",
+      "gte",
+      "between"
+    ],
+    "unit": "m"
+  },
+  "mrt_distance_m": {
+    "kind": "number",
+    "ops": [
+      "lte",
+      "gte",
+      "between"
+    ],
+    "unit": "m"
+  },
+  "mrt_walking_mins": {
+    "kind": "number",
+    "ops": [
+      "lte",
+      "gte",
+      "between"
+    ],
+    "unit": "min"
+  },
+  "lease_months": {
+    "kind": "integer",
+    "ops": [
+      "eq",
+      "between"
+    ],
+    "unit": "month",
+    "unsupported": true
+  },
+  "furnishing": {
+    "kind": "string",
+    "ops": [
+      "eq",
+      "in"
+    ],
+    "unsupported": true
+  },
+  "rental_scope": {
+    "kind": "string",
+    "ops": [
+      "eq",
+      "in"
+    ],
+    "unsupported": true
+  },
+  "move_in_date": {
+    "kind": "date",
+    "ops": [
+      "eq",
+      "gte",
+      "lte"
+    ],
+    "unsupported": true
+  },
+  "amenities": {
+    "kind": "string",
+    "ops": [
+      "eq"
+    ],
+    "unsupported": true
+  },
+  "commute_time": {
+    "kind": "number",
+    "ops": [
+      "lte",
+      "between"
+    ],
+    "unit": "min",
+    "unsupported": true
+  },
+  "current_availability": {
+    "kind": "boolean",
+    "ops": [
+      "eq"
+    ],
+    "unsupported": true
+  }
+}

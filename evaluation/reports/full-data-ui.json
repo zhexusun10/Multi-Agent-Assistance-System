@@ -1,0 +1,11 @@
+{
+  "checked_at": "2026-10-20T13:02:29.002367+00:00",
+  "checks": [
+    "Full snapshot badge, all-record coverage, five candidates and SQL/photo/Neo4j details render",
+    "Property card collapse remains usable after switching data",
+    "390px mobile view has no horizontal page overflow",
+    "Old sample conversation is preserved; its stale cards cannot masquerade as full results"
+  ],
+  "status": "passed",
+  "browser_errors": []
+}

@@ -1,0 +1,10 @@
+{
+  "checked_at": "2026-10-20T11:00:53.599953+00:00",
+  "checks": [
+    "real policy answers expose official links, exact excerpts and review dates; existing recommendation cards coexist",
+    "citation metadata survives reload and PostgreSQL conversation restoration",
+    "typing a policy question in the actual chat invokes the new orchestrator and renders a sourced answer without replacing the search results",
+    "390px mobile source cards fit viewport; no browser JavaScript errors"
+  ],
+  "external_messages_sent": 0
+}

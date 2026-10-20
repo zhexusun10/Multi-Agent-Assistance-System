@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-10-20T12:04:24.285Z",
+  "status": "passed",
+  "session_id": "5a6791b9-a698-4678-a00a-24bdbb4478b5",
+  "nearby_only_session_id": "1cb02787-549e-4194-ae3d-26cd4f66280b",
+  "checks": [
+    "Original sentence resolves to the real Clementi area and ranks by proximity without requiring landmarks/radius or losing unknown hard conditions",
+    "Exact follow-up resolves MRT, converts 3km to 3000m, clears the old area target and preserves budget/private-bathroom/transit/30min",
+    "Independent SQL plus official exit coordinates reproduce exact top-5 nearest ranking; eligible count is unchanged by an unspecified nearby preference",
+    "A legacy conversation carrying both obsolete location questions resumes without asking them again"
+  ],
+  "unrestricted_budget_candidates": 192,
+  "within_3km_or_unknown": 161
+}

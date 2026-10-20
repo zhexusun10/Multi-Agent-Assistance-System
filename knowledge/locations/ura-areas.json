@@ -1,0 +1,395 @@
+{
+  "version": "ura-mp2019-f23856251b46",
+  "source_url": "https://data.gov.sg/datasets/d_4765db0e87b9c86336792efe8a1f7a66/view",
+  "license_url": "https://data.gov.sg/open-data-licence",
+  "raw_sha256": "f23856251b467089f788d0fff72ef5a38e753f21aa69b4352401d7ed50d380cc",
+  "snapshot_period": "Master Plan 2019; dataset last updated 2025-12-05",
+  "retrieved_at": "2026-10-19T12:42:02.792144+00:00",
+  "areas": [
+    {
+      "place_id": "URA:AREA:BEDOK",
+      "name": "BEDOK",
+      "region": "EAST REGION",
+      "code": "BD",
+      "geometry_index": 0
+    },
+    {
+      "place_id": "URA:AREA:BOON_LAY",
+      "name": "BOON LAY",
+      "region": "WEST REGION",
+      "code": "BL",
+      "geometry_index": 1
+    },
+    {
+      "place_id": "URA:AREA:BUKIT_BATOK",
+      "name": "BUKIT BATOK",
+      "region": "WEST REGION",
+      "code": "BK",
+      "geometry_index": 2
+    },
+    {
+      "place_id": "URA:AREA:BUKIT_MERAH",
+      "name": "BUKIT MERAH",
+      "region": "CENTRAL REGION",
+      "code": "BM",
+      "geometry_index": 3
+    },
+    {
+      "place_id": "URA:AREA:BUKIT_PANJANG",
+      "name": "BUKIT PANJANG",
+      "region": "WEST REGION",
+      "code": "BP",
+      "geometry_index": 4
+    },
+    {
+      "place_id": "URA:AREA:BUKIT_TIMAH",
+      "name": "BUKIT TIMAH",
+      "region": "CENTRAL REGION",
+      "code": "BT",
+      "geometry_index": 5
+    },
+    {
+      "place_id": "URA:AREA:CENTRAL_WATER_CATCHMENT",
+      "name": "CENTRAL WATER CATCHMENT",
+      "region": "NORTH REGION",
+      "code": "CC",
+      "geometry_index": 6
+    },
+    {
+      "place_id": "URA:AREA:CHANGI",
+      "name": "CHANGI",
+      "region": "EAST REGION",
+      "code": "CH",
+      "geometry_index": 7
+    },
+    {
+      "place_id": "URA:AREA:CHOA_CHU_KANG",
+      "name": "CHOA CHU KANG",
+      "region": "WEST REGION",
+      "code": "CK",
+      "geometry_index": 8
+    },
+    {
+      "place_id": "URA:AREA:CLEMENTI",
+      "name": "CLEMENTI",
+      "region": "WEST REGION",
+      "code": "CL",
+      "geometry_index": 9
+    },
+    {
+      "place_id": "URA:AREA:HOUGANG",
+      "name": "HOUGANG",
+      "region": "NORTH-EAST REGION",
+      "code": "HG",
+      "geometry_index": 10
+    },
+    {
+      "place_id": "URA:AREA:JURONG_EAST",
+      "name": "JURONG EAST",
+      "region": "WEST REGION",
+      "code": "JE",
+      "geometry_index": 11
+    },
+    {
+      "place_id": "URA:AREA:JURONG_WEST",
+      "name": "JURONG WEST",
+      "region": "WEST REGION",
+      "code": "JW",
+      "geometry_index": 12
+    },
+    {
+      "place_id": "URA:AREA:PASIR_RIS",
+      "name": "PASIR RIS",
+      "region": "EAST REGION",
+      "code": "PR",
+      "geometry_index": 13
+    },
+    {
+      "place_id": "URA:AREA:PIONEER",
+      "name": "PIONEER",
+      "region": "WEST REGION",
+      "code": "PN",
+      "geometry_index": 14
+    },
+    {
+      "place_id": "URA:AREA:PUNGGOL",
+      "name": "PUNGGOL",
+      "region": "NORTH-EAST REGION",
+      "code": "PG",
+      "geometry_index": 15
+    },
+    {
+      "place_id": "URA:AREA:QUEENSTOWN",
+      "name": "QUEENSTOWN",
+      "region": "CENTRAL REGION",
+      "code": "QT",
+      "geometry_index": 16
+    },
+    {
+      "place_id": "URA:AREA:SELETAR",
+      "name": "SELETAR",
+      "region": "NORTH-EAST REGION",
+      "code": "SL",
+      "geometry_index": 17
+    },
+    {
+      "place_id": "URA:AREA:SEMBAWANG",
+      "name": "SEMBAWANG",
+      "region": "NORTH REGION",
+      "code": "SB",
+      "geometry_index": 18
+    },
+    {
+      "place_id": "URA:AREA:SENGKANG",
+      "name": "SENGKANG",
+      "region": "NORTH-EAST REGION",
+      "code": "SE",
+      "geometry_index": 19
+    },
+    {
+      "place_id": "URA:AREA:SERANGOON",
+      "name": "SERANGOON",
+      "region": "NORTH-EAST REGION",
+      "code": "SG",
+      "geometry_index": 20
+    },
+    {
+      "place_id": "URA:AREA:KALLANG",
+      "name": "KALLANG",
+      "region": "CENTRAL REGION",
+      "code": "KL",
+      "geometry_index": 21
+    },
+    {
+      "place_id": "URA:AREA:LIM_CHU_KANG",
+      "name": "LIM CHU KANG",
+      "region": "NORTH REGION",
+      "code": "LK",
+      "geometry_index": 22
+    },
+    {
+      "place_id": "URA:AREA:NORTH-EASTERN_ISLANDS",
+      "name": "NORTH-EASTERN ISLANDS",
+      "region": "NORTH-EAST REGION",
+      "code": "NE",
+      "geometry_index": 23
+    },
+    {
+      "place_id": "URA:AREA:NOVENA",
+      "name": "NOVENA",
+      "region": "CENTRAL REGION",
+      "code": "NV",
+      "geometry_index": 24
+    },
+    {
+      "place_id": "URA:AREA:SIMPANG",
+      "name": "SIMPANG",
+      "region": "NORTH REGION",
+      "code": "SM",
+      "geometry_index": 25
+    },
+    {
+      "place_id": "URA:AREA:SOUTHERN_ISLANDS",
+      "name": "SOUTHERN ISLANDS",
+      "region": "CENTRAL REGION",
+      "code": "SI",
+      "geometry_index": 26
+    },
+    {
+      "place_id": "URA:AREA:SUNGEI_KADUT",
+      "name": "SUNGEI KADUT",
+      "region": "NORTH REGION",
+      "code": "SK",
+      "geometry_index": 27
+    },
+    {
+      "place_id": "URA:AREA:TOA_PAYOH",
+      "name": "TOA PAYOH",
+      "region": "CENTRAL REGION",
+      "code": "TP",
+      "geometry_index": 28
+    },
+    {
+      "place_id": "URA:AREA:TUAS",
+      "name": "TUAS",
+      "region": "WEST REGION",
+      "code": "TS",
+      "geometry_index": 29
+    },
+    {
+      "place_id": "URA:AREA:WESTERN_ISLANDS",
+      "name": "WESTERN ISLANDS",
+      "region": "WEST REGION",
+      "code": "WI",
+      "geometry_index": 30
+    },
+    {
+      "place_id": "URA:AREA:WESTERN_WATER_CATCHMENT",
+      "name": "WESTERN WATER CATCHMENT",
+      "region": "WEST REGION",
+      "code": "WC",
+      "geometry_index": 31
+    },
+    {
+      "place_id": "URA:AREA:WOODLANDS",
+      "name": "WOODLANDS",
+      "region": "NORTH REGION",
+      "code": "WD",
+      "geometry_index": 32
+    },
+    {
+      "place_id": "URA:AREA:RIVER_VALLEY",
+      "name": "RIVER VALLEY",
+      "region": "CENTRAL REGION",
+      "code": "RV",
+      "geometry_index": 33
+    },
+    {
+      "place_id": "URA:AREA:ROCHOR",
+      "name": "ROCHOR",
+      "region": "CENTRAL REGION",
+      "code": "RC",
+      "geometry_index": 34
+    },
+    {
+      "place_id": "URA:AREA:SINGAPORE_RIVER",
+      "name": "SINGAPORE RIVER",
+      "region": "CENTRAL REGION",
+      "code": "SR",
+      "geometry_index": 35
+    },
+    {
+      "place_id": "URA:AREA:STRAITS_VIEW",
+      "name": "STRAITS VIEW",
+      "region": "CENTRAL REGION",
+      "code": "SV",
+      "geometry_index": 36
+    },
+    {
+      "place_id": "URA:AREA:CHANGI_BAY",
+      "name": "CHANGI BAY",
+      "region": "EAST REGION",
+      "code": "CB",
+      "geometry_index": 37
+    },
+    {
+      "place_id": "URA:AREA:MARINE_PARADE",
+      "name": "MARINE PARADE",
+      "region": "CENTRAL REGION",
+      "code": "MP",
+      "geometry_index": 38
+    },
+    {
+      "place_id": "URA:AREA:DOWNTOWN_CORE",
+      "name": "DOWNTOWN CORE",
+      "region": "CENTRAL REGION",
+      "code": "DT",
+      "geometry_index": 39
+    },
+    {
+      "place_id": "URA:AREA:MARINA_EAST",
+      "name": "MARINA EAST",
+      "region": "CENTRAL REGION",
+      "code": "ME",
+      "geometry_index": 40
+    },
+    {
+      "place_id": "URA:AREA:MARINA_SOUTH",
+      "name": "MARINA SOUTH",
+      "region": "CENTRAL REGION",
+      "code": "MS",
+      "geometry_index": 41
+    },
+    {
+      "place_id": "URA:AREA:MUSEUM",
+      "name": "MUSEUM",
+      "region": "CENTRAL REGION",
+      "code": "MU",
+      "geometry_index": 42
+    },
+    {
+      "place_id": "URA:AREA:NEWTON",
+      "name": "NEWTON",
+      "region": "CENTRAL REGION",
+      "code": "NT",
+      "geometry_index": 43
+    },
+    {
+      "place_id": "URA:AREA:ORCHARD",
+      "name": "ORCHARD",
+      "region": "CENTRAL REGION",
+      "code": "OR",
+      "geometry_index": 44
+    },
+    {
+      "place_id": "URA:AREA:OUTRAM",
+      "name": "OUTRAM",
+      "region": "CENTRAL REGION",
+      "code": "OT",
+      "geometry_index": 45
+    },
+    {
+      "place_id": "URA:AREA:TAMPINES",
+      "name": "TAMPINES",
+      "region": "EAST REGION",
+      "code": "TM",
+      "geometry_index": 46
+    },
+    {
+      "place_id": "URA:AREA:TANGLIN",
+      "name": "TANGLIN",
+      "region": "CENTRAL REGION",
+      "code": "TN",
+      "geometry_index": 47
+    },
+    {
+      "place_id": "URA:AREA:TENGAH",
+      "name": "TENGAH",
+      "region": "WEST REGION",
+      "code": "TH",
+      "geometry_index": 48
+    },
+    {
+      "place_id": "URA:AREA:MANDAI",
+      "name": "MANDAI",
+      "region": "NORTH REGION",
+      "code": "MD",
+      "geometry_index": 49
+    },
+    {
+      "place_id": "URA:AREA:BISHAN",
+      "name": "BISHAN",
+      "region": "CENTRAL REGION",
+      "code": "BS",
+      "geometry_index": 50
+    },
+    {
+      "place_id": "URA:AREA:ANG_MO_KIO",
+      "name": "ANG MO KIO",
+      "region": "NORTH-EAST REGION",
+      "code": "AM",
+      "geometry_index": 51
+    },
+    {
+      "place_id": "URA:AREA:GEYLANG",
+      "name": "GEYLANG",
+      "region": "CENTRAL REGION",
+      "code": "GL",
+      "geometry_index": 52
+    },
+    {
+      "place_id": "URA:AREA:PAYA_LEBAR",
+      "name": "PAYA LEBAR",
+      "region": "EAST REGION",
+      "code": "PL",
+      "geometry_index": 53
+    },
+    {
+      "place_id": "URA:AREA:YISHUN",
+      "name": "YISHUN",
+      "region": "NORTH REGION",
+      "code": "YS",
+      "geometry_index": 54
+    }
+  ]
+}

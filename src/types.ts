@@ -17,8 +17,10 @@ export const spawnInputSchema = z.object({
 });
 
 export const querySchema = z.object({
-  query: z.string().trim().min(1),
+  query: z.string().trim().min(1).max(8000),
   session_id: z.string().trim().min(1).max(128).optional(),
+  request_id: z.string().uuid().optional(),
+  source_request_id: z.string().optional(),
 });
 
 export interface AgentResult {
@@ -41,6 +43,7 @@ export const runtimeEventSchema = z.object({
 export type ExternalRuntimeEvent = { type: "runtime_event"; name: string; payload: unknown };
 
 export type MasterEvent =
+  | { type: 'workflow_result' | 'clarification' | 'action_update' | 'workflow_error' | 'stage'; payload: Record<string, unknown> }
   | { type: "session"; session_id: string }
   | { type: "master_answer"; answer: string }
   | ExternalRuntimeEvent

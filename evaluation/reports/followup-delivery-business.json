@@ -1,0 +1,17 @@
+{
+  "checked_at": "2026-10-20T07:00:15.849Z",
+  "status": "passed",
+  "provider_mode": "injected fake HTTP; no actual external messages",
+  "checks": [
+    "approval, durable enqueue, exact wire payload and idempotent single submission",
+    "verified webhook, one reply event, selective follow-up completion without property-fact changes",
+    "bilateral viewing confirmation, current Singapore date and owned calendar",
+    "ambiguous timeouts and interrupted sends require reconciliation, with no automatic retry",
+    "cancellation and current-search validation before provider submission",
+    "editable post-send reminders and durable reminder deduplication",
+    "WhatsApp signed callbacks, idempotency and monotonic delivery status",
+    "daily conversation and follow-up artifact with faithful unknowns and escaped HTML",
+    "ambiguous replies remain unassigned; explicit reply links one owner only",
+    "provider timestamp enforces WhatsApp service window; early read receipt is recovered after message acknowledgement"
+  ]
+}

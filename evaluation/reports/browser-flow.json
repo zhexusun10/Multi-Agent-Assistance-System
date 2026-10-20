@@ -1,0 +1,19 @@
+{
+  "checked_at": "2026-10-19T09:17:30.658772+00:00",
+  "status": "passed",
+  "checks": [
+    "Natural-language search displays actual matching listings",
+    "Evidence dialog resolves persisted source facts",
+    "Budget edit preserves untouched requirements and refreshes results",
+    "Contact verification, review and explicit simulated execution work in the UI",
+    "A real document download contains the current requirements and unknowns",
+    "Reload restores conversation, actions and artifacts without re-execution",
+    "Mobile layout fits the viewport; no browser JavaScript exceptions"
+  ],
+  "page_errors": [],
+  "screenshots": [
+    "02-matching-listings.png",
+    "03-action-review.png",
+    "04-mobile.png"
+  ]
+}

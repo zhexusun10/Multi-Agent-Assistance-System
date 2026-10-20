@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-10-19T15:13:02.356Z",
+  "status": "passed",
+  "session_id": "a0f201e8-6d42-45c8-aaa1-b8fb138bf9b7",
+  "first_listing_id": "24508067",
+  "zero_area_distances_checked": 5,
+  "checks": [
+    "Original Queenstown request preserves all conditions; every displayed zero-distance candidate independently lies in the official polygon",
+    "Ambiguous interest asks for a concrete selection; an ordinal then opens viewing for a pending candidate without changing unknown conditions",
+    "Pending property facts do not block reviewed inquiry simulation; verified contact, approval, valid slots and idempotency still apply",
+    "Scheduled follow-up emits one durable reminder without external messages",
+    "Stable-ID inquiry is accepted; switching to Queenstown MRT produces point distances and invalidates old drafts"
+  ]
+}

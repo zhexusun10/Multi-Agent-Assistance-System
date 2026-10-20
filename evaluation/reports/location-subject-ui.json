@@ -1,0 +1,10 @@
+{
+  "checked_at": "2026-10-20T12:13:01.323811+00:00",
+  "checks": [
+    "exact screenshot request shows five candidate cards with separate NUS, nearest MRT, price and private-bath evidence",
+    "both continuous distance preferences show ranking arrows, never red failure at the score pivot",
+    "the same conversation accepts the shorter user request without a phantom-place clarification or losing the unmodified MRT condition",
+    "recommendations survive reload and fit mobile width; no JavaScript errors"
+  ],
+  "external_messages_sent": 0
+}

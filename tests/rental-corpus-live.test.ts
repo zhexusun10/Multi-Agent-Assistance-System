@@ -1,0 +1,27 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {randomUUID} from 'node:crypto';
+import {mkdir,writeFile} from 'node:fs/promises';
+import pg from 'pg';
+import {rentalCases,type Slot} from '../evaluation/rental-cases.js';
+const enabled=process.env.BUSINESS_LIVE==='1',origin='http://127.0.0.1:8010',owner=randomUUID()+randomUUID();
+test('25 conversational searches match independent SQL eligibility, unknown grouping and every displayed listing',{skip:!enabled,timeout:240000},async()=>{
+ const source=new pg.Pool({connectionString:'postgresql://propertyguru_scraper@127.0.0.1:5432/propertyguru_sample'}),app=new pg.Pool({connectionString:process.env.DATABASE_URL});
+ const ids=['R001','R013','R014','R019','R021','R031','R034','R039','R040','R041','R044','R045','R047','R052','R059','R067','R083','R084','R086','R090','R094','R095','R099','R101','R102'];
+ const cases=rentalCases.filter(c=>ids.includes(c.id)),results:any[]=[];let cursor=0;
+ const api=async(path:string,body?:unknown)=>{const r=await fetch(origin+'/api/'+path,{method:body?'POST':'GET',headers:{authorization:'Bearer '+owner,'content-type':'application/json'},body:body?JSON.stringify(body):undefined});assert(r.ok,`${path}: HTTP ${r.status}`);return r.json() as Promise<any>;};
+ const fields:Record<string,string>={price:'price',bedrooms:'bedrooms',bathrooms:'bathrooms',floor_area_sqft:'floor_area_sqft',land_area_sqft:'land_area_sqft',build_year:'build_year',district:'district_code',postal_code:'postal_code',property_type:'property_type',tenure_category:'tenure_category',mrt_walking_mins:'mrt_walking_mins'};
+ async function oracle(slots:Slot[]){
+  const params:unknown[]=[];const bind=(v:unknown)=>{params.push(v);return '$'+params.length;};
+  const tests=slots.filter(c=>c.strength==='hard').map(c=>{const f=fields[c.field];if(!f)return 'NULL::boolean';let comparison:string;switch(c.operator){case 'eq':comparison=`${f} = ${bind(c.value)}`;break;case 'lte':comparison=`${f} <= ${bind(c.value)}`;break;case 'gte':comparison=`${f} >= ${bind(c.value)}`;break;case 'between':comparison=`${f} BETWEEN ${bind((c.value as any[])[0])} AND ${bind((c.value as any[])[1])}`;break;default:throw Error('Oracle operator not supported');}return `CASE WHEN ${f} IS NULL THEN NULL::boolean ELSE (${comparison}) END`;});
+  const r=await source.query(`SELECT listing_id::text AS id,price,ARRAY[${tests.join(',')}]::boolean[] AS checks FROM properties WHERE listing_type='RENT'`,params),eligible:string[]=[],unverified:string[]=[],checks=new Map<string,boolean[]>();
+  for(const row of r.rows){checks.set(row.id,row.checks);if(row.checks.some((v:any)=>v===false))continue;(row.checks.some((v:any)=>v===null)?unverified:eligible).push(row.id);}return {eligible,unverified,checks};
+ }
+ try{await Promise.all(Array.from({length:3},async()=>{while(cursor<cases.length){const c=cases[cursor++],sid=(await api('sessions',{})).session_id,request_id=randomUUID();const r=await fetch(origin+'/api/query',{method:'POST',headers:{authorization:'Bearer '+owner,'content-type':'application/json'},body:JSON.stringify({query:c.query,session_id:sid,request_id})});assert.equal(r.status,200);await r.text();let state:any;const until=Date.now()+60000;while(Date.now()<until){const op=(await app.query('SELECT status FROM domain_operations WHERE session_id=$1 AND request_id=$2',[sid,request_id])).rows[0];if(op&&['completed','failed'].includes(op.status)){state=await api('state?session_id='+sid);assert.equal(op.status,'completed',c.id+': '+state.messages.at(-1)?.text);break;}await new Promise(done=>setTimeout(done,150));}assert(state?.recommendation,c.id+' missing recommendation');
+   const expected=await oracle(c.expected),rec=state.recommendation;assert.equal(rec.state.counts.assessed,475,c.id);assert.equal(rec.state.counts.eligible,expected.eligible.length,c.id+' eligible');assert.equal(rec.state.counts.unverified,expected.unverified.length,c.id+' unverified');assert.equal(rec.state.counts.excluded,475-expected.eligible.length-expected.unverified.length,c.id+' excluded');
+   for(const [group,items,valid] of [['eligible',rec.recommendations,expected.eligible],['unverified',rec.unverified_candidates,expected.unverified]] as const)for(const item of items){assert(valid.includes(item.listing.listing_id),c.id+' '+group+' wrong listing');const required=state.requirements.criteria.filter((x:any)=>x.strength==='hard');for(const cr of item.criterion_results){const criterion=required.find((x:any)=>x.criterion_id===cr.criterion_id);if(criterion&&['amenities','furnishing','rental_scope','lease_months','move_in_date','commute_time','current_availability'].includes(criterion.field))assert.equal(cr.status,'unknown',c.id+' unsupported hard fact passed');}}
+   if(c.expected.some(s=>s.field==='amenities'&&s.value==='private_bathroom'))assert(rec.unverified_candidates.every((x:any)=>x.criterion_results.some((v:any)=>v.reason?.includes('独立卫浴'))));
+   results.push({id:c.id,query:c.query,session_id:sid,passed:true,counts:rec.state.counts});
+  }}));await mkdir('evaluation/reports',{recursive:true});await writeFile('evaluation/reports/rental-business-oracle.json',JSON.stringify({checked_at:new Date().toISOString(),status:'passed',cases:results.length,scope:'Real chat + DeepSeek + SQL-backed data API; independent SQL oracle does not import production compare/classify',results:results.sort((a,b)=>a.id.localeCompare(b.id))},null,2));
+ }finally{await source.end();await app.end();}
+});

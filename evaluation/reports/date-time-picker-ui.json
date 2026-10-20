@@ -1,0 +1,11 @@
+{
+  "checked_at": "2026-10-20T08:15:17.824733+00:00",
+  "messages_sent_externally": 0,
+  "checks": [
+    "today-to-tomorrow has exactly one selected cell; today is only a dot; no field write before explicit confirm; footer contains only Clear and Confirm Save",
+    "Escape discards staged changes and keeps the parent dialog; Clear empties only the current field; empty selection cannot accidentally confirm today",
+    "viewing start/end and reminder use the shared picker; explicit draft save persists one revision with correct SG15:05→UTC07:05 and SG16:05→UTC08:05; no send",
+    "mobile popup stays within390×844, keyboard dismissal works, and there are no browser JavaScript errors"
+  ],
+  "status": "passed"
+}
