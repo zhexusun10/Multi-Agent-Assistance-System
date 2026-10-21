@@ -57,7 +57,7 @@ export class LocationService{
         return {entity,ref,note:explicitStation?`地点已解析为 ${station.name}；距离按官方已收录出口的最近直线距离计算。`:`“${name}附近”按 ${station.name} 出口作为地区就近参考，优先更近的房源；这不是行政区域边界，也不增加硬半径限制。`};
       }
       if(exact.length>1){const ref=await this.save(ctx,{mention:name,candidates:exact.map(s=>({id:s.place_id,name:s.name})),source_url:catalog.source_url,dataset_version:catalog.version});return {entity:null,ref,note:`“${name}”对应多个轨道站点，请选择：${exact.map(s=>s.name).join('、')}。`};}
-      const osmName=({NUS:'National University of Singapore',NTU:'Nanyang Technological University','新国立大学':'National University of Singapore','新加坡国立大学':'National University of Singapore'} as Record<string,string>)[name.toUpperCase()]||name;
+      const osmName=({NUS:'National University of Singapore',NTU:'Nanyang Technological University','NUS国立大学':'National University of Singapore','NUS新加坡国立大学':'National University of Singapore','新国立大学':'National University of Singapore','新加坡国立大学':'National University of Singapore'} as Record<string,string>)[name.toUpperCase()]||name;
       const osm=await this.data.resolve(ctx,osmName);
       const matching=osm.items.filter(e=>['name','name_local','full_name'].some(k=>typeof e.properties[k]==='string'&&normalizePlace(String(e.properties[k]))===normalizePlace(osmName)));
       const chosen=matching.length===1?matching[0]:osm.items.length===1?osm.items[0]:null;
