@@ -1,6 +1,7 @@
 # Recommendation fit remediation and acceptance evidence
 
-Recorded on 21 October 2026, report version 3.6. The exact tested source is
+Recorded tests: 21 October 2026, evidence version 3.6. Published report edition: 3.7.
+Start at [the unified QA entry](../README.md) for the full testing handoff. The exact tested source is
 `89131897f56bbc176c30246a451f118f7de0209f` plus the ten source, test and provenance
 files in this change. The baseline branch was checked before publication and had
 no newer commits. The six modified existing files and four added files match the
@@ -13,19 +14,20 @@ recorded test checkout byte for byte; see [source parity](source-parity.json).
 - [Current 44-case catalogue](04_Recommendation_Fit_Retest_Catalogue.txt)
 - [Original 36/44 baseline catalogue](03_Recommendation_Fit_Catalogue.txt)
 - [Machine-readable outcomes](english-case-rows.json) and [summary](acceptance-summary.json)
-- [Complete focused evidence and reproduction bundle](Group42_Recommendation_Fit_Fix_8913189.zip)
+- [Archived original focused evidence and reproduction bundle](../archive/Group42_Recommendation_Fit_Fix_8913189.zip)
 
-The ZIP retains all current structured, projection and dialogue receipts, model
+The archived focused ZIP retains all recorded structured, projection and dialogue receipts, model
 audits without credentials, the original eight failed dialogue turns, executed
 harnesses, independent oracle, code-check logs, the verified patch and its file
 manifest. Extract it before following `evidence/` and `tools/` paths in the report
 or tracker. The standalone JSON files here are unchanged recorded receipts.
 
-The report, tracker, archive and JSON capture the local retest **before GitHub
-publication**. Statements that the fix was not pushed, and integration was
-pending, describe that time. This branch publishes the same tested files for
-review; merging and final team acceptance remain separate decisions. No previous
-test outcome, unresolved issue, human review or signature has been rewritten.
+The direct report is publication edition **v3.7**, recording that the fixes and
+evidence are published in [PR 2](https://github.com/zhexusun10/Multi-Agent-Assistance-System/pull/2).
+The PR remains open and unmerged. The tracker, original v3.6 reports inside the
+ZIPs and JSON receipts retain the original test-time record. Version 3.7 changes
+no result, table, unresolved issue, human review or signature. No test or model
+call was rerun for this publication update.
 
 ## Problem and fix
 
@@ -72,7 +74,7 @@ npm run typecheck:recommendation
 npm run build
 ```
 
-For the full recorded 44-case profile, extract the evidence archive and follow
+For the full recorded 44-case profile, extract the [primary evidence archive](../acceptance-history/Group42_Latest_Acceptance_8913189.zip) and follow
 `tools/recommendation_fit_fix/README.txt`: use the fixed 21,431-listing snapshot,
 NUS graph, retrieval generation and isolated application databases. Harnesses
 retain their original environment paths; adjust paths only when reproducing on
@@ -86,7 +88,7 @@ DEF04-DEF08 remain open. Participant UAT, agreed performance acceptance, Windows
 verification and final team signoff are outstanding. Overall system acceptance
 remains **PENDING**. All external actions stayed in simulation.
 
-Evidence archive SHA-256:
+Archived original focused-package SHA-256:
 `35e130682c594712e68bb8c1a216e210807cac6dc9e3bfea5389dd84512c024d`.
 
 ## Complete earlier testing and acceptance evidence
