@@ -88,3 +88,11 @@ remains **PENDING**. All external actions stayed in simulation.
 
 Evidence archive SHA-256:
 `35e130682c594712e68bb8c1a216e210807cac6dc9e3bfea5389dd84512c024d`.
+
+## Complete earlier testing and acceptance evidence
+
+The [historical QA index](../acceptance-history/README.md) now publishes the
+140-case extension and all retained earlier delivery packages, original results,
+provider audits, browser/data/retrieval evidence, historical report revisions and
+per-file checksums in this same PR. Recorded failures and NOT_RUN/UAT decisions
+remain unchanged. These overlapping profiles must not be added into one score.
