@@ -147,8 +147,19 @@
       "original_path": "src/domain/rental-language.ts",
       "original_sha256": "62f04b72fa35a94054cb623434328d3c7faeb80c3a87caeb7d288683a32944e6",
       "current_path": "src/domain/rental-language.ts",
-      "disposition": "UNCHANGED_BYTE_PRESERVED",
-      "original_preserved": true
+      "disposition": "PREMERGE_REVIEW_FIX_ORIGINAL_PRESERVED_IN_ARCHIVES",
+      "original_preserved": true,
+      "current_sha256": "b6534e038bf5326ed28d71fc8713fe6cd177efa7faf737de5276609448dfbc91",
+      "original_archive_copies": [
+        {
+          "archive": "evaluation/archive/Group42_Recommendation_Fit_Fix_8913189.zip",
+          "member": "Group42_Recommendation_Fit_Fix_8913189/code/patched/src/domain/rental-language.ts"
+        },
+        {
+          "archive": "evaluation/acceptance-history/Group42_Latest_Acceptance_8913189.zip",
+          "member": "Group42_Latest_Acceptance_8913189/code/patched/src/domain/rental-language.ts"
+        }
+      ]
     },
     {
       "original_path": "src/domain/requirements.ts",
@@ -161,8 +172,19 @@
       "original_path": "tests/recommendation-fit-regression.test.ts",
       "original_sha256": "b62f48ffd33a57566652f91a99868cfcab62e8e7557c92c60b3485fbc75038ee",
       "current_path": "tests/recommendation-fit-regression.test.ts",
-      "disposition": "UNCHANGED_BYTE_PRESERVED",
-      "original_preserved": true
+      "disposition": "PREMERGE_REVIEW_FIX_ORIGINAL_PRESERVED_IN_ARCHIVES",
+      "original_preserved": true,
+      "current_sha256": "c33cf92116a7faaebdb2eb57be5ac45e1970b1e7b536b8ae79e5c19e925bde67",
+      "original_archive_copies": [
+        {
+          "archive": "evaluation/archive/Group42_Recommendation_Fit_Fix_8913189.zip",
+          "member": "Group42_Recommendation_Fit_Fix_8913189/code/patched/tests/recommendation-fit-regression.test.ts"
+        },
+        {
+          "archive": "evaluation/acceptance-history/Group42_Latest_Acceptance_8913189.zip",
+          "member": "Group42_Latest_Acceptance_8913189/code/patched/tests/recommendation-fit-regression.test.ts"
+        }
+      ]
     },
     {
       "original_path": "tests/test_recommendation_provenance.py",
@@ -537,8 +559,8 @@
     },
     {
       "path": "evaluation/recommendation-fit-2026-10-21/README.md",
-      "bytes": 6441,
-      "sha256": "920326569d113b2bd299917bd4dc71e55cbff0f71fd917ed7df7072d70aa93b7"
+      "bytes": 6735,
+      "sha256": "93daf0b3763c7b80e36e83f6cd96dc841acf63b498b5f61068dd5a4eb7e440e0"
     },
     {
       "path": "evaluation/recommendation-fit-2026-10-21/acceptance-summary.json",
@@ -602,8 +624,8 @@
     },
     {
       "path": "evaluation/archive/README.md",
-      "bytes": 3493,
-      "sha256": "243346d5964f78569859538f0b6606f64c612ecb127af8142f567da82063f3fa"
+      "bytes": 3508,
+      "sha256": "ec8e1aab5d5e672161e07f13a202cbdc97825d1039c24eb1dae52508165265a7"
     },
     {
       "path": "evaluation/archive/publication-v1/README.md",
@@ -647,8 +669,13 @@
     },
     {
       "path": "evaluation/README.md",
-      "bytes": 4793,
-      "sha256": "8d6c58873eadbc224baabc924b8fbc99e4b7f38ecd2a01c6dbb6dc53afffcf05"
+      "bytes": 5828,
+      "sha256": "08b3b65179088ebfd61d70d138d955707ef8b375f11551769ddf11a58800772e"
+    },
+    {
+      "path": "evaluation/pr-2-review-2026-10-22.json",
+      "bytes": 39426,
+      "sha256": "855410b472848a7fe794201a837e30be959096bd0c6df1f5bda68c1aaa5bc40b"
     }
   ],
   "archives": [
@@ -3594,9 +3621,22 @@
       ]
     }
   ],
-  "file_count_excludes_this_manifest": 52,
-  "new_product_test_runs": 0,
+  "file_count_excludes_this_manifest": 53,
+  "new_product_test_runs": 5,
   "new_model_calls": 0,
   "overall_acceptance": "PENDING",
-  "layout_revision_date": "2026-10-22"
+  "layout_revision_date": "2026-10-22",
+  "publication_cleanup_new_product_test_runs": 0,
+  "pre_merge_review": {
+    "record": "evaluation/pr-2-review-2026-10-22.json",
+    "review_start_head": "fa56a71fa0bf4077f6cfe340d1c04f61536192ad",
+    "original_archives_byte_preserved": 7,
+    "added_comparator_cases": 6,
+    "product_test_invocations": "Original-head TypeScript and Python; targeted regression before and after correction; corrected full TypeScript suite.",
+    "live_model_calls": 0,
+    "source_sha256_after_review_fix": {
+      "src/domain/rental-language.ts": "b6534e038bf5326ed28d71fc8713fe6cd177efa7faf737de5276609448dfbc91",
+      "tests/recommendation-fit-regression.test.ts": "c33cf92116a7faaebdb2eb57be5ac45e1970b1e7b536b8ae79e5c19e925bde67"
+    }
+  }
 }
