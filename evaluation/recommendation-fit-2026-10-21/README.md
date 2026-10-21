@@ -3,9 +3,12 @@
 Recorded tests: 21 October 2026, evidence version 3.6. Published report edition: 3.7.
 Start at [the unified QA entry](../README.md) for the full testing handoff. The exact tested source is
 `89131897f56bbc176c30246a451f118f7de0209f` plus the ten source, test and provenance
-files in this change. The baseline branch was checked before publication and had
-no newer commits. The six modified existing files and four added files match the
-recorded test checkout byte for byte; see [source parity](source-parity.json).
+files recorded in [source parity](source-parity.json). Those ten files match
+the recorded test checkout at publication commit
+`fa56a71fa0bf4077f6cfe340d1c04f61536192ad`. Their original bytes remain in the
+unchanged focused and comprehensive ZIPs. The [later pre-merge review](../pr-2-review-2026-10-22.json)
+adds a narrow spoken-comparator fix and six regressions in `rental-language.ts`
+and its intake test file; it does not rerun or amend this 44-case execution record.
 
 ## Review material
 
@@ -24,7 +27,8 @@ or tracker. The standalone JSON files here are unchanged recorded receipts.
 
 The direct report is publication edition **v3.7**, recording that the fixes and
 evidence are published in [PR 2](https://github.com/zhexusun10/Multi-Agent-Assistance-System/pull/2).
-The PR remains open and unmerged. The tracker, original v3.6 reports inside the
+Use that PR for the current merge status; the report retains its pre-merge
+publication snapshot. The tracker, original v3.6 reports inside the
 ZIPs and JSON receipts retain the original test-time record. Version 3.7 changes
 no result, table, unresolved issue, human review or signature. No test or model
 call was rerun for this publication update.
