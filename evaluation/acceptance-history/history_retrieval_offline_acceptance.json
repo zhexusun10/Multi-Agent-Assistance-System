@@ -1,0 +1,223 @@
+{
+  "status": "PASS",
+  "profile": "original-retrieval-tests/offline-corpus-fixture-v1",
+  "commit": "89131897f56bbc176c30246a451f118f7de0209f",
+  "started_at": "2026-10-21T02:19:00.158937+08:00",
+  "finished_at": "2026-10-21T02:19:11.269260+08:00",
+  "python": "3.12.14",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "dependencies": {
+    "pytest": "9.1.1",
+    "chromadb": "0.5.23",
+    "numpy": "1.26.4",
+    "rank-bm25": "0.2.2",
+    "jieba": "0.42.1",
+    "fastembed": "0.7.4",
+    "onnxruntime": "1.31.0",
+    "posthog": "5.4.0"
+  },
+  "pytest_exit_code": 0,
+  "passed": 8,
+  "failed": 0,
+  "skipped": 0,
+  "test_file": "tests/test_retrieval.py",
+  "tests": [
+    {
+      "test_id": "tests/test_retrieval.py::RetrievalTests::test_chroma_connection_failure_before_query_still_allows_bm25",
+      "phase": "call",
+      "outcome": "passed",
+      "duration_seconds": 0.20783020905219018
+    },
+    {
+      "test_id": "tests/test_retrieval.py::RetrievalTests::test_chunks_preserve_every_sentence_without_overlap",
+      "phase": "call",
+      "outcome": "passed",
+      "duration_seconds": 0.00010941701475530863
+    },
+    {
+      "test_id": "tests/test_retrieval.py::RetrievalTests::test_real_corpus_has_substantial_reviewed_markdown",
+      "phase": "call",
+      "outcome": "passed",
+      "duration_seconds": 0.005300750024616718
+    },
+    {
+      "test_id": "tests/test_retrieval.py::RetrievalTests::test_rrf_uses_ranks_and_deduplicates",
+      "phase": "call",
+      "outcome": "passed",
+      "duration_seconds": 4.904193338006735e-05
+    },
+    {
+      "test_id": "tests/test_retrieval.py::RetrievalTests::test_source_allowlist_rejects_phishing_and_credentials",
+      "phase": "call",
+      "outcome": "passed",
+      "duration_seconds": 5.395803600549698e-05
+    },
+    {
+      "test_id": "tests/test_retrieval.py::RetrievalTests::test_stale_or_wrong_vector_space_is_never_silently_searched",
+      "phase": "call",
+      "outcome": "passed",
+      "duration_seconds": 7.491698488593102e-05
+    },
+    {
+      "test_id": "tests/test_retrieval.py::RetrievalTests::test_synonyms_are_lexical_features_not_intent_routing",
+      "phase": "call",
+      "outcome": "passed",
+      "duration_seconds": 0.00012474996037781239
+    },
+    {
+      "test_id": "tests/test_retrieval.py::RetrievalTests::test_vector_outage_is_explicit_and_bm25_remains_usable",
+      "phase": "call",
+      "outcome": "passed",
+      "duration_seconds": 0.0033436670200899243
+    }
+  ],
+  "corpus": {
+    "documents": 8,
+    "chunks": 40,
+    "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+    "fixture_sha256": "401c867f28d89726fb3e2f23da619bb1cb66a8de5477297e5c59c50bb571f2c2",
+    "review_dates": [
+      [
+        "2026-10-20",
+        "2027-01-20"
+      ]
+    ]
+  },
+  "fixture": {
+    "derived_by": "unmodified retrieval.index.load_corpus()",
+    "override": "retrieval.hybrid.MANIFEST only, during execution",
+    "temporary_fixture_removed": true,
+    "production_manifest_before": {
+      "exists": false,
+      "sha256": null
+    },
+    "production_manifest_after": {
+      "exists": false,
+      "sha256": null
+    }
+  },
+  "guards": {
+    "network_blocked": true,
+    "embedding_initialization_and_calls_blocked": true,
+    "chroma_clients_blocked": true,
+    "onnx_sessions_blocked": true,
+    "attempts": {
+      "network": [],
+      "embedding": [],
+      "chroma_client": [],
+      "onnx_session": []
+    },
+    "all_attempt_counts_zero": true
+  },
+  "source": {
+    "matches_immutable_snapshot": true,
+    "unchanged": true,
+    "files_sha256_before": {
+      "knowledge/rental/agent-and-scams.md": "49e60729c5f27682cc3b70408647fc90d53d46b5f6ed900cec391547d54160b8",
+      "knowledge/rental/handover-disputes.md": "4dd75d809825d6ef04658be2682f7ae788819102ba6475def6347a14e7ec4f29",
+      "knowledge/rental/hdb-rental.md": "c181a04c2ab75727a24f3f5598a5156d4a1ba2a05ee647bc354e36877a97deb9",
+      "knowledge/rental/private-rental.md": "5d80c0b3cc3477fb1eb938fa8f3efc04a6fb5827e8bd1a1340c594acd55c4375",
+      "knowledge/rental/stamp-duty.md": "9038c5fe1c4b3d5ebf56c125a1d25805da56330576c80bcc67d88f7098633032",
+      "knowledge/rental/system-evidence.md": "0fa4d9fbcdd4720813e01e3a7b4df526321ef60b7d12f641bf773d66b7efeb0f",
+      "knowledge/rental/system-followup.md": "0b7966d579a41f1eac322dc406f67117a7bfd631858e97fc05e7123dcc0a0111",
+      "knowledge/rental/tenancy-terms.md": "7f56f5f4aa65733f4dcf90f6b28fe532e6fd3959598e0c6c949e1b4e511809b2",
+      "retrieval/__init__.py": "89a43af0aea64ce08f61988dce885fe6c7a4fed66d6a7ac0c05ca3cff484ef37",
+      "retrieval/app.py": "e769f3c9cdf34b6f39a9b9d824f49aba6e1fa2627e2d5c7d55be0628f8f16f30",
+      "retrieval/chroma_store.py": "3561b1d5903bbcb4e61c909210e2993071967ed55a5b24d3b898dff70cbde7c9",
+      "retrieval/embeddings.py": "919bdc9cd95b101612056aee354ab54a1f8959cc8b3a304c7ed588cbb62bfcb9",
+      "retrieval/hybrid.py": "92d3124936a3a5d9a07af2780bf0bf1beb7693def939c935ec2e060df04978c9",
+      "retrieval/index.py": "7fe56b09fb337d3037b807cca92b89f6d124929928814a1028e9c58f60daf681",
+      "retrieval/topics.py": "b6c4dc14855c14e5cb8fe35cd7e1943a51758cb7e718b641c9c443c7b39f55d7",
+      "tests/test_retrieval.py": "9b0d133db2aa726b1c7f8aa47336fd8166bc9fecdd11101cb503e2adffc25ad4"
+    },
+    "files_sha256_after": {
+      "knowledge/rental/agent-and-scams.md": "49e60729c5f27682cc3b70408647fc90d53d46b5f6ed900cec391547d54160b8",
+      "knowledge/rental/handover-disputes.md": "4dd75d809825d6ef04658be2682f7ae788819102ba6475def6347a14e7ec4f29",
+      "knowledge/rental/hdb-rental.md": "c181a04c2ab75727a24f3f5598a5156d4a1ba2a05ee647bc354e36877a97deb9",
+      "knowledge/rental/private-rental.md": "5d80c0b3cc3477fb1eb938fa8f3efc04a6fb5827e8bd1a1340c594acd55c4375",
+      "knowledge/rental/stamp-duty.md": "9038c5fe1c4b3d5ebf56c125a1d25805da56330576c80bcc67d88f7098633032",
+      "knowledge/rental/system-evidence.md": "0fa4d9fbcdd4720813e01e3a7b4df526321ef60b7d12f641bf773d66b7efeb0f",
+      "knowledge/rental/system-followup.md": "0b7966d579a41f1eac322dc406f67117a7bfd631858e97fc05e7123dcc0a0111",
+      "knowledge/rental/tenancy-terms.md": "7f56f5f4aa65733f4dcf90f6b28fe532e6fd3959598e0c6c949e1b4e511809b2",
+      "retrieval/__init__.py": "89a43af0aea64ce08f61988dce885fe6c7a4fed66d6a7ac0c05ca3cff484ef37",
+      "retrieval/app.py": "e769f3c9cdf34b6f39a9b9d824f49aba6e1fa2627e2d5c7d55be0628f8f16f30",
+      "retrieval/chroma_store.py": "3561b1d5903bbcb4e61c909210e2993071967ed55a5b24d3b898dff70cbde7c9",
+      "retrieval/embeddings.py": "919bdc9cd95b101612056aee354ab54a1f8959cc8b3a304c7ed588cbb62bfcb9",
+      "retrieval/hybrid.py": "92d3124936a3a5d9a07af2780bf0bf1beb7693def939c935ec2e060df04978c9",
+      "retrieval/index.py": "7fe56b09fb337d3037b807cca92b89f6d124929928814a1028e9c58f60daf681",
+      "retrieval/topics.py": "b6c4dc14855c14e5cb8fe35cd7e1943a51758cb7e718b641c9c443c7b39f55d7",
+      "tests/test_retrieval.py": "9b0d133db2aa726b1c7f8aa47336fd8166bc9fecdd11101cb503e2adffc25ad4"
+    }
+  },
+  "production_model_cache": {
+    "before": {
+      "exists": false,
+      "files": {}
+    },
+    "after": {
+      "exists": false,
+      "files": {}
+    },
+    "unchanged": true
+  },
+  "isolated_model_caches": {
+    "huggingface": {
+      "exists": false,
+      "files": {}
+    },
+    "fastembed": {
+      "exists": false,
+      "files": {}
+    }
+  },
+  "degradation_observations": [
+    {
+      "test_id": "tests/test_retrieval.py::RetrievalTests::test_chroma_connection_failure_before_query_still_allows_bm25",
+      "queries": [
+        "印花税税率"
+      ],
+      "status": "ok",
+      "vector_enabled": false,
+      "bm25_enabled": true,
+      "degraded": [
+        "vector_unavailable"
+      ],
+      "chunk_count": 5,
+      "document_ids": [
+        "stamp-duty",
+        "stamp-duty",
+        "stamp-duty",
+        "stamp-duty",
+        "stamp-duty"
+      ],
+      "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8"
+    },
+    {
+      "test_id": "tests/test_retrieval.py::RetrievalTests::test_vector_outage_is_explicit_and_bm25_remains_usable",
+      "queries": [
+        "印花税税率"
+      ],
+      "status": "ok",
+      "vector_enabled": false,
+      "bm25_enabled": true,
+      "degraded": [
+        "vector_unavailable"
+      ],
+      "chunk_count": 5,
+      "document_ids": [
+        "stamp-duty",
+        "stamp-duty",
+        "stamp-duty",
+        "stamp-duty",
+        "stamp-duty"
+      ],
+      "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8"
+    }
+  ],
+  "limitations": [
+    "Vector outages are injected by the two original repository tests.",
+    "No live Chroma service, successful vector search, model download or inference.",
+    "Corpus metadata and algorithms were checked; policy content was not externally revalidated.",
+    "This result does not close live hybrid retrieval integration or final system acceptance."
+  ]
+}

@@ -1,0 +1,299 @@
+{
+  "cases": 32,
+  "passed": 30,
+  "failed": 2,
+  "case_catalog_sha256": "446788ded93bf548359d852fd53e420f1eeb6812116e38bbd1270e0bfe3f3648",
+  "rows": [
+    {
+      "id": "XA01",
+      "name": "State requires authorization",
+      "expected_status": 401,
+      "actual_status": 401,
+      "correct": true,
+      "response_excerpt": "{\"code\":\"AUTH_REQUIRED\",\"detail\":\"需要有效的本机会话凭证\"}",
+      "latency_ms": 40
+    },
+    {
+      "id": "XA02",
+      "name": "Short malformed owner token rejected",
+      "expected_status": 401,
+      "actual_status": 401,
+      "correct": true,
+      "response_excerpt": "{\"code\":\"AUTH_REQUIRED\",\"detail\":\"需要有效的本机会话凭证\"}",
+      "latency_ms": 40
+    },
+    {
+      "id": "XA03",
+      "name": "Different owner cannot read a session",
+      "expected_status": 403,
+      "actual_status": 403,
+      "correct": true,
+      "response_excerpt": "{\"code\":\"SESSION_FORBIDDEN\",\"detail\":\"无法访问该会话\"}",
+      "latency_ms": 41
+    },
+    {
+      "id": "XA04",
+      "name": "Different owner cannot read evidence",
+      "expected_status": 403,
+      "actual_status": 403,
+      "correct": true,
+      "response_excerpt": "{\"code\":\"SESSION_FORBIDDEN\",\"detail\":\"无法访问该会话\"}",
+      "latency_ms": 42
+    },
+    {
+      "id": "XA05",
+      "name": "Different owner cannot download an artifact",
+      "expected_status": 403,
+      "actual_status": 403,
+      "correct": true,
+      "response_excerpt": "{\"code\":\"SESSION_FORBIDDEN\",\"detail\":\"无法访问该会话\"}",
+      "latency_ms": 36
+    },
+    {
+      "id": "XA06",
+      "name": "Different owner cannot read listing presentation",
+      "expected_status": 403,
+      "actual_status": 403,
+      "correct": true,
+      "response_excerpt": "{\"code\":\"SESSION_FORBIDDEN\",\"detail\":\"无法访问该会话\"}",
+      "latency_ms": 37
+    },
+    {
+      "id": "XA07",
+      "name": "Different owner cannot prepare a manual action",
+      "expected_status": 403,
+      "actual_status": 403,
+      "correct": true,
+      "response_excerpt": "{\"code\":\"SESSION_FORBIDDEN\",\"detail\":\"无法访问该会话\"}",
+      "latency_ms": 35
+    },
+    {
+      "id": "XA08",
+      "name": "Public query preserves missing-auth 401 status",
+      "expected_status": 401,
+      "actual_status": 502,
+      "correct": false,
+      "response_excerpt": "{\"detail\":\"LangGraph service returned 401\"}",
+      "latency_ms": 29
+    },
+    {
+      "id": "XA09",
+      "name": "Public query preserves wrong-owner 403 status",
+      "expected_status": 403,
+      "actual_status": 502,
+      "correct": false,
+      "response_excerpt": "{\"detail\":\"LangGraph service returned 403\"}",
+      "latency_ms": 34
+    },
+    {
+      "id": "XA10",
+      "name": "Empty query rejected",
+      "expected_status": 422,
+      "actual_status": 422,
+      "correct": true,
+      "response_excerpt": "{\"detail\":[{\"type\":\"string_too_short\",\"loc\":[\"body\",\"query\"],\"msg\":\"String should have at least 1 character\",\"input\":\"\",\"ctx\":{\"min_length\":1}}]}",
+      "latency_ms": 9
+    },
+    {
+      "id": "XA11",
+      "name": "Whitespace query rejected",
+      "expected_status": 422,
+      "actual_status": 422,
+      "correct": true,
+      "response_excerpt": "{\"detail\":\"query must not be blank\"}",
+      "latency_ms": 21
+    },
+    {
+      "id": "XA12",
+      "name": "Missing query rejected",
+      "expected_status": 422,
+      "actual_status": 422,
+      "correct": true,
+      "response_excerpt": "{\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"query\"],\"msg\":\"Field required\",\"input\":{}}]}",
+      "latency_ms": 15
+    },
+    {
+      "id": "XA13",
+      "name": "Oversized query rejected",
+      "expected_status": 422,
+      "actual_status": 422,
+      "correct": true,
+      "response_excerpt": "{\"detail\":[{\"type\":\"string_too_long\",\"loc\":[\"body\",\"query\"],\"msg\":\"String should have at most 8000 characters\",\"input\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "latency_ms": 8
+    },
+    {
+      "id": "XA14",
+      "name": "Empty session identifier rejected",
+      "expected_status": 422,
+      "actual_status": 422,
+      "correct": true,
+      "response_excerpt": "{\"detail\":[{\"type\":\"string_too_short\",\"loc\":[\"body\",\"session_id\"],\"msg\":\"String should have at least 1 character\",\"input\":\"\",\"ctx\":{\"min_length\":1}}]}",
+      "latency_ms": 15
+    },
+    {
+      "id": "XA15",
+      "name": "Long session identifier rejected",
+      "expected_status": 422,
+      "actual_status": 422,
+      "correct": true,
+      "response_excerpt": "{\"detail\":[{\"type\":\"string_too_long\",\"loc\":[\"body\",\"session_id\"],\"msg\":\"String should have at most 128 characters\",\"input\":\"sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss\",\"ctx\":{\"max_length\":128}}]}",
+      "latency_ms": 11
+    },
+    {
+      "id": "XA16",
+      "name": "Long request identifier rejected",
+      "expected_status": 422,
+      "actual_status": 422,
+      "correct": true,
+      "response_excerpt": "{\"detail\":[{\"type\":\"string_too_long\",\"loc\":[\"body\",\"request_id\"],\"msg\":\"String should have at most 100 characters\",\"input\":\"rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr\",\"ctx\":{\"max_length\":100}}]}",
+      "latency_ms": 11
+    },
+    {
+      "id": "XA17",
+      "name": "Malformed query JSON rejected",
+      "expected_status": 422,
+      "actual_status": 422,
+      "correct": true,
+      "response_excerpt": "{\"detail\":[{\"type\":\"json_invalid\",\"loc\":[\"body\",9],\"msg\":\"JSON decode error\",\"input\":{},\"ctx\":{\"error\":\"Expecting value\"}}]}",
+      "latency_ms": 1
+    },
+    {
+      "id": "XA18",
+      "name": "Body exceeding 64 KiB rejected",
+      "expected_status": 413,
+      "actual_status": 413,
+      "correct": true,
+      "response_excerpt": "{\"detail\":\"请求内容过大\"}",
+      "latency_ms": 0
+    },
+    {
+      "id": "XA19",
+      "name": "Negative SSE cursor rejected",
+      "expected_status": 422,
+      "actual_status": 422,
+      "correct": true,
+      "response_excerpt": "{\"detail\":[{\"type\":\"greater_than_equal\",\"loc\":[\"query\",\"after\"],\"msg\":\"Input should be greater than or equal to 0\",\"input\":\"-1\",\"ctx\":{\"ge\":0}}]}",
+      "latency_ms": 11
+    },
+    {
+      "id": "XA20",
+      "name": "Fractional SSE cursor rejected",
+      "expected_status": 422,
+      "actual_status": 422,
+      "correct": true,
+      "response_excerpt": "{\"detail\":[{\"type\":\"int_parsing\",\"loc\":[\"query\",\"after\"],\"msg\":\"Input should be a valid integer, unable to parse string as an integer\",\"input\":\"1.5\"}]}",
+      "latency_ms": 9
+    },
+    {
+      "id": "XA21",
+      "name": "Unknown public route rejected",
+      "expected_status": 404,
+      "actual_status": 404,
+      "correct": true,
+      "response_excerpt": "{\"detail\":\"Not found\"}",
+      "latency_ms": 0
+    },
+    {
+      "id": "XA22",
+      "name": "Invalid evidence reference rejected",
+      "expected_status": 422,
+      "actual_status": 422,
+      "correct": true,
+      "response_excerpt": "{\"code\":\"VALIDATION_FAILED\",\"detail\":\"Invalid UUID\"}",
+      "latency_ms": 33
+    },
+    {
+      "id": "XA23",
+      "name": "Missing artifact returns 404",
+      "expected_status": 404,
+      "actual_status": 404,
+      "correct": true,
+      "response_excerpt": "{\"code\":\"ARTIFACT_NOT_FOUND\",\"detail\":\"文档不存在\"}",
+      "latency_ms": 55
+    },
+    {
+      "id": "XA24",
+      "name": "Stale listing source reference rejected",
+      "expected_status": 409,
+      "actual_status": 409,
+      "correct": true,
+      "response_excerpt": "{\"code\":\"PRESENTATION_STALE\",\"detail\":\"推荐已更新，请查看当前房源。\"}",
+      "latency_ms": 73
+    },
+    {
+      "id": "XA25",
+      "name": "Native service rejects missing internal token",
+      "expected_status": 401,
+      "actual_status": 401,
+      "correct": true,
+      "response_excerpt": "{\"detail\":\"Internal recommendation service credential required\"}",
+      "latency_ms": 9
+    },
+    {
+      "id": "XA26",
+      "name": "Retrieval rejects no queries",
+      "expected_status": 422,
+      "actual_status": 422,
+      "correct": true,
+      "response_excerpt": "{\"detail\":[{\"type\":\"too_short\",\"loc\":[\"body\",\"queries\"],\"msg\":\"List should have at least 1 item after validation, not 0\",\"input\":[],\"ctx\":{\"field_type\":\"List\",\"min_length\":1,\"actual_length\":0}}]}",
+      "latency_ms": 4
+    },
+    {
+      "id": "XA27",
+      "name": "Retrieval rejects blank query",
+      "expected_status": 422,
+      "actual_status": 422,
+      "correct": true,
+      "response_excerpt": "{\"detail\":\"Invalid query\"}",
+      "latency_ms": 1
+    },
+    {
+      "id": "XA28",
+      "name": "Retrieval rejects oversized query",
+      "expected_status": 422,
+      "actual_status": 422,
+      "correct": true,
+      "response_excerpt": "{\"detail\":\"Invalid query\"}",
+      "latency_ms": 0
+    },
+    {
+      "id": "XA29",
+      "name": "Retrieval rejects zero top k",
+      "expected_status": 422,
+      "actual_status": 422,
+      "correct": true,
+      "response_excerpt": "{\"detail\":[{\"type\":\"greater_than_equal\",\"loc\":[\"body\",\"top_k\"],\"msg\":\"Input should be greater than or equal to 1\",\"input\":0,\"ctx\":{\"ge\":1}}]}",
+      "latency_ms": 1
+    },
+    {
+      "id": "XA30",
+      "name": "Retrieval rejects excessive top k",
+      "expected_status": 422,
+      "actual_status": 422,
+      "correct": true,
+      "response_excerpt": "{\"detail\":[{\"type\":\"less_than_equal\",\"loc\":[\"body\",\"top_k\"],\"msg\":\"Input should be less than or equal to 20\",\"input\":21,\"ctx\":{\"le\":20}}]}",
+      "latency_ms": 1
+    },
+    {
+      "id": "XA31",
+      "name": "Intent service rejects old template generation",
+      "expected_status": 409,
+      "actual_status": 409,
+      "correct": true,
+      "response_excerpt": "{\"detail\":\"INTENT_TEMPLATE_VERSION_MISMATCH\"}",
+      "latency_ms": 36
+    },
+    {
+      "id": "XA32",
+      "name": "Intent service requires template generation",
+      "expected_status": 422,
+      "actual_status": 422,
+      "correct": true,
+      "response_excerpt": "{\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"template_version\"],\"msg\":\"Field required\",\"input\":{\"query\":\"找房\"}}]}",
+      "latency_ms": 1
+    }
+  ],
+  "actual_http": true,
+  "real_chat_calls_expected": 0,
+  "status": "FAIL"
+}

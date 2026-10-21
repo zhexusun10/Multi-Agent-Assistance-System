@@ -1,0 +1,3323 @@
+{
+  "suite": "knowledge",
+  "started_at": "2026-10-21T05:16:59.967Z",
+  "finished_at": "2026-10-21T05:18:29.221Z",
+  "catalog_sha256": "72f500238c101712b5b14f3145e89892a551333f4da71a106e0840d7696b24ea",
+  "cases": 24,
+  "passed": 23,
+  "failed": 1,
+  "provider_profile": "ClinePass V4.1 Flash; success/data adapter; nonthinking enabled",
+  "latency_ms": {
+    "minimum": 4317,
+    "median": 6957,
+    "p95": 11181,
+    "maximum": 11303
+  },
+  "rows": [
+    {
+      "id": "XK01",
+      "query": "A landlord agrees to let an ordinary private condominium for two months. Does that agreement remove the minimum rental period?",
+      "expected_status": "ok",
+      "expected_document": "private-rental",
+      "patterns": [
+        "三|3",
+        "不能|不可以|不得|不改变|不符合"
+      ],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [
+        {
+          "pattern": "三|3",
+          "matched": true
+        },
+        {
+          "pattern": "不能|不可以|不得|不改变|不符合",
+          "matched": true
+        }
+      ],
+      "expected_document_present": true,
+      "result": {
+        "citations": [
+          {
+            "chunk_id": "private-rental:0:724ee7d0ea4e",
+            "document_id": "private-rental",
+            "title": "私人住宅租赁与最短租期",
+            "heading": "私人住宅的最低租期",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/private-rental.md",
+            "sources": [
+              {
+                "title": "URA Renting Property",
+                "url": "https://www.ura.gov.sg/guidelines/property-and-business-owners/property/renting-property/"
+              },
+              {
+                "title": "URA Short-Term Accommodation",
+                "url": "https://www.ura.gov.sg/guidelines/property-and-business-owners/property/short-term-accommodation/"
+              }
+            ],
+            "quote": "普通私人住宅每次出租至少连续三个月。"
+          },
+          {
+            "chunk_id": "private-rental:0:724ee7d0ea4e",
+            "document_id": "private-rental",
+            "title": "私人住宅租赁与最短租期",
+            "heading": "私人住宅的最低租期",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/private-rental.md",
+            "sources": [
+              {
+                "title": "URA Renting Property",
+                "url": "https://www.ura.gov.sg/guidelines/property-and-business-owners/property/renting-property/"
+              },
+              {
+                "title": "URA Short-Term Accommodation",
+                "url": "https://www.ura.gov.sg/guidelines/property-and-business-owners/property/short-term-accommodation/"
+              }
+            ],
+            "quote": "Condominium、公寓及其他普通私人住宅不能因为房东同意，就改成按天或按周出租。"
+          },
+          {
+            "chunk_id": "private-rental:0:724ee7d0ea4e",
+            "document_id": "private-rental",
+            "title": "私人住宅租赁与最短租期",
+            "heading": "私人住宅的最低租期",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/private-rental.md",
+            "sources": [
+              {
+                "title": "URA Renting Property",
+                "url": "https://www.ura.gov.sg/guidelines/property-and-business-owners/property/renting-property/"
+              },
+              {
+                "title": "URA Short-Term Accommodation",
+                "url": "https://www.ura.gov.sg/guidelines/property-and-business-owners/property/short-term-accommodation/"
+              }
+            ],
+            "quote": "三个月是规则下限，不意味着每套房东都愿意签三个月；实际可接受的最短租期还要询问房东并写入租约。"
+          }
+        ],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "A landlord agrees to let an ordinary private condominium for two months. Does that agreement remove the minimum rental period?",
+            "私人公寓 最短租期 两个月 租约 是否豁免 minimum rental period private condominium two months",
+            "新加坡 私人住宅 最低租期 3个月 例外 短租 规定 minimum stay private residential property short-term rental exemption",
+            "ordinary private condominium minimum rental period two-month lease landlord agreement URA rules"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "private-rental:0:724ee7d0ea4e",
+              "private-rental:4:fdad2d8e1983",
+              "private-rental:1:e2b4c55777d2",
+              "private-rental:2:fa96d0876e58",
+              "hdb-rental:0:d07578ac89f5",
+              "hdb-rental:4:407ca0f1cf59",
+              "private-rental:3:326dc22ee499"
+            ],
+            "bm25": [
+              "private-rental:0:724ee7d0ea4e",
+              "private-rental:1:e2b4c55777d2",
+              "hdb-rental:0:d07578ac89f5",
+              "private-rental:4:fdad2d8e1983",
+              "tenancy-terms:0:667e945c2acf",
+              "private-rental:2:fa96d0876e58",
+              "private-rental:3:326dc22ee499"
+            ],
+            "fused": [
+              "private-rental:0:724ee7d0ea4e",
+              "private-rental:1:e2b4c55777d2",
+              "private-rental:4:fdad2d8e1983",
+              "hdb-rental:0:d07578ac89f5",
+              "private-rental:2:fa96d0876e58",
+              "private-rental:3:326dc22ee499",
+              "tenancy-terms:0:667e945c2acf",
+              "hdb-rental:4:407ca0f1cf59"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "ok",
+        "method": "llm_grounded_verified",
+        "answer": "普通私人住宅每次出租至少连续三个月，这是规则下限。 [1]\n\nCondominium 等普通私人住宅不能因为房东同意，就改成按天或按周出租。 [2]\n\n三个月是规则下限，实际可接受的最短租期还要询问房东并写入租约。 [3]"
+      },
+      "latency_ms": 11181
+    },
+    {
+      "id": "XK02",
+      "query": "Does the three-month minimum mean that every private landlord must accept my three-month tenancy?",
+      "expected_status": "ok",
+      "expected_document": "private-rental",
+      "patterns": [
+        "三|3",
+        "不意味着|不代表|不等于|不保证|不能"
+      ],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [
+        {
+          "pattern": "三|3",
+          "matched": true
+        },
+        {
+          "pattern": "不意味着|不代表|不等于|不保证|不能",
+          "matched": true
+        }
+      ],
+      "expected_document_present": true,
+      "result": {
+        "citations": [
+          {
+            "chunk_id": "private-rental:0:724ee7d0ea4e",
+            "document_id": "private-rental",
+            "title": "私人住宅租赁与最短租期",
+            "heading": "私人住宅的最低租期",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/private-rental.md",
+            "sources": [
+              {
+                "title": "URA Renting Property",
+                "url": "https://www.ura.gov.sg/guidelines/property-and-business-owners/property/renting-property/"
+              },
+              {
+                "title": "URA Short-Term Accommodation",
+                "url": "https://www.ura.gov.sg/guidelines/property-and-business-owners/property/short-term-accommodation/"
+              }
+            ],
+            "quote": "根据 URA 的私人住宅出租规则，普通私人住宅每次出租至少连续三个月。"
+          },
+          {
+            "chunk_id": "private-rental:0:724ee7d0ea4e",
+            "document_id": "private-rental",
+            "title": "私人住宅租赁与最短租期",
+            "heading": "私人住宅的最低租期",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/private-rental.md",
+            "sources": [
+              {
+                "title": "URA Renting Property",
+                "url": "https://www.ura.gov.sg/guidelines/property-and-business-owners/property/renting-property/"
+              },
+              {
+                "title": "URA Short-Term Accommodation",
+                "url": "https://www.ura.gov.sg/guidelines/property-and-business-owners/property/short-term-accommodation/"
+              }
+            ],
+            "quote": "三个月是规则下限，不意味着每套房东都愿意签三个月；实际可接受的最短租期还要询问房东并写入租约。"
+          },
+          {
+            "chunk_id": "private-rental:0:724ee7d0ea4e",
+            "document_id": "private-rental",
+            "title": "私人住宅租赁与最短租期",
+            "heading": "私人住宅的最低租期",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/private-rental.md",
+            "sources": [
+              {
+                "title": "URA Renting Property",
+                "url": "https://www.ura.gov.sg/guidelines/property-and-business-owners/property/renting-property/"
+              },
+              {
+                "title": "URA Short-Term Accommodation",
+                "url": "https://www.ura.gov.sg/guidelines/property-and-business-owners/property/short-term-accommodation/"
+              }
+            ],
+            "quote": "实际可接受的最短租期还要询问房东并写入租约。"
+          }
+        ],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "Does the three-month minimum mean that every private landlord must accept my three-month tenancy?",
+            "私人房东是否必须接受三个月租期 新加坡",
+            "minimum three-month tenancy private landlord Singapore must accept",
+            "三个月最低租期 私人房东 义务 新加坡"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "private-rental:0:724ee7d0ea4e",
+              "private-rental:2:fa96d0876e58",
+              "private-rental:1:e2b4c55777d2",
+              "handover-disputes:3:c1419c021791",
+              "stamp-duty:2:8cf8fa474209",
+              "private-rental:4:fdad2d8e1983",
+              "hdb-rental:0:d07578ac89f5"
+            ],
+            "bm25": [
+              "private-rental:0:724ee7d0ea4e",
+              "private-rental:4:fdad2d8e1983",
+              "private-rental:2:fa96d0876e58",
+              "tenancy-terms:0:667e945c2acf",
+              "hdb-rental:0:d07578ac89f5",
+              "private-rental:1:e2b4c55777d2",
+              "stamp-duty:0:9783e03ed014"
+            ],
+            "fused": [
+              "private-rental:0:724ee7d0ea4e",
+              "private-rental:2:fa96d0876e58",
+              "private-rental:4:fdad2d8e1983",
+              "private-rental:1:e2b4c55777d2",
+              "hdb-rental:0:d07578ac89f5",
+              "handover-disputes:3:c1419c021791",
+              "tenancy-terms:0:667e945c2acf",
+              "stamp-duty:2:8cf8fa474209",
+              "stamp-duty:0:9783e03ed014"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "ok",
+        "method": "llm_grounded_verified",
+        "answer": "普通私人住宅每次出租至少连续三个月，这是规则下限。 [1]\n\n三个月是规则下限，不意味着每套房东都愿意签三个月。 [2]\n\n实际可接受的最短租期需要询问房东并写入租约。 [3]"
+      },
+      "latency_ms": 11303
+    },
+    {
+      "id": "XK03",
+      "query": "For an HDB bedroom, should the owner obtain approval before the tenant moves in?",
+      "expected_status": "ok",
+      "expected_document": "hdb-rental",
+      "patterns": [
+        "批准",
+        "前|事先|提前"
+      ],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [
+        {
+          "pattern": "批准",
+          "matched": true
+        },
+        {
+          "pattern": "前|事先|提前",
+          "matched": true
+        }
+      ],
+      "expected_document_present": true,
+      "result": {
+        "citations": [
+          {
+            "chunk_id": "hdb-rental:0:d07578ac89f5",
+            "document_id": "hdb-rental",
+            "title": "HDB组屋租期、租客资格和卧室出租",
+            "heading": "最短六个月以及事先批准",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/hdb-rental.md",
+            "sources": [
+              {
+                "title": "HDB Bedroom Rental Regulations",
+                "url": "https://www.hdb.gov.sg/managing-my-home/home-ownership/renting-out-a-flat-or-bedrooms/renting-out-bedrooms/regulations"
+              },
+              {
+                "title": "HDB Bedroom Rental Terms and Conditions",
+                "url": "https://www.hdb.gov.sg/apply-manage-and-renew-rental-of-bedroom/terms-and-conditions"
+              }
+            ],
+            "quote": "业主需要在出租卧室前取得 HDB 批准；续租及新租客入住也需要相应办理。"
+          },
+          {
+            "chunk_id": "hdb-rental:0:d07578ac89f5",
+            "document_id": "hdb-rental",
+            "title": "HDB组屋租期、租客资格和卧室出租",
+            "heading": "最短六个月以及事先批准",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/hdb-rental.md",
+            "sources": [
+              {
+                "title": "HDB Bedroom Rental Regulations",
+                "url": "https://www.hdb.gov.sg/managing-my-home/home-ownership/renting-out-a-flat-or-bedrooms/renting-out-bedrooms/regulations"
+              },
+              {
+                "title": "HDB Bedroom Rental Terms and Conditions",
+                "url": "https://www.hdb.gov.sg/apply-manage-and-renew-rental-of-bedroom/terms-and-conditions"
+              }
+            ],
+            "quote": "HDB 卧室出租的最低租期为每名租客每次申请六个月。"
+          },
+          {
+            "chunk_id": "hdb-rental:0:d07578ac89f5",
+            "document_id": "hdb-rental",
+            "title": "HDB组屋租期、租客资格和卧室出租",
+            "heading": "最短六个月以及事先批准",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/hdb-rental.md",
+            "sources": [
+              {
+                "title": "HDB Bedroom Rental Regulations",
+                "url": "https://www.hdb.gov.sg/managing-my-home/home-ownership/renting-out-a-flat-or-bedrooms/renting-out-bedrooms/regulations"
+              },
+              {
+                "title": "HDB Bedroom Rental Terms and Conditions",
+                "url": "https://www.hdb.gov.sg/apply-manage-and-renew-rental-of-bedroom/terms-and-conditions"
+              }
+            ],
+            "quote": "不能因为私人公寓最低三个月，就认为 HDB 房间也可以只租三个月。"
+          }
+        ],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "For an HDB bedroom, should the owner obtain approval before the tenant moves in?",
+            "HDB bedroom rental owner approval before tenant moves in",
+            "组屋卧室出租 房东需要在租客入住前获得批准吗",
+            "HDB flat bedroom rental approval requirements tenant move-in"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "hdb-rental:2:f0dbb5553a1c",
+              "hdb-rental:4:407ca0f1cf59",
+              "hdb-rental:0:d07578ac89f5",
+              "hdb-rental:3:f13ff9d45f4d",
+              "private-rental:1:e2b4c55777d2"
+            ],
+            "bm25": [
+              "hdb-rental:0:d07578ac89f5",
+              "hdb-rental:1:b360725c25ea",
+              "hdb-rental:2:f0dbb5553a1c",
+              "hdb-rental:3:f13ff9d45f4d",
+              "private-rental:1:e2b4c55777d2",
+              "hdb-rental:4:407ca0f1cf59"
+            ],
+            "fused": [
+              "hdb-rental:0:d07578ac89f5",
+              "hdb-rental:2:f0dbb5553a1c",
+              "hdb-rental:4:407ca0f1cf59",
+              "hdb-rental:3:f13ff9d45f4d",
+              "private-rental:1:e2b4c55777d2",
+              "hdb-rental:1:b360725c25ea"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "ok",
+        "method": "llm_grounded_verified",
+        "answer": "出租HDB卧室前，业主需要取得HDB批准。 [1]\n\n新租客入住也需要相应办理批准。 [1]\n\nHDB卧室出租的最低租期为每名租客每次申请六个月。 [2]\n\n不能把私人公寓三个月的最低租期规则套用到HDB房间。 [3]"
+      },
+      "latency_ms": 7239
+    },
+    {
+      "id": "XK04",
+      "query": "Can an HDB bedroom tenant sublet that bedroom to a different person?",
+      "expected_status": "ok",
+      "expected_document": "hdb-rental",
+      "patterns": [
+        "转租",
+        "不能|不得|不允许|禁止"
+      ],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [
+        {
+          "pattern": "转租",
+          "matched": true
+        },
+        {
+          "pattern": "不能|不得|不允许|禁止",
+          "matched": true
+        }
+      ],
+      "expected_document_present": true,
+      "result": {
+        "citations": [
+          {
+            "chunk_id": "hdb-rental:2:f0dbb5553a1c",
+            "document_id": "hdb-rental",
+            "title": "HDB组屋租期、租客资格和卧室出租",
+            "heading": "出租卧室与整套出租有差别",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/hdb-rental.md",
+            "sources": [
+              {
+                "title": "HDB Bedroom Rental Regulations",
+                "url": "https://www.hdb.gov.sg/managing-my-home/home-ownership/renting-out-a-flat-or-bedrooms/renting-out-bedrooms/regulations"
+              },
+              {
+                "title": "HDB Bedroom Rental Terms and Conditions",
+                "url": "https://www.hdb.gov.sg/apply-manage-and-renew-rental-of-bedroom/terms-and-conditions"
+              }
+            ],
+            "quote": "租客不得再把卧室转租给他人。"
+          },
+          {
+            "chunk_id": "hdb-rental:2:f0dbb5553a1c",
+            "document_id": "hdb-rental",
+            "title": "HDB组屋租期、租客资格和卧室出租",
+            "heading": "出租卧室与整套出租有差别",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/hdb-rental.md",
+            "sources": [
+              {
+                "title": "HDB Bedroom Rental Regulations",
+                "url": "https://www.hdb.gov.sg/managing-my-home/home-ownership/renting-out-a-flat-or-bedrooms/renting-out-bedrooms/regulations"
+              },
+              {
+                "title": "HDB Bedroom Rental Terms and Conditions",
+                "url": "https://www.hdb.gov.sg/apply-manage-and-renew-rental-of-bedroom/terms-and-conditions"
+              }
+            ],
+            "quote": "HDB 卧室出租时，业主和获授权居住者须继续实际住在该组屋内"
+          },
+          {
+            "chunk_id": "hdb-rental:0:d07578ac89f5",
+            "document_id": "hdb-rental",
+            "title": "HDB组屋租期、租客资格和卧室出租",
+            "heading": "最短六个月以及事先批准",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/hdb-rental.md",
+            "sources": [
+              {
+                "title": "HDB Bedroom Rental Regulations",
+                "url": "https://www.hdb.gov.sg/managing-my-home/home-ownership/renting-out-a-flat-or-bedrooms/renting-out-bedrooms/regulations"
+              },
+              {
+                "title": "HDB Bedroom Rental Terms and Conditions",
+                "url": "https://www.hdb.gov.sg/apply-manage-and-renew-rental-of-bedroom/terms-and-conditions"
+              }
+            ],
+            "quote": "业主需要在出租卧室前取得 HDB 批准；续租及新租客入住也需要相应办理。"
+          }
+        ],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "Can an HDB bedroom tenant sublet that bedroom to a different person?",
+            "HDB bedroom tenant sublet to another person allowed?",
+            "新加坡组屋房间租客可以转租给他人吗？",
+            "HDB subletting bedroom tenant rules"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "hdb-rental:2:f0dbb5553a1c",
+              "hdb-rental:4:407ca0f1cf59",
+              "private-rental:1:e2b4c55777d2",
+              "hdb-rental:0:d07578ac89f5",
+              "hdb-rental:3:f13ff9d45f4d",
+              "handover-disputes:3:c1419c021791",
+              "private-rental:0:724ee7d0ea4e"
+            ],
+            "bm25": [
+              "hdb-rental:0:d07578ac89f5",
+              "hdb-rental:2:f0dbb5553a1c",
+              "hdb-rental:1:b360725c25ea",
+              "hdb-rental:3:f13ff9d45f4d",
+              "private-rental:1:e2b4c55777d2",
+              "hdb-rental:4:407ca0f1cf59"
+            ],
+            "fused": [
+              "hdb-rental:2:f0dbb5553a1c",
+              "hdb-rental:0:d07578ac89f5",
+              "hdb-rental:4:407ca0f1cf59",
+              "private-rental:1:e2b4c55777d2",
+              "hdb-rental:3:f13ff9d45f4d",
+              "hdb-rental:1:b360725c25ea",
+              "handover-disputes:3:c1419c021791",
+              "private-rental:0:724ee7d0ea4e"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "ok",
+        "method": "llm_grounded_verified",
+        "answer": "HDB卧室租客不得再把卧室转租给他人。 [1]\n\nHDB卧室出租时，业主和获授权居住者须继续实际住在该组屋内。 [2]\n\n业主需要在出租卧室前取得HDB批准，续租及新租客入住也需要相应办理。 [3]"
+      },
+      "latency_ms": 7431
+    },
+    {
+      "id": "XK05",
+      "query": "Can a tourist automatically qualify as a long-term HDB bedroom tenant?",
+      "expected_status": "ok",
+      "expected_document": "hdb-rental",
+      "patterns": [
+        "游客|旅游",
+        "不能|不符合|不属于|不得"
+      ],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [
+        {
+          "pattern": "游客|旅游",
+          "matched": true
+        },
+        {
+          "pattern": "不能|不符合|不属于|不得",
+          "matched": true
+        }
+      ],
+      "expected_document_present": true,
+      "result": {
+        "citations": [
+          {
+            "chunk_id": "hdb-rental:1:b360725c25ea",
+            "document_id": "hdb-rental",
+            "title": "HDB组屋租期、租客资格和卧室出租",
+            "heading": "外籍学生和准证条件",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/hdb-rental.md",
+            "sources": [
+              {
+                "title": "HDB Bedroom Rental Regulations",
+                "url": "https://www.hdb.gov.sg/managing-my-home/home-ownership/renting-out-a-flat-or-bedrooms/renting-out-bedrooms/regulations"
+              },
+              {
+                "title": "HDB Bedroom Rental Terms and Conditions",
+                "url": "https://www.hdb.gov.sg/apply-manage-and-renew-rental-of-bedroom/terms-and-conditions"
+              }
+            ],
+            "quote": "HDB 卧室租客须符合规定的身份和合法居留条件。外国人可涉及 Student's Pass、Employment Pass 等合资格准证；申请时准证通常须有至少六个月有效期。游客身份不能直接按这类合资格长期租客处理。"
+          },
+          {
+            "chunk_id": "hdb-rental:1:b360725c25ea",
+            "document_id": "hdb-rental",
+            "title": "HDB组屋租期、租客资格和卧室出租",
+            "heading": "外籍学生和准证条件",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/hdb-rental.md",
+            "sources": [
+              {
+                "title": "HDB Bedroom Rental Regulations",
+                "url": "https://www.hdb.gov.sg/managing-my-home/home-ownership/renting-out-a-flat-or-bedrooms/renting-out-bedrooms/regulations"
+              },
+              {
+                "title": "HDB Bedroom Rental Terms and Conditions",
+                "url": "https://www.hdb.gov.sg/apply-manage-and-renew-rental-of-bedroom/terms-and-conditions"
+              }
+            ],
+            "quote": "具体资格还有准证类别及其他限制，应对照 HDB 最新条款确认，不能只凭“我是学生”或“我有签证”作最终判断。"
+          },
+          {
+            "chunk_id": "hdb-rental:0:d07578ac89f5",
+            "document_id": "hdb-rental",
+            "title": "HDB组屋租期、租客资格和卧室出租",
+            "heading": "最短六个月以及事先批准",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/hdb-rental.md",
+            "sources": [
+              {
+                "title": "HDB Bedroom Rental Regulations",
+                "url": "https://www.hdb.gov.sg/managing-my-home/home-ownership/renting-out-a-flat-or-bedrooms/renting-out-bedrooms/regulations"
+              },
+              {
+                "title": "HDB Bedroom Rental Terms and Conditions",
+                "url": "https://www.hdb.gov.sg/apply-manage-and-renew-rental-of-bedroom/terms-and-conditions"
+              }
+            ],
+            "quote": "HDB 卧室出租的最低租期为每名租客每次申请六个月。业主需要在出租卧室前取得 HDB 批准；续租及新租客入住也需要相应办理。"
+          },
+          {
+            "chunk_id": "private-rental:1:e2b4c55777d2",
+            "document_id": "private-rental",
+            "title": "私人住宅租赁与最短租期",
+            "heading": "不同住房类别不能混用规则",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/private-rental.md",
+            "sources": [
+              {
+                "title": "URA Renting Property",
+                "url": "https://www.ura.gov.sg/guidelines/property-and-business-owners/property/renting-property/"
+              },
+              {
+                "title": "URA Short-Term Accommodation",
+                "url": "https://www.ura.gov.sg/guidelines/property-and-business-owners/property/short-term-accommodation/"
+              }
+            ],
+            "quote": "HDB 组屋与私人住宅适用不同要求；不能把公寓的三个月规则用于组屋。"
+          }
+        ],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "Can a tourist automatically qualify as a long-term HDB bedroom tenant?",
+            "游客 能否 自动 获得 长期 HDB 卧室 租客 资格？",
+            "tourist long-term HDB bedroom tenant automatic qualification",
+            "外国游客 新加坡 HDB 房间 长期出租 租客 条件"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "hdb-rental:1:b360725c25ea",
+              "hdb-rental:4:407ca0f1cf59",
+              "hdb-rental:2:f0dbb5553a1c",
+              "hdb-rental:0:d07578ac89f5",
+              "hdb-rental:3:f13ff9d45f4d",
+              "private-rental:1:e2b4c55777d2",
+              "stamp-duty:2:8cf8fa474209"
+            ],
+            "bm25": [
+              "hdb-rental:1:b360725c25ea",
+              "hdb-rental:0:d07578ac89f5",
+              "hdb-rental:2:f0dbb5553a1c",
+              "hdb-rental:3:f13ff9d45f4d",
+              "hdb-rental:4:407ca0f1cf59",
+              "private-rental:1:e2b4c55777d2"
+            ],
+            "fused": [
+              "hdb-rental:1:b360725c25ea",
+              "hdb-rental:0:d07578ac89f5",
+              "hdb-rental:2:f0dbb5553a1c",
+              "hdb-rental:4:407ca0f1cf59",
+              "hdb-rental:3:f13ff9d45f4d",
+              "private-rental:1:e2b4c55777d2",
+              "stamp-duty:2:8cf8fa474209"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "ok",
+        "method": "llm_grounded_verified",
+        "answer": "HDB卧室租客须符合规定的身份和合法居留条件，游客身份不能直接按合资格长期租客处理。 [1]\n\n具体资格还涉及准证类别及其他限制，应对照HDB最新条款确认，不能只凭签证作最终判断。 [2]\n\nHDB卧室出租的最低租期为每名租客每次申请六个月，业主出租前须取得HDB批准。 [3]\n\n不能把私人公寓的三个月规则用于HDB组屋。 [4]"
+      },
+      "latency_ms": 7525
+    },
+    {
+      "id": "XK06",
+      "query": "My Student Pass has four months remaining. Is student status alone sufficient for HDB bedroom rental eligibility?",
+      "expected_status": "ok",
+      "expected_document": "hdb-rental",
+      "patterns": [
+        "六|6",
+        "不能|不够|不足|不符合|不可以"
+      ],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [
+        {
+          "pattern": "六|6",
+          "matched": true
+        },
+        {
+          "pattern": "不能|不够|不足|不符合|不可以",
+          "matched": true
+        }
+      ],
+      "expected_document_present": true,
+      "result": {
+        "citations": [
+          {
+            "chunk_id": "hdb-rental:1:b360725c25ea",
+            "document_id": "hdb-rental",
+            "title": "HDB组屋租期、租客资格和卧室出租",
+            "heading": "外籍学生和准证条件",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/hdb-rental.md",
+            "sources": [
+              {
+                "title": "HDB Bedroom Rental Regulations",
+                "url": "https://www.hdb.gov.sg/managing-my-home/home-ownership/renting-out-a-flat-or-bedrooms/renting-out-bedrooms/regulations"
+              },
+              {
+                "title": "HDB Bedroom Rental Terms and Conditions",
+                "url": "https://www.hdb.gov.sg/apply-manage-and-renew-rental-of-bedroom/terms-and-conditions"
+              }
+            ],
+            "quote": "具体资格还有准证类别及其他限制，应对照 HDB 最新条款确认，不能只凭“我是学生”或“我有签证”作最终判断。"
+          },
+          {
+            "chunk_id": "hdb-rental:1:b360725c25ea",
+            "document_id": "hdb-rental",
+            "title": "HDB组屋租期、租客资格和卧室出租",
+            "heading": "外籍学生和准证条件",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/hdb-rental.md",
+            "sources": [
+              {
+                "title": "HDB Bedroom Rental Regulations",
+                "url": "https://www.hdb.gov.sg/managing-my-home/home-ownership/renting-out-a-flat-or-bedrooms/renting-out-bedrooms/regulations"
+              },
+              {
+                "title": "HDB Bedroom Rental Terms and Conditions",
+                "url": "https://www.hdb.gov.sg/apply-manage-and-renew-rental-of-bedroom/terms-and-conditions"
+              }
+            ],
+            "quote": "外国人可涉及 Student's Pass、Employment Pass 等合资格准证；申请时准证通常须有至少六个月有效期。"
+          },
+          {
+            "chunk_id": "hdb-rental:0:d07578ac89f5",
+            "document_id": "hdb-rental",
+            "title": "HDB组屋租期、租客资格和卧室出租",
+            "heading": "最短六个月以及事先批准",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/hdb-rental.md",
+            "sources": [
+              {
+                "title": "HDB Bedroom Rental Regulations",
+                "url": "https://www.hdb.gov.sg/managing-my-home/home-ownership/renting-out-a-flat-or-bedrooms/renting-out-bedrooms/regulations"
+              },
+              {
+                "title": "HDB Bedroom Rental Terms and Conditions",
+                "url": "https://www.hdb.gov.sg/apply-manage-and-renew-rental-of-bedroom/terms-and-conditions"
+              }
+            ],
+            "quote": "HDB 卧室出租的最低租期为每名租客每次申请六个月。"
+          },
+          {
+            "chunk_id": "hdb-rental:0:d07578ac89f5",
+            "document_id": "hdb-rental",
+            "title": "HDB组屋租期、租客资格和卧室出租",
+            "heading": "最短六个月以及事先批准",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/hdb-rental.md",
+            "sources": [
+              {
+                "title": "HDB Bedroom Rental Regulations",
+                "url": "https://www.hdb.gov.sg/managing-my-home/home-ownership/renting-out-a-flat-or-bedrooms/renting-out-bedrooms/regulations"
+              },
+              {
+                "title": "HDB Bedroom Rental Terms and Conditions",
+                "url": "https://www.hdb.gov.sg/apply-manage-and-renew-rental-of-bedroom/terms-and-conditions"
+              }
+            ],
+            "quote": "业主需要在出租卧室前取得 HDB 批准；续租及新租客入住也需要相应办理。"
+          }
+        ],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "My Student Pass has four months remaining. Is student status alone sufficient for HDB bedroom rental eligibility?",
+            "Student Pass 剩四个月 租 HDB 卧室 学生身份是否足够？",
+            "Is a Student Pass with four months validity alone sufficient to rent an HDB bedroom?",
+            "HDB bedroom rental eligibility for Student Pass holders with four months remaining"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "hdb-rental:1:b360725c25ea",
+              "hdb-rental:0:d07578ac89f5",
+              "hdb-rental:4:407ca0f1cf59",
+              "hdb-rental:2:f0dbb5553a1c",
+              "hdb-rental:3:f13ff9d45f4d",
+              "private-rental:1:e2b4c55777d2"
+            ],
+            "bm25": [
+              "hdb-rental:1:b360725c25ea",
+              "hdb-rental:3:f13ff9d45f4d",
+              "hdb-rental:0:d07578ac89f5",
+              "hdb-rental:2:f0dbb5553a1c",
+              "hdb-rental:4:407ca0f1cf59"
+            ],
+            "fused": [
+              "hdb-rental:1:b360725c25ea",
+              "hdb-rental:0:d07578ac89f5",
+              "hdb-rental:3:f13ff9d45f4d",
+              "hdb-rental:4:407ca0f1cf59",
+              "hdb-rental:2:f0dbb5553a1c",
+              "private-rental:1:e2b4c55777d2"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "ok",
+        "method": "llm_grounded_verified",
+        "answer": "仅凭学生身份不足以判断HDB卧室出租资格，须对照HDB最新条款确认准证类别及其他限制。 [1]\n\n外籍学生可涉及Student's Pass等合资格准证，但申请时准证通常须有至少六个月有效期。 [2]\n\nHDB卧室出租的最低租期为每名租客每次申请六个月。 [3]\n\n业主需要在出租卧室前取得HDB批准，续租及新租客入住也需要相应办理。 [4]"
+      },
+      "latency_ms": 7070
+    },
+    {
+      "id": "XK07",
+      "query": "For HDB bedroom rental, does locking one bedroom while the owner lives elsewhere satisfy continued residence?",
+      "expected_status": "ok",
+      "expected_document": "hdb-rental",
+      "patterns": [
+        "实际|继续|持续",
+        "不能|不等于|不符合|不满足"
+      ],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [
+        {
+          "pattern": "实际|继续|持续",
+          "matched": true
+        },
+        {
+          "pattern": "不能|不等于|不符合|不满足",
+          "matched": true
+        }
+      ],
+      "expected_document_present": true,
+      "result": {
+        "citations": [
+          {
+            "chunk_id": "hdb-rental:2:f0dbb5553a1c",
+            "document_id": "hdb-rental",
+            "title": "HDB组屋租期、租客资格和卧室出租",
+            "heading": "出租卧室与整套出租有差别",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/hdb-rental.md",
+            "sources": [
+              {
+                "title": "HDB Bedroom Rental Regulations",
+                "url": "https://www.hdb.gov.sg/managing-my-home/home-ownership/renting-out-a-flat-or-bedrooms/renting-out-bedrooms/regulations"
+              },
+              {
+                "title": "HDB Bedroom Rental Terms and Conditions",
+                "url": "https://www.hdb.gov.sg/apply-manage-and-renew-rental-of-bedroom/terms-and-conditions"
+              }
+            ],
+            "quote": "HDB 卧室出租时，业主和获授权居住者须继续实际住在该组屋内"
+          },
+          {
+            "chunk_id": "hdb-rental:2:f0dbb5553a1c",
+            "document_id": "hdb-rental",
+            "title": "HDB组屋租期、租客资格和卧室出租",
+            "heading": "出租卧室与整套出租有差别",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/hdb-rental.md",
+            "sources": [
+              {
+                "title": "HDB Bedroom Rental Regulations",
+                "url": "https://www.hdb.gov.sg/managing-my-home/home-ownership/renting-out-a-flat-or-bedrooms/renting-out-bedrooms/regulations"
+              },
+              {
+                "title": "HDB Bedroom Rental Terms and Conditions",
+                "url": "https://www.hdb.gov.sg/apply-manage-and-renew-rental-of-bedroom/terms-and-conditions"
+              }
+            ],
+            "quote": "把一间房锁起来而本人住别处，不等于符合持续居住要求。"
+          },
+          {
+            "chunk_id": "hdb-rental:2:f0dbb5553a1c",
+            "document_id": "hdb-rental",
+            "title": "HDB组屋租期、租客资格和卧室出租",
+            "heading": "出租卧室与整套出租有差别",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/hdb-rental.md",
+            "sources": [
+              {
+                "title": "HDB Bedroom Rental Regulations",
+                "url": "https://www.hdb.gov.sg/managing-my-home/home-ownership/renting-out-a-flat-or-bedrooms/renting-out-bedrooms/regulations"
+              },
+              {
+                "title": "HDB Bedroom Rental Terms and Conditions",
+                "url": "https://www.hdb.gov.sg/apply-manage-and-renew-rental-of-bedroom/terms-and-conditions"
+              }
+            ],
+            "quote": "本条针对卧室出租，不应误用为所有 HDB 整套出租均必须和房东同住。"
+          },
+          {
+            "chunk_id": "hdb-rental:4:407ca0f1cf59",
+            "document_id": "hdb-rental",
+            "title": "HDB组屋租期、租客资格和卧室出租",
+            "heading": "把用户条件与规则分别保存",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/hdb-rental.md",
+            "sources": [
+              {
+                "title": "HDB Bedroom Rental Regulations",
+                "url": "https://www.hdb.gov.sg/managing-my-home/home-ownership/renting-out-a-flat-or-bedrooms/renting-out-bedrooms/regulations"
+              },
+              {
+                "title": "HDB Bedroom Rental Terms and Conditions",
+                "url": "https://www.hdb.gov.sg/apply-manage-and-renew-rental-of-bedroom/terms-and-conditions"
+              }
+            ],
+            "quote": "对于组屋房间，应明确指出其与卧室出租持续居住要求可能不相容，并让用户确认是否考虑整租或私人住宅。"
+          }
+        ],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "For HDB bedroom rental, does locking one bedroom while the owner lives elsewhere satisfy continued residence?",
+            "HDB bedroom rental owner lives elsewhere lock one bedroom continued residence",
+            "组屋出租睡房 业主不住在该单位 锁一间房 是否符合继续居住要求",
+            "HDB whole flat rental owner residence requirement lock bedroom"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "hdb-rental:2:f0dbb5553a1c",
+              "hdb-rental:4:407ca0f1cf59",
+              "private-rental:1:e2b4c55777d2",
+              "hdb-rental:0:d07578ac89f5",
+              "hdb-rental:3:f13ff9d45f4d",
+              "private-rental:0:724ee7d0ea4e",
+              "private-rental:3:326dc22ee499"
+            ],
+            "bm25": [
+              "hdb-rental:0:d07578ac89f5",
+              "hdb-rental:2:f0dbb5553a1c",
+              "hdb-rental:3:f13ff9d45f4d",
+              "private-rental:1:e2b4c55777d2",
+              "hdb-rental:1:b360725c25ea",
+              "hdb-rental:4:407ca0f1cf59"
+            ],
+            "fused": [
+              "hdb-rental:2:f0dbb5553a1c",
+              "hdb-rental:0:d07578ac89f5",
+              "private-rental:1:e2b4c55777d2",
+              "hdb-rental:4:407ca0f1cf59",
+              "hdb-rental:3:f13ff9d45f4d",
+              "hdb-rental:1:b360725c25ea",
+              "private-rental:0:724ee7d0ea4e",
+              "private-rental:3:326dc22ee499"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "ok",
+        "method": "llm_grounded_verified",
+        "answer": "HDB卧室出租时，业主和获授权居住者须继续实际住在该组屋内。 [1]\n\n把一间房锁起来而本人住别处，不等于符合持续居住要求。 [2]\n\n该持续居住要求针对卧室出租，不应误用为所有HDB整套出租均必须和房东同住。 [3]\n\n对于组屋房间，“不与房东同住”可能与卧室出租持续居住要求不相容，可让用户确认是否考虑整租或私人住宅。 [4]"
+      },
+      "latency_ms": 8096
+    },
+    {
+      "id": "XK08",
+      "query": "What documents should I gather before disputing a deposit deduction?",
+      "expected_status": "ok",
+      "expected_document": "handover-disputes",
+      "patterns": [
+        "条款|租约",
+        "照片|清单|单据|支付记录"
+      ],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [
+        {
+          "pattern": "条款|租约",
+          "matched": true
+        },
+        {
+          "pattern": "照片|清单|单据|支付记录",
+          "matched": true
+        }
+      ],
+      "expected_document_present": true,
+      "result": {
+        "citations": [
+          {
+            "chunk_id": "handover-disputes:2:3fc30a09a274",
+            "document_id": "handover-disputes",
+            "title": "看房交接、押金争议与小额索偿范围",
+            "heading": "押金被扣时先取得依据",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/handover-disputes.md",
+            "sources": [
+              {
+                "title": "Singapore Courts Cases Eligible for a Small Claim",
+                "url": "https://www.judiciary.gov.sg/civil/cases-eligible-small-claim"
+              }
+            ],
+            "quote": "本项目建议先索取具体扣款项目、相关条款和单据"
+          },
+          {
+            "chunk_id": "handover-disputes:2:3fc30a09a274",
+            "document_id": "handover-disputes",
+            "title": "看房交接、押金争议与小额索偿范围",
+            "heading": "押金被扣时先取得依据",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/handover-disputes.md",
+            "sources": [
+              {
+                "title": "Singapore Courts Cases Eligible for a Small Claim",
+                "url": "https://www.judiciary.gov.sg/civil/cases-eligible-small-claim"
+              }
+            ],
+            "quote": "并整理已签租约、交接清单、照片、支付记录及书面沟通"
+          },
+          {
+            "chunk_id": "handover-disputes:1:ee423209cda7",
+            "document_id": "handover-disputes",
+            "title": "看房交接、押金争议与小额索偿范围",
+            "heading": "入住和退租留存相同维度的记录",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/handover-disputes.md",
+            "sources": [
+              {
+                "title": "Singapore Courts Cases Eligible for a Small Claim",
+                "url": "https://www.judiciary.gov.sg/civil/cases-eligible-small-claim"
+              }
+            ],
+            "quote": "本项目建议在双方允许的前提下拍摄带日期的房屋状态照片，逐项核对家具清单、既有损坏、钥匙数量、读表和交接日期"
+          },
+          {
+            "chunk_id": "handover-disputes:1:ee423209cda7",
+            "document_id": "handover-disputes",
+            "title": "看房交接、押金争议与小额索偿范围",
+            "heading": "入住和退租留存相同维度的记录",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/handover-disputes.md",
+            "sources": [
+              {
+                "title": "Singapore Courts Cases Eligible for a Small Claim",
+                "url": "https://www.judiciary.gov.sg/civil/cases-eligible-small-claim"
+              }
+            ],
+            "quote": "需要维修时保存具体问题、联系时间和答复"
+          },
+          {
+            "chunk_id": "handover-disputes:1:ee423209cda7",
+            "document_id": "handover-disputes",
+            "title": "看房交接、押金争议与小额索偿范围",
+            "heading": "入住和退租留存相同维度的记录",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/handover-disputes.md",
+            "sources": [
+              {
+                "title": "Singapore Courts Cases Eligible for a Small Claim",
+                "url": "https://www.judiciary.gov.sg/civil/cases-eligible-small-claim"
+              }
+            ],
+            "quote": "退租时再对照同一清单，避免只剩双方对“当时是什么样”的记忆"
+          },
+          {
+            "chunk_id": "tenancy-terms:1:20ff15cea913",
+            "document_id": "tenancy-terms",
+            "title": "租约、押金、家具、水电费与协商清单",
+            "heading": "押金怎样问清楚",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/tenancy-terms.md",
+            "sources": [
+              {
+                "title": "CEA Renting or Renting Out",
+                "url": "https://www.cea.gov.sg/consumers/engaging-a-property-agent/renting-or-renting-out/"
+              }
+            ],
+            "quote": "请把约定写清楚，保存付款与退款记录"
+          }
+        ],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "What documents should I gather before disputing a deposit deduction?",
+            "租房押金扣除争议前需要准备哪些文件？",
+            "security deposit deduction dispute documents checklist Singapore rental",
+            "押金 dispute 需要哪些 evidence 和 written tenancy agreement？"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "handover-disputes:2:3fc30a09a274",
+              "tenancy-terms:1:20ff15cea913",
+              "agent-and-scams:1:7e76068e8a2b",
+              "handover-disputes:3:c1419c021791",
+              "stamp-duty:3:1e7b01579dc6",
+              "stamp-duty:2:8cf8fa474209",
+              "handover-disputes:4:a6bab9e2d485",
+              "handover-disputes:1:ee423209cda7",
+              "stamp-duty:4:e1da49087eb3",
+              "tenancy-terms:0:667e945c2acf",
+              "tenancy-terms:4:fc3535b62c97"
+            ],
+            "bm25": [
+              "tenancy-terms:1:20ff15cea913",
+              "handover-disputes:2:3fc30a09a274",
+              "tenancy-terms:0:667e945c2acf",
+              "stamp-duty:4:e1da49087eb3",
+              "handover-disputes:1:ee423209cda7",
+              "tenancy-terms:4:fc3535b62c97",
+              "handover-disputes:4:a6bab9e2d485",
+              "handover-disputes:3:c1419c021791"
+            ],
+            "fused": [
+              "handover-disputes:2:3fc30a09a274",
+              "tenancy-terms:1:20ff15cea913",
+              "handover-disputes:3:c1419c021791",
+              "tenancy-terms:0:667e945c2acf",
+              "stamp-duty:4:e1da49087eb3",
+              "handover-disputes:1:ee423209cda7",
+              "handover-disputes:4:a6bab9e2d485",
+              "tenancy-terms:4:fc3535b62c97",
+              "agent-and-scams:1:7e76068e8a2b",
+              "stamp-duty:3:1e7b01579dc6",
+              "stamp-duty:2:8cf8fa474209"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "ok",
+        "method": "llm_grounded_verified",
+        "answer": "押金被扣时，建议先索取具体扣款项目、相关条款和单据。 [1]\n\n建议整理已签租约、交接清单、照片、支付记录及书面沟通。 [2]\n\n建议在双方允许的前提下拍摄带日期的房屋状态照片，并逐项核对家具清单、既有损坏、钥匙数量、读表和交接日期。 [3]\n\n需要维修时，保存具体问题、联系时间和答复。 [4]\n\n退租时对照同一清单核对，避免只依赖双方对当时状态的记忆。 [5]\n\n建议保存付款与退款记录。 [6]"
+      },
+      "latency_ms": 7768
+    },
+    {
+      "id": "XK09",
+      "query": "Is the estate agency agreement the same document as the tenancy agreement?",
+      "expected_status": "ok",
+      "expected_document": "tenancy-terms",
+      "patterns": [
+        "经纪",
+        "租赁|租约",
+        "不同|不是|区分"
+      ],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [
+        {
+          "pattern": "经纪",
+          "matched": true
+        },
+        {
+          "pattern": "租赁|租约",
+          "matched": true
+        },
+        {
+          "pattern": "不同|不是|区分",
+          "matched": true
+        }
+      ],
+      "expected_document_present": true,
+      "result": {
+        "citations": [
+          {
+            "chunk_id": "tenancy-terms:0:667e945c2acf",
+            "document_id": "tenancy-terms",
+            "title": "租约、押金、家具、水电费与协商清单",
+            "heading": "租约和经纪服务协议",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/tenancy-terms.md",
+            "sources": [
+              {
+                "title": "CEA Renting or Renting Out",
+                "url": "https://www.cea.gov.sg/consumers/engaging-a-property-agent/renting-or-renting-out/"
+              }
+            ],
+            "quote": "租客与房东的 tenancy agreement，和客户与经纪人的 estate agency agreement，是不同的文件。"
+          },
+          {
+            "chunk_id": "tenancy-terms:0:667e945c2acf",
+            "document_id": "tenancy-terms",
+            "title": "租约、押金、家具、水电费与协商清单",
+            "heading": "租约和经纪服务协议",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/tenancy-terms.md",
+            "sources": [
+              {
+                "title": "CEA Renting or Renting Out",
+                "url": "https://www.cea.gov.sg/consumers/engaging-a-property-agent/renting-or-renting-out/"
+              }
+            ],
+            "quote": "前者约定租赁关系，后者约定经纪服务范围与佣金。"
+          }
+        ],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "Is the estate agency agreement the same document as the tenancy agreement?",
+            "estate agency agreement vs tenancy agreement difference Singapore",
+            "房屋中介协议 和 租约 是否同一份文件 新加坡",
+            "Singapore rental estate agency agreement tenancy agreement same document"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "tenancy-terms:0:667e945c2acf",
+              "private-rental:1:e2b4c55777d2",
+              "handover-disputes:3:c1419c021791",
+              "stamp-duty:2:8cf8fa474209",
+              "private-rental:3:326dc22ee499",
+              "stamp-duty:4:e1da49087eb3",
+              "agent-and-scams:2:db99f407d700",
+              "hdb-rental:2:f0dbb5553a1c"
+            ],
+            "bm25": [
+              "tenancy-terms:0:667e945c2acf",
+              "private-rental:4:fdad2d8e1983",
+              "private-rental:0:724ee7d0ea4e",
+              "stamp-duty:0:9783e03ed014",
+              "private-rental:2:fa96d0876e58",
+              "handover-disputes:3:c1419c021791",
+              "handover-disputes:1:ee423209cda7",
+              "system-followup:0:1d949d1b1f43",
+              "stamp-duty:2:8cf8fa474209"
+            ],
+            "fused": [
+              "tenancy-terms:0:667e945c2acf",
+              "handover-disputes:3:c1419c021791",
+              "stamp-duty:2:8cf8fa474209",
+              "private-rental:1:e2b4c55777d2",
+              "private-rental:4:fdad2d8e1983",
+              "private-rental:0:724ee7d0ea4e",
+              "stamp-duty:0:9783e03ed014",
+              "private-rental:2:fa96d0876e58",
+              "private-rental:3:326dc22ee499",
+              "stamp-duty:4:e1da49087eb3",
+              "agent-and-scams:2:db99f407d700",
+              "handover-disputes:1:ee423209cda7",
+              "hdb-rental:2:f0dbb5553a1c",
+              "system-followup:0:1d949d1b1f43"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "ok",
+        "method": "llm_grounded_verified",
+        "answer": "租客与房东的 tenancy agreement 和客户与经纪人的 estate agency agreement 是不同的文件。 [1]\n\ntenancy agreement 约定租赁关系，estate agency agreement 约定经纪服务范围与佣金。 [2]"
+      },
+      "latency_ms": 6445
+    },
+    {
+      "id": "XK10",
+      "query": "Does fully furnished prove both good furniture condition and included bed linen?",
+      "expected_status": "ok",
+      "expected_document": "tenancy-terms",
+      "patterns": [
+        "被褥|床品",
+        "完好|状态",
+        "不能|不代表|不意味着"
+      ],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [
+        {
+          "pattern": "被褥|床品",
+          "matched": true
+        },
+        {
+          "pattern": "完好|状态",
+          "matched": true
+        },
+        {
+          "pattern": "不能|不代表|不意味着",
+          "matched": true
+        }
+      ],
+      "expected_document_present": true,
+      "result": {
+        "citations": [
+          {
+            "chunk_id": "tenancy-terms:2:77d1e0cc1648",
+            "document_id": "tenancy-terms",
+            "title": "租约、押金、家具、水电费与协商清单",
+            "heading": "家具与被褥分开核实",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/tenancy-terms.md",
+            "sources": [
+              {
+                "title": "CEA Renting or Renting Out",
+                "url": "https://www.cea.gov.sg/consumers/engaging-a-property-agent/renting-or-renting-out/"
+              }
+            ],
+            "quote": "“配床和桌椅”不能推导出包被褥，家具齐全也不能证明物品完好。"
+          },
+          {
+            "chunk_id": "tenancy-terms:2:77d1e0cc1648",
+            "document_id": "tenancy-terms",
+            "title": "租约、押金、家具、水电费与协商清单",
+            "heading": "家具与被褥分开核实",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/tenancy-terms.md",
+            "sources": [
+              {
+                "title": "CEA Renting or Renting Out",
+                "url": "https://www.cea.gov.sg/consumers/engaging-a-property-agent/renting-or-renting-out/"
+              }
+            ],
+            "quote": "本项目建议逐项询问床架、床垫、书桌、椅子、衣柜、冰箱、洗衣机及空调，而不是只问 furnished。"
+          },
+          {
+            "chunk_id": "tenancy-terms:2:77d1e0cc1648",
+            "document_id": "tenancy-terms",
+            "title": "租约、押金、家具、水电费与协商清单",
+            "heading": "家具与被褥分开核实",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/tenancy-terms.md",
+            "sources": [
+              {
+                "title": "CEA Renting or Renting Out",
+                "url": "https://www.cea.gov.sg/consumers/engaging-a-property-agent/renting-or-renting-out/"
+              }
+            ],
+            "quote": "家具与被褥分开核实"
+          },
+          {
+            "chunk_id": "handover-disputes:0:ac15a576ddbf",
+            "document_id": "handover-disputes",
+            "title": "看房交接、押金争议与小额索偿范围",
+            "heading": "看房时整理可观察事实",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/handover-disputes.md",
+            "sources": [
+              {
+                "title": "Singapore Courts Cases Eligible for a Small Claim",
+                "url": "https://www.judiciary.gov.sg/civil/cases-eligible-small-claim"
+              }
+            ],
+            "quote": "对照照片查看房间是否一致，确认实际可使用面积、窗户通风、空调运行、家具状态、门锁、用水和卫生间使用方式。"
+          },
+          {
+            "chunk_id": "tenancy-terms:2:77d1e0cc1648",
+            "document_id": "tenancy-terms",
+            "title": "租约、押金、家具、水电费与协商清单",
+            "heading": "家具与被褥分开核实",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/tenancy-terms.md",
+            "sources": [
+              {
+                "title": "CEA Renting or Renting Out",
+                "url": "https://www.cea.gov.sg/consumers/engaging-a-property-agent/renting-or-renting-out/"
+              }
+            ],
+            "quote": "把愿意保留或移走的物品写进清单，看房和交接时对照。"
+          }
+        ],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "Does fully furnished prove both good furniture condition and included bed linen?",
+            "fully furnished 是否同时保证家具状况良好和包含床单被褥？",
+            "fully furnished apartment: good furniture condition vs bed linen included?",
+            "新加坡 fully furnished 租房 家具状况 床单 包含吗"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "tenancy-terms:2:77d1e0cc1648",
+              "hdb-rental:2:f0dbb5553a1c",
+              "hdb-rental:4:407ca0f1cf59",
+              "handover-disputes:1:ee423209cda7",
+              "handover-disputes:0:ac15a576ddbf",
+              "handover-disputes:3:c1419c021791",
+              "system-followup:0:1d949d1b1f43",
+              "private-rental:1:e2b4c55777d2",
+              "stamp-duty:2:8cf8fa474209"
+            ],
+            "bm25": [
+              "tenancy-terms:2:77d1e0cc1648",
+              "tenancy-terms:3:e29f9467aab0",
+              "tenancy-terms:0:667e945c2acf",
+              "tenancy-terms:4:fc3535b62c97",
+              "system-followup:0:1d949d1b1f43",
+              "handover-disputes:1:ee423209cda7",
+              "system-followup:2:52af12482942",
+              "agent-and-scams:4:ea42253c9451",
+              "handover-disputes:0:ac15a576ddbf",
+              "hdb-rental:3:f13ff9d45f4d"
+            ],
+            "fused": [
+              "tenancy-terms:2:77d1e0cc1648",
+              "handover-disputes:1:ee423209cda7",
+              "system-followup:0:1d949d1b1f43",
+              "handover-disputes:0:ac15a576ddbf",
+              "hdb-rental:2:f0dbb5553a1c",
+              "tenancy-terms:3:e29f9467aab0",
+              "hdb-rental:4:407ca0f1cf59",
+              "tenancy-terms:0:667e945c2acf",
+              "tenancy-terms:4:fc3535b62c97",
+              "handover-disputes:3:c1419c021791",
+              "system-followup:2:52af12482942",
+              "agent-and-scams:4:ea42253c9451",
+              "private-rental:1:e2b4c55777d2",
+              "stamp-duty:2:8cf8fa474209",
+              "hdb-rental:3:f13ff9d45f4d"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "ok",
+        "method": "llm_grounded_verified",
+        "answer": "“家具齐全”不能证明物品完好，也不能推导出包被褥。 [1]\n\n建议逐项询问床架、床垫、书桌、椅子、衣柜、冰箱、洗衣机及空调，而不是只问 furnished。 [2]\n\n家具与被褥应分开核实。 [3]\n\n看房时可对照照片确认家具状态等可观察事实。 [4]\n\n建议把愿意保留或移走的物品写进清单，看房和交接时对照。 [5]"
+      },
+      "latency_ms": 6851
+    },
+    {
+      "id": "XK11",
+      "query": "If the agent says utilities are included, may I enter every other additional fee as zero?",
+      "expected_status": "ok",
+      "expected_document": "tenancy-terms",
+      "patterns": [
+        "费用|收费|网络",
+        "不能|不代表|不应|不可"
+      ],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [
+        {
+          "pattern": "费用|收费|网络",
+          "matched": true
+        },
+        {
+          "pattern": "不能|不代表|不应|不可",
+          "matched": true
+        }
+      ],
+      "expected_document_present": true,
+      "result": {
+        "citations": [
+          {
+            "chunk_id": "tenancy-terms:3:e29f9467aab0",
+            "document_id": "tenancy-terms",
+            "title": "租约、押金、家具、水电费与协商清单",
+            "heading": "水电网络和其他费用",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/tenancy-terms.md",
+            "sources": [
+              {
+                "title": "CEA Renting or Renting Out",
+                "url": "https://www.cea.gov.sg/consumers/engaging-a-property-agent/renting-or-renting-out/"
+              }
+            ],
+            "quote": "经纪人说“水电包含在房租”只明确了该项，不能自动推导免费网络或无其他费用。"
+          },
+          {
+            "chunk_id": "tenancy-terms:3:e29f9467aab0",
+            "document_id": "tenancy-terms",
+            "title": "租约、押金、家具、水电费与协商清单",
+            "heading": "水电网络和其他费用",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/tenancy-terms.md",
+            "sources": [
+              {
+                "title": "CEA Renting or Renting Out",
+                "url": "https://www.cea.gov.sg/consumers/engaging-a-property-agent/renting-or-renting-out/"
+              }
+            ],
+            "quote": "比较预算时，要同时看月租和已确认的额外支出；尚未确认的费用不能擅自填零。"
+          },
+          {
+            "chunk_id": "tenancy-terms:3:e29f9467aab0",
+            "document_id": "tenancy-terms",
+            "title": "租约、押金、家具、水电费与协商清单",
+            "heading": "水电网络和其他费用",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/tenancy-terms.md",
+            "sources": [
+              {
+                "title": "CEA Renting or Renting Out",
+                "url": "https://www.cea.gov.sg/consumers/engaging-a-property-agent/renting-or-renting-out/"
+              }
+            ],
+            "quote": "本项目建议把电费、水费、网络、空调清洗、维修、清洁和管理相关收费分别询问：是否包含、是否有上限、超出如何分摊、何时结算。"
+          }
+        ],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "If the agent says utilities are included, may I enter every other additional fee as zero?",
+            "agent says utilities included, can all other additional fees be zero?",
+            "租房 agent 说 utilities included，其他 additional fee 是否可全部填零？",
+            "utilities included 时 additional fees 填零 是否允许"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "tenancy-terms:3:e29f9467aab0",
+              "agent-and-scams:2:db99f407d700",
+              "tenancy-terms:1:20ff15cea913",
+              "agent-and-scams:1:7e76068e8a2b",
+              "stamp-duty:1:6d8920bdd79e",
+              "stamp-duty:4:e1da49087eb3",
+              "handover-disputes:2:3fc30a09a274"
+            ],
+            "bm25": [
+              "tenancy-terms:3:e29f9467aab0",
+              "tenancy-terms:4:fc3535b62c97",
+              "system-followup:2:52af12482942",
+              "stamp-duty:4:e1da49087eb3",
+              "tenancy-terms:0:667e945c2acf",
+              "agent-and-scams:0:b65d10a75fdf",
+              "hdb-rental:3:f13ff9d45f4d",
+              "handover-disputes:1:ee423209cda7",
+              "system-followup:0:1d949d1b1f43",
+              "private-rental:4:fdad2d8e1983",
+              "private-rental:3:326dc22ee499",
+              "stamp-duty:2:8cf8fa474209"
+            ],
+            "fused": [
+              "tenancy-terms:3:e29f9467aab0",
+              "stamp-duty:4:e1da49087eb3",
+              "agent-and-scams:2:db99f407d700",
+              "tenancy-terms:4:fc3535b62c97",
+              "system-followup:2:52af12482942",
+              "tenancy-terms:1:20ff15cea913",
+              "agent-and-scams:1:7e76068e8a2b",
+              "stamp-duty:1:6d8920bdd79e",
+              "tenancy-terms:0:667e945c2acf",
+              "agent-and-scams:0:b65d10a75fdf",
+              "handover-disputes:2:3fc30a09a274",
+              "hdb-rental:3:f13ff9d45f4d",
+              "handover-disputes:1:ee423209cda7",
+              "system-followup:0:1d949d1b1f43",
+              "private-rental:4:fdad2d8e1983",
+              "private-rental:3:326dc22ee499",
+              "stamp-duty:2:8cf8fa474209"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "ok",
+        "method": "llm_grounded_verified",
+        "answer": "经纪人说“水电包含在房租”只明确了该项，不能自动推导免费网络或无其他费用。 [1]\n\n比较预算时，要同时看月租和已确认的额外支出；尚未确认的费用不能擅自填零。 [2]\n\n建议把电费、水费、网络、空调清洗、维修、清洁和管理相关收费分别询问：是否包含、是否有上限、超出如何分摊、何时结算。 [3]"
+      },
+      "latency_ms": 6957
+    },
+    {
+      "id": "XK12",
+      "query": "What should I record at move-in and move-out to compare existing damage?",
+      "expected_status": "ok",
+      "expected_document": "handover-disputes",
+      "patterns": [
+        "照片|清单",
+        "入住|退租|交接"
+      ],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [
+        {
+          "pattern": "照片|清单",
+          "matched": true
+        },
+        {
+          "pattern": "入住|退租|交接",
+          "matched": true
+        }
+      ],
+      "expected_document_present": true,
+      "result": {
+        "citations": [
+          {
+            "chunk_id": "handover-disputes:1:ee423209cda7",
+            "document_id": "handover-disputes",
+            "title": "看房交接、押金争议与小额索偿范围",
+            "heading": "入住和退租留存相同维度的记录",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/handover-disputes.md",
+            "sources": [
+              {
+                "title": "Singapore Courts Cases Eligible for a Small Claim",
+                "url": "https://www.judiciary.gov.sg/civil/cases-eligible-small-claim"
+              }
+            ],
+            "quote": "本项目建议在双方允许的前提下拍摄带日期的房屋状态照片，逐项核对家具清单、既有损坏、钥匙数量、读表和交接日期。"
+          },
+          {
+            "chunk_id": "handover-disputes:1:ee423209cda7",
+            "document_id": "handover-disputes",
+            "title": "看房交接、押金争议与小额索偿范围",
+            "heading": "入住和退租留存相同维度的记录",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/handover-disputes.md",
+            "sources": [
+              {
+                "title": "Singapore Courts Cases Eligible for a Small Claim",
+                "url": "https://www.judiciary.gov.sg/civil/cases-eligible-small-claim"
+              }
+            ],
+            "quote": "退租时再对照同一清单，避免只剩双方对“当时是什么样”的记忆。"
+          },
+          {
+            "chunk_id": "tenancy-terms:2:77d1e0cc1648",
+            "document_id": "tenancy-terms",
+            "title": "租约、押金、家具、水电费与协商清单",
+            "heading": "家具与被褥分开核实",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/tenancy-terms.md",
+            "sources": [
+              {
+                "title": "CEA Renting or Renting Out",
+                "url": "https://www.cea.gov.sg/consumers/engaging-a-property-agent/renting-or-renting-out/"
+              }
+            ],
+            "quote": "把愿意保留或移走的物品写进清单，看房和交接时对照。"
+          },
+          {
+            "chunk_id": "handover-disputes:0:ac15a576ddbf",
+            "document_id": "handover-disputes",
+            "title": "看房交接、押金争议与小额索偿范围",
+            "heading": "看房时整理可观察事实",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/handover-disputes.md",
+            "sources": [
+              {
+                "title": "Singapore Courts Cases Eligible for a Small Claim",
+                "url": "https://www.judiciary.gov.sg/civil/cases-eligible-small-claim"
+              }
+            ],
+            "quote": "对照照片查看房间是否一致，确认实际可使用面积、窗户通风、空调运行、家具状态、门锁、用水和卫生间使用方式。"
+          },
+          {
+            "chunk_id": "handover-disputes:2:3fc30a09a274",
+            "document_id": "handover-disputes",
+            "title": "看房交接、押金争议与小额索偿范围",
+            "heading": "押金被扣时先取得依据",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/handover-disputes.md",
+            "sources": [
+              {
+                "title": "Singapore Courts Cases Eligible for a Small Claim",
+                "url": "https://www.judiciary.gov.sg/civil/cases-eligible-small-claim"
+              }
+            ],
+            "quote": "本项目建议先索取具体扣款项目、相关条款和单据，并整理已签租约、交接清单、照片、支付记录及书面沟通。"
+          }
+        ],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "What should I record at move-in and move-out to compare existing damage?",
+            "入住和退房时如何记录房屋状况以对比原有损坏？",
+            "move-in inspection checklist for existing damage Singapore rental",
+            "退房检查时如何用照片和清单证明损坏是原有的？"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "handover-disputes:1:ee423209cda7",
+              "handover-disputes:0:ac15a576ddbf",
+              "handover-disputes:2:3fc30a09a274",
+              "tenancy-terms:4:fc3535b62c97",
+              "system-evidence:4:f47965ccb57c",
+              "agent-and-scams:4:ea42253c9451",
+              "agent-and-scams:1:7e76068e8a2b",
+              "private-rental:3:326dc22ee499",
+              "stamp-duty:2:8cf8fa474209",
+              "tenancy-terms:2:77d1e0cc1648"
+            ],
+            "bm25": [
+              "handover-disputes:1:ee423209cda7",
+              "hdb-rental:3:f13ff9d45f4d",
+              "private-rental:2:fa96d0876e58",
+              "tenancy-terms:3:e29f9467aab0",
+              "handover-disputes:0:ac15a576ddbf",
+              "stamp-duty:0:9783e03ed014"
+            ],
+            "fused": [
+              "handover-disputes:1:ee423209cda7",
+              "handover-disputes:0:ac15a576ddbf",
+              "hdb-rental:3:f13ff9d45f4d",
+              "handover-disputes:2:3fc30a09a274",
+              "private-rental:2:fa96d0876e58",
+              "tenancy-terms:3:e29f9467aab0",
+              "tenancy-terms:4:fc3535b62c97",
+              "system-evidence:4:f47965ccb57c",
+              "agent-and-scams:4:ea42253c9451",
+              "stamp-duty:0:9783e03ed014",
+              "agent-and-scams:1:7e76068e8a2b",
+              "private-rental:3:326dc22ee499",
+              "stamp-duty:2:8cf8fa474209",
+              "tenancy-terms:2:77d1e0cc1648"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "ok",
+        "method": "llm_grounded_verified",
+        "answer": "建议在双方允许的前提下拍摄带日期的房屋状态照片，并逐项核对家具清单、既有损坏、钥匙数量、读表和交接日期。 [1]\n\n退租时应再对照同一清单，避免只剩双方对当时状态的记忆。 [2]\n\n家具应逐项核实，把愿意保留或移走的物品写进清单，看房和交接时对照。 [3]\n\n看房时可对照照片查看房间是否一致，并确认家具状态等可观察事实。 [4]\n\n押金被扣时应先索取具体扣款项目、相关条款和单据，并整理交接清单、照片等材料。 [5]"
+      },
+      "latency_ms": 8166
+    },
+    {
+      "id": "XK13",
+      "query": "For SCT guidance, are the two-year tenancy limit and the two-year filing period the same condition?",
+      "expected_status": "ok",
+      "expected_document": "handover-disputes",
+      "patterns": [
+        "租约|租赁",
+        "提交|起诉",
+        "不同|不能混|分别|区分|两个"
+      ],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [
+        {
+          "pattern": "租约|租赁",
+          "matched": true
+        },
+        {
+          "pattern": "提交|起诉",
+          "matched": true
+        },
+        {
+          "pattern": "不同|不能混|分别|区分|两个",
+          "matched": true
+        }
+      ],
+      "expected_document_present": true,
+      "result": {
+        "citations": [
+          {
+            "chunk_id": "handover-disputes:3:c1419c021791",
+            "document_id": "handover-disputes",
+            "title": "看房交接、押金争议与小额索偿范围",
+            "heading": "小额索偿审裁庭 SCT 的范围",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/handover-disputes.md",
+            "sources": [
+              {
+                "title": "Singapore Courts Cases Eligible for a Small Claim",
+                "url": "https://www.judiciary.gov.sg/civil/cases-eligible-small-claim"
+              }
+            ],
+            "quote": "两年的租约期限和两年的提交时限是不同条件，不能混为一谈。"
+          },
+          {
+            "chunk_id": "handover-disputes:3:c1419c021791",
+            "document_id": "handover-disputes",
+            "title": "看房交接、押金争议与小额索偿范围",
+            "heading": "小额索偿审裁庭 SCT 的范围",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/handover-disputes.md",
+            "sources": [
+              {
+                "title": "Singapore Courts Cases Eligible for a Small Claim",
+                "url": "https://www.judiciary.gov.sg/civil/cases-eligible-small-claim"
+              }
+            ],
+            "quote": "住宅租赁协议期限不超过两年的相关争议可能属于 Small Claims Tribunals 的受理类别。"
+          },
+          {
+            "chunk_id": "handover-disputes:3:c1419c021791",
+            "document_id": "handover-disputes",
+            "title": "看房交接、押金争议与小额索偿范围",
+            "heading": "小额索偿审裁庭 SCT 的范围",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/handover-disputes.md",
+            "sources": [
+              {
+                "title": "Singapore Courts Cases Eligible for a Small Claim",
+                "url": "https://www.judiciary.gov.sg/civil/cases-eligible-small-claim"
+              }
+            ],
+            "quote": "还须符合起诉事由发生后两年内提交等条件"
+          }
+        ],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "For SCT guidance, are the two-year tenancy limit and the two-year filing period the same condition?",
+            "SCT guidance two-year tenancy limit vs two-year filing period same condition",
+            "新加坡小额索偿庭 租约两年上限 与 两年申索期限 是否同一条件",
+            "SCT tenancy limit 2 years filing period 2 years difference"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "handover-disputes:3:c1419c021791",
+              "private-rental:4:fdad2d8e1983",
+              "stamp-duty:1:6d8920bdd79e",
+              "private-rental:2:fa96d0876e58",
+              "hdb-rental:0:d07578ac89f5",
+              "stamp-duty:2:8cf8fa474209"
+            ],
+            "bm25": [
+              "handover-disputes:3:c1419c021791",
+              "handover-disputes:4:a6bab9e2d485",
+              "handover-disputes:2:3fc30a09a274",
+              "tenancy-terms:0:667e945c2acf",
+              "handover-disputes:1:ee423209cda7",
+              "stamp-duty:1:6d8920bdd79e",
+              "handover-disputes:0:ac15a576ddbf"
+            ],
+            "fused": [
+              "handover-disputes:3:c1419c021791",
+              "stamp-duty:1:6d8920bdd79e",
+              "handover-disputes:4:a6bab9e2d485",
+              "private-rental:4:fdad2d8e1983",
+              "handover-disputes:2:3fc30a09a274",
+              "private-rental:2:fa96d0876e58",
+              "tenancy-terms:0:667e945c2acf",
+              "handover-disputes:1:ee423209cda7",
+              "hdb-rental:0:d07578ac89f5",
+              "stamp-duty:2:8cf8fa474209",
+              "handover-disputes:0:ac15a576ddbf"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "ok",
+        "method": "llm_grounded_verified",
+        "answer": "两年的租约期限和两年的提交时限是不同条件，不能混为一谈。 [1]\n\n住宅租赁协议期限不超过两年的相关争议可能属于 Small Claims Tribunals 的受理类别。 [2]\n\n还须符合起诉事由发生后两年内提交等条件。 [3]"
+      },
+      "latency_ms": 5780
+    },
+    {
+      "id": "XK14",
+      "query": "May an industrial or commercial lease automatically use the residential tenancy SCT category?",
+      "expected_status": "ok",
+      "expected_document": "handover-disputes",
+      "patterns": [
+        "工业|商业",
+        "不能|不应|不属于|不可"
+      ],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [
+        {
+          "pattern": "工业|商业",
+          "matched": true
+        },
+        {
+          "pattern": "不能|不应|不属于|不可",
+          "matched": true
+        }
+      ],
+      "expected_document_present": true,
+      "result": {
+        "citations": [
+          {
+            "chunk_id": "handover-disputes:4:a6bab9e2d485",
+            "document_id": "handover-disputes",
+            "title": "看房交接、押金争议与小额索偿范围",
+            "heading": "先评估，不能保证受理与结果",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/handover-disputes.md",
+            "sources": [
+              {
+                "title": "Singapore Courts Cases Eligible for a Small Claim",
+                "url": "https://www.judiciary.gov.sg/civil/cases-eligible-small-claim"
+              }
+            ],
+            "quote": "工业、商业租赁及其他不在类别内的情形不应被套用为住宅租约。"
+          },
+          {
+            "chunk_id": "handover-disputes:3:c1419c021791",
+            "document_id": "handover-disputes",
+            "title": "看房交接、押金争议与小额索偿范围",
+            "heading": "小额索偿审裁庭 SCT 的范围",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/handover-disputes.md",
+            "sources": [
+              {
+                "title": "Singapore Courts Cases Eligible for a Small Claim",
+                "url": "https://www.judiciary.gov.sg/civil/cases-eligible-small-claim"
+              }
+            ],
+            "quote": "新加坡法院说明，住宅租赁协议期限不超过两年的相关争议可能属于 Small Claims Tribunals 的受理类别。"
+          }
+        ],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "May an industrial or commercial lease automatically use the residential tenancy SCT category?",
+            "工业或商业租约能否自动适用住宅租赁SCT类别？",
+            "Can a commercial or industrial lease use the residential tenancy SCT category automatically?",
+            "商业租约 工业租约 住宅租赁 小额索偿庭 类别 适用"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "private-rental:1:e2b4c55777d2",
+              "private-rental:3:326dc22ee499",
+              "hdb-rental:4:407ca0f1cf59",
+              "hdb-rental:2:f0dbb5553a1c",
+              "private-rental:0:724ee7d0ea4e",
+              "stamp-duty:1:6d8920bdd79e",
+              "tenancy-terms:0:667e945c2acf",
+              "private-rental:2:fa96d0876e58"
+            ],
+            "bm25": [
+              "handover-disputes:3:c1419c021791",
+              "handover-disputes:4:a6bab9e2d485",
+              "handover-disputes:2:3fc30a09a274",
+              "handover-disputes:1:ee423209cda7",
+              "tenancy-terms:0:667e945c2acf",
+              "private-rental:2:fa96d0876e58",
+              "private-rental:1:e2b4c55777d2",
+              "handover-disputes:0:ac15a576ddbf"
+            ],
+            "fused": [
+              "private-rental:1:e2b4c55777d2",
+              "tenancy-terms:0:667e945c2acf",
+              "private-rental:2:fa96d0876e58",
+              "handover-disputes:3:c1419c021791",
+              "handover-disputes:4:a6bab9e2d485",
+              "private-rental:3:326dc22ee499",
+              "handover-disputes:2:3fc30a09a274",
+              "hdb-rental:4:407ca0f1cf59",
+              "handover-disputes:1:ee423209cda7",
+              "hdb-rental:2:f0dbb5553a1c",
+              "private-rental:0:724ee7d0ea4e",
+              "stamp-duty:1:6d8920bdd79e",
+              "handover-disputes:0:ac15a576ddbf"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "ok",
+        "method": "llm_grounded_verified",
+        "answer": "工业、商业租赁及其他不在类别内的情形不应被套用为住宅租约。 [1]\n\n新加坡法院说明，住宅租赁协议期限不超过两年的相关争议可能属于小额索偿审裁庭的受理类别。 [2]"
+      },
+      "latency_ms": 6921
+    },
+    {
+      "id": "XK15",
+      "query": "A WhatsApp contact quotes a matching CEA registration number. What other contact detail should I verify independently?",
+      "expected_status": "ok",
+      "expected_document": "agent-and-scams",
+      "patterns": [
+        "电话"
+      ],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [
+        {
+          "pattern": "电话",
+          "matched": true
+        }
+      ],
+      "expected_document_present": true,
+      "result": {
+        "citations": [
+          {
+            "chunk_id": "agent-and-scams:0:b65d10a75fdf",
+            "document_id": "agent-and-scams",
+            "title": "经纪人核验、佣金和租房防骗",
+            "heading": "不只核对名字",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/agent-and-scams.md",
+            "sources": [
+              {
+                "title": "CEA Renting or Renting Out",
+                "url": "https://www.cea.gov.sg/consumers/engaging-a-property-agent/renting-or-renting-out/"
+              },
+              {
+                "title": "SPF Rental Scams Advisory",
+                "url": "https://www.police.gov.sg/media-hub/news/2024/20241121_police_advisory_on_rental_scams_involving_the_impersonation_of_property_agents"
+              }
+            ],
+            "quote": "应通过 CEA Public Register 查询联系人的电话号码是否对应真实登记资料"
+          },
+          {
+            "chunk_id": "agent-and-scams:0:b65d10a75fdf",
+            "document_id": "agent-and-scams",
+            "title": "经纪人核验、佣金和租房防骗",
+            "heading": "不只核对名字",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/agent-and-scams.md",
+            "sources": [
+              {
+                "title": "CEA Renting or Renting Out",
+                "url": "https://www.cea.gov.sg/consumers/engaging-a-property-agent/renting-or-renting-out/"
+              },
+              {
+                "title": "SPF Rental Scams Advisory",
+                "url": "https://www.police.gov.sg/media-hub/news/2024/20241121_police_advisory_on_rental_scams_involving_the_impersonation_of_property_agents"
+              }
+            ],
+            "quote": "仅有名片、头像、登记号码、房源链接或 WhatsApp 对话，不足以证明正在聊天的人就是本人。"
+          },
+          {
+            "chunk_id": "agent-and-scams:3:df6f2432f21a",
+            "document_id": "agent-and-scams",
+            "title": "经纪人核验、佣金和租房防骗",
+            "heading": "本项目中的联系方式证据",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/agent-and-scams.md",
+            "sources": [
+              {
+                "title": "CEA Renting or Renting Out",
+                "url": "https://www.cea.gov.sg/consumers/engaging-a-property-agent/renting-or-renting-out/"
+              },
+              {
+                "title": "SPF Rental Scams Advisory",
+                "url": "https://www.police.gov.sg/media-hub/news/2024/20241121_police_advisory_on_rental_scams_involving_the_impersonation_of_property_agents"
+              }
+            ],
+            "quote": "历史房源记录有电话不代表该号码当前仍由该经纪人使用"
+          }
+        ],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "A WhatsApp contact quotes a matching CEA registration number. What other contact detail should I verify independently?",
+            "CEA registration number 验证 房产中介 其他联系方式 独立核实",
+            "Singapore property agent verify CEA registration number WhatsApp contact details",
+            "新加坡租房 中介 CEA 注册号 匹配 还需核实哪些联系方式"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "agent-and-scams:0:b65d10a75fdf",
+              "tenancy-terms:0:667e945c2acf",
+              "agent-and-scams:2:db99f407d700",
+              "agent-and-scams:3:df6f2432f21a",
+              "stamp-duty:2:8cf8fa474209",
+              "agent-and-scams:4:ea42253c9451",
+              "system-followup:1:058841a5a70d",
+              "handover-disputes:3:c1419c021791",
+              "system-evidence:4:f47965ccb57c"
+            ],
+            "bm25": [
+              "agent-and-scams:3:df6f2432f21a",
+              "agent-and-scams:0:b65d10a75fdf",
+              "agent-and-scams:2:db99f407d700",
+              "system-evidence:4:f47965ccb57c",
+              "tenancy-terms:0:667e945c2acf",
+              "agent-and-scams:1:7e76068e8a2b",
+              "system-evidence:1:2ff8b42809aa",
+              "private-rental:3:326dc22ee499",
+              "system-evidence:3:b9f1ab042591",
+              "private-rental:4:fdad2d8e1983",
+              "system-followup:1:058841a5a70d"
+            ],
+            "fused": [
+              "agent-and-scams:0:b65d10a75fdf",
+              "agent-and-scams:3:df6f2432f21a",
+              "agent-and-scams:2:db99f407d700",
+              "tenancy-terms:0:667e945c2acf",
+              "system-evidence:4:f47965ccb57c",
+              "system-followup:1:058841a5a70d",
+              "stamp-duty:2:8cf8fa474209",
+              "agent-and-scams:1:7e76068e8a2b",
+              "agent-and-scams:4:ea42253c9451",
+              "system-evidence:1:2ff8b42809aa",
+              "handover-disputes:3:c1419c021791",
+              "private-rental:3:326dc22ee499",
+              "system-evidence:3:b9f1ab042591",
+              "private-rental:4:fdad2d8e1983"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "ok",
+        "method": "llm_grounded_verified",
+        "answer": "应通过 CEA Public Register 查询联系人的电话号码是否对应真实登记资料。 [1]\n\n仅有登记号码或 WhatsApp 对话，不足以证明正在聊天的人就是本人。 [2]\n\n历史房源记录有电话不代表该号码当前仍由该经纪人使用。 [3]"
+      },
+      "latency_ms": 6436
+    },
+    {
+      "id": "XK16",
+      "query": "Does an area distance of zero mean that the property is zero metres from an MRT station?",
+      "expected_status": "ok",
+      "expected_document": "system-evidence",
+      "patterns": [
+        "区域",
+        "车站|地铁",
+        "不是|不代表|不表示|不能"
+      ],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [
+        {
+          "pattern": "区域",
+          "matched": true
+        },
+        {
+          "pattern": "车站|地铁",
+          "matched": true
+        },
+        {
+          "pattern": "不是|不代表|不表示|不能",
+          "matched": true
+        }
+      ],
+      "expected_document_present": true,
+      "result": {
+        "citations": [
+          {
+            "chunk_id": "system-evidence:3:b9f1ab042591",
+            "document_id": "system-evidence",
+            "title": "本系统的推荐、距离、待核实与房源事实",
+            "heading": "区域距离为零的含义",
+            "scope": "system_help",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/system-evidence.md",
+            "sources": [
+              {
+                "title": "项目资料 knowledge/rental/system-evidence.md",
+                "url": "project://knowledge/rental/system-evidence.md"
+              }
+            ],
+            "quote": "使用 URA 区域多边形作为参照时，位于区域内部的房源可按区域距离记为零；它表示在区域内，不是距离地铁站或某个精确地标零米。"
+          },
+          {
+            "chunk_id": "system-evidence:3:b9f1ab042591",
+            "document_id": "system-evidence",
+            "title": "本系统的推荐、距离、待核实与房源事实",
+            "heading": "区域距离为零的含义",
+            "scope": "system_help",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/system-evidence.md",
+            "sources": [
+              {
+                "title": "项目资料 knowledge/rental/system-evidence.md",
+                "url": "project://knowledge/rental/system-evidence.md"
+              }
+            ],
+            "quote": "参照具体 MRT、校园点位或其他位置时，需要展示对应参照对象，不能把地区中心、区域边界和车站坐标混用。"
+          },
+          {
+            "chunk_id": "handover-disputes:0:ac15a576ddbf",
+            "document_id": "handover-disputes",
+            "title": "看房交接、押金争议与小额索偿范围",
+            "heading": "看房时整理可观察事实",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/handover-disputes.md",
+            "sources": [
+              {
+                "title": "Singapore Courts Cases Eligible for a Small Claim",
+                "url": "https://www.judiciary.gov.sg/civil/cases-eligible-small-claim"
+              }
+            ],
+            "quote": "噪声、采光、网络体验和通勤都与实地情况有关，地图直线距离不能替代亲身查看或真实路线查询。"
+          }
+        ],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "Does an area distance of zero mean that the property is zero metres from an MRT station?",
+            "Does an area distance of zero mean the property is zero metres from an MRT station?",
+            "0 area distance property MRT station distance meaning",
+            "area distance zero 是否等于 0 metres from MRT station"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "system-evidence:3:b9f1ab042591",
+              "system-evidence:2:1871b43f610b",
+              "system-evidence:0:8f2098621c17",
+              "agent-and-scams:3:df6f2432f21a",
+              "private-rental:3:326dc22ee499",
+              "handover-disputes:0:ac15a576ddbf"
+            ],
+            "bm25": [
+              "system-evidence:3:b9f1ab042591",
+              "private-rental:3:326dc22ee499",
+              "stamp-duty:4:e1da49087eb3",
+              "hdb-rental:2:f0dbb5553a1c",
+              "tenancy-terms:1:20ff15cea913",
+              "tenancy-terms:3:e29f9467aab0"
+            ],
+            "fused": [
+              "system-evidence:3:b9f1ab042591",
+              "private-rental:3:326dc22ee499",
+              "system-evidence:2:1871b43f610b",
+              "stamp-duty:4:e1da49087eb3",
+              "system-evidence:0:8f2098621c17",
+              "agent-and-scams:3:df6f2432f21a",
+              "hdb-rental:2:f0dbb5553a1c",
+              "tenancy-terms:1:20ff15cea913",
+              "handover-disputes:0:ac15a576ddbf",
+              "tenancy-terms:3:e29f9467aab0"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "ok",
+        "method": "llm_grounded_verified",
+        "answer": "区域距离为零表示房源位于该区域内，并不表示距离地铁站或某个精确地标零米。 [1]\n\n参照具体 MRT 点位时，需要展示对应参照对象，不能把地区中心、区域边界和车站坐标混用。 [2]\n\n地图直线距离不能替代亲身查看或真实路线查询。 [3]"
+      },
+      "latency_ms": 6692
+    },
+    {
+      "id": "XK17",
+      "query": "Can a historical listing labelled 1B1B by itself verify exclusive use of a bathroom?",
+      "expected_status": "ok",
+      "expected_document": "system-evidence",
+      "patterns": [
+        "独立|专用|共用",
+        "不能|不代表|不足"
+      ],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [
+        {
+          "pattern": "独立|专用|共用",
+          "matched": true
+        },
+        {
+          "pattern": "不能|不代表|不足",
+          "matched": true
+        }
+      ],
+      "expected_document_present": true,
+      "result": {
+        "citations": [
+          {
+            "chunk_id": "system-evidence:1:2ff8b42809aa",
+            "document_id": "system-evidence",
+            "title": "本系统的推荐、距离、待核实与房源事实",
+            "heading": "待核实不是通过，也不一定是原始字段为空",
+            "scope": "system_help",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/system-evidence.md",
+            "sources": [
+              {
+                "title": "项目资料 knowledge/rental/system-evidence.md",
+                "url": "project://knowledge/rental/system-evidence.md"
+              }
+            ],
+            "quote": "一个卫生间、1B1B、主卧等标注不能单独证明卫生间专用、不与他人共用。"
+          },
+          {
+            "chunk_id": "handover-disputes:0:ac15a576ddbf",
+            "document_id": "handover-disputes",
+            "title": "看房交接、押金争议与小额索偿范围",
+            "heading": "看房时整理可观察事实",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/handover-disputes.md",
+            "sources": [
+              {
+                "title": "Singapore Courts Cases Eligible for a Small Claim",
+                "url": "https://www.judiciary.gov.sg/civil/cases-eligible-small-claim"
+              }
+            ],
+            "quote": "独立卫浴需要问是否仅由该房间住户使用，不能只数卫生间个数。"
+          }
+        ],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "Can a historical listing labelled 1B1B by itself verify exclusive use of a bathroom?",
+            "1B1B 房源标注能否单独证明浴室独用",
+            "Does a 1B1B listing label prove exclusive bathroom use",
+            "新加坡租房 1B1B 标注 浴室专用 验证"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "system-evidence:1:2ff8b42809aa",
+              "handover-disputes:0:ac15a576ddbf",
+              "hdb-rental:4:407ca0f1cf59",
+              "agent-and-scams:3:df6f2432f21a",
+              "handover-disputes:1:ee423209cda7",
+              "handover-disputes:3:c1419c021791",
+              "system-followup:2:52af12482942",
+              "stamp-duty:2:8cf8fa474209",
+              "system-evidence:3:b9f1ab042591",
+              "system-evidence:4:f47965ccb57c"
+            ],
+            "bm25": [
+              "system-evidence:1:2ff8b42809aa",
+              "system-followup:2:52af12482942",
+              "handover-disputes:0:ac15a576ddbf",
+              "agent-and-scams:4:ea42253c9451",
+              "system-followup:0:1d949d1b1f43",
+              "private-rental:2:fa96d0876e58",
+              "stamp-duty:2:8cf8fa474209",
+              "agent-and-scams:3:df6f2432f21a",
+              "handover-disputes:3:c1419c021791",
+              "agent-and-scams:0:b65d10a75fdf",
+              "tenancy-terms:4:fc3535b62c97"
+            ],
+            "fused": [
+              "system-evidence:1:2ff8b42809aa",
+              "handover-disputes:0:ac15a576ddbf",
+              "system-followup:2:52af12482942",
+              "agent-and-scams:3:df6f2432f21a",
+              "handover-disputes:3:c1419c021791",
+              "stamp-duty:2:8cf8fa474209",
+              "hdb-rental:4:407ca0f1cf59",
+              "agent-and-scams:4:ea42253c9451",
+              "handover-disputes:1:ee423209cda7",
+              "system-followup:0:1d949d1b1f43",
+              "private-rental:2:fa96d0876e58",
+              "system-evidence:3:b9f1ab042591",
+              "agent-and-scams:0:b65d10a75fdf",
+              "system-evidence:4:f47965ccb57c",
+              "tenancy-terms:4:fc3535b62c97"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "ok",
+        "method": "llm_grounded_verified",
+        "answer": "一个卫生间、1B1B、主卧等标注不能单独证明卫生间专用、不与他人共用。 [1]\n\n独立卫浴需要问是否仅由该房间住户使用，不能只数卫生间个数。 [2]"
+      },
+      "latency_ms": 7016
+    },
+    {
+      "id": "XK18",
+      "query": "Does pasting an agent reply automatically rewrite the original listing database as independently verified facts?",
+      "expected_status": "ok",
+      "expected_document": "system-evidence",
+      "patterns": [
+        "不会|不能|不.*改写|不是",
+        "回复|答复"
+      ],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [
+        {
+          "pattern": "不会|不能|不.*改写|不是",
+          "matched": true
+        },
+        {
+          "pattern": "回复|答复",
+          "matched": true
+        }
+      ],
+      "expected_document_present": true,
+      "result": {
+        "citations": [
+          {
+            "chunk_id": "agent-and-scams:3:df6f2432f21a",
+            "document_id": "agent-and-scams",
+            "title": "经纪人核验、佣金和租房防骗",
+            "heading": "本项目中的联系方式证据",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/agent-and-scams.md",
+            "sources": [
+              {
+                "title": "CEA Renting or Renting Out",
+                "url": "https://www.cea.gov.sg/consumers/engaging-a-property-agent/renting-or-renting-out/"
+              },
+              {
+                "title": "SPF Rental Scams Advisory",
+                "url": "https://www.police.gov.sg/media-hub/news/2024/20241121_police_advisory_on_rental_scams_involving_the_impersonation_of_property_agents"
+              }
+            ],
+            "quote": "用户粘贴的回复仅代表一段由用户提供的沟通内容；模型能理解其中条款，但不会因此把联系人身份、房东产权或房源真实性标为已由平台核验。"
+          },
+          {
+            "chunk_id": "system-followup:4:567dc154c650",
+            "document_id": "system-followup",
+            "title": "手动联系、看房、回复理解与总结的使用流程",
+            "heading": "总结与工作流中途跳转",
+            "scope": "system_help",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/system-followup.md",
+            "sources": [
+              {
+                "title": "项目资料 knowledge/rental/system-followup.md",
+                "url": "project://knowledge/rental/system-followup.md"
+              }
+            ],
+            "quote": "总结和导出文档属于本会话资料整理，不会代替真实发送，也不会自动把用户粘贴的回复升级为平台核验。"
+          },
+          {
+            "chunk_id": "system-evidence:4:f47965ccb57c",
+            "document_id": "system-evidence",
+            "title": "本系统的推荐、距离、待核实与房源事实",
+            "heading": "历史快照和当前状态",
+            "scope": "system_help",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/system-evidence.md",
+            "sources": [
+              {
+                "title": "项目资料 knowledge/rental/system-evidence.md",
+                "url": "project://knowledge/rental/system-evidence.md"
+              }
+            ],
+            "quote": "搜索证据、用户需求、经纪人口头或文字答复分别保存，知识问答不会据此改写房源数据库。"
+          },
+          {
+            "chunk_id": "system-evidence:1:2ff8b42809aa",
+            "document_id": "system-evidence",
+            "title": "本系统的推荐、距离、待核实与房源事实",
+            "heading": "待核实不是通过，也不一定是原始字段为空",
+            "scope": "system_help",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/system-evidence.md",
+            "sources": [
+              {
+                "title": "项目资料 knowledge/rental/system-evidence.md",
+                "url": "project://knowledge/rental/system-evidence.md"
+              }
+            ],
+            "quote": "“配备独立卫浴”在经纪人回复理解中可以明确该项肯定陈述，但仍属于用户提供的回复内容，不是平台独立查验的房源事实。"
+          }
+        ],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "Does pasting an agent reply automatically rewrite the original listing database as independently verified facts?",
+            "agent reply pasted into listing database automatically rewrite original listing as independently verified facts",
+            "pasting agent reply update listing database verified facts independently",
+            "agent reply 粘贴 到 listing database 是否 自动 改写 原始 listing 为 independently verified facts"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "agent-and-scams:4:ea42253c9451",
+              "system-evidence:4:f47965ccb57c",
+              "system-followup:4:567dc154c650",
+              "system-followup:1:058841a5a70d",
+              "system-followup:2:52af12482942",
+              "agent-and-scams:0:b65d10a75fdf",
+              "agent-and-scams:3:df6f2432f21a",
+              "system-evidence:1:2ff8b42809aa"
+            ],
+            "bm25": [
+              "system-followup:2:52af12482942",
+              "system-followup:4:567dc154c650",
+              "system-evidence:1:2ff8b42809aa",
+              "agent-and-scams:4:ea42253c9451",
+              "system-followup:1:058841a5a70d",
+              "agent-and-scams:3:df6f2432f21a",
+              "system-followup:3:c7495c1efa93"
+            ],
+            "fused": [
+              "agent-and-scams:4:ea42253c9451",
+              "system-followup:4:567dc154c650",
+              "system-followup:2:52af12482942",
+              "system-followup:1:058841a5a70d",
+              "system-evidence:1:2ff8b42809aa",
+              "agent-and-scams:3:df6f2432f21a",
+              "system-evidence:4:f47965ccb57c",
+              "agent-and-scams:0:b65d10a75fdf",
+              "system-followup:3:c7495c1efa93"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "ok",
+        "method": "llm_grounded_verified",
+        "answer": "用户粘贴的经纪人回复仅代表用户提供的一段沟通内容，不会因此被平台核验。 [1]\n\n总结和导出文档不会自动把用户粘贴的回复升级为平台核验。 [2]\n\n搜索证据、用户需求、经纪人口头或文字答复分别保存，知识问答不会据此改写房源数据库。 [3]\n\n经纪人回复中明确肯定“配备独立卫浴”仍属于用户提供的回复内容，不是平台独立查验的房源事实。 [4]"
+      },
+      "latency_ms": 8302
+    },
+    {
+      "id": "XK19",
+      "query": "Does recording that I sent a draft establish a delivery receipt from WhatsApp or Telegram?",
+      "expected_status": "ok",
+      "expected_document": "system-followup",
+      "patterns": [
+        "送达",
+        "不代表|不能|不会|不是|不等于"
+      ],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [
+        {
+          "pattern": "送达",
+          "matched": true
+        },
+        {
+          "pattern": "不代表|不能|不会|不是|不等于",
+          "matched": true
+        }
+      ],
+      "expected_document_present": true,
+      "result": {
+        "citations": [
+          {
+            "chunk_id": "agent-and-scams:4:ea42253c9451",
+            "document_id": "agent-and-scams",
+            "title": "经纪人核验、佣金和租房防骗",
+            "heading": "安排一次可追踪的联系",
+            "scope": "policy_guidance",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/agent-and-scams.md",
+            "sources": [
+              {
+                "title": "CEA Renting or Renting Out",
+                "url": "https://www.cea.gov.sg/consumers/engaging-a-property-agent/renting-or-renting-out/"
+              },
+              {
+                "title": "SPF Rental Scams Advisory",
+                "url": "https://www.police.gov.sg/media-hub/news/2024/20241121_police_advisory_on_rental_scams_involving_the_impersonation_of_property_agents"
+              }
+            ],
+            "quote": "记录“我已发送”只是人工确认，不是送达回执。"
+          },
+          {
+            "chunk_id": "system-followup:1:058841a5a70d",
+            "document_id": "system-followup",
+            "title": "手动联系、看房、回复理解与总结的使用流程",
+            "heading": "复制、自己发送、记录发送",
+            "scope": "system_help",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/system-followup.md",
+            "sources": [
+              {
+                "title": "项目资料 knowledge/rental/system-followup.md",
+                "url": "project://knowledge/rental/system-followup.md"
+              }
+            ],
+            "quote": "本系统不会因为生成草稿、复制文本或点击人工确认，就声称取得平台送达回执。"
+          },
+          {
+            "chunk_id": "system-followup:1:058841a5a70d",
+            "document_id": "system-followup",
+            "title": "手动联系、看房、回复理解与总结的使用流程",
+            "heading": "复制、自己发送、记录发送",
+            "scope": "system_help",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/system-followup.md",
+            "sources": [
+              {
+                "title": "项目资料 knowledge/rental/system-followup.md",
+                "url": "project://knowledge/rental/system-followup.md"
+              }
+            ],
+            "quote": "请区分草稿已保存、用户记录已发送、外部平台受理、实际送达和收到回复等不同状态。"
+          }
+        ],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "Does recording that I sent a draft establish a delivery receipt from WhatsApp or Telegram?",
+            "WhatsApp 或 Telegram 发送草稿能否作为送达回执？",
+            "Does sending a draft on WhatsApp or Telegram establish a delivery receipt?",
+            "即时通讯记录 草稿 送达证明 法律效力"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "agent-and-scams:3:df6f2432f21a",
+              "agent-and-scams:4:ea42253c9451",
+              "handover-disputes:2:3fc30a09a274",
+              "system-followup:1:058841a5a70d",
+              "system-followup:2:52af12482942",
+              "system-evidence:4:f47965ccb57c",
+              "agent-and-scams:1:7e76068e8a2b",
+              "stamp-duty:3:1e7b01579dc6"
+            ],
+            "bm25": [
+              "system-followup:1:058841a5a70d",
+              "agent-and-scams:3:df6f2432f21a",
+              "agent-and-scams:0:b65d10a75fdf",
+              "agent-and-scams:4:ea42253c9451",
+              "private-rental:3:326dc22ee499",
+              "system-evidence:3:b9f1ab042591",
+              "system-evidence:4:f47965ccb57c",
+              "system-followup:3:c7495c1efa93"
+            ],
+            "fused": [
+              "agent-and-scams:3:df6f2432f21a",
+              "system-followup:1:058841a5a70d",
+              "agent-and-scams:4:ea42253c9451",
+              "system-evidence:4:f47965ccb57c",
+              "agent-and-scams:0:b65d10a75fdf",
+              "handover-disputes:2:3fc30a09a274",
+              "private-rental:3:326dc22ee499",
+              "system-followup:2:52af12482942",
+              "system-evidence:3:b9f1ab042591",
+              "agent-and-scams:1:7e76068e8a2b",
+              "stamp-duty:3:1e7b01579dc6",
+              "system-followup:3:c7495c1efa93"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "ok",
+        "method": "llm_grounded_verified",
+        "answer": "记录“我已发送”只是人工确认，不是送达回执。 [1]\n\n本系统不会因为生成草稿、复制文本或点击人工确认，就声称取得平台送达回执。 [2]\n\n应区分草稿已保存、用户记录已发送、外部平台受理、实际送达和收到回复等不同状态。 [3]"
+      },
+      "latency_ms": 6627
+    },
+    {
+      "id": "XK20",
+      "query": "I picked a viewing start and end time. What else is needed before recording that the appointment is agreed?",
+      "expected_status": "ok",
+      "expected_document": "system-followup",
+      "patterns": [
+        "双方",
+        "同意|确认"
+      ],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [
+        {
+          "pattern": "双方",
+          "matched": true
+        },
+        {
+          "pattern": "同意|确认",
+          "matched": true
+        }
+      ],
+      "expected_document_present": true,
+      "result": {
+        "citations": [
+          {
+            "chunk_id": "system-followup:3:c7495c1efa93",
+            "document_id": "system-followup",
+            "title": "手动联系、看房、回复理解与总结的使用流程",
+            "heading": "看房不是选了时间就预约成功",
+            "scope": "system_help",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/system-followup.md",
+            "sources": [
+              {
+                "title": "项目资料 knowledge/rental/system-followup.md",
+                "url": "project://knowledge/rental/system-followup.md"
+              }
+            ],
+            "quote": "看房不是选了时间就预约成功\n用户选择起止时间，表达的是希望安排看房。"
+          },
+          {
+            "chunk_id": "system-followup:3:c7495c1efa93",
+            "document_id": "system-followup",
+            "title": "手动联系、看房、回复理解与总结的使用流程",
+            "heading": "看房不是选了时间就预约成功",
+            "scope": "system_help",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/system-followup.md",
+            "sources": [
+              {
+                "title": "项目资料 knowledge/rental/system-followup.md",
+                "url": "project://knowledge/rental/system-followup.md"
+              }
+            ],
+            "quote": "只有双方明确同意后，才能记录相应确认信息；选择日期或复制询问草稿本身不代表已预约。"
+          },
+          {
+            "chunk_id": "system-followup:1:058841a5a70d",
+            "document_id": "system-followup",
+            "title": "手动联系、看房、回复理解与总结的使用流程",
+            "heading": "复制、自己发送、记录发送",
+            "scope": "system_help",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/system-followup.md",
+            "sources": [
+              {
+                "title": "项目资料 knowledge/rental/system-followup.md",
+                "url": "project://knowledge/rental/system-followup.md"
+              }
+            ],
+            "quote": "用户复制草稿后，自行在外部软件发送，再点击已发送确认。"
+          },
+          {
+            "chunk_id": "system-followup:2:52af12482942",
+            "document_id": "system-followup",
+            "title": "手动联系、看房、回复理解与总结的使用流程",
+            "heading": "粘贴回复与逐轮理解",
+            "scope": "system_help",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/system-followup.md",
+            "sources": [
+              {
+                "title": "项目资料 knowledge/rental/system-followup.md",
+                "url": "project://knowledge/rental/system-followup.md"
+              }
+            ],
+            "quote": "收到经纪人答复后，可粘贴原文并标记已收到回复。"
+          },
+          {
+            "chunk_id": "system-followup:2:52af12482942",
+            "document_id": "system-followup",
+            "title": "手动联系、看房、回复理解与总结的使用流程",
+            "heading": "粘贴回复与逐轮理解",
+            "scope": "system_help",
+            "revision": "2026-10-20.1",
+            "checked_at": "2026-10-20",
+            "review_after": "2027-01-20",
+            "source_ref": "knowledge/rental/system-followup.md",
+            "sources": [
+              {
+                "title": "项目资料 knowledge/rental/system-followup.md",
+                "url": "project://knowledge/rental/system-followup.md"
+              }
+            ],
+            "quote": "含糊、否定、时间变化或相互冲突的回答需要继续确认；不得只看关键词就当作肯定。"
+          }
+        ],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "I picked a viewing start and end time. What else is needed before recording that the appointment is agreed?",
+            "租房看房预约确认还需要哪些信息 中文",
+            "what information is required to confirm a rental viewing appointment besides start and end time",
+            "租房看房 agreed appointment 需要记录哪些资料"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "tenancy-terms:4:fc3535b62c97",
+              "hdb-rental:3:f13ff9d45f4d",
+              "handover-disputes:1:ee423209cda7",
+              "handover-disputes:0:ac15a576ddbf",
+              "system-evidence:4:f47965ccb57c",
+              "system-followup:0:1d949d1b1f43",
+              "system-followup:3:c7495c1efa93",
+              "handover-disputes:2:3fc30a09a274",
+              "hdb-rental:1:b360725c25ea",
+              "agent-and-scams:1:7e76068e8a2b",
+              "handover-disputes:4:a6bab9e2d485",
+              "hdb-rental:0:d07578ac89f5",
+              "system-followup:2:52af12482942"
+            ],
+            "bm25": [
+              "agent-and-scams:1:7e76068e8a2b",
+              "system-followup:3:c7495c1efa93",
+              "agent-and-scams:0:b65d10a75fdf",
+              "system-followup:0:1d949d1b1f43",
+              "handover-disputes:0:ac15a576ddbf",
+              "tenancy-terms:1:20ff15cea913",
+              "system-followup:2:52af12482942",
+              "handover-disputes:1:ee423209cda7",
+              "tenancy-terms:4:fc3535b62c97",
+              "system-followup:1:058841a5a70d"
+            ],
+            "fused": [
+              "system-followup:3:c7495c1efa93",
+              "handover-disputes:0:ac15a576ddbf",
+              "tenancy-terms:4:fc3535b62c97",
+              "system-followup:0:1d949d1b1f43",
+              "agent-and-scams:1:7e76068e8a2b",
+              "handover-disputes:1:ee423209cda7",
+              "system-followup:2:52af12482942",
+              "hdb-rental:3:f13ff9d45f4d",
+              "agent-and-scams:0:b65d10a75fdf",
+              "system-evidence:4:f47965ccb57c",
+              "tenancy-terms:1:20ff15cea913",
+              "handover-disputes:2:3fc30a09a274",
+              "hdb-rental:1:b360725c25ea",
+              "system-followup:1:058841a5a70d",
+              "handover-disputes:4:a6bab9e2d485",
+              "hdb-rental:0:d07578ac89f5"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "ok",
+        "method": "llm_grounded_verified",
+        "answer": "选择看房起止时间只表示希望安排看房，并不等于预约成功。 [1]\n\n只有双方明确同意后，才能记录相应确认信息。 [2]\n\n需要先复制草稿并在外部软件自行发送，再点击已发送确认。 [3]\n\n收到经纪人答复后，可粘贴原文并标记已收到回复。 [4]\n\n含糊、否定、时间变化或相互冲突的回答需要继续确认，不能只看关键词就当作肯定。 [5]"
+      },
+      "latency_ms": 7645
+    },
+    {
+      "id": "XK21",
+      "query": "Give the confirmed present vacancy status of unit 23583402 at this exact moment.",
+      "expected_status": "unsupported",
+      "expected_document": null,
+      "patterns": [],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [],
+      "expected_document_present": true,
+      "result": {
+        "citations": [],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "Give the confirmed present vacancy status of unit 23583402 at this exact moment.",
+            "23583402 目前可租状态 确认 vacancy status",
+            "unit 23583402 current availability confirmed 现在是否可租",
+            "23583402 实时空置情况 present vacancy status"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "system-evidence:4:f47965ccb57c",
+              "agent-and-scams:3:df6f2432f21a",
+              "hdb-rental:0:d07578ac89f5",
+              "private-rental:3:326dc22ee499",
+              "private-rental:4:fdad2d8e1983",
+              "stamp-duty:0:9783e03ed014",
+              "stamp-duty:1:6d8920bdd79e",
+              "hdb-rental:3:f13ff9d45f4d",
+              "stamp-duty:2:8cf8fa474209",
+              "agent-and-scams:0:b65d10a75fdf",
+              "handover-disputes:1:ee423209cda7",
+              "hdb-rental:4:407ca0f1cf59"
+            ],
+            "bm25": [
+              "private-rental:3:326dc22ee499",
+              "handover-disputes:0:ac15a576ddbf",
+              "stamp-duty:0:9783e03ed014",
+              "hdb-rental:0:d07578ac89f5",
+              "private-rental:0:724ee7d0ea4e",
+              "system-evidence:4:f47965ccb57c"
+            ],
+            "fused": [
+              "private-rental:3:326dc22ee499",
+              "system-evidence:4:f47965ccb57c",
+              "hdb-rental:0:d07578ac89f5",
+              "stamp-duty:0:9783e03ed014",
+              "agent-and-scams:3:df6f2432f21a",
+              "handover-disputes:0:ac15a576ddbf",
+              "private-rental:0:724ee7d0ea4e",
+              "private-rental:4:fdad2d8e1983",
+              "stamp-duty:1:6d8920bdd79e",
+              "hdb-rental:3:f13ff9d45f4d",
+              "stamp-duty:2:8cf8fa474209",
+              "agent-and-scams:0:b65d10a75fdf",
+              "handover-disputes:1:ee423209cda7",
+              "hdb-rental:4:407ca0f1cf59"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "unsupported",
+        "method": "grounded_abstention",
+        "answer": "现有资料不足以可靠回答这个具体问题。请补充适用的住房类型、条款或材料，或通过相应官方来源进一步核实。"
+      },
+      "latency_ms": 4341
+    },
+    {
+      "id": "XK22",
+      "query": "Tell me the exact current balance of my landlord's private bank account.",
+      "expected_status": "unsupported",
+      "expected_document": null,
+      "patterns": [],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [],
+      "expected_document_present": true,
+      "result": {
+        "citations": [],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "Tell me the exact current balance of my landlord's private bank account.",
+            "房东银行账户余额 查询 新加坡租房",
+            "landlord bank account balance Singapore rental",
+            "如何查询房东私人账户余额 新加坡"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "handover-disputes:3:c1419c021791",
+              "stamp-duty:2:8cf8fa474209",
+              "agent-and-scams:1:7e76068e8a2b",
+              "private-rental:1:e2b4c55777d2",
+              "stamp-duty:0:9783e03ed014",
+              "hdb-rental:2:f0dbb5553a1c",
+              "private-rental:0:724ee7d0ea4e",
+              "agent-and-scams:4:ea42253c9451",
+              "handover-disputes:2:3fc30a09a274",
+              "hdb-rental:4:407ca0f1cf59",
+              "private-rental:2:fa96d0876e58",
+              "private-rental:4:fdad2d8e1983",
+              "stamp-duty:1:6d8920bdd79e"
+            ],
+            "bm25": [
+              "agent-and-scams:1:7e76068e8a2b",
+              "hdb-rental:1:b360725c25ea",
+              "private-rental:0:724ee7d0ea4e",
+              "agent-and-scams:0:b65d10a75fdf",
+              "agent-and-scams:4:ea42253c9451",
+              "private-rental:2:fa96d0876e58",
+              "agent-and-scams:3:df6f2432f21a",
+              "hdb-rental:3:f13ff9d45f4d",
+              "hdb-rental:4:407ca0f1cf59",
+              "stamp-duty:2:8cf8fa474209"
+            ],
+            "fused": [
+              "agent-and-scams:1:7e76068e8a2b",
+              "private-rental:0:724ee7d0ea4e",
+              "stamp-duty:2:8cf8fa474209",
+              "agent-and-scams:4:ea42253c9451",
+              "private-rental:2:fa96d0876e58",
+              "hdb-rental:4:407ca0f1cf59",
+              "handover-disputes:3:c1419c021791",
+              "hdb-rental:1:b360725c25ea",
+              "agent-and-scams:0:b65d10a75fdf",
+              "private-rental:1:e2b4c55777d2",
+              "stamp-duty:0:9783e03ed014",
+              "hdb-rental:2:f0dbb5553a1c",
+              "agent-and-scams:3:df6f2432f21a",
+              "hdb-rental:3:f13ff9d45f4d",
+              "handover-disputes:2:3fc30a09a274",
+              "private-rental:4:fdad2d8e1983",
+              "stamp-duty:1:6d8920bdd79e"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "unsupported",
+        "method": "grounded_abstention",
+        "answer": "现有资料不足以可靠回答这个具体问题。请补充适用的住房类型、条款或材料，或通过相应官方来源进一步核实。"
+      },
+      "latency_ms": 4585
+    },
+    {
+      "id": "XK23",
+      "query": "Provide the exact full text of all Singapore rental law changes that will take effect in 2035.",
+      "expected_status": "unsupported",
+      "expected_document": null,
+      "patterns": [],
+      "correct": false,
+      "quote_integrity": true,
+      "pattern_results": [],
+      "expected_document_present": true,
+      "result": {
+        "citations": [],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [
+          "rerank_unavailable"
+        ],
+        "trace": {
+          "queries": [
+            "Provide the exact full text of all Singapore rental law changes that will take effect in 2035.",
+            "2035年新加坡租房法律变更全文",
+            "Singapore rental law changes effective 2035 full text",
+            "新加坡 2035 年生效的租赁法规修改内容"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "handover-disputes:3:c1419c021791",
+              "stamp-duty:2:8cf8fa474209",
+              "private-rental:1:e2b4c55777d2",
+              "system-followup:0:1d949d1b1f43",
+              "private-rental:2:fa96d0876e58",
+              "private-rental:3:326dc22ee499",
+              "stamp-duty:1:6d8920bdd79e",
+              "tenancy-terms:4:fc3535b62c97",
+              "hdb-rental:1:b360725c25ea"
+            ],
+            "bm25": [
+              "stamp-duty:0:9783e03ed014",
+              "stamp-duty:2:8cf8fa474209",
+              "handover-disputes:3:c1419c021791",
+              "agent-and-scams:2:db99f407d700",
+              "stamp-duty:1:6d8920bdd79e",
+              "agent-and-scams:4:ea42253c9451",
+              "agent-and-scams:3:df6f2432f21a"
+            ],
+            "fused": [
+              "handover-disputes:3:c1419c021791",
+              "stamp-duty:2:8cf8fa474209",
+              "stamp-duty:1:6d8920bdd79e",
+              "stamp-duty:0:9783e03ed014",
+              "private-rental:1:e2b4c55777d2",
+              "agent-and-scams:2:db99f407d700",
+              "system-followup:0:1d949d1b1f43",
+              "private-rental:2:fa96d0876e58",
+              "agent-and-scams:4:ea42253c9451",
+              "private-rental:3:326dc22ee499",
+              "agent-and-scams:3:df6f2432f21a",
+              "tenancy-terms:4:fc3535b62c97",
+              "hdb-rental:1:b360725c25ea"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "rrf_fallback"
+        },
+        "status": "unsupported",
+        "method": "grounded_abstention",
+        "answer": "现有资料不足以可靠回答这个具体问题。请补充适用的住房类型、条款或材料，或通过相应官方来源进一步核实。"
+      },
+      "latency_ms": 5478
+    },
+    {
+      "id": "XK24",
+      "query": "Has the owner of listing 23583402 already approved my pet today? Answer with the actual decision.",
+      "expected_status": "unsupported",
+      "expected_document": null,
+      "patterns": [],
+      "correct": true,
+      "quote_integrity": true,
+      "pattern_results": [],
+      "expected_document_present": true,
+      "result": {
+        "citations": [],
+        "retrieval": "chroma_bm25_rrf",
+        "vector_enabled": true,
+        "bm25_enabled": true,
+        "generation": "7da8b81a432acd92f53454ccf6487d6578351fd7a7a0dd8c80de61f97482f1d8",
+        "degraded": [],
+        "trace": {
+          "queries": [
+            "Has the owner of listing 23583402 already approved my pet today? Answer with the actual decision.",
+            "listing 23583402 pet approval status today owner decision",
+            "23583402 宠物 批准 今天 房东 决定",
+            "has owner approved pet for listing 23583402 today"
+          ],
+          "channel_rankings": {
+            "vector": [
+              "agent-and-scams:4:ea42253c9451",
+              "tenancy-terms:4:fc3535b62c97",
+              "agent-and-scams:2:db99f407d700",
+              "agent-and-scams:3:df6f2432f21a",
+              "tenancy-terms:0:667e945c2acf",
+              "agent-and-scams:1:7e76068e8a2b",
+              "handover-disputes:3:c1419c021791",
+              "agent-and-scams:0:b65d10a75fdf",
+              "hdb-rental:4:407ca0f1cf59",
+              "hdb-rental:3:f13ff9d45f4d"
+            ],
+            "bm25": [
+              "tenancy-terms:4:fc3535b62c97",
+              "hdb-rental:4:407ca0f1cf59",
+              "hdb-rental:2:f0dbb5553a1c",
+              "private-rental:3:326dc22ee499",
+              "hdb-rental:0:d07578ac89f5"
+            ],
+            "fused": [
+              "tenancy-terms:4:fc3535b62c97",
+              "hdb-rental:4:407ca0f1cf59",
+              "agent-and-scams:4:ea42253c9451",
+              "agent-and-scams:2:db99f407d700",
+              "hdb-rental:2:f0dbb5553a1c",
+              "agent-and-scams:3:df6f2432f21a",
+              "private-rental:3:326dc22ee499",
+              "hdb-rental:0:d07578ac89f5",
+              "tenancy-terms:0:667e945c2acf",
+              "agent-and-scams:1:7e76068e8a2b",
+              "handover-disputes:3:c1419c021791",
+              "agent-and-scams:0:b65d10a75fdf",
+              "hdb-rental:3:f13ff9d45f4d"
+            ]
+          },
+          "rrf_k": 60,
+          "rerank": "llm"
+        },
+        "status": "unsupported",
+        "method": "grounded_abstention",
+        "answer": "现有资料不足以可靠回答这个具体问题。请补充适用的住房类型、条款或材料，或通过相应官方来源进一步核实。"
+      },
+      "latency_ms": 4317
+    }
+  ],
+  "status": "FAIL"
+}
