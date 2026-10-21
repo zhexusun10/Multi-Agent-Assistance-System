@@ -9,7 +9,7 @@
       "period": "2026-10-10 design stage",
       "scope": "60 synthetic planned cases, 20 development and 40 holdout, evaluator, fixtures, UAT tasks, plans, tracker, presentation and owner guides",
       "result": "SYSTEM_TESTS_NOT_RUN; UAT_NOT_RUN; proposed thresholds",
-      "archive": "Group42_QA_Pack.zip",
+      "archive": "../archive/Group42_QA_Pack.zip",
       "limitation": "Evaluator self-checks are not product acceptance. Published holdout inputs are no longer blind for future evaluations."
     },
     {
@@ -18,7 +18,7 @@
       "source_commit": "907cfa839d2665b3702450eb40acd4c96fe9296c",
       "scope": "Static preflight, offline TypeScript/Python checks, data audit and seven independent full-pool baseline recommendation oracles",
       "result": "TypeScript 144 passed / 17 skipped; original Python collection 11 errors; isolated proposed patch Python 167 passed / 7 skipped; baseline oracles 7/7",
-      "archive": "Group42_Repository_QA_v2.zip",
+      "archive": "../archive/Group42_Repository_QA_v2.zip",
       "limitation": "Original and candidate results remain distinct; archived team_historical files are prior team evidence, not fresh reruns."
     },
     {
@@ -68,7 +68,7 @@
       "scope": "60 intent, 24 knowledge, 18 reply, 32 HTTP boundary and six actual process outage/recovery cases",
       "result": "135 passed / 5 failed; suite thresholds remain separate",
       "archives": [
-        "Group42_Test_Dataset_8913189.zip",
+        "../archive/Group42_Test_Dataset_8913189.zip",
         "Group42_Latest_Acceptance_8913189.zip"
       ],
       "frozen_catalogue_sha256": "72f500238c101712b5b14f3145e89892a551333f4da71a106e0840d7696b24ea",
@@ -105,7 +105,7 @@
       "scope": "Unchanged 44-case catalogue: 24 structured, eight projection and 12 live dialogue turns",
       "result": "Baseline 36/44, then local remediation 44/44; original eight failures retained; 26 supporting code regressions separately recorded",
       "archives": [
-        "Group42_Recommendation_Fit_Tests_8913189.zip",
+        "../archive/Group42_Recommendation_Fit_Tests_8913189.zip",
         "Group42_Latest_Acceptance_8913189.zip"
       ],
       "current_material": "../recommendation-fit-2026-10-21/",
@@ -115,9 +115,13 @@
       "id": "P09",
       "period": "Retained historical report snapshots",
       "scope": "Six chronological pre-update report/tracker/README/manifest snapshots plus any distinct retained alternate snapshot",
-      "result": "Immutable historical decisions; current published report is v3.6",
-      "archive": "Historical_Report_Revisions.zip",
+      "result": "Immutable historical decisions; current published report is v3.7, with test outcomes unchanged from v3.6",
+      "archive": "../archive/Historical_Report_Revisions.zip",
       "limitation": "Older open/failure/not-pushed records are historical, not edited to claim later success."
     }
-  ]
+  ],
+  "layout_revision": 2,
+  "current_report_publication_version": "3.7",
+  "recorded_test_evidence_version": "3.6",
+  "layout_revision_date": "2026-10-22"
 }

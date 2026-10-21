@@ -1,12 +1,13 @@
-# Complete testing and acceptance evidence
+# Phase guide and original acceptance evidence
 
 This folder extends the same PR with the retained 140-case extension and the
 earlier testing/acceptance work. It is an evidence publication, with **no new
-product tests, model calls or changed test outcomes**. Current report v3.6 and
-the recommendation fixes remain in [the current acceptance folder](../recommendation-fit-2026-10-21/).
+product tests, model calls or changed test outcomes**. Start at [the current QA entry](../README.md). The directly published report
+is v3.7; it updates publication status only. The original v3.6 report and all
+recorded outcomes remain in the unchanged comprehensive archive.
 Overall system acceptance remains **PENDING**.
 
-## Start here
+## Evidence reading order
 
 1. Review the [140-case readable catalogue](extended140_Case_Catalogue.txt) or
    [machine-readable catalogue](extended140_Case_Catalogue.json).
@@ -35,16 +36,16 @@ XR05, XA08 and XA09. These remain visible. The separate DEF04 challenge/repeats
 are not new members of the 140-case catalogue. Frozen [model-case inputs](extended140_frozen_cases.json)
 and [HTTP-case inputs](extended140_api_boundary_cases.json) are unchanged.
 
-## Historical work and downloadable originals
+## Historical work and original downloads
 
 | Stage | Contents and scope | Download |
 | --- | --- | --- |
-| Initial design pack v1.2 | Plan/report template, Excel tracker, presentation, evaluator, fixtures, owner guide and participant cards; 60 planned synthetic cases. Product tests and human UAT were NOT_RUN. | [Initial QA pack](Group42_QA_Pack.zip) |
-| Early repository QA v2 | Pinned `907cfa8` static preflight, original Python collection errors, separately labelled patch candidate, TS/Python logs and JUnit, data audit and seven full-pool baseline oracles. Includes a clearly labelled prior-team-evidence folder. | [Repository QA v2](Group42_Repository_QA_v2.zip) |
+| Initial design pack v1.2 | Plan/report template, Excel tracker, presentation, evaluator, fixtures, owner guide and participant cards; 60 planned synthetic cases. Product tests and human UAT were NOT_RUN. | [Initial QA pack](../archive/Group42_QA_Pack.zip) |
+| Early repository QA v2 | Pinned `907cfa8` static preflight, original Python collection errors, separately labelled patch candidate, TS/Python logs and JUnit, data audit and seven full-pool baseline oracles. Includes a clearly labelled prior-team-evidence folder. | [Repository QA v2](../archive/Group42_Repository_QA_v2.zip) |
 | Latest comprehensive pack v3.6 | 303 retained files covering pinned `8913189` data/SQL/Neo4j, native integration, eight offline retrieval follow-ups, live hybrid retrieval, initial ClinePass evaluation, the 140-case extension, browser/performance/fault evidence and original/current fit runs. | [Complete acceptance pack](Group42_Latest_Acceptance_8913189.zip) |
-| Original 140-case dataset export | All inputs, expectations, results, issue records and exact executed harnesses; 24 retained files. Full request audits/screenshots are in the comprehensive pack. | [140-case export](Group42_Test_Dataset_8913189.zip) |
-| Original recommendation-fit baseline | 48 retained files documenting the original 36/44 outcome and eight failed dialogue turns. The current 44/44 retest stays in the existing current folder. | [Fit baseline pack](Group42_Recommendation_Fit_Tests_8913189.zip) |
-| Historical report revisions | Original report/tracker/README/manifest snapshots from before retrieval, live-model, subscription, 140-case extension, fit baseline and fit remediation updates. | [Historical report snapshots](Historical_Report_Revisions.zip) |
+| Original 140-case dataset export | All inputs, expectations, results, issue records and exact executed harnesses; 24 retained files. Full request audits/screenshots are in the comprehensive pack. | [140-case export](../archive/Group42_Test_Dataset_8913189.zip) |
+| Original recommendation-fit baseline | 48 retained files documenting the original 36/44 outcome and eight failed dialogue turns. The current 44/44 retest stays in the existing current folder. | [Fit baseline pack](../archive/Group42_Recommendation_Fit_Tests_8913189.zip) |
+| Historical report revisions | Original report/tracker/README/manifest snapshots from before retrieval, live-model, subscription, 140-case extension, fit baseline and fit remediation updates. | [Historical report snapshots](../archive/Historical_Report_Revisions.zip) |
 
 After extraction, keep each archive's root directory intact. `evidence/` and
 `tools/` paths inside a report or tracker refer to that extracted package. Exact
@@ -85,7 +86,8 @@ actions in these QA profiles stayed simulated.
 
 ## Integrity and preservation
 
-The five original delivered ZIPs are byte-preserved. Every member was checked
+All seven original published ZIPs are byte-preserved; six secondary packages are
+listed in [the archive](../archive/README.md). Every member was checked
 against its retained local delivery folder, and available embedded per-file
 manifests were verified. Directly browsable receipts are unchanged copies.
 Historical report members are unchanged; only their new containing archive was
@@ -102,3 +104,11 @@ of their original time. Publication is not a new acceptance decision.
 Credential, private-key and session-token checks cover archive contents and
 nested Office/ZIP payloads. Private runtime environments, databases, model
 weights and browser profiles are outside these retained delivery packages.
+
+## Publication layout update
+
+The [unified QA entry](../README.md) identifies current results and next steps.
+The [archive guide](../archive/README.md) holds superseded reporting and focused
+exports. The current manifest records relocation, the unchanged seven ZIP
+hashes, preserved direct receipts and the original report covered inside the
+archives. This organization changes no source, test expectation or test outcome.
