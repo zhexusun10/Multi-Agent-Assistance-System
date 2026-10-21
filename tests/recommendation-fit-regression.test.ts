@@ -23,6 +23,23 @@ for (const [query, operator] of bedroomCases) test(`bedroom comparison stays loc
   assert.equal(draft.upsert.find(c=>c.field==='price')?.value, 6500);
 });
 
+const spokenComparisonCases = [
+  ['至少有3间卧室，月租不超过6500新币', 'bedrooms', 'gte', 3],
+  ['最多有3间卧室，月租不超过6500新币', 'bedrooms', 'lte', 3],
+  ['至少要有3房，月租不超过6500新币', 'bedrooms', 'gte', 3],
+  ['最多需要2个卫生间，月租不超过6500新币', 'bathrooms', 'lte', 2],
+  ['面积最多为80平方米，至少2房，月租不超过6500新币', 'floor_area_sqft', 'lte', 80 * 10.76391041671],
+  ['恰好有3间卧室，月租不超过6500新币', 'bedrooms', 'eq', 3],
+] as const;
+for (const [query, field, operator, value] of spokenComparisonCases) test(`spoken comparator preserves its attribute: ${query}`, () => {
+  const draft = extractRules(query, empty);
+  const parsed = draft.upsert.find(c=>c.field===field);
+  assert.equal(parsed?.operator, operator);
+  assert.equal(parsed?.value, value);
+  assert.equal(draft.upsert.find(c=>c.field==='price')?.value, 6500);
+  assert.deepEqual(draft.clarifications, []);
+});
+
 test('bathroom and area comparisons are independent in one English clause', () => {
   const draft = extractRules('At least 2 bathrooms and floor area no more than 900 sqft', empty);
   assert.equal(draft.upsert.find(c=>c.field==='bathrooms')?.operator, 'gte');
