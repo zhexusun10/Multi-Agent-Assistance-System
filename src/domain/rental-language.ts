@@ -18,7 +18,7 @@ export function parseRentalLanguage(query:string,base:Requirements,make:Maker){
  // A comparator belongs to its numeric attribute, not another attribute in the same sentence.
  const comparison=(clause:string,hit:RegExpMatchArray,fallback:Criterion['operator']='eq')=>{
   const index=hit.index!;
-  const before=clause.slice(0,index).match(/(?:最多|至多|不能超过|不超过|不多于|至少|最少|不少于|恰好|正好|at\s+most|at\s+least|no\s+more(?:\s+than)?|no\s+less(?:\s+than)?|maximum(?:\s+of)?|minimum(?:\s+of)?|exactly|under|below|over|above|<=|>=|≤|≥)\s*$/i)?.[0]||'';
+  const before=clause.slice(0,index).match(/(?:最多|至多|不能超过|不超过|不多于|至少|最少|不少于|恰好|正好|at\s+most|at\s+least|no\s+more(?:\s+than)?|no\s+less(?:\s+than)?|maximum(?:\s+of)?|minimum(?:\s+of)?|exactly|under|below|over|above|<=|>=|≤|≥)(?:\s*(?:需要|要|有|为|是))*\s*$/i)?.[0]||'';
   const after=clause.slice(index+hit[0].length).match(/^\s*(?:以上|以下|以内|起|or\s+more|or\s+less|or\s+fewer|at\s+most|at\s+least|maximum|minimum|\+)/i)?.[0]||'';
   return op(before+hit[0]+after,fallback);
  };
