@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "catalogue_sha256": "a7758611aea5beff3beefdf398d2c3c2f6e3c59998e1f2ef927be15c56151fbb",
+  "catalogue_bytes_unchanged": true,
+  "oracle_and_assertion_logic_unchanged": true,
+  "harness_differences": "Runtime import/profile paths; structured run description identifies the patched service. No outcome assertion changed."
+}

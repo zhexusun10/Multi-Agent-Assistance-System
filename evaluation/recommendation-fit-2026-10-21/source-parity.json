@@ -1,0 +1,65 @@
+{
+  "status": "PASS",
+  "base_commit": "89131897f56bbc176c30246a451f118f7de0209f",
+  "baseline_files": 410,
+  "unchanged_baseline_files": 404,
+  "modified_existing_files": [
+    "recommendation/agent/controller.py",
+    "scripts/import-recommendation-upstream.py",
+    "src/adapters/locations.ts",
+    "src/domain/requirements.ts",
+    "src/domain/rental-language.ts",
+    "src/domain/geo-intake.ts"
+  ],
+  "added_files": [
+    "tests/recommendation-fit-regression.test.ts",
+    "recommendation/tests/test_fit_controller_regression.py",
+    "tests/test_recommendation_provenance.py",
+    "contracts/releases/recommendation-downstream-patches.json"
+  ],
+  "existing_test_files_unchanged": 59,
+  "business_source_unchanged_during_deployed_retest": true,
+  "original_upstream_manifest_unchanged": true,
+  "files": {
+    "recommendation/agent/controller.py": {
+      "before_sha256": "a17495fcca30a3fdfb35ad7f28db3468087b212ab21b57855b10eb6cc6bf4ede",
+      "after_sha256": "54a20b4c24304357a3086e79c295cac903916903d914743336eac31b0c6df2c3"
+    },
+    "scripts/import-recommendation-upstream.py": {
+      "before_sha256": "943e30bd240f9b7f740a4d6478186b7e898fa0cbb8db2431e0fe291820e604b8",
+      "after_sha256": "f8792530b09fd3825cfc2de3e750e29ba27c6939554ea0c355ab70e516ce1b52"
+    },
+    "src/adapters/locations.ts": {
+      "before_sha256": "7f61d3d30ee2640b570fd34259bf81283e21bd8b4eac33de410f5780e903e400",
+      "after_sha256": "204367e35d2cdeec1cf621526b0a77ee446051e3f1c8c6d25996bb08c365e20b"
+    },
+    "src/domain/requirements.ts": {
+      "before_sha256": "934d7e74b0267f0314e5fc95419e7de04f44a3b7618291b8c9a0330c215a6479",
+      "after_sha256": "4613b11726573b9633bc4ea89ad8e135e1bca5ee93904ba0f3d58830ab946b68"
+    },
+    "src/domain/rental-language.ts": {
+      "before_sha256": "1d2e712576535c97e4f7c094fe02aea76ad5f9ec878a78424a8fd426cffb9f2b",
+      "after_sha256": "62f04b72fa35a94054cb623434328d3c7faeb80c3a87caeb7d288683a32944e6"
+    },
+    "src/domain/geo-intake.ts": {
+      "before_sha256": "8ef71fcac1ad9adb5beaadf2240e993c329b5cb8d61c22b883c31fcf87a5d1af",
+      "after_sha256": "bcdeb7174b7cbc03c8f603fdbe48c7cee219196900934c31204c4d0ffc54c87a"
+    },
+    "tests/recommendation-fit-regression.test.ts": {
+      "before_sha256": null,
+      "after_sha256": "b62f48ffd33a57566652f91a99868cfcab62e8e7557c92c60b3485fbc75038ee"
+    },
+    "recommendation/tests/test_fit_controller_regression.py": {
+      "before_sha256": null,
+      "after_sha256": "4fce3545afcae1541fedfa65ad2a019d8cb780b5e17bb91a37a965964cfb291e"
+    },
+    "tests/test_recommendation_provenance.py": {
+      "before_sha256": null,
+      "after_sha256": "02f4608813ab7d4a63f2c1f6b28ef55fd2d26070f2eae9d94fd4a74101ea9e6a"
+    },
+    "contracts/releases/recommendation-downstream-patches.json": {
+      "before_sha256": null,
+      "after_sha256": "1fad932719f212113efa735ff6176e6f4709034f327394ded91c533046e53fe5"
+    }
+  }
+}

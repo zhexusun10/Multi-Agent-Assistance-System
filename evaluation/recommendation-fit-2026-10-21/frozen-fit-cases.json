@@ -1,0 +1,1067 @@
+{
+  "frozen_at": "2026-10-21T14:24:11.701885+08:00",
+  "baseline_commit": "89131897f56bbc176c30246a451f118f7de0209f",
+  "scope": "Recommendation alignment to explicit requirements, preference weights, unknown evidence and refinements. Human satisfaction is not inferred.",
+  "structured": [
+    {
+      "id": "RF01",
+      "name": "Budget cap for a cost-sensitive renter",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 1800,
+          "strength": "hard",
+          "unit": "SGD/month"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF02",
+      "name": "Exact SGD 1800 rent boundary",
+      "criteria": [
+        {
+          "criterion_id": "exact-rent",
+          "field": "price",
+          "operator": "eq",
+          "value": 1800,
+          "strength": "hard",
+          "unit": "SGD/month"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF03",
+      "name": "Rent within inclusive SGD 1500 to 2000",
+      "criteria": [
+        {
+          "criterion_id": "rent-range",
+          "field": "price",
+          "operator": "between",
+          "value": [
+            1500,
+            2000
+          ],
+          "strength": "hard",
+          "unit": "SGD/month"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF04",
+      "name": "Exactly one bedroom within SGD 2200",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 2200,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "beds",
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 1,
+          "strength": "hard"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF05",
+      "name": "Family needs at least three bedrooms within SGD 6000",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 6000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "beds",
+          "field": "bedrooms",
+          "operator": "gte",
+          "value": 3,
+          "strength": "hard"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF06",
+      "name": "Space requirement at least 1000 sqft within SGD 6000",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 6000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "area",
+          "field": "floor_area_sqft",
+          "operator": "gte",
+          "value": 1000,
+          "strength": "hard",
+          "unit": "sqft"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF07",
+      "name": "Accept D05 or D10 within SGD 4500",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 4500,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "district",
+          "field": "district_code",
+          "operator": "in",
+          "value": [
+            "D05",
+            "D10"
+          ],
+          "strength": "hard"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF08",
+      "name": "Accept condominium or apartment within SGD 4000",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 4000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "type",
+          "field": "property_type",
+          "operator": "in",
+          "value": [
+            "condominium",
+            "apartment"
+          ],
+          "strength": "hard"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF09",
+      "name": "Required furnishing must remain unverified",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 2000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "furnished",
+          "field": "furnishing",
+          "operator": "eq",
+          "value": "fully_furnished",
+          "strength": "hard"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF10",
+      "name": "Required six-month lease must remain unverified",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 2000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "lease",
+          "field": "lease_months",
+          "operator": "eq",
+          "value": 6,
+          "strength": "hard",
+          "unit": "months"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF11",
+      "name": "Current vacancy must remain unverified",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 2000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "availability",
+          "field": "availability",
+          "operator": "eq",
+          "value": "available",
+          "strength": "hard"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF12",
+      "name": "Thirty-minute transit commute cannot use straight-line evidence",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 3000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "commute",
+          "field": "commute",
+          "operator": "lte",
+          "value": 30,
+          "strength": "hard",
+          "destination_id": "OSM:way:54519165",
+          "distance_type": "transit",
+          "transport_mode": "transit",
+          "unit": "minutes"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF13",
+      "name": "One-kilometre walking limit cannot use straight-line evidence",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 3000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "walking",
+          "field": "distance",
+          "operator": "lte",
+          "value": 1000,
+          "strength": "hard",
+          "destination_id": "OSM:way:54519165",
+          "distance_type": "walking",
+          "unit": "m"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF14",
+      "name": "NUS two-kilometre hard radius and nearer-first preference",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 3000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "radius",
+          "field": "distance",
+          "operator": "lte",
+          "value": 2000,
+          "strength": "hard",
+          "destination_id": "OSM:way:54519165",
+          "distance_type": "straight_line",
+          "unit": "m"
+        },
+        {
+          "criterion_id": "near",
+          "field": "distance",
+          "operator": "lte",
+          "value": 1000,
+          "strength": "soft",
+          "weight": 1,
+          "utility": "proximity",
+          "destination_id": "OSM:way:54519165",
+          "distance_type": "straight_line",
+          "unit": "m"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF15",
+      "name": "NUS three-kilometre hard radius and nearer-first preference",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 3000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "radius",
+          "field": "distance",
+          "operator": "lte",
+          "value": 3000,
+          "strength": "hard",
+          "destination_id": "OSM:way:54519165",
+          "distance_type": "straight_line",
+          "unit": "m"
+        },
+        {
+          "criterion_id": "near",
+          "field": "distance",
+          "operator": "lte",
+          "value": 1000,
+          "strength": "soft",
+          "weight": 1,
+          "utility": "proximity",
+          "destination_id": "OSM:way:54519165",
+          "distance_type": "straight_line",
+          "unit": "m"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF16",
+      "name": "Unresolvable destination must not be guessed",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 2000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "missing-place",
+          "field": "distance",
+          "operator": "lte",
+          "value": 1000,
+          "strength": "hard",
+          "destination_id": "QA:NONEXISTENT:FIT",
+          "distance_type": "straight_line",
+          "unit": "m"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF17",
+      "name": "Impossible SGD 1 budget must not be silently relaxed",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 1,
+          "strength": "hard",
+          "unit": "SGD/month"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF18",
+      "name": "Impossible twenty-bedroom low-budget request",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 2000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "beds",
+          "field": "bedrooms",
+          "operator": "gte",
+          "value": 20,
+          "strength": "hard"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF19",
+      "name": "Negative bedroom sentinels remain unknown",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 2000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "beds",
+          "field": "bedrooms",
+          "operator": "gte",
+          "value": 0,
+          "strength": "hard"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF20",
+      "name": "Prefer D05 three times as much as D10",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 2500,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "district-allowed",
+          "field": "district_code",
+          "operator": "in",
+          "value": [
+            "D05",
+            "D10"
+          ],
+          "strength": "hard"
+        },
+        {
+          "criterion_id": "prefer-d05",
+          "field": "district_code",
+          "operator": "eq",
+          "value": "D05",
+          "strength": "soft",
+          "weight": 3
+        },
+        {
+          "criterion_id": "prefer-d10",
+          "field": "district_code",
+          "operator": "eq",
+          "value": "D10",
+          "strength": "soft",
+          "weight": 1
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF21",
+      "name": "Reverse relative district priorities",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 2500,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "district-allowed",
+          "field": "district_code",
+          "operator": "in",
+          "value": [
+            "D05",
+            "D10"
+          ],
+          "strength": "hard"
+        },
+        {
+          "criterion_id": "prefer-d05",
+          "field": "district_code",
+          "operator": "eq",
+          "value": "D05",
+          "strength": "soft",
+          "weight": 1
+        },
+        {
+          "criterion_id": "prefer-d10",
+          "field": "district_code",
+          "operator": "eq",
+          "value": "D10",
+          "strength": "soft",
+          "weight": 3
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF22",
+      "name": "Cheaper-first numeric utility under a hard budget",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 3500,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "cheaper",
+          "field": "price",
+          "operator": "lte",
+          "value": 3500,
+          "strength": "soft",
+          "weight": 1,
+          "utility": "minimize",
+          "unit": "SGD/month"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF23",
+      "name": "Larger-first numeric utility with family constraints",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 4000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "beds",
+          "field": "bedrooms",
+          "operator": "gte",
+          "value": 2,
+          "strength": "hard"
+        },
+        {
+          "criterion_id": "larger",
+          "field": "floor_area_sqft",
+          "operator": "gte",
+          "value": 0,
+          "strength": "soft",
+          "weight": 1,
+          "utility": "maximize",
+          "unit": "sqft"
+        }
+      ],
+      "limit": 4
+    },
+    {
+      "id": "RF24",
+      "name": "Unknown furnishing preference has partial evidence coverage",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 2000,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "cheap-preference",
+          "field": "price",
+          "operator": "lte",
+          "value": 1500,
+          "strength": "soft",
+          "weight": 1,
+          "unit": "SGD/month"
+        },
+        {
+          "criterion_id": "furnished-preference",
+          "field": "furnishing",
+          "operator": "eq",
+          "value": "fully_furnished",
+          "strength": "soft",
+          "weight": 1
+        }
+      ],
+      "limit": 4
+    }
+  ],
+  "projection": [
+    {
+      "id": "RP01",
+      "name": "Private bathroom is an unsupported hard requirement",
+      "extra_criterion": {
+        "criterion_id": "extra-fit",
+        "field": "amenities",
+        "operator": "eq",
+        "value": "private_bathroom",
+        "strength": "hard"
+      },
+      "native_fixture": "RF01"
+    },
+    {
+      "id": "RP02",
+      "name": "Bathroom count is not silently proved",
+      "extra_criterion": {
+        "criterion_id": "extra-fit",
+        "field": "bathrooms",
+        "operator": "gte",
+        "value": 1,
+        "unit": "count",
+        "strength": "hard"
+      },
+      "native_fixture": "RF01"
+    },
+    {
+      "id": "RP03",
+      "name": "Whole-unit rental scope is not inferred",
+      "extra_criterion": {
+        "criterion_id": "extra-fit",
+        "field": "rental_scope",
+        "operator": "eq",
+        "value": "whole_unit",
+        "strength": "hard"
+      },
+      "native_fixture": "RF01"
+    },
+    {
+      "id": "RP04",
+      "name": "Move-in date is not inferred from historical listing",
+      "extra_criterion": {
+        "criterion_id": "extra-fit",
+        "field": "move_in_date",
+        "operator": "lte",
+        "value": "2026-12-01",
+        "strength": "hard"
+      },
+      "native_fixture": "RF01"
+    },
+    {
+      "id": "RP05",
+      "name": "MRT walking minutes are not inferred from coordinates",
+      "extra_criterion": {
+        "criterion_id": "extra-fit",
+        "field": "mrt_walking_mins",
+        "operator": "lte",
+        "value": 10,
+        "unit": "min",
+        "distance_type": "platform_reported",
+        "strength": "hard"
+      },
+      "native_fixture": "RF01"
+    },
+    {
+      "id": "RP06",
+      "name": "Pet permission is not invented",
+      "extra_criterion": {
+        "criterion_id": "extra-fit",
+        "field": "amenities",
+        "operator": "eq",
+        "value": "pets_allowed",
+        "strength": "hard"
+      },
+      "native_fixture": "RF01"
+    },
+    {
+      "id": "RP07",
+      "name": "Unsupported native postal criterion stays unverified",
+      "extra_criterion": {
+        "criterion_id": "extra-fit",
+        "field": "postal_code",
+        "operator": "eq",
+        "value": "119077",
+        "strength": "hard"
+      },
+      "native_fixture": "RF01"
+    },
+    {
+      "id": "RP08",
+      "name": "Unknown soft private-bathroom preference does not exclude hard matches",
+      "extra_criterion": {
+        "criterion_id": "extra-fit",
+        "field": "amenities",
+        "operator": "eq",
+        "value": "private_bathroom",
+        "strength": "soft",
+        "weight": 1
+      },
+      "native_fixture": "RF01"
+    }
+  ],
+  "natural": [
+    {
+      "id": "RN01",
+      "persona": "Student budget and evidence limits",
+      "profile": 1,
+      "turn": 1,
+      "query": "帮我找租房，月租不超过2000新币，D05，至少1个卧室。",
+      "expected_criteria": [
+        {
+          "field": "price",
+          "value": 2000,
+          "operator": "lte",
+          "strength": "hard"
+        },
+        {
+          "field": "district",
+          "value": "D05",
+          "operator": "eq",
+          "strength": "hard"
+        },
+        {
+          "field": "bedrooms",
+          "value": 1,
+          "operator": "gte",
+          "strength": "hard"
+        }
+      ],
+      "absent_fields": []
+    },
+    {
+      "id": "RN02",
+      "persona": "Student budget and evidence limits",
+      "profile": 1,
+      "turn": 2,
+      "query": "预算降低到1800新币，其余条件保持不变。",
+      "expected_criteria": [
+        {
+          "field": "price",
+          "value": 1800,
+          "operator": "lte",
+          "strength": "hard"
+        },
+        {
+          "field": "district",
+          "value": "D05",
+          "operator": "eq",
+          "strength": "hard"
+        },
+        {
+          "field": "bedrooms",
+          "value": 1,
+          "operator": "gte",
+          "strength": "hard"
+        }
+      ],
+      "absent_fields": []
+    },
+    {
+      "id": "RN03",
+      "persona": "Student budget and evidence limits",
+      "profile": 1,
+      "turn": 3,
+      "query": "独立卫浴必须有，其他条件不变。",
+      "expected_criteria": [
+        {
+          "field": "price",
+          "value": 1800,
+          "operator": "lte",
+          "strength": "hard"
+        },
+        {
+          "field": "district",
+          "value": "D05",
+          "operator": "eq",
+          "strength": "hard"
+        },
+        {
+          "field": "bedrooms",
+          "value": 1,
+          "operator": "gte",
+          "strength": "hard"
+        },
+        {
+          "field": "amenities",
+          "value": "private_bathroom",
+          "operator": "eq",
+          "strength": "hard"
+        }
+      ],
+      "absent_fields": []
+    },
+    {
+      "id": "RN04",
+      "persona": "Family English refinement and space",
+      "profile": 2,
+      "turn": 1,
+      "query": "Find rental properties in D10 with at least 3 bedrooms and monthly rent no more than SGD 6500.",
+      "expected_criteria": [
+        {
+          "field": "price",
+          "value": 6500,
+          "operator": "lte",
+          "strength": "hard"
+        },
+        {
+          "field": "district",
+          "value": "D10",
+          "operator": "eq",
+          "strength": "hard"
+        },
+        {
+          "field": "bedrooms",
+          "value": 3,
+          "operator": "gte",
+          "strength": "hard"
+        }
+      ],
+      "absent_fields": []
+    },
+    {
+      "id": "RN05",
+      "persona": "Family English refinement and space",
+      "profile": 2,
+      "turn": 2,
+      "query": "Change the district to D15 and keep the budget and bedroom requirement.",
+      "expected_criteria": [
+        {
+          "field": "price",
+          "value": 6500,
+          "operator": "lte",
+          "strength": "hard"
+        },
+        {
+          "field": "district",
+          "value": "D15",
+          "operator": "eq",
+          "strength": "hard"
+        },
+        {
+          "field": "bedrooms",
+          "value": 3,
+          "operator": "gte",
+          "strength": "hard"
+        }
+      ],
+      "absent_fields": []
+    },
+    {
+      "id": "RN06",
+      "persona": "Family English refinement and space",
+      "profile": 2,
+      "turn": 3,
+      "query": "Also require at least 1200 sqft of floor area.",
+      "expected_criteria": [
+        {
+          "field": "price",
+          "value": 6500,
+          "operator": "lte",
+          "strength": "hard"
+        },
+        {
+          "field": "district",
+          "value": "D15",
+          "operator": "eq",
+          "strength": "hard"
+        },
+        {
+          "field": "bedrooms",
+          "value": 3,
+          "operator": "gte",
+          "strength": "hard"
+        },
+        {
+          "field": "floor_area_sqft",
+          "value": 1200,
+          "operator": "gte",
+          "strength": "hard"
+        }
+      ],
+      "absent_fields": []
+    },
+    {
+      "id": "RN07",
+      "persona": "NUS radius and unsupported furnishing/lease",
+      "profile": 3,
+      "turn": 1,
+      "query": "找NUS国立大学直线距离3公里内的出租房，月租不超过3000新币。",
+      "expected_criteria": [
+        {
+          "field": "price",
+          "value": 3000,
+          "operator": "lte",
+          "strength": "hard"
+        },
+        {
+          "field": "place_proximity",
+          "value": 3000,
+          "operator": "lte",
+          "strength": "hard",
+          "target_id": "OSM:way:54519165"
+        }
+      ],
+      "absent_fields": []
+    },
+    {
+      "id": "RN08",
+      "persona": "NUS radius and unsupported furnishing/lease",
+      "profile": 3,
+      "turn": 2,
+      "query": "到NUS国立大学的直线距离改为2公里，预算不变。",
+      "expected_criteria": [
+        {
+          "field": "price",
+          "value": 3000,
+          "operator": "lte",
+          "strength": "hard"
+        },
+        {
+          "field": "place_proximity",
+          "value": 2000,
+          "operator": "lte",
+          "strength": "hard",
+          "target_id": "OSM:way:54519165"
+        }
+      ],
+      "absent_fields": []
+    },
+    {
+      "id": "RN09",
+      "persona": "NUS radius and unsupported furnishing/lease",
+      "profile": 3,
+      "turn": 3,
+      "query": "还必须带齐家具，租期为6个月。",
+      "expected_criteria": [
+        {
+          "field": "price",
+          "value": 3000,
+          "operator": "lte",
+          "strength": "hard"
+        },
+        {
+          "field": "place_proximity",
+          "value": 2000,
+          "operator": "lte",
+          "strength": "hard",
+          "target_id": "OSM:way:54519165"
+        },
+        {
+          "field": "furnishing",
+          "value": "fully_furnished",
+          "operator": "eq",
+          "strength": "hard"
+        },
+        {
+          "field": "lease_months",
+          "value": 6,
+          "operator": "eq",
+          "strength": "hard"
+        }
+      ],
+      "absent_fields": []
+    },
+    {
+      "id": "RN10",
+      "persona": "Soft-to-hard district and explicit cancellation",
+      "profile": 4,
+      "turn": 1,
+      "query": "请找月租不超过2500新币，至少2房，优先D05，但其他邮区也可以。",
+      "expected_criteria": [
+        {
+          "field": "price",
+          "value": 2500,
+          "operator": "lte",
+          "strength": "hard"
+        },
+        {
+          "field": "bedrooms",
+          "value": 2,
+          "operator": "gte",
+          "strength": "hard"
+        },
+        {
+          "field": "district",
+          "value": "D05",
+          "operator": "eq",
+          "strength": "soft"
+        }
+      ],
+      "absent_fields": []
+    },
+    {
+      "id": "RN11",
+      "persona": "Soft-to-hard district and explicit cancellation",
+      "profile": 4,
+      "turn": 2,
+      "query": "现在D05必须满足，预算和卧室数量不变。",
+      "expected_criteria": [
+        {
+          "field": "price",
+          "value": 2500,
+          "operator": "lte",
+          "strength": "hard"
+        },
+        {
+          "field": "bedrooms",
+          "value": 2,
+          "operator": "gte",
+          "strength": "hard"
+        },
+        {
+          "field": "district",
+          "value": "D05",
+          "operator": "eq",
+          "strength": "hard"
+        }
+      ],
+      "absent_fields": []
+    },
+    {
+      "id": "RN12",
+      "persona": "Soft-to-hard district and explicit cancellation",
+      "profile": 4,
+      "turn": 3,
+      "query": "取消邮区限制，其他条件不变。",
+      "expected_criteria": [
+        {
+          "field": "price",
+          "value": 2500,
+          "operator": "lte",
+          "strength": "hard"
+        },
+        {
+          "field": "bedrooms",
+          "value": 2,
+          "operator": "gte",
+          "strength": "hard"
+        }
+      ],
+      "absent_fields": [
+        "district"
+      ]
+    }
+  ],
+  "criteria_rules": "Freeze before execution. Compare full eligible/unknown/excluded counts and exact top four IDs with independent full SQL/Neo4j oracle. All verified hard constraints must pass; unsupported hard requirements cannot be presented as verified.",
+  "natural_rules": "Each deployed turn must complete, retain every expected criterion with value/operator/strength, remove cancelled fields, and recommend only independently hard-satisfying listings. Unknown hard criteria require zero verified recommendations. Added hard constraints not authorized by the case also fail.",
+  "limitations": "Authored project-contract tests, not participant relevance labels. Source snapshot does not prove present vacancy, viewing approval or subjective satisfaction."
+}

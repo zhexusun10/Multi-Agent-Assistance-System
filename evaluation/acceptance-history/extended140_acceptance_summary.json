@@ -1,0 +1,93 @@
+{
+  "version": "3.4",
+  "source_commit": "89131897f56bbc176c30246a451f118f7de0209f",
+  "output": "/Users/heran/Documents/ChatGPT/NUS AIS 小组项目/outputs/01a1244e-75b8-7e40-a695-9805a996e104/Group42_Latest_Acceptance_8913189",
+  "completed_at": "2026-10-21T13:33:51.004159+08:00",
+  "new_functional_checks": 140,
+  "individual_passes": 135,
+  "individual_failures": 5,
+  "scope_note": "Per-suite results are authoritative. Do not interpret the total as system accuracy or add it to overlapping historical profiles.",
+  "new_suites": {
+    "intent": {
+      "status": "PASS",
+      "cases": 60,
+      "passed": 59,
+      "failed": 1
+    },
+    "knowledge": {
+      "status": "FAIL",
+      "cases": 24,
+      "passed": 23,
+      "failed": 1
+    },
+    "reply": {
+      "status": "FAIL",
+      "cases": 18,
+      "passed": 17,
+      "failed": 1
+    }
+  },
+  "api": {
+    "status": "FAIL",
+    "cases": 32,
+    "passed": 30,
+    "failed": 2
+  },
+  "outage": {
+    "status": "PASS",
+    "cases": 6,
+    "passed": 6,
+    "failed": 0
+  },
+  "knowledge_methods": {
+    "llm_grounded_verified": 20,
+    "grounded_abstention": 4
+  },
+  "knowledge_quote_integrity_all": true,
+  "reply_model_channels": 18,
+  "intent_suite_threshold": 0.95,
+  "intent_suite_threshold_met": true,
+  "intent_misses": [
+    "XI20"
+  ],
+  "catalog_sha256": "72f500238c101712b5b14f3145e89892a551333f4da71a106e0840d7696b24ea",
+  "catalog_frozen_at": "2026-10-21T13:13:57.838998+08:00",
+  "native_full_model": {
+    "status": "PASS",
+    "recorded_checks": 8,
+    "original_assertions_unchanged": true
+  },
+  "browser": {
+    "status": "PASS",
+    "original_check_groups": 5,
+    "additional_knowledge_checks": 4,
+    "participant_uat": false
+  },
+  "performance": {
+    "status": "FAIL",
+    "retrieval_requests": 30,
+    "application_workflows": 6,
+    "acceptance_scope": "HTTP and grounded-answer response contracts only. Timing is observational; no agreed latency SLA or capacity threshold exists.",
+    "limitations": [
+      "Warm local indexes and the same small corpus",
+      "10 retrieval samples per concurrency level and 3 application workflows per level",
+      "Application process restarted between batches to clear its answer cache",
+      "Application measurement includes completed operation polling, not browser paint time",
+      "No production capacity claim or human acceptance"
+    ]
+  },
+  "def04_repeats": {
+    "cases": 3,
+    "passed": 2,
+    "failed": 1
+  },
+  "open_issue_groups": 5,
+  "final_acceptance": "PENDING",
+  "participant_uat": "NOT_RUN",
+  "formal_performance_acceptance": "NOT_RUN",
+  "target_windows_launcher": "NOT_RUN",
+  "human_signoff": "PENDING",
+  "external_messages_sent": 0,
+  "usage_accounting": "request-accounting.json",
+  "existing_source_files_verified": 353
+}
