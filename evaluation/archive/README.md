@@ -11,7 +11,7 @@ delivery packages and reporting history. The primary full evidence download is
 | --- | --- | --- |
 | [Initial QA design pack](Group42_QA_Pack.zip) | Design pack v1.2; 60 planned synthetic cases, evaluator, proposed gates, owner guides and blank UAT materials. Product tests were NOT_RUN. | Original planning and reusable templates; published holdout inputs are no longer blind. |
 | [Earlier repository QA v2](Group42_Repository_QA_v2.zip) | Source `907cfa8`; original collection errors, isolated patch candidate, data audit, logs and seven baseline oracles. | Preserve the earlier source and original/candidate distinction. `team_historical` is inherited team evidence. |
-| [Historical report revisions](Historical_Report_Revisions.zip) | Six pre-update report/tracker/README/manifest sets, 24 unchanged files. | Audit the sequence of decisions; use the current v3.7 publication report for today's status. |
+| [Historical report revisions](Historical_Report_Revisions.zip) | Six pre-update report/tracker/README/manifest sets, 24 unchanged files. | Audit the sequence of decisions; use the unified QA entry and PR 2 for the current review and merge status. |
 
 ## Original focused downloads
 
