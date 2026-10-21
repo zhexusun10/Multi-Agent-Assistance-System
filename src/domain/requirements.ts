@@ -3,7 +3,7 @@ import type { BaseChatModel } from '@langchain/core/language_models/chat_models'
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { criterionSchema, requirementsSchema, FIELD_RULES, type Criterion, type Requirements, type Feedback } from '../contracts/recommendation-v1.js';
 import {parseRentalLanguage} from './rental-language.js';
-import {locationIntentSchema,isListingReference,parseLocationIntents,DEFAULT_PROXIMITY_SCALE_M} from './geo-intake.js';
+import {locationIntentSchema,isListingReference,parseLocationIntents,cleanLocationName,DEFAULT_PROXIMITY_SCALE_M} from './geo-intake.js';
 
 export const draftSchema=z.object({
   upsert:z.array(criterionSchema),remove_fields:z.array(z.string()),clarifications:z.array(z.string()).max(3),
@@ -71,6 +71,12 @@ export function pendingQuestions(pending:RequirementDraft,draft:RequirementDraft
   const unresolved=pending.clarifications.filter(q=>{
     const missingPlace=q.match(/地点目录暂未找到“([^”]+)”/)?.[1];
     if(missingPlace&&isListingReference(missingPlace))return false;
+    if(missingPlace){
+      const identity=(name:string)=>cleanLocationName(name).normalize('NFKC').toLowerCase().replace(/\s+/g,'');
+      const corrected=draft.location_intents?.find(intent=>identity(intent.name)===identity(missingPlace));
+      const resolved=corrected&&draft.upsert.some(c=>c.field==='place_proximity'&&!!c.target?.place_id)&&draft.sources.some(s=>s.field==='place_proximity'&&s.quote===corrected.quote);
+      if(resolved&&!draft.clarifications.some(question=>question.includes(`“${corrected.name}”`)))return false;
+    }
     if(/参照地点|距离上限|直线还是步行|直线距离还是实际步行距离/.test(q))return !fields.has('district')&&!draft.upsert.some(c=>c.field==='place_proximity'&&!!(c.target?.place_id||c.target?.category));
     if(/预算|月租|币种|新加坡元/.test(q))return !fields.has('price');
     if(/至少.*房|恰好.*数量|卧室/.test(q))return !fields.has('bedrooms');

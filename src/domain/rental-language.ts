@@ -14,12 +14,27 @@ export function parseRentalLanguage(query:string,base:Requirements,make:Maker){
  const note=(field:string)=>sources.push({field,quote:q});
  const add=(field:string,op:Criterion['operator'],value:unknown,unit?:string,soft=false,extra:Partial<Criterion>={})=>{const c=make(field,op,value,unit,soft,extra),key=(x:Criterion)=>x.field+'|'+x.strength+'|'+(x.field==='amenities'?x.value:x.field==='place_proximity'?x.target?.category||x.target?.place_id||'':'');const i=upsert.findIndex(x=>key(x)===key(c));if(i<0)upsert.push(c);else upsert[i]=c;note(field);};
  const soft=(t:string)=>!/必须|一定|硬性|must|required/i.test(t)&&/最好|希望|优先|偏好|prefer|ideally/i.test(t);
- const op=(t:string,fallback:Criterion['operator']='eq'):Criterion['operator']=>/最多|至多|不超过|不能超过|不多于|以内|以下|以前|之前|at most|maximum|under|below|no more|<=|≤/i.test(t)?'lte':/至少|最少|不少于|以上|以后|之后|起|at least|minimum|or more|>=|≥/i.test(t)?'gte':fallback;
+ const op=(t:string,fallback:Criterion['operator']='eq'):Criterion['operator']=>/最多|至多|不超过|不能超过|不多于|以内|以下|以前|之前|at most|maximum|under|below|no more|or less|or fewer|<=|≤/i.test(t)?'lte':/至少|最少|不少于|以上|以后|之后|起|at least|minimum|no less|or more|over|above|>=|≥|\+$/i.test(t)?'gte':fallback;
+ // A comparator belongs to its numeric attribute, not another attribute in the same sentence.
+ const comparison=(clause:string,hit:RegExpMatchArray,fallback:Criterion['operator']='eq')=>{
+  const index=hit.index!;
+  const before=clause.slice(0,index).match(/(?:最多|至多|不能超过|不超过|不多于|至少|最少|不少于|恰好|正好|at\s+most|at\s+least|no\s+more(?:\s+than)?|no\s+less(?:\s+than)?|maximum(?:\s+of)?|minimum(?:\s+of)?|exactly|under|below|over|above|<=|>=|≤|≥)\s*$/i)?.[0]||'';
+  const after=clause.slice(index+hit[0].length).match(/^\s*(?:以上|以下|以内|起|or\s+more|or\s+less|or\s+fewer|at\s+most|at\s+least|maximum|minimum|\+)/i)?.[0]||'';
+  return op(before+hit[0]+after,fallback);
+ };
+ const attributeClause=(text:string,hit:RegExpMatchArray)=>{
+  let start=0,end=text.length;
+  for(const boundary of text.matchAll(/[，,、。；;\n]|\b(?:and|but|with)\b|并且|而且|同时|但是|不过|但/gi)){
+   if(boundary.index!+boundary[0].length<=hit.index!)start=boundary.index!+boundary[0].length;
+   else if(boundary.index!>=hit.index!+hit[0].length){end=boundary.index!;break;}
+  }
+  return text.slice(start,end);
+ };
  const remove=(field:string)=>{if(!remove_fields.includes(field)){remove_fields.push(field);note(field);}};
  if(/买房|购房|买卖|\bbuy\b|\bfor sale\b/i.test(q))return {upsert:[],remove_fields:[],sources:[],supported:false,clarifications:['当前系统支持新加坡住宅租赁，请确认是否改为找租房。'],location_intents:[]};
  const foreign=/美元|人民币|USD|RMB|CNY/i.test(q);if(foreign&&/预算|租金|月租|budget|rent/i.test(q))clarifications.push('租金以 SGD/月评估。请提供新加坡元月租上限，系统不会自动换算币种。');
- const removal:Record<string,RegExp>={price:/预算不限|租金不限|取消预算|no budget limit/i,bedrooms:/卧室不限|房数不限|取消卧室|any bedrooms/i,district:/区域不限|地区不限|不限邮区|取消(?:区域|地区)|any district|remove district/i,furnishing:/家具不限|取消家具要求/i,amenities:/(?:取消|不要求|不需要).{0,3}(?:独立卫浴|独卫|泳池|宠物|设施)|没有泳池也可以/i,bathrooms:/(?:取消|不限|不要求)(?:卫浴数量|卫生间数量)/i,place_proximity:/取消(?:超市|距离|地点)|不要求靠近|remove proximity/i,commute_time:/取消通勤|通勤不限/i,lease_months:/租期不限|取消租期/i,rental_scope:/取消(?:整租|单间)要求/i,move_in_date:/入住时间不限|取消入住/i,floor_area_sqft:/面积不限|取消面积/i,postal_code:/邮编不限|取消邮编/i,build_year:/年份不限|取消建成年份/i};
- for(const [f,r] of Object.entries(removal))if(r.test(q))remove(f);
+ const removal:Record<string,RegExp>={price:/预算不限|租金不限|取消预算|no budget limit/i,bedrooms:/卧室不限|房数不限|取消卧室|any bedrooms/i,district:/(?:区域|地区|邮区)不限|不限邮区|(?:取消|去掉|移除)(?:区域|地区|邮区)(?:限制|要求)?|any district|remove (?:the )?district/i,furnishing:/家具不限|取消家具要求/i,amenities:/(?:取消|不要求|不需要).{0,3}(?:独立卫浴|独卫|泳池|宠物|设施)|没有泳池也可以/i,bathrooms:/(?:取消|不限|不要求)(?:卫浴数量|卫生间数量)/i,place_proximity:/取消(?:超市|距离|地点)|不要求靠近|remove proximity/i,commute_time:/取消通勤|通勤不限/i,lease_months:/租期不限|取消租期/i,rental_scope:/取消(?:整租|单间)要求/i,move_in_date:/入住时间不限|取消入住/i,floor_area_sqft:/面积不限|取消面积/i,postal_code:/邮编不限|取消邮编/i,build_year:/年份不限|取消建成年份/i};
+ for(const [f,r] of Object.entries(removal))if(clauses.some(clause=>r.test(clause)&&!(f==='district'&&/(?:不要|别|不必|不需要|先不|不)\s*(?:取消|去掉|移除)|\b(?:do not|don't|never)\s+(?:remove|cancel)\b/i.test(clause))))remove(f);
  if(/只保留.*预算|only keep.*budget/i.test(q))for(const f of new Set(base.criteria.map(c=>c.field)))if(f!=='price')remove(f);
  const budgets:Criterion[]=[];
  for(const clause of clauses){
@@ -38,21 +53,21 @@ export function parseRentalLanguage(query:string,base:Requirements,make:Maker){
  for(const clause of clauses){
   if(hdbRooms||layout&&clause.includes(layout[0]))continue;
   const m=clause.match(new RegExp(`(${N})\\s*(?:间|个)?\\s*(卧室|房|室|bedrooms?|beds?)(?:\\s*(?:以上|起|or more|\\+))?`,'i'));if(!m)continue;
-  const count=rentalNumber(m[1]),operator=op(clause,'eq'),explicit=operator!=='eq'||/恰好|正好|exactly/i.test(clause)||/bedrooms?|beds?/i.test(m[2]);
-  if(!explicit)clarifications.push(`你说的“${m[0]}”是至少 ${count} 房，还是恰好这个数量？`);else bedroomHits.push(make('bedrooms',operator,count,'count',soft(clause)));
+  const local=attributeClause(clause,m),count=rentalNumber(m[1]),operator=comparison(clause,m),explicit=operator!=='eq'||/恰好|正好|exactly/i.test(local)||/bedrooms?|beds?/i.test(m[2]);
+  if(!explicit)clarifications.push(`你说的“${m[0]}”是至少 ${count} 房，还是恰好这个数量？`);else bedroomHits.push(make('bedrooms',operator,count,'count',soft(local)));
  }
  if(bedroomHits.some(c=>c.operator==='gte'&&bedroomHits.some(x=>x.operator==='lte'&&Number(x.value)<Number(c.value)))){clarifications.push('卧室数量的上下限冲突，请确认需要的范围。');bedroomHits.length=0;}for(const c of bedroomHits)add(c.field,c.operator,c.value,c.unit,c.strength==='soft');
  for(const clause of clauses){
   if(layout&&clause.includes(layout[0])||/独立卫浴|独立卫生间|独立浴室|独卫|private\s+(?:bathroom|bath)|en[ -]?suite/i.test(clause)&&!new RegExp(`${N}\\s*(?:个|间)?\\s*(?:卫生间|浴室|卫浴|bathroom)`,'i').test(clause))continue;
-  const m=clause.match(new RegExp(`(${N})\\s*(?:个|间)?\\s*(?:卫生间|浴室|卫浴|卫|bathrooms?)|(?:卫浴|卫生间|浴室)[^，,;；\\d一二两三四五六七八九十]{0,8}(${N})`,'i'));if(m)add('bathrooms',op(clause,/bathroom|正好|恰好|改成/i.test(clause)?'eq':'gte'),rentalNumber(m[1]||m[2]),'count',soft(clause));
+  const m=clause.match(new RegExp(`(${N})\\s*(?:个|间)?\\s*(?:卫生间|浴室|卫浴|卫|bathrooms?)|(?:卫浴|卫生间|浴室)[^，,;；\\d一二两三四五六七八九十]{0,8}(${N})`,'i'));if(m){const local=attributeClause(clause,m);add('bathrooms',comparison(clause,m,/bathroom|正好|恰好|改成/i.test(local)?'eq':'gte'),rentalNumber(m[1]||m[2]),'count',soft(local));}
  }
  const types:[RegExp,string[]][]=[[/walk[- ]?up apartment|无电梯公寓/i,['Walk-up Apartment']],[/semi[- ]?detached|半独立/i,['Semi-Detached House']],[/corner terrace|角头排屋/i,['Corner Terrace']],[/good class bungalow|优质洋房/i,['Good Class Bungalow']],[/terraced? house|排屋/i,['Terraced House']],[/detached house|独立洋房/i,['Detached House']],[/bungalow/i,['Bungalow House']],[/shophouse|店屋/i,['Shophouse']],[/\bcondo(?:minium)?\b|公寓大楼/i,['Condominium']],[/\bapartment\b|普通公寓/i,['Apartment']],[/\bHDB\b|组屋/i,['HDB Flat']],[/公寓/i,['Condominium','Apartment','Walk-up Apartment']]];
  const typeClause=clauses.find(c=>types.some(([r])=>r.test(c)));if(typeClause){let values:string[]=[];for(const [r,v] of types)if(r.test(typeClause)){values.push(...v);if(!/或者|或|\bor\b/i.test(typeClause))break;}values=[...new Set(values)];add('property_type',values.length===1?'eq':'in',values.length===1?values[0]:values,undefined,soft(typeClause));}
- if(!remove_fields.includes('district')){const ds=[...q.matchAll(/\bD(0?[1-9]|1\d|2[0-8])\b/gi)].map(m=>`D${m[1].padStart(2,'0')}`);if(ds.length){const negative=/不要|不想要|排除|except|exclude/i.test(q.slice(0,q.search(/\bD\d/i))),values=negative?Array.from({length:28},(_,i)=>`D${String(i+1).padStart(2,'0')}`).filter(x=>!ds.includes(x)):[...new Set(ds)];add('district',values.length===1?'eq':'in',values.length===1?values[0]:values);}}
+ if(!remove_fields.includes('district')){const hits=[...q.matchAll(/\bD(0?[1-9]|1\d|2[0-8])\b/gi)],ds=hits.map(m=>`D${m[1].padStart(2,'0')}`);if(ds.length){const negative=/不要|不想要|排除|except|exclude/i.test(q.slice(0,q.search(/\bD\d/i))),values=negative?Array.from({length:28},(_,i)=>`D${String(i+1).padStart(2,'0')}`).filter(x=>!ds.includes(x)):[...new Set(ds)];add('district',values.length===1?'eq':'in',values.length===1?values[0]:values,undefined,soft(attributeClause(q,hits[0])));}}
  const postal=q.match(/(?:邮编|postal code)\s*[:：]?\s*(\d{6})/i);if(postal)add('postal_code','eq',postal[1]);
  for(const clause of clauses){
   const m=clause.match(new RegExp(`(${N})(?:\\s*(?:到|至|—|-|~|～|to)\\s*(${N}))?\\s*(平方米|平米|㎡|sqm|sqft|平方英尺)`,'i'));
-  if(m){const field=/土地|land\s*area/i.test(clause)?'land_area_sqft':'floor_area_sqft',scale=/平方米|平米|㎡|sqm/i.test(m[3])?10.76391041671:1;add(field,m[2]?'between':op(clause,'gte'),m[2]?[rentalNumber(m[1])*scale,rentalNumber(m[2])*scale]:rentalNumber(m[1])*scale,'sqft',soft(clause));}
+  if(m){const local=attributeClause(clause,m),field=/土地|land\s*area/i.test(local)?'land_area_sqft':'floor_area_sqft',scale=/平方米|平米|㎡|sqm/i.test(m[3])?10.76391041671:1;add(field,m[2]?'between':comparison(clause,m,'gte'),m[2]?[rentalNumber(m[1])*scale,rentalNumber(m[2])*scale]:rentalNumber(m[1])*scale,'sqft',soft(local));}
   else if(/面积|\barea\b/i.test(clause)&&/\d/.test(clause))clarifications.push('请明确面积单位：平方米还是平方英尺（sqft）。');
   const year=clause.match(/(?:建成年份|建成|built|build year).*?(\d{4})|(\d{4}).{0,6}建成/i);if(year)add('build_year',op(clause,'gte'),Number(year[1]||year[2]),'year');
  }
@@ -64,8 +79,8 @@ export function parseRentalLanguage(query:string,base:Requirements,make:Maker){
  if(/主卧|master room|master bedroom/i.test(q))add('amenities','eq','master_room');if(/普通房|common room/i.test(q))add('amenities','eq','common_room');
  // A bare Chinese 普通房 describes room scope; common-room subtype is explicit in English.
  if(!/common room/i.test(q)){const i=upsert.findIndex(c=>c.field==='amenities'&&c.value==='common_room');if(i>=0)upsert.splice(i,1);}
- for(const clause of clauses){if(/家具不限|取消家具要求/.test(clause))continue;if(/不要家具|不用配家具|unfurnished/i.test(clause))add('furnishing','eq','unfurnished',undefined,soft(clause));else if(/部分家具|partially furnished/i.test(clause))add('furnishing','eq','partially_furnished',undefined,soft(clause));else if(/全家具|家具齐全|fully furnished/i.test(clause))add('furnishing','eq','fully_furnished',undefined,soft(clause));}
- const lease=q.match(new RegExp(`(?:租期|租|lease)\\s*(${N})\\s*(个月|月|months?|年|years?)`,'i'));if(lease)add('lease_months','eq',rentalNumber(lease[1])*(/年|year/.test(lease[2])?12:1),'month');
+ for(const clause of clauses){if(/家具不限|取消家具要求/.test(clause))continue;if(/不要家具|不用配家具|unfurnished/i.test(clause))add('furnishing','eq','unfurnished',undefined,soft(clause));else if(/部分家具|partially furnished/i.test(clause))add('furnishing','eq','partially_furnished',undefined,soft(clause));else if(/全家具|家具齐全|带齐家具|配齐家具|fully furnished/i.test(clause))add('furnishing','eq','fully_furnished',undefined,soft(clause));}
+ const lease=q.match(new RegExp(`(?:租期|租|lease)\\s*(?:为|是|改为|改成|for)?\\s*(${N})\\s*(个月|月|months?|年|years?)`,'i'));if(lease)add('lease_months','eq',rentalNumber(lease[1])*(/年|year/.test(lease[2])?12:1),'month');
  const date=q.match(/(?:入住|move in)[^\d]{0,8}(\d{4}-\d{2}-\d{2})|(\d{4}-\d{2}-\d{2})\s*入住/i);if(date)add('move_in_date','eq',date[1]||date[2]);
  const amenityPatterns:[RegExp,string][]=[[/独立卫浴|独立卫生间|独立浴室|独卫|private\s+(?:bathroom|bath)|en[ -]?suite/i,'private_bathroom'],[/泳池|pool/i,'swimming_pool'],[/宠物|养猫|养狗|pets?/i,'pet_policy'],[/可以做饭|能做饭|可做饭|cooking allowed/i,'cooking_allowed'],[/空调|air[- ]?con(?:ditioning)?/i,'air_conditioning'],[/不和房东同住|没有同住屋主|no live[- ]in landlord/i,'no_live_in_landlord']];
  const canceledAmenities=new Set<string>(),remove_criterion_ids:string[]=[];
