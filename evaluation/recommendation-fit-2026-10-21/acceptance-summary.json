@@ -1,0 +1,147 @@
+{
+  "version": "3.6",
+  "source_base_commit": "89131897f56bbc176c30246a451f118f7de0209f",
+  "catalog_sha256": "a7758611aea5beff3beefdf398d2c3c2f6e3c59998e1f2ef927be15c56151fbb",
+  "frozen_at": "2026-10-21T14:24:11.701885+08:00",
+  "output": "/Users/heran/Documents/ChatGPT/NUS AIS 小组项目/outputs/01a1244e-75b8-7e40-a695-9805a996e104/Group42_Latest_Acceptance_8913189",
+  "recommendation_fit_cases": 44,
+  "passed": 44,
+  "failed": 0,
+  "baseline_passed": 36,
+  "baseline_failed": 8,
+  "suites": {
+    "structured": {
+      "status": "PASS",
+      "cases": 24,
+      "passed": 24,
+      "failed": 0,
+      "profile": "Patched production service in process; real PostgreSQL/Neo4j; scripted controller; in-memory QA state"
+    },
+    "projection": {
+      "status": "PASS",
+      "cases": 8,
+      "passed": 8,
+      "failed": 0,
+      "profile": "Real production TypeScript projection over the RF01 full-database native response; no additional model calls"
+    },
+    "natural": {
+      "status": "PASS",
+      "cases": 12,
+      "passed": 12,
+      "failed": 0,
+      "profile": "Actual deployed API; real ClinePass DeepSeek model, live native controller, full data and real retrieval"
+    }
+  },
+  "structured_verified_occurrences": 64,
+  "natural_verified_occurrences_in_completed_turns": 36,
+  "natural_user_hard_violation_occurrences": 0,
+  "original_failed_turns": [
+    {
+      "id": "RN04",
+      "before": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "id": "RN05",
+      "before": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "id": "RN06",
+      "before": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "id": "RN07",
+      "before": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "id": "RN08",
+      "before": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "id": "RN09",
+      "before": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "id": "RN10",
+      "before": "FAIL",
+      "after": "PASS"
+    },
+    {
+      "id": "RN12",
+      "before": "FAIL",
+      "after": "PASS"
+    }
+  ],
+  "local_verified_issue_groups": 4,
+  "total_open_issue_groups": 5,
+  "upstream_integration": "PENDING",
+  "participant_uat": "NOT_RUN",
+  "final_acceptance": "PENDING",
+  "code_checks": {
+    "typescript": {
+      "passed": 168,
+      "skipped": 19,
+      "failed": 0
+    },
+    "python": {
+      "passed": 216,
+      "skipped": 3
+    },
+    "new_regressions": {
+      "typescript": 19,
+      "native_controller": 3,
+      "provenance": 4,
+      "total": 26
+    },
+    "typecheck": "PASS",
+    "recommendation_typecheck": "PASS",
+    "upstream_provenance": {
+      "mode": "manifest-check",
+      "files": 71,
+      "business_logic_changes": 1,
+      "declared_downstream_patches": [
+        "recommendation/agent/controller.py"
+      ]
+    },
+    "build": "PASS"
+  },
+  "model_accounting": {
+    "external_chat_api_attempts": 86,
+    "http_200_model_responses": 85,
+    "http_status_counts": {
+      "200": 85
+    },
+    "transport_errors": 1,
+    "usage": {
+      "prompt_tokens": 257545,
+      "completion_tokens": 7370,
+      "total_tokens": 264915
+    },
+    "provider_reference_cost_usd": "0.020249052",
+    "audit_files": [
+      {
+        "path": "app-model-audit.jsonl",
+        "attempts": 36,
+        "http_200": 35
+      },
+      {
+        "path": "native-model-audit.jsonl",
+        "attempts": 50,
+        "http_200": 50
+      }
+    ],
+    "cost_interpretation": "Provider reference amount, not an invoice or a verified subscription charge.",
+    "combined_attempts": 635,
+    "combined_http_200": 629,
+    "combined_reported_tokens": 970143,
+    "combined_reference_cost_usd": "0.101216292"
+  },
+  "completed_at": "2026-10-21T19:25:21.122792+08:00",
+  "owned_services_stopped": true,
+  "services_stopped_at": "2026-10-21T19:28:53.173156+08:00"
+}
