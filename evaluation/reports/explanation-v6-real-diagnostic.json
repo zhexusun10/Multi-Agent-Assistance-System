@@ -1,0 +1,76 @@
+{
+  "tag": "v6-real-diagnostic",
+  "split": "development",
+  "checked_at": "2026-10-21T13:59:24.887Z",
+  "model": "openai:deepseek-flash",
+  "hashes": {
+    "src/agents/explanation/contracts.ts": "4ae51bb609e04816dc31dc90e9d6a8db0009765619188a418135a2fb708b0b9d",
+    "src/agents/explanation/evidence.ts": "b66b6de70cb615eaa62671b54a042e082855ba644866edccc64960c880c4414b",
+    "src/agents/explanation/prompt.ts": "3822be6f3379da872f32b92d95813e3c707ea6dec44570a9206e8fa2fb59dd60",
+    "src/agents/explanation/few-shot.ts": "4edc2701fd392761b5e5aa0abe9db089daf05169927e7de1b9008fd26345ea16",
+    "src/agents/explanation/validation.ts": "18000f877e24fa9da105063fe9db4c086c4fada69f36524b84cf63aaf01c5a3b",
+    "src/agents/explanation/generator.ts": "0a490d3efbfce738a937485cf0530b879cd5bcffdc8ce3ed64dfe188740b9cc5",
+    "skills/evidence-based-explanation/SKILL.md": "5a76fc1e6edd46eec76b13c0b8975acad0f0b7730370b4ffe9e46dddc483f914",
+    "evaluation/explanation-cases.ts": "d6b9c4048254477b4f3a59f81ff49e0cc75758a6e59c8bef9630613603a4444d"
+  },
+  "metrics": {
+    "cases": 1,
+    "passed": 1,
+    "grounded": 1,
+    "ranking_correct": 1,
+    "covers_question": 1,
+    "natural": 1,
+    "concise": 1,
+    "exceptions": 0,
+    "repaired": 0,
+    "average_characters": 182
+  },
+  "by_scenario": {
+    "numeric_titles": {
+      "cases": 1,
+      "passed": 1,
+      "grounded": 1,
+      "ranking_correct": 1,
+      "covers_question": 1,
+      "natural": 1,
+      "concise": 1,
+      "exceptions": 0,
+      "repaired": 0,
+      "average_characters": 182
+    }
+  },
+  "results": [
+    {
+      "id": "numeric_titles-dev-1",
+      "scenario": "numeric_titles",
+      "split": "development",
+      "query": "为什么推荐这几套房子？",
+      "gold": "预算和学校范围先筛选，唯一实际排序因素是更靠近学校。第一套941 Jurong West Street 91，第二套906 Jurong West Street 91；941、906可作为楼号简称，不是虚构数值。MRT/公交1公里尚未知，不能说满足，不能把预算当价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明预算与学校范围先筛选、唯一排序因素是更靠近学校，941约850米排第一、906约1600米排第二；明确价格只是门槛不决定排序；对1公里内MRT/公交未知、租金与可租状态需核实均诚实说明。无虚构事实，语言自然简洁，中文约200字。"
+      },
+      "answer": "这两套都先通过了月租不超过3000新币、离南洋理工大学直线距离不超过5公里的必须条件。\n\n排序时实际起作用的是“越靠近学校越好”：第一套记录约850米，第二套约1600米，所以第一套排在前面。第二套月租1600新币虽然更低，但价格只是筛选门槛，不决定先后。\n\n两套附近是否有1公里内的地铁或公交站，目前还不能确认；记录中的租金和现在是否仍可租，也需要向经纪人核实。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 3069
+      },
+      "characters": 182,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4413
+    }
+  ]
+}

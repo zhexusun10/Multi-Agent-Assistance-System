@@ -29,7 +29,7 @@ test('native output preserves order, fused scores, full breakdown and raw exchan
  assert.deepEqual(rec.recommendations.map(c=>c.listing.listing_id),f.envelope.response.recommendations.map((c:any)=>c.listing.listing_id));
  assert.deepEqual(f.archive().response,f.envelope.response);
  for(const item of rec.recommendations){const original=f.envelope.response.recommendations.find((c:any)=>c.listing.listing_id===item.listing.listing_id);assert.equal(item.score,original.scores.combined_score);assert.deepEqual(rec.native!.scores[item.listing.listing_id],original.scores);}
- assert(rec.evidence.every(e=>e.source_ref===rec.native!.exchange_ref));assert(buildExplanation(f.req.requirements,rec,'synthetic','解释第一套为什么推荐').summary.includes('原生融合匹配分'));
+ assert(rec.evidence.every(e=>e.source_ref===rec.native!.exchange_ref));const explanation=buildExplanation(f.req.requirements,rec,'synthetic','解释第一套为什么推荐');assert.deepEqual(explanation.verified[0].native_scores,rec.native!.scores[rec.recommendations[0].listing.listing_id]);assert(!explanation.summary.includes('原生融合匹配分'));
 });
 test('unsupported hard app criteria stay visible and unverified; native response remains byte-equivalent',async()=>{
  const f=await fixture();f.req.requirements.criteria.push({criterion_id:'bath',field:'amenities',operator:'eq',value:'private_bathroom',strength:'hard'});

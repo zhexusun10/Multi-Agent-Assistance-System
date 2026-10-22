@@ -59,6 +59,8 @@ class ApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(response.headers["content-type"].startswith("text/event-stream"))
         self.assertIn("event: master_answer", response.text)
         self.assertIn('"spawned_agents":["a"]', response.text)
+        self.assertIn('no-store', response.headers['cache-control'])
+        self.assertEqual(response.headers['x-accel-buffering'], 'no')
 
     async def test_events_relay_cursor_and_runtime_answer(self):
         response = await self.api_client.get(

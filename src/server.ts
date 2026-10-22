@@ -20,6 +20,7 @@ import {DeliveryError} from './integrations/messaging.js';
 import {displayedCandidates} from './domain/selection.js';
 import {INTENT_PARAMETERS} from './agents/orchestrator/intent-templates.js';
 import {RAG_PARAMETERS} from './domain/knowledge.js';
+import {BehaviorService,INTEREST_POLICY} from './domain/behavior.js';
 
 const databaseUrl=process.env.DATABASE_URL;
 if(!databaseUrl)throw Error('DATABASE_URL is required');
@@ -35,6 +36,7 @@ if(projectConfig&&providerKey&&Object.hasOwn(projectConfig,providerKey))process.
 const useModel=process.env.LLM_MODE==='model'||(process.env.LLM_MODE!=='rules'&&!!process.env[providerKey]);
 const model=useModel||!business?await createModel():undefined;
 const store=new DomainStore(pool,tasks,events);if(business)await store.setup();
+const behavior=new BehaviorService(store);
 const intentModel=useModel?await createModel(undefined,{maxTokens:INTENT_PARAMETERS.max_tokens,temperature:INTENT_PARAMETERS.temperature}):undefined;
 const knowledgeModels=useModel?{answer:await createModel(undefined,{maxTokens:2048,temperature:.1}),rewriteModel:await createModel(undefined,{maxTokens:RAG_PARAMETERS.rewrite_max_tokens,temperature:RAG_PARAMETERS.rewrite_temperature}),rerankModel:await createModel(undefined,{maxTokens:768,temperature:.1})}:{};
 const workflow=business?new WorkflowService(store,process.env.DATASET_VERSION||'historical-csv-main-0c45bf3',model,intentModel,knowledgeModels):undefined;
@@ -80,12 +82,14 @@ const server=createServer(async(req,res)=>{
   const url=new URL(req.url||'/',`http://${req.headers.host||'localhost'}`);
   try{
     if(req.method==='GET'&&url.pathname==='/health'){await pool.query('SELECT 1');return send(200,{status:'ok',llm_mode:useModel?'model':'rules',business_enabled:business});}
-    if(req.method==='GET'&&url.pathname==='/config')return send(200,{dataset:workflow?.dataset,llm_mode:useModel?'model':'rules',model:useModel?process.env.CHAT_MODEL:null,recommendation_mode:process.env.RECOMMENDATION_MODE||'baseline',action_mode:workflow?.followup.gateway.capabilities().mode||'simulation',integrations:workflow?.followup.gateway.capabilities(),now:new Date().toISOString(),today:singaporeDate(),time_zone:'Asia/Singapore',knowledge_mode:process.env.KNOWLEDGE_MODE||'hybrid_rrf',intent_weights:INTENT_PARAMETERS,rag_parameters:RAG_PARAMETERS,full_snapshot:process.env.DATA_MODE==='full',dataset_counts:dataInfo?.expected_counts||null});
+    if(req.method==='GET'&&url.pathname==='/config')return send(200,{dataset:workflow?.dataset,llm_mode:useModel?'model':'rules',model:useModel?process.env.CHAT_MODEL:null,recommendation_mode:process.env.RECOMMENDATION_MODE||'baseline',action_mode:workflow?.followup.gateway.capabilities().mode||'simulation',integrations:workflow?.followup.gateway.capabilities(),now:new Date().toISOString(),today:singaporeDate(),time_zone:'Asia/Singapore',knowledge_mode:process.env.KNOWLEDGE_MODE||'hybrid_rrf',intent_weights:INTENT_PARAMETERS,rag_parameters:RAG_PARAMETERS,full_snapshot:process.env.DATA_MODE==='full',dataset_counts:dataInfo?.expected_counts||null,developer_mode:process.env.UI_DEVELOPER_MODE==='true',browser_interest:{enabled:true,update_mode:'on_user_request',policy:INTEREST_POLICY}});
     if(workflow&&url.pathname==='/webhooks/whatsapp'&&req.method==='GET'){const challenge=workflow.followup.verifyChallenge(url.searchParams);res.writeHead(200,{'content-type':'text/plain'});return res.end(challenge);}
     if(workflow&&req.method==='POST'&&/^\/webhooks\/(whatsapp|telegram)$/.test(url.pathname)){const channel=url.pathname.endsWith('whatsapp')?'whatsapp':'telegram',signature=req.headers[channel==='whatsapp'?'x-hub-signature-256':'x-telegram-bot-api-secret-token'];return send(200,await workflow.followup.webhook(channel,await readRaw(req),typeof signature==='string'?signature:''));}
     if(workflow&&req.method==='GET'&&url.pathname==='/locations/catalog')return send(200,await workflow.locations.coverage());
     if(workflow&&req.method==='GET'&&url.pathname.startsWith('/locations/')){const id=decodeURIComponent(url.pathname.slice('/locations/'.length));const record=await workflow.locations.describe(id);return send(record?200:404,record||{detail:'Location not found'});}
     const owner=business?token(req):'';
+    if(workflow&&req.method==='POST'&&url.pathname==='/behavior/views')return send(200,await behavior.record(owner,await readBody(req)));
+    if(workflow&&req.method==='GET'&&url.pathname==='/behavior/summary'){const id=z.string().uuid().parse(url.searchParams.get('session_id'));await store.assertOwner(id,owner);return send(200,await behavior.summary(id));}
     if(workflow&&req.method==='POST'&&url.pathname==='/sessions'){const id=await store.create(owner);return send(201,await store.state(id));}
     if(workflow&&req.method==='GET'&&url.pathname==='/state'){const id=z.string().min(1).parse(url.searchParams.get('session_id'));await store.assertOwner(id,owner);return send(200,{...await store.state(id),...await workflow.followup.snapshot(id)});}
     if(workflow&&req.method==='GET'&&/^\/listings\/\d+\/presentation$/.test(url.pathname)){
@@ -135,6 +139,7 @@ const server=createServer(async(req,res)=>{
     }
     if(workflow&&req.method==='POST'&&url.pathname==='/feedback'){
       const body=z.object({session_id:z.string().min(1),source_request_id:z.string().uuid(),event:feedbackSchema}).strict().parse(await readBody(req));await store.assertOwner(body.session_id,owner);
+      if(body.event.payload.source==='web_detail')throw new BusinessError('BEHAVIOR_ENDPOINT_REQUIRED','真实浏览数据必须通过浏览采集接口校验。',422);
       if(process.env.RECOMMENDATION_MODE==='native'&&body.event.event_type==='active_view'&&body.event.payload.source==='sample'){
         const p=z.object({source:z.literal('sample'),recommendation_request_id:z.string().uuid(),view_session_id:z.string().uuid(),active_duration_ms:z.number().finite().positive().max(3600000)}).strict().parse(body.event.payload);
         const current=await store.state(body.session_id);

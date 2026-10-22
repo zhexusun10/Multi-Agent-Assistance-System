@@ -1,0 +1,4096 @@
+{
+  "checked_at": "2026-10-21T12:52:15.047Z",
+  "mode": "model",
+  "tag": "v4-holdout",
+  "split": "holdout",
+  "model": "openai:deepseek-flash",
+  "concurrency": 3,
+  "hashes": {
+    "src/agents/requirement/contracts.ts": "f39c1a8263d43072233ef34706c2e9a8a3154306e60fb475ed8253512acb47c6",
+    "src/agents/requirement/extractor.ts": "65e04846989b88d5b65483767cc38780f6c8718e4069e5bd1ce3f47a0fd2fc63",
+    "src/agents/requirement/prompt.ts": "4dd397dad3ed98437928af2b9eab2d780aed0444b1f38fc1d7bce56b951a36dd",
+    "src/agents/requirement/validation.ts": "2eb62c51fc2dfd26da833ca7ff2ec3292467bd61025bbfd7d06d5d7a5e876125",
+    "src/agents/requirement/few-shot.ts": "08604aeb7a0d760d1470854e69747bea1971e6b05d54c890d4fbfc97473277cb",
+    "skills/rental-requirement-intake/SKILL.md": "67e8586d05e34acbcf63f0c58d2356e410c0b17187d073d776a4b58fbdbb33f6",
+    "evaluation/intake-llm-cases.ts": "548ceb1de39e9f428aa7e192461d81ebcb3bd63299bed3aed15617b4f1f32a8d"
+  },
+  "metrics": {
+    "cases": 42,
+    "exact_pass": 42,
+    "exact_accuracy": 1,
+    "slot_precision": 1,
+    "slot_recall": 1,
+    "slot_f1": 1,
+    "exceptions": 0,
+    "repair_cases": 1,
+    "p95_latency_ms": 3205
+  },
+  "by_group": {
+    "amenities": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2886
+    },
+    "area-min": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2049
+    },
+    "area-soft": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 1800
+    },
+    "area-sqm": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2210
+    },
+    "availability": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2198
+    },
+    "bathrooms-min": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2209
+    },
+    "bedrooms-min": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2422
+    },
+    "build-year": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2074
+    },
+    "bus-distance": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2153
+    },
+    "clarification": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2121
+    },
+    "commute": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2046
+    },
+    "complex": {
+      "cases": 2,
+      "exact_pass": 2,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 3205
+    },
+    "district": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 1784
+    },
+    "facility-soft": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2369
+    },
+    "furnishing": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2396
+    },
+    "geo-range": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2392
+    },
+    "land-area": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2137
+    },
+    "layout": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2449
+    },
+    "lease": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 3509
+    },
+    "move-in": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2148
+    },
+    "mrt-distance": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2318
+    },
+    "nearby-vague": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2006
+    },
+    "nus-radius": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 1994
+    },
+    "postal": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2061
+    },
+    "private-bath": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2117
+    },
+    "property-type": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2348
+    },
+    "update": {
+      "cases": 2,
+      "exact_pass": 2,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2418
+    },
+    "region": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2008
+    },
+    "removal": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 1907
+    },
+    "rent-max": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2161
+    },
+    "rent-range": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 1907
+    },
+    "rent-soft": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2150
+    },
+    "reported-mrt": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2374
+    },
+    "reported-mrt-distance": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2078
+    },
+    "supermarket": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2291
+    },
+    "tenure": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2431
+    },
+    "transport-and": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 1889
+    },
+    "transport-or": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2453
+    },
+    "walking-distance": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 1,
+      "p95_latency_ms": 3858
+    },
+    "whole-unit": {
+      "cases": 1,
+      "exact_pass": 1,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2370
+    }
+  },
+  "by_split": {
+    "development": {
+      "cases": 0,
+      "exact_pass": 0,
+      "exact_accuracy": 0,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0
+    },
+    "holdout": {
+      "cases": 42,
+      "exact_pass": 42,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 1,
+      "p95_latency_ms": 3205
+    }
+  },
+  "results": [
+    {
+      "id": "amenities-5",
+      "group": "amenities",
+      "split": "holdout",
+      "query": "冷气不可少；煮饭得允许；我的猫也必须能一起住。",
+      "passed": true,
+      "tp": 3,
+      "expected": 3,
+      "predicted": 3,
+      "expected_slots": [
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "air_conditioning",
+          "strength": "hard"
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "cooking_allowed",
+          "strength": "hard"
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "pet_policy",
+          "strength": "hard"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "air_conditioning",
+          "strength": "hard"
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "cooking_allowed",
+          "strength": "hard"
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "pet_policy",
+          "strength": "hard"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "amenities",
+            "field": "amenities",
+            "operator": "eq",
+            "value": "air_conditioning",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "amenities",
+            "field": "amenities",
+            "operator": "eq",
+            "value": "cooking_allowed",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "amenities",
+            "field": "amenities",
+            "operator": "eq",
+            "value": "pet_policy",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "amenities",
+            "quote": "冷气不可少"
+          },
+          {
+            "field": "amenities",
+            "quote": "煮饭得允许"
+          },
+          {
+            "field": "amenities",
+            "quote": "我的猫也必须能一起住"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "room-no-landlord",
+            "availability"
+          ],
+          "coverage": [
+            {
+              "quote": "冷气不可少",
+              "disposition": "extracted"
+            },
+            {
+              "quote": "煮饭得允许",
+              "disposition": "extracted"
+            },
+            {
+              "quote": "我的猫也必须能一起住。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2886
+    },
+    {
+      "id": "area-min-5",
+      "group": "area-min",
+      "split": "holdout",
+      "query": "面积上别给我小的，室内至少600 sqft。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "floor_area_sqft",
+          "operator": "gte",
+          "value": 600,
+          "strength": "hard",
+          "unit": "sqft"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "floor_area_sqft",
+          "operator": "gte",
+          "value": 600,
+          "strength": "hard",
+          "unit": "sqft"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "floor_area_sqft",
+            "field": "floor_area_sqft",
+            "operator": "gte",
+            "value": 600,
+            "unit": "sqft",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "floor_area_sqft",
+            "quote": "室内至少600 sqft"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "availability",
+            "ambiguous-bedroom"
+          ],
+          "coverage": [
+            {
+              "quote": "面积上别给我小的，室内至少600 sqft。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2049
+    },
+    {
+      "id": "area-soft-5",
+      "group": "area-soft",
+      "split": "holdout",
+      "query": "要说偏好，我是希望面积最少800 sqft，但不是必须。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "floor_area_sqft",
+          "operator": "gte",
+          "value": 800,
+          "strength": "soft",
+          "unit": "sqft"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "floor_area_sqft",
+          "operator": "gte",
+          "value": 800,
+          "strength": "soft",
+          "unit": "sqft",
+          "weight": 1
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "floor_area_sqft",
+            "field": "floor_area_sqft",
+            "operator": "gte",
+            "value": 800,
+            "unit": "sqft",
+            "strength": "soft",
+            "weight": 1
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "floor_area_sqft",
+            "quote": "希望面积最少800 sqft，但不是必须"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "property-district",
+            "rent-interval"
+          ],
+          "coverage": [
+            {
+              "quote": "要说偏好，我是希望面积最少800 sqft，但不是必须。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 1800
+    },
+    {
+      "id": "area-sqm-5",
+      "group": "area-sqm",
+      "split": "holdout",
+      "query": "不能低于55个平方，指平方米的室内面积。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "floor_area_sqft",
+          "operator": "gte",
+          "value": 592.0150729190347,
+          "strength": "hard",
+          "unit": "sqft"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "floor_area_sqft",
+          "operator": "gte",
+          "value": 592.015073,
+          "strength": "hard",
+          "unit": "sqft"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "floor_area_sqft",
+            "field": "floor_area_sqft",
+            "operator": "gte",
+            "value": 592.015073,
+            "unit": "sqft",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "floor_area_sqft",
+            "quote": "不能低于55个平方，指平方米的室内面积"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "area-original-unit",
+            "rent-soft"
+          ],
+          "coverage": [
+            {
+              "quote": "不能低于55个平方，指平方米的室内面积。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2210
+    },
+    {
+      "id": "availability-5",
+      "group": "availability",
+      "split": "holdout",
+      "query": "我只看现在确实还有空、能出租的房源。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "current_availability",
+          "operator": "eq",
+          "value": true,
+          "strength": "hard"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "current_availability",
+          "operator": "eq",
+          "value": true,
+          "strength": "hard"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "current_availability",
+            "field": "current_availability",
+            "operator": "eq",
+            "value": true,
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "current_availability",
+            "quote": "我只看现在确实还有空、能出租的房源。"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "availability",
+            "property-district"
+          ],
+          "coverage": [
+            {
+              "quote": "我只看现在确实还有空、能出租的房源。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2198
+    },
+    {
+      "id": "bathrooms-min-5",
+      "group": "bathrooms-min",
+      "split": "holdout",
+      "query": "我说的是卫浴数量：最少两间，不是在说要独卫。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "bathrooms",
+          "operator": "gte",
+          "value": 2,
+          "strength": "hard",
+          "unit": "count"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "bathrooms",
+          "operator": "gte",
+          "value": 2,
+          "strength": "hard",
+          "unit": "count"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "bathrooms",
+            "field": "bathrooms",
+            "operator": "gte",
+            "value": 2,
+            "unit": "count",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "bathrooms",
+            "quote": "我说的是卫浴数量：最少两间"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "bedroom-minimum",
+            "transport-mode-update"
+          ],
+          "coverage": [
+            {
+              "quote": "我说的是卫浴数量：最少两间，不是在说要独卫。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2209
+    },
+    {
+      "id": "bedrooms-min-5",
+      "group": "bedrooms-min",
+      "split": "holdout",
+      "query": "一两间卧室不够，得三间起步。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "bedrooms",
+          "operator": "gte",
+          "value": 3,
+          "strength": "hard",
+          "unit": "count"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "bedrooms",
+          "operator": "gte",
+          "value": 3,
+          "strength": "hard",
+          "unit": "count"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "minimum-bedrooms",
+            "field": "bedrooms",
+            "operator": "gte",
+            "value": 3,
+            "unit": "count",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "bedrooms",
+            "quote": "得三间起步"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "bedroom-minimum",
+            "bath-count-is-not-private"
+          ],
+          "coverage": [
+            {
+              "quote": "一两间卧室不够，得三间起步。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2422
+    },
+    {
+      "id": "build-year-5",
+      "group": "build-year",
+      "split": "holdout",
+      "query": "2005年之前建好的那些就不考虑了。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "build_year",
+          "operator": "gte",
+          "value": 2005,
+          "strength": "hard",
+          "unit": "year"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "build_year",
+          "operator": "gte",
+          "value": 2005,
+          "strength": "hard",
+          "unit": "year"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "build_year",
+            "field": "build_year",
+            "operator": "gte",
+            "value": 2005,
+            "unit": "year",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "build_year",
+            "quote": "2005年之前建好的那些就不考虑了"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "furniture-lease",
+            "near-no-radius"
+          ],
+          "coverage": [
+            {
+              "quote": "2005年之前建好的那些就不考虑了。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2074
+    },
+    {
+      "id": "bus-distance-5",
+      "group": "bus-distance",
+      "split": "holdout",
+      "query": "不是一定要，但屋子附近450米内能有巴士站就很好。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 450,
+          "strength": "soft",
+          "unit": "m",
+          "target": "BusStop",
+          "distance_type": "straight_line"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 450,
+          "strength": "soft",
+          "unit": "m",
+          "target": "BusStop",
+          "distance_type": "straight_line",
+          "weight": 1
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "最近的公交站",
+            "quote": "屋子附近450米内能有巴士站就很好",
+            "radius_m": 450,
+            "operator": "lte",
+            "weight": 1,
+            "strength": "soft",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false,
+            "category": "BusStop"
+          }
+        ],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "bus-only",
+            "university-geo"
+          ],
+          "coverage": [
+            {
+              "quote": "不是一定要，但屋子附近450米内能有巴士站就很好。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2153
+    },
+    {
+      "id": "clarify-4",
+      "group": "clarification",
+      "split": "holdout",
+      "query": "预算3000美元每月。",
+      "passed": true,
+      "tp": 0,
+      "expected": 0,
+      "predicted": 0,
+      "expected_slots": [],
+      "actual_slots": [],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [],
+        "remove_fields": [],
+        "clarifications": [
+          "您说的“美元”是指新加坡元（SGD）还是美元（USD）？本服务只按SGD/月处理，不做汇率换算。"
+        ],
+        "sources": [],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "change-single",
+            "rent-ceiling"
+          ],
+          "coverage": [
+            {
+              "quote": "预算3000美元每月。",
+              "disposition": "clarification"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2121
+    },
+    {
+      "id": "commute-5",
+      "group": "commute",
+      "split": "holdout",
+      "query": "每天去NTU，搭公交地铁不能花超过35分钟。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "commute_time",
+          "operator": "lte",
+          "value": 35,
+          "strength": "hard",
+          "unit": "min",
+          "target": "NTU",
+          "transport_mode": "transit"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "commute_time",
+          "operator": "lte",
+          "value": 35,
+          "strength": "hard",
+          "unit": "min",
+          "target": "NTU",
+          "transport_mode": "transit"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "commute_time",
+            "field": "commute_time",
+            "operator": "lte",
+            "value": 35,
+            "unit": "min",
+            "strength": "hard",
+            "target": {
+              "name": "NTU"
+            },
+            "transport_mode": "transit"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "commute_time",
+            "quote": "每天去NTU，搭公交地铁不能花超过35分钟"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "route-not-proximity",
+            "transport-and"
+          ],
+          "coverage": [
+            {
+              "quote": "每天去NTU，搭公交地铁不能花超过35分钟。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2046
+    },
+    {
+      "id": "complex-negation",
+      "group": "complex",
+      "split": "holdout",
+      "query": "不是说一定要泳池，只是有更好；空调却不能没有。面积别低于50平方米，3500新币每月封顶，别跟屋主住一起，MRT或公交站最好能在600米内，去NTU别超过4公里。",
+      "passed": true,
+      "tp": 7,
+      "expected": 7,
+      "predicted": 7,
+      "expected_slots": [
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "swimming_pool",
+          "strength": "soft"
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "air_conditioning",
+          "strength": "hard"
+        },
+        {
+          "field": "floor_area_sqft",
+          "operator": "gte",
+          "value": 538.1955208354861,
+          "strength": "hard",
+          "unit": "sqft"
+        },
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 3500,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "no_live_in_landlord",
+          "strength": "hard"
+        },
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 600,
+          "strength": "soft",
+          "unit": "m",
+          "target": "PublicTransport",
+          "distance_type": "straight_line"
+        },
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 4000,
+          "strength": "hard",
+          "unit": "m",
+          "target": "NTU",
+          "distance_type": "straight_line"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "swimming_pool",
+          "strength": "soft",
+          "weight": 1
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "air_conditioning",
+          "strength": "hard"
+        },
+        {
+          "field": "floor_area_sqft",
+          "operator": "gte",
+          "value": 538.195521,
+          "strength": "hard",
+          "unit": "sqft"
+        },
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 3500,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "no_live_in_landlord",
+          "strength": "hard"
+        },
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 600,
+          "strength": "soft",
+          "unit": "m",
+          "target": "PublicTransport",
+          "distance_type": "straight_line",
+          "weight": 1
+        },
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 4000,
+          "strength": "hard",
+          "unit": "m",
+          "target": "NTU",
+          "distance_type": "straight_line",
+          "weight": 1
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "amenities",
+            "field": "amenities",
+            "operator": "eq",
+            "value": "swimming_pool",
+            "strength": "soft",
+            "weight": 1
+          },
+          {
+            "criterion_id": "amenities",
+            "field": "amenities",
+            "operator": "eq",
+            "value": "air_conditioning",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "floor_area_sqft",
+            "field": "floor_area_sqft",
+            "operator": "gte",
+            "value": 538.195521,
+            "unit": "sqft",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 3500,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "amenities",
+            "field": "amenities",
+            "operator": "eq",
+            "value": "no_live_in_landlord",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "amenities",
+            "quote": "不是说一定要泳池，只是有更好"
+          },
+          {
+            "field": "amenities",
+            "quote": "空调却不能没有"
+          },
+          {
+            "field": "floor_area_sqft",
+            "quote": "面积别低于50平方米"
+          },
+          {
+            "field": "price",
+            "quote": "3500新币每月封顶"
+          },
+          {
+            "field": "amenities",
+            "quote": "别跟屋主住一起"
+          }
+        ],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "最近的MRT或公交站",
+            "quote": "MRT或公交站最好能在600米内",
+            "radius_m": 600,
+            "operator": "lte",
+            "weight": 1,
+            "strength": "soft",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": true,
+            "category": "PublicTransport"
+          },
+          {
+            "name": "NTU",
+            "quote": "去NTU别超过4公里",
+            "radius_m": 4000,
+            "operator": "lte",
+            "strength": "hard",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false
+          }
+        ],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "area-original-unit",
+            "amenity-preferences"
+          ],
+          "coverage": [
+            {
+              "quote": "不是说一定要泳池，只是有更好",
+              "disposition": "extracted"
+            },
+            {
+              "quote": "空调却不能没有",
+              "disposition": "extracted"
+            },
+            {
+              "quote": "面积别低于50平方米",
+              "disposition": "extracted"
+            },
+            {
+              "quote": "3500新币每月封顶",
+              "disposition": "extracted"
+            },
+            {
+              "quote": "别跟屋主住一起",
+              "disposition": "extracted"
+            },
+            {
+              "quote": "MRT或公交站最好能在600米内",
+              "disposition": "extracted"
+            },
+            {
+              "quote": "去NTU别超过4公里",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 3205
+    },
+    {
+      "id": "district-5",
+      "group": "district",
+      "split": "holdout",
+      "query": "新加坡邮区选05或者21，其他的先不考虑。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "district",
+          "operator": "in",
+          "value": [
+            "D05",
+            "D21"
+          ],
+          "strength": "hard"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "district",
+          "operator": "in",
+          "value": [
+            "D05",
+            "D21"
+          ],
+          "strength": "hard"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "preferred-district",
+            "field": "district",
+            "operator": "in",
+            "value": [
+              "D05",
+              "D21"
+            ],
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "district",
+            "quote": "新加坡邮区选05或者21"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "market-region",
+            "property-district"
+          ],
+          "coverage": [
+            {
+              "quote": "新加坡邮区选05或者21，其他的先不考虑。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 1784
+    },
+    {
+      "id": "facility-soft-5",
+      "group": "facility-soft",
+      "split": "holdout",
+      "query": "健身房不是必须，泳池也不是必须，两样有就加分。",
+      "passed": true,
+      "tp": 2,
+      "expected": 2,
+      "predicted": 2,
+      "expected_slots": [
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "swimming_pool",
+          "strength": "soft"
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "gym",
+          "strength": "soft"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "gym",
+          "strength": "soft",
+          "weight": 1
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "swimming_pool",
+          "strength": "soft",
+          "weight": 1
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "amenities",
+            "field": "amenities",
+            "operator": "eq",
+            "value": "gym",
+            "strength": "soft",
+            "weight": 1
+          },
+          {
+            "criterion_id": "amenities",
+            "field": "amenities",
+            "operator": "eq",
+            "value": "swimming_pool",
+            "strength": "soft",
+            "weight": 1
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "amenities",
+            "quote": "健身房不是必须"
+          },
+          {
+            "field": "amenities",
+            "quote": "泳池也不是必须"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "property-district",
+            "amenity-preferences"
+          ],
+          "coverage": [
+            {
+              "quote": "健身房不是必须，泳池也不是必须，两样有就加分。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2369
+    },
+    {
+      "id": "furnishing-5",
+      "group": "furnishing",
+      "split": "holdout",
+      "query": "家具配置得完整，不接受空屋。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "furnishing",
+          "operator": "eq",
+          "value": "fully_furnished",
+          "strength": "hard"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "furnishing",
+          "operator": "eq",
+          "value": "fully_furnished",
+          "strength": "hard"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "furnishing",
+            "field": "furnishing",
+            "operator": "eq",
+            "value": "fully_furnished",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "furnishing",
+            "quote": "家具配置得完整，不接受空屋"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "furniture-lease",
+            "market-region"
+          ],
+          "coverage": [
+            {
+              "quote": "家具配置得完整，不接受空屋。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2396
+    },
+    {
+      "id": "geo-band",
+      "group": "geo-range",
+      "split": "holdout",
+      "query": "和NUS保持一到两公里的距离，不要更近也不要更远。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "@location",
+          "operator": "between",
+          "value": [
+            1000,
+            2000
+          ],
+          "strength": "hard",
+          "unit": "m",
+          "target": "NUS",
+          "distance_type": "straight_line"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "@location",
+          "operator": "between",
+          "value": [
+            1000,
+            2000
+          ],
+          "strength": "hard",
+          "unit": "m",
+          "target": "NUS",
+          "distance_type": "straight_line",
+          "weight": 1
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "NUS",
+            "quote": "和NUS保持一到两公里的距离，不要更近也不要更远",
+            "range_m": [
+              1000,
+              2000
+            ],
+            "operator": "between",
+            "strength": "hard",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false
+          }
+        ],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "distance-interval",
+            "bus-only"
+          ],
+          "coverage": [
+            {
+              "quote": "和NUS保持一到两公里的距离，不要更近也不要更远。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2392
+    },
+    {
+      "id": "land-area-5",
+      "group": "land-area",
+      "split": "holdout",
+      "query": "有地住宅的土地至少要1200平方英尺。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "land_area_sqft",
+          "operator": "gte",
+          "value": 1200,
+          "strength": "hard",
+          "unit": "sqft"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "land_area_sqft",
+          "operator": "gte",
+          "value": 1200,
+          "strength": "hard",
+          "unit": "sqft"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "land_area_sqft",
+            "field": "land_area_sqft",
+            "operator": "gte",
+            "value": 1200,
+            "unit": "sqft",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "land_area_sqft",
+            "quote": "有地住宅的土地至少要1200平方英尺"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "building-land",
+            "plain-mrt-distance"
+          ],
+          "coverage": [
+            {
+              "quote": "有地住宅的土地至少要1200平方英尺。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2137
+    },
+    {
+      "id": "layout-5",
+      "group": "layout",
+      "split": "holdout",
+      "query": "卧室两间、卫生间也两间，都要恰好这个数。",
+      "passed": true,
+      "tp": 2,
+      "expected": 2,
+      "predicted": 2,
+      "expected_slots": [
+        {
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 2,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 2,
+          "strength": "hard",
+          "unit": "count"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 2,
+          "strength": "hard",
+          "unit": "count"
+        },
+        {
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 2,
+          "strength": "hard",
+          "unit": "count"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "minimum-bedrooms",
+            "field": "bedrooms",
+            "operator": "eq",
+            "value": 2,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "bathrooms",
+            "field": "bathrooms",
+            "operator": "eq",
+            "value": 2,
+            "unit": "count",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "bedrooms",
+            "quote": "卧室两间"
+          },
+          {
+            "field": "bathrooms",
+            "quote": "卫生间也两间"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "bedroom-minimum",
+            "bath-count-is-not-private"
+          ],
+          "coverage": [
+            {
+              "quote": "卧室两间、卫生间也两间，都要恰好这个数。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2449
+    },
+    {
+      "id": "lease-5",
+      "group": "lease",
+      "split": "holdout",
+      "query": "住的租期不要短于九个月。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "lease_months",
+          "operator": "gte",
+          "value": 9,
+          "strength": "hard",
+          "unit": "month"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "lease_months",
+          "operator": "gte",
+          "value": 9,
+          "strength": "hard",
+          "unit": "month"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "lease_months",
+            "field": "lease_months",
+            "operator": "gte",
+            "value": 9,
+            "unit": "month",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "lease_months",
+            "quote": "住的租期不要短于九个月"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "furniture-lease",
+            "rent-ceiling"
+          ],
+          "coverage": [
+            {
+              "quote": "住的租期不要短于九个月。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 3509
+    },
+    {
+      "id": "move-in-5",
+      "group": "move-in",
+      "split": "holdout",
+      "query": "不能晚于2027年2月1日拿到房入住。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "move_in_date",
+          "operator": "lte",
+          "value": "2027-02-01",
+          "strength": "hard"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "move_in_date",
+          "operator": "lte",
+          "value": "2027-02-01",
+          "strength": "hard"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "move_in_date",
+            "field": "move_in_date",
+            "operator": "lte",
+            "value": "2027-02-01",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "move_in_date",
+            "quote": "不能晚于2027年2月1日拿到房入住"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "furniture-lease",
+            "room-no-landlord"
+          ],
+          "coverage": [
+            {
+              "quote": "不能晚于2027年2月1日拿到房入住。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2148
+    },
+    {
+      "id": "mrt-distance-5",
+      "group": "mrt-distance",
+      "split": "holdout",
+      "query": "房子周边，地铁站最远就900米，不能再远。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 900,
+          "strength": "hard",
+          "unit": "m",
+          "target": "MRTStation",
+          "distance_type": "straight_line"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 900,
+          "strength": "hard",
+          "unit": "m",
+          "target": "MRTStation",
+          "distance_type": "straight_line",
+          "weight": 1
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "最近的MRT地铁站",
+            "quote": "地铁站最远就900米，不能再远",
+            "radius_m": 900,
+            "operator": "lte",
+            "strength": "hard",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false,
+            "category": "MRTStation"
+          }
+        ],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "transport-and",
+            "university-geo"
+          ],
+          "coverage": [
+            {
+              "quote": "房子周边，地铁站最远就900米，不能再远。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2318
+    },
+    {
+      "id": "multi-geo",
+      "group": "complex",
+      "split": "holdout",
+      "query": "靠近NUS越近越好；公园与超市则都必须在900米内，月租上限2600。",
+      "passed": true,
+      "tp": 4,
+      "expected": 4,
+      "predicted": 4,
+      "expected_slots": [
+        {
+          "field": "@location",
+          "operator": "near",
+          "value": null,
+          "strength": "soft",
+          "unit": "m",
+          "target": "NUS",
+          "distance_type": "straight_line"
+        },
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 900,
+          "strength": "hard",
+          "unit": "m",
+          "target": "Park",
+          "distance_type": "straight_line"
+        },
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 900,
+          "strength": "hard",
+          "unit": "m",
+          "target": "Supermarket",
+          "distance_type": "straight_line"
+        },
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2600,
+          "strength": "hard",
+          "unit": "SGD/month"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2600,
+          "strength": "hard",
+          "unit": "SGD/month"
+        },
+        {
+          "field": "@location",
+          "operator": "near",
+          "value": null,
+          "strength": "soft",
+          "unit": "m",
+          "target": "NUS",
+          "distance_type": "straight_line",
+          "weight": 1
+        },
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 900,
+          "strength": "hard",
+          "unit": "m",
+          "target": "Park",
+          "distance_type": "straight_line",
+          "weight": 1
+        },
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 900,
+          "strength": "hard",
+          "unit": "m",
+          "target": "Supermarket",
+          "distance_type": "straight_line",
+          "weight": 1
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2600,
+            "unit": "SGD/month",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "price",
+            "quote": "月租上限2600"
+          }
+        ],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "NUS",
+            "quote": "靠近NUS越近越好",
+            "weight": 1,
+            "strength": "soft",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": true
+          },
+          {
+            "name": "公园",
+            "quote": "公园与超市则都必须在900米内",
+            "radius_m": 900,
+            "operator": "lte",
+            "strength": "hard",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false,
+            "category": "Park"
+          },
+          {
+            "name": "超市",
+            "quote": "公园与超市则都必须在900米内",
+            "radius_m": 900,
+            "operator": "lte",
+            "strength": "hard",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false,
+            "category": "Supermarket"
+          }
+        ],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "plain-mrt-distance",
+            "refresh-has-change"
+          ],
+          "coverage": [
+            {
+              "quote": "靠近NUS越近越好",
+              "disposition": "extracted"
+            },
+            {
+              "quote": "公园与超市则都必须在900米内",
+              "disposition": "extracted"
+            },
+            {
+              "quote": "月租上限2600",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 3093
+    },
+    {
+      "id": "nearby-vague-5",
+      "group": "nearby-vague",
+      "split": "holdout",
+      "query": "在金文泰这一带，尽量挨近点。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "@location",
+          "operator": "near",
+          "value": null,
+          "strength": "soft",
+          "unit": "m",
+          "target": "CLEMENTI",
+          "distance_type": "straight_line"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "@location",
+          "operator": "near",
+          "value": null,
+          "strength": "soft",
+          "unit": "m",
+          "target": "金文泰",
+          "distance_type": "straight_line",
+          "weight": 1
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "金文泰",
+            "quote": "在金文泰这一带，尽量挨近点",
+            "weight": 1,
+            "strength": "soft",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": true
+          }
+        ],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "near-no-radius",
+            "bus-only"
+          ],
+          "coverage": [
+            {
+              "quote": "在金文泰这一带，尽量挨近点。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2006
+    },
+    {
+      "id": "nus-radius-5",
+      "group": "nus-radius",
+      "split": "holdout",
+      "query": "先说位置，房子离NUS最多四千米。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 4000,
+          "strength": "hard",
+          "unit": "m",
+          "target": "NUS",
+          "distance_type": "straight_line"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 4000,
+          "strength": "hard",
+          "unit": "m",
+          "target": "NUS",
+          "distance_type": "straight_line",
+          "weight": 1
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "NUS",
+            "quote": "房子离NUS最多四千米",
+            "radius_m": 4000,
+            "operator": "lte",
+            "strength": "hard",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false
+          }
+        ],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "named-station",
+            "rent-ceiling"
+          ],
+          "coverage": [
+            {
+              "quote": "先说位置，房子离NUS最多四千米。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 1994
+    },
+    {
+      "id": "postal-5",
+      "group": "postal",
+      "split": "holdout",
+      "query": "地址邮编，要求059817。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "postal_code",
+          "operator": "eq",
+          "value": "059817",
+          "strength": "hard"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "postal_code",
+          "operator": "eq",
+          "value": "059817",
+          "strength": "hard"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "postal_code",
+            "field": "postal_code",
+            "operator": "eq",
+            "value": "059817",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "postal_code",
+            "quote": "要求059817"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "building-land",
+            "bath-count-is-not-private"
+          ],
+          "coverage": [
+            {
+              "quote": "地址邮编，要求059817。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2061
+    },
+    {
+      "id": "private-bath-5",
+      "group": "private-bath",
+      "split": "holdout",
+      "query": "我不要跟室友共用卫浴，要专用的。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "private_bathroom",
+          "strength": "hard"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "private_bathroom",
+          "strength": "hard"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "amenities",
+            "field": "amenities",
+            "operator": "eq",
+            "value": "private_bathroom",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "amenities",
+            "quote": "我不要跟室友共用卫浴，要专用的"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "private-bath",
+            "remove-only"
+          ],
+          "coverage": [
+            {
+              "quote": "我不要跟室友共用卫浴，要专用的。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2117
+    },
+    {
+      "id": "property-type-5",
+      "group": "property-type",
+      "split": "holdout",
+      "query": "只要condo这种住宅。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "property_type",
+          "operator": "eq",
+          "value": "Condominium",
+          "strength": "hard"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "property_type",
+          "operator": "eq",
+          "value": "Condominium",
+          "strength": "hard"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "property_type",
+            "field": "property_type",
+            "operator": "eq",
+            "value": "Condominium",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "property_type",
+            "quote": "只要condo这种住宅"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "plain-mrt-distance",
+            "property-district"
+          ],
+          "coverage": [
+            {
+              "quote": "只要condo这种住宅。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2348
+    },
+    {
+      "id": "refresh-with-new-condition",
+      "group": "update",
+      "split": "holdout",
+      "query": "按之前的条件重新推荐，不过这次附近一公里最好有公交站。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 1000,
+          "strength": "soft",
+          "unit": "m",
+          "target": "BusStop",
+          "distance_type": "straight_line"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 1000,
+          "strength": "soft",
+          "unit": "m",
+          "target": "BusStop",
+          "distance_type": "straight_line",
+          "weight": 1
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "最近的公交站",
+            "quote": "附近一公里最好有公交站",
+            "radius_m": 1000,
+            "operator": "lte",
+            "weight": 1,
+            "strength": "soft",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false,
+            "category": "BusStop"
+          }
+        ],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "refresh-has-change",
+            "university-geo"
+          ],
+          "coverage": [
+            {
+              "quote": "按之前的条件重新推荐",
+              "disposition": "context"
+            },
+            {
+              "quote": "不过这次附近一公里最好有公交站",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2264
+    },
+    {
+      "id": "region-5",
+      "group": "region",
+      "split": "holdout",
+      "query": "市场分区要OCR，其余的不要。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "region_code",
+          "operator": "eq",
+          "value": "OCR",
+          "strength": "hard"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "region_code",
+          "operator": "eq",
+          "value": "OCR",
+          "strength": "hard"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "region_code",
+            "field": "region_code",
+            "operator": "eq",
+            "value": "OCR",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "region_code",
+            "quote": "市场分区要OCR"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "market-region",
+            "route-not-proximity"
+          ],
+          "coverage": [
+            {
+              "quote": "市场分区要OCR，其余的不要。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2008
+    },
+    {
+      "id": "remove-private-5",
+      "group": "removal",
+      "split": "holdout",
+      "query": "共用卫浴也能接受了，其他的照旧。",
+      "passed": true,
+      "tp": 0,
+      "expected": 0,
+      "predicted": 0,
+      "expected_slots": [],
+      "actual_slots": [],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "amenities",
+            "quote": "共用卫浴也能接受了"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [
+          "amenities:private_bathroom"
+        ],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "private-bath",
+            "change-single"
+          ],
+          "coverage": [
+            {
+              "quote": "共用卫浴也能接受了，其他的照旧。",
+              "disposition": "removed"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 1907
+    },
+    {
+      "id": "rent-max-5",
+      "group": "rent-max",
+      "split": "holdout",
+      "query": "我能承受的月租，最高也就新币2300。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2300,
+          "strength": "hard",
+          "unit": "SGD/month"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2300,
+          "strength": "hard",
+          "unit": "SGD/month"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2300,
+            "unit": "SGD/month",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "price",
+            "quote": "最高也就新币2300"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "rent-ceiling",
+            "rent-interval"
+          ],
+          "coverage": [
+            {
+              "quote": "我能承受的月租，最高也就新币2300。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2161
+    },
+    {
+      "id": "rent-range-5",
+      "group": "rent-range",
+      "split": "holdout",
+      "query": "房租别低于1500，也别高于2200新币每月。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "price",
+          "operator": "between",
+          "value": [
+            1500,
+            2200
+          ],
+          "strength": "hard",
+          "unit": "SGD/month"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "price",
+          "operator": "between",
+          "value": [
+            1500,
+            2200
+          ],
+          "strength": "hard",
+          "unit": "SGD/month"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "between",
+            "value": [
+              1500,
+              2200
+            ],
+            "unit": "SGD/month",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "price",
+            "quote": "房租别低于1500，也别高于2200新币每月。"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "rent-soft",
+            "rent-ceiling"
+          ],
+          "coverage": [
+            {
+              "quote": "房租别低于1500，也别高于2200新币每月。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 1907
+    },
+    {
+      "id": "rent-soft-5",
+      "group": "rent-soft",
+      "split": "holdout",
+      "query": "我要求最好找每个月1800新币以内的，超一点可以商量。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 1800,
+          "strength": "soft",
+          "unit": "SGD/month"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 1800,
+          "strength": "soft",
+          "unit": "SGD/month",
+          "weight": 1
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 1800,
+            "unit": "SGD/month",
+            "strength": "soft",
+            "weight": 1
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "price",
+            "quote": "最好找每个月1800新币以内的"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "rent-ceiling",
+            "rent-interval"
+          ],
+          "coverage": [
+            {
+              "quote": "我要求最好找每个月1800新币以内的，超一点可以商量。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2150
+    },
+    {
+      "id": "reported-mrt-5",
+      "group": "reported-mrt",
+      "split": "holdout",
+      "query": "看挂牌上的交通说明：到MRT步行时长不得超过七分钟。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "mrt_walking_mins",
+          "operator": "lte",
+          "value": 7,
+          "strength": "hard",
+          "unit": "min",
+          "distance_type": "platform_reported"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "mrt_walking_mins",
+          "operator": "lte",
+          "value": 7,
+          "strength": "hard",
+          "unit": "min",
+          "distance_type": "platform_reported"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "mrt_walking_mins",
+            "field": "mrt_walking_mins",
+            "operator": "lte",
+            "value": 7,
+            "unit": "min",
+            "strength": "hard",
+            "distance_type": "platform_reported"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "mrt_walking_mins",
+            "quote": "看挂牌上的交通说明：到MRT步行时长不得超过七分钟。"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "route-not-proximity",
+            "transport-mode-update"
+          ],
+          "coverage": [
+            {
+              "quote": "看挂牌上的交通说明：到MRT步行时长不得超过七分钟。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2374
+    },
+    {
+      "id": "reported-mrt-distance-5",
+      "group": "reported-mrt-distance",
+      "split": "holdout",
+      "query": "我不是问计算出来的距离，只看挂牌记录：最近MRT八百米以内。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "mrt_distance_m",
+          "operator": "lte",
+          "value": 800,
+          "strength": "hard",
+          "unit": "m",
+          "distance_type": "platform_reported"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "mrt_distance_m",
+          "operator": "lte",
+          "value": 800,
+          "strength": "hard",
+          "unit": "m",
+          "distance_type": "platform_reported"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "mrt_distance_m",
+            "field": "mrt_distance_m",
+            "operator": "lte",
+            "value": 800,
+            "unit": "m",
+            "strength": "hard",
+            "distance_type": "platform_reported"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "mrt_distance_m",
+            "quote": "只看挂牌记录：最近MRT八百米以内"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "plain-mrt-distance",
+            "reported-distance"
+          ],
+          "coverage": [
+            {
+              "quote": "我不是问计算出来的距离，只看挂牌记录：最近MRT八百米以内。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2078
+    },
+    {
+      "id": "supermarket-5",
+      "group": "supermarket",
+      "split": "holdout",
+      "query": "买菜的超市，能控制在附近700米内更好，不硬卡。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 700,
+          "strength": "soft",
+          "unit": "m",
+          "target": "Supermarket",
+          "distance_type": "straight_line"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 700,
+          "strength": "soft",
+          "unit": "m",
+          "target": "Supermarket",
+          "distance_type": "straight_line",
+          "weight": 1
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "超市",
+            "quote": "买菜的超市，能控制在附近700米内更好，不硬卡",
+            "radius_m": 700,
+            "operator": "lte",
+            "weight": 1,
+            "strength": "soft",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": true,
+            "category": "Supermarket"
+          }
+        ],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "near-no-radius",
+            "area-imperial"
+          ],
+          "coverage": [
+            {
+              "quote": "买菜的超市，能控制在附近700米内更好，不硬卡。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2291
+    },
+    {
+      "id": "tenure-5",
+      "group": "tenure",
+      "split": "holdout",
+      "query": "土地年限只接受freehold。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "tenure_category",
+          "operator": "eq",
+          "value": "freehold",
+          "strength": "hard"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "tenure_category",
+          "operator": "eq",
+          "value": "freehold",
+          "strength": "hard"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "tenure_category",
+            "field": "tenure_category",
+            "operator": "eq",
+            "value": "freehold",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "tenure_category",
+            "quote": "土地年限只接受freehold"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "property-district",
+            "building-land"
+          ],
+          "coverage": [
+            {
+              "quote": "土地年限只接受freehold。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2431
+    },
+    {
+      "id": "transport-and-5",
+      "group": "transport-and",
+      "split": "holdout",
+      "query": "一公里范围内，必须同时有地铁站与巴士站。",
+      "passed": true,
+      "tp": 2,
+      "expected": 2,
+      "predicted": 2,
+      "expected_slots": [
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 1000,
+          "strength": "hard",
+          "unit": "m",
+          "target": "MRTStation",
+          "distance_type": "straight_line"
+        },
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 1000,
+          "strength": "hard",
+          "unit": "m",
+          "target": "BusStop",
+          "distance_type": "straight_line"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 1000,
+          "strength": "hard",
+          "unit": "m",
+          "target": "MRTStation",
+          "distance_type": "straight_line",
+          "weight": 1
+        },
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 1000,
+          "strength": "hard",
+          "unit": "m",
+          "target": "BusStop",
+          "distance_type": "straight_line",
+          "weight": 1
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "最近的MRT地铁站",
+            "quote": "一公里范围内，必须同时有地铁站与巴士站",
+            "radius_m": 1000,
+            "operator": "lte",
+            "strength": "hard",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false,
+            "category": "MRTStation"
+          },
+          {
+            "name": "最近的公交站",
+            "quote": "一公里范围内，必须同时有地铁站与巴士站",
+            "radius_m": 1000,
+            "operator": "lte",
+            "strength": "hard",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false,
+            "category": "BusStop"
+          }
+        ],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "university-geo",
+            "transport-and"
+          ],
+          "coverage": [
+            {
+              "quote": "一公里范围内，必须同时有地铁站与巴士站。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 1889
+    },
+    {
+      "id": "transport-or-5",
+      "group": "transport-or",
+      "split": "holdout",
+      "query": "在附近最好有公共交通站，MRT和公交站二选一，一公里之内。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 1000,
+          "strength": "soft",
+          "unit": "m",
+          "target": "PublicTransport",
+          "distance_type": "straight_line"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 1000,
+          "strength": "soft",
+          "unit": "m",
+          "target": "PublicTransport",
+          "distance_type": "straight_line",
+          "weight": 1
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "最近的MRT或公交站",
+            "quote": "在附近最好有公共交通站，MRT和公交站二选一，一公里之内",
+            "radius_m": 1000,
+            "operator": "lte",
+            "weight": 1,
+            "strength": "soft",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false,
+            "category": "PublicTransport"
+          }
+        ],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "transport-and",
+            "university-geo"
+          ],
+          "coverage": [
+            {
+              "quote": "在附近最好有公共交通站，MRT和公交站二选一，一公里之内。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2453
+    },
+    {
+      "id": "update-budget-5",
+      "group": "update",
+      "split": "holdout",
+      "query": "现在每月预算能给到2800，剩下的照旧。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2800,
+          "strength": "hard",
+          "unit": "SGD/month"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2800,
+          "strength": "hard",
+          "unit": "SGD/month"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2800,
+            "unit": "SGD/month",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "price",
+            "quote": "现在每月预算能给到2800"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "availability",
+            "change-single"
+          ],
+          "coverage": [
+            {
+              "quote": "现在每月预算能给到2800，剩下的照旧。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2418
+    },
+    {
+      "id": "walking-distance-5",
+      "group": "walking-distance",
+      "split": "holdout",
+      "query": "按走路的距离，不是直线：离金文泰MRT站最远六百米。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 600,
+          "strength": "hard",
+          "unit": "m",
+          "target": "CLEMENTI_MRT",
+          "distance_type": "walking"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "@location",
+          "operator": "lte",
+          "value": 600,
+          "strength": "hard",
+          "unit": "m",
+          "target": "金文泰MRT站",
+          "distance_type": "walking",
+          "weight": 1
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "金文泰MRT站",
+            "quote": "按走路的距离，不是直线：离金文泰MRT站最远六百米",
+            "radius_m": 600,
+            "operator": "lte",
+            "strength": "hard",
+            "distance_type": "walking",
+            "explicit_station": true,
+            "prefer_closer": false
+          }
+        ],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 2,
+          "example_ids": [
+            "reported-distance",
+            "plain-mrt-distance"
+          ],
+          "coverage": [
+            {
+              "quote": "按走路的距离，不是直线：离金文泰MRT站最远六百米。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": [
+            "\"LOCATION: supply either a named destination or categories, never both/neither\""
+          ]
+        }
+      },
+      "latency_ms": 3858
+    },
+    {
+      "id": "whole-unit-5",
+      "group": "whole-unit",
+      "split": "holdout",
+      "query": "不是只租一个卧室，我要把整个单位租下。",
+      "passed": true,
+      "tp": 1,
+      "expected": 1,
+      "predicted": 1,
+      "expected_slots": [
+        {
+          "field": "rental_scope",
+          "operator": "eq",
+          "value": "whole_unit",
+          "strength": "hard"
+        }
+      ],
+      "actual_slots": [
+        {
+          "field": "rental_scope",
+          "operator": "eq",
+          "value": "whole_unit",
+          "strength": "hard"
+        }
+      ],
+      "missing": [],
+      "extra": [],
+      "clarifyCorrect": true,
+      "supportedCorrect": true,
+      "removalCorrect": true,
+      "stateRetained": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "rental_scope",
+            "field": "rental_scope",
+            "operator": "eq",
+            "value": "whole_unit",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "rental_scope",
+            "quote": "不是只租一个卧室，我要把整个单位租下。"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "bedroom-minimum",
+            "exact-layout"
+          ],
+          "coverage": [
+            {
+              "quote": "不是只租一个卧室，我要把整个单位租下。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "latency_ms": 2370
+    }
+  ]
+}

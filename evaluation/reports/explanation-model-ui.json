@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "desktop: readable stored LLM explanation, no diagnostics/overflow; chat submission and unchanged recommendations verified",
+    "mobile: readable stored LLM explanation, no diagnostics/overflow; chat submission and unchanged recommendations verified"
+  ],
+  "external_messages_sent": 0,
+  "read_only": false,
+  "answer": "前四套有资料能确认月租在2000新币以内、离南洋理工大学直线距离在5公里内，所以入选；它们之间主要按离学校的直线距离排序，越近越靠前，租金高低不是排序依据。\n\n后四套目前只确认了租金在预算内，离学校的距离还缺资料，因此还不能确定符合全部要求，只是待确认选项，按原顺序列出，先后不代表谁更合适。\n\n另外，附近地铁或公交是否在1公里内都还没有资料，不能据此说交通方便；记录的价格和当前是否仍可租，也需要向经纪人确认。",
+  "characters": 206,
+  "status": "passed",
+  "browser_errors": []
+}

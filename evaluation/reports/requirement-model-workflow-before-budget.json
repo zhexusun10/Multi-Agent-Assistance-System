@@ -1,0 +1,14 @@
+{
+  "checks": [
+    "Original screenshot request retains budget, real NTU target, 1000m MRT-or-bus soft preference all the way to native recommendation; unavailable transit evidence remains unknown",
+    "Budget update preserves geographic relationships, soft preference and stable old criterion IDs"
+  ],
+  "external_messages_sent": 0,
+  "queries": [
+    "你好，我要租南洋理工大学附近5公里内的房子，预算在2000新币每月，房子附近1公里内最好有MRT或公交站",
+    "预算改为2300新币，其余条件保持不变。",
+    "按当前条件重新推荐，不过这次最好房子附近700米内有公园。"
+  ],
+  "status": "failed",
+  "error": "本轮未完成：Model turn or time budget exhausted"
+}

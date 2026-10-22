@@ -1,0 +1,5175 @@
+{
+  "status": "passed",
+  "checked_at": "2026-10-22T03:34:32.100Z",
+  "model": "openai:deepseek-flash",
+  "hashes": {
+    "src/agents/requirement/extractor.ts": "c9fe4c093b8aa3532df091c884f0f073d368d89ec3d8da2b7e7189b10cfbb388",
+    "src/agents/requirement/audit-context.ts": "bd0927be29118e53ab436ff317226113c26014e3fe5ade8e790f76e02a3ecb06",
+    "src/agents/requirement/prompt.ts": "04f83c420cc34814823c5c72cf2451e13832ead76e3bc8f4fa80697152707cf3",
+    "src/agents/requirement/few-shot.ts": "b9d28c869a0e3ae2682cd7ea9cb125791e1006e4889c99dabb939ddaf900a25d",
+    "skills/rental-requirement-intake/SKILL.md": "9dea7d95449c5c7264e7578e620698f09b16f45becdf559b35f2081ebb20a2f8",
+    "src/domain/workflow.ts": "5c4f4c0343053217442dff14237ffba724cba9a5cf3147b9a82c58ef4cbf5adf"
+  },
+  "cases": 14,
+  "passed": 14,
+  "results": [
+    {
+      "id": "exact-replay-1",
+      "query": "那我修改要求，我要租裕廊东附近5公里内的房子，预算在2500新币每月，房子附近1公里内最好有MRT或公交站，",
+      "passed": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2500,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 5000,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          },
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "category": "PublicTransport",
+              "name": "最近的MRT或公交站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "price",
+            "quote": "预算在2500新币每月"
+          },
+          {
+            "field": "place_proximity",
+            "quote": "裕廊东附近5公里内的房子"
+          },
+          {
+            "field": "place_proximity",
+            "quote": "房子附近1公里内最好有MRT或公交站"
+          }
+        ],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "裕廊东",
+            "quote": "裕廊东附近5公里内的房子",
+            "radius_m": 5000,
+            "operator": "lte",
+            "strength": "hard",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": true
+          },
+          {
+            "name": "最近的MRT或公交站",
+            "quote": "房子附近1公里内最好有MRT或公交站",
+            "radius_m": 1000,
+            "operator": "lte",
+            "weight": 1,
+            "strength": "soft",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false,
+            "category": "PublicTransport"
+          }
+        ],
+        "interpretation_notes": [
+          "“裕廊东”已解析为 URA JURONG EAST 区域；区内距离记为 0，区外按到区域边界的最近直线距离排序。区内房源在此距离项上并列，不表示到同名地铁站或中心点为0米；需要站点距离时可指定 JURONG EAST MRT。",
+          "距离范围 5000 米按直线口径处理。在范围内优先更近的房源。",
+          "“最近的MRT或公交站”已保留为软偏好；站点数据或路线证据不可用时将标为待确认，不会忽略此条件。"
+        ],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "restate-geographic-update",
+            "university-geo"
+          ],
+          "coverage": [
+            {
+              "quote": "那我修改要求，我要租裕廊东附近5公里内的房子，预算在2500新币每月，房子附近1公里内最好有MRT或公交站，",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "effective": {
+        "listing_type": "RENT",
+        "criteria": [
+          {
+            "criterion_id": "bathrooms",
+            "field": "bathrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "minimum-bedrooms",
+            "field": "bedrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2500,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "place_proximity:PublicTransport-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "category": "PublicTransport",
+              "name": "最近的MRT或公交站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 5000,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ]
+      },
+      "events": [
+        {
+          "attempt": 1,
+          "duration_ms": 2527,
+          "proposal": {
+            "schema_version": "2.0",
+            "supported": true,
+            "upsert": [
+              {
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard",
+                "weight": null,
+                "target_name": null,
+                "transport_mode": null,
+                "quote": "预算在2500新币每月"
+              }
+            ],
+            "locations": [
+              {
+                "name": "裕廊东",
+                "categories": [],
+                "relation": "any_of",
+                "operator": "lte",
+                "value": 5,
+                "unit": "km",
+                "strength": "hard",
+                "weight": null,
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": true,
+                "quote": "裕廊东附近5公里内的房子"
+              },
+              {
+                "name": null,
+                "categories": [
+                  "MRTStation",
+                  "BusStop"
+                ],
+                "relation": "any_of",
+                "operator": "lte",
+                "value": 1,
+                "unit": "km",
+                "strength": "soft",
+                "weight": null,
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": false,
+                "quote": "房子附近1公里内最好有MRT或公交站"
+              }
+            ],
+            "removals": [],
+            "clarifications": [],
+            "coverage": [
+              {
+                "quote": "那我修改要求，我要租裕廊东附近5公里内的房子，预算在2500新币每月，房子附近1公里内最好有MRT或公交站，",
+                "disposition": "extracted"
+              }
+            ]
+          },
+          "draft": {
+            "upsert": [
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 5000,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "nearer"
+              },
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "category": "PublicTransport",
+                  "name": "最近的MRT或公交站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              }
+            ],
+            "remove_fields": [],
+            "clarifications": [],
+            "sources": [
+              {
+                "field": "price",
+                "quote": "预算在2500新币每月"
+              },
+              {
+                "field": "place_proximity",
+                "quote": "裕廊东附近5公里内的房子"
+              },
+              {
+                "field": "place_proximity",
+                "quote": "房子附近1公里内最好有MRT或公交站"
+              }
+            ],
+            "supported": true,
+            "location_intents": [
+              {
+                "name": "裕廊东",
+                "quote": "裕廊东附近5公里内的房子",
+                "radius_m": 5000,
+                "operator": "lte",
+                "strength": "hard",
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": true
+              },
+              {
+                "name": "最近的MRT或公交站",
+                "quote": "房子附近1公里内最好有MRT或公交站",
+                "radius_m": 1000,
+                "operator": "lte",
+                "weight": 1,
+                "strength": "soft",
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": false,
+                "category": "PublicTransport"
+              }
+            ],
+            "interpretation_notes": [
+              "“裕廊东”已解析为 URA JURONG EAST 区域；区内距离记为 0，区外按到区域边界的最近直线距离排序。区内房源在此距离项上并列，不表示到同名地铁站或中心点为0米；需要站点距离时可指定 JURONG EAST MRT。",
+              "距离范围 5000 米按直线口径处理。在范围内优先更近的房源。",
+              "“最近的MRT或公交站”已保留为软偏好；站点数据或路线证据不可用时将标为待确认，不会忽略此条件。"
+            ],
+            "remove_criterion_ids": [],
+            "extraction": {
+              "version": "2.0",
+              "mode": "model",
+              "attempts": 1,
+              "example_ids": [
+                "restate-geographic-update",
+                "university-geo"
+              ],
+              "coverage": [
+                {
+                  "quote": "那我修改要求，我要租裕廊东附近5公里内的房子，预算在2500新币每月，房子附近1公里内最好有MRT或公交站，",
+                  "disposition": "extracted"
+                }
+              ],
+              "semantic_audit": "passed",
+              "repair_notes": []
+            }
+          },
+          "effective_requirements": {
+            "listing_type": "RENT",
+            "criteria": [
+              {
+                "criterion_id": "bathrooms",
+                "field": "bathrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "minimum-bedrooms",
+                "field": "bedrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "place_proximity:PublicTransport-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "category": "PublicTransport",
+                  "name": "最近的MRT或公交站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 5000,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "nearer"
+              }
+            ]
+          },
+          "audit": {
+            "valid": true,
+            "issues": []
+          }
+        }
+      ],
+      "duration_ms": 2530
+    },
+    {
+      "id": "initial-empty-base",
+      "query": "你好，我要租裕廊东附近5公里内的房子，预算在2500新币每月，房子附近1公里内最好有MRT或公交站，要求房型为1B1B",
+      "passed": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2500,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "minimum-bedrooms",
+            "field": "bedrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "bathrooms",
+            "field": "bathrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 5000,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          },
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "category": "PublicTransport",
+              "name": "最近的MRT或公交站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "price",
+            "quote": "预算在2500新币每月"
+          },
+          {
+            "field": "bedrooms",
+            "quote": "要求房型为1B1B"
+          },
+          {
+            "field": "bathrooms",
+            "quote": "要求房型为1B1B"
+          },
+          {
+            "field": "place_proximity",
+            "quote": "裕廊东附近5公里内"
+          },
+          {
+            "field": "place_proximity",
+            "quote": "房子附近1公里内最好有MRT或公交站"
+          }
+        ],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "裕廊东",
+            "quote": "裕廊东附近5公里内",
+            "radius_m": 5000,
+            "operator": "lte",
+            "strength": "hard",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": true
+          },
+          {
+            "name": "最近的MRT或公交站",
+            "quote": "房子附近1公里内最好有MRT或公交站",
+            "radius_m": 1000,
+            "operator": "lte",
+            "weight": 1,
+            "strength": "soft",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false,
+            "category": "PublicTransport"
+          }
+        ],
+        "interpretation_notes": [
+          "“裕廊东”已解析为 URA JURONG EAST 区域；区内距离记为 0，区外按到区域边界的最近直线距离排序。区内房源在此距离项上并列，不表示到同名地铁站或中心点为0米；需要站点距离时可指定 JURONG EAST MRT。",
+          "距离范围 5000 米按直线口径处理。在范围内优先更近的房源。",
+          "“最近的MRT或公交站”已保留为软偏好；站点数据或路线证据不可用时将标为待确认，不会忽略此条件。"
+        ],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "restate-geographic-update",
+            "university-geo"
+          ],
+          "coverage": [
+            {
+              "quote": "你好，我要租裕廊东附近5公里内的房子",
+              "disposition": "extracted"
+            },
+            {
+              "quote": "预算在2500新币每月",
+              "disposition": "extracted"
+            },
+            {
+              "quote": "房子附近1公里内最好有MRT或公交站",
+              "disposition": "extracted"
+            },
+            {
+              "quote": "要求房型为1B1B",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "effective": {
+        "listing_type": "RENT",
+        "criteria": [
+          {
+            "criterion_id": "bathrooms",
+            "field": "bathrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "minimum-bedrooms",
+            "field": "bedrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2500,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "place_proximity:PublicTransport-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "category": "PublicTransport",
+              "name": "最近的MRT或公交站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 5000,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ]
+      },
+      "events": [
+        {
+          "attempt": 1,
+          "duration_ms": 3015,
+          "proposal": {
+            "schema_version": "2.0",
+            "supported": true,
+            "upsert": [
+              {
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard",
+                "weight": null,
+                "target_name": null,
+                "transport_mode": null,
+                "quote": "预算在2500新币每月"
+              },
+              {
+                "field": "bedrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard",
+                "weight": null,
+                "target_name": null,
+                "transport_mode": null,
+                "quote": "要求房型为1B1B"
+              },
+              {
+                "field": "bathrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard",
+                "weight": null,
+                "target_name": null,
+                "transport_mode": null,
+                "quote": "要求房型为1B1B"
+              }
+            ],
+            "locations": [
+              {
+                "name": "裕廊东",
+                "categories": [],
+                "relation": "any_of",
+                "operator": "lte",
+                "value": 5,
+                "unit": "km",
+                "strength": "hard",
+                "weight": null,
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": true,
+                "quote": "裕廊东附近5公里内"
+              },
+              {
+                "name": null,
+                "categories": [
+                  "MRTStation",
+                  "BusStop"
+                ],
+                "relation": "any_of",
+                "operator": "lte",
+                "value": 1,
+                "unit": "km",
+                "strength": "soft",
+                "weight": null,
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": false,
+                "quote": "房子附近1公里内最好有MRT或公交站"
+              }
+            ],
+            "removals": [],
+            "clarifications": [],
+            "coverage": [
+              {
+                "quote": "你好，我要租裕廊东附近5公里内的房子",
+                "disposition": "extracted"
+              },
+              {
+                "quote": "预算在2500新币每月",
+                "disposition": "extracted"
+              },
+              {
+                "quote": "房子附近1公里内最好有MRT或公交站",
+                "disposition": "extracted"
+              },
+              {
+                "quote": "要求房型为1B1B",
+                "disposition": "extracted"
+              }
+            ]
+          },
+          "draft": {
+            "upsert": [
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "minimum-bedrooms",
+                "field": "bedrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "bathrooms",
+                "field": "bathrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 5000,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "nearer"
+              },
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "category": "PublicTransport",
+                  "name": "最近的MRT或公交站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              }
+            ],
+            "remove_fields": [],
+            "clarifications": [],
+            "sources": [
+              {
+                "field": "price",
+                "quote": "预算在2500新币每月"
+              },
+              {
+                "field": "bedrooms",
+                "quote": "要求房型为1B1B"
+              },
+              {
+                "field": "bathrooms",
+                "quote": "要求房型为1B1B"
+              },
+              {
+                "field": "place_proximity",
+                "quote": "裕廊东附近5公里内"
+              },
+              {
+                "field": "place_proximity",
+                "quote": "房子附近1公里内最好有MRT或公交站"
+              }
+            ],
+            "supported": true,
+            "location_intents": [
+              {
+                "name": "裕廊东",
+                "quote": "裕廊东附近5公里内",
+                "radius_m": 5000,
+                "operator": "lte",
+                "strength": "hard",
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": true
+              },
+              {
+                "name": "最近的MRT或公交站",
+                "quote": "房子附近1公里内最好有MRT或公交站",
+                "radius_m": 1000,
+                "operator": "lte",
+                "weight": 1,
+                "strength": "soft",
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": false,
+                "category": "PublicTransport"
+              }
+            ],
+            "interpretation_notes": [
+              "“裕廊东”已解析为 URA JURONG EAST 区域；区内距离记为 0，区外按到区域边界的最近直线距离排序。区内房源在此距离项上并列，不表示到同名地铁站或中心点为0米；需要站点距离时可指定 JURONG EAST MRT。",
+              "距离范围 5000 米按直线口径处理。在范围内优先更近的房源。",
+              "“最近的MRT或公交站”已保留为软偏好；站点数据或路线证据不可用时将标为待确认，不会忽略此条件。"
+            ],
+            "remove_criterion_ids": [],
+            "extraction": {
+              "version": "2.0",
+              "mode": "model",
+              "attempts": 1,
+              "example_ids": [
+                "restate-geographic-update",
+                "university-geo"
+              ],
+              "coverage": [
+                {
+                  "quote": "你好，我要租裕廊东附近5公里内的房子",
+                  "disposition": "extracted"
+                },
+                {
+                  "quote": "预算在2500新币每月",
+                  "disposition": "extracted"
+                },
+                {
+                  "quote": "房子附近1公里内最好有MRT或公交站",
+                  "disposition": "extracted"
+                },
+                {
+                  "quote": "要求房型为1B1B",
+                  "disposition": "extracted"
+                }
+              ],
+              "semantic_audit": "passed",
+              "repair_notes": []
+            }
+          },
+          "effective_requirements": {
+            "listing_type": "RENT",
+            "criteria": [
+              {
+                "criterion_id": "bathrooms",
+                "field": "bathrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "minimum-bedrooms",
+                "field": "bedrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "place_proximity:PublicTransport-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "category": "PublicTransport",
+                  "name": "最近的MRT或公交站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 5000,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "nearer"
+              }
+            ]
+          },
+          "audit": {
+            "valid": true,
+            "issues": []
+          }
+        }
+      ],
+      "duration_ms": 3018
+    },
+    {
+      "id": "exact-replay-2",
+      "query": "那我修改要求，我要租裕廊东附近5公里内的房子，预算在2500新币每月，房子附近1公里内最好有MRT或公交站，",
+      "passed": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2500,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 5000,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          },
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "category": "PublicTransport",
+              "name": "最近的MRT或公交站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "price",
+            "quote": "预算在2500新币每月"
+          },
+          {
+            "field": "place_proximity",
+            "quote": "裕廊东附近5公里内"
+          },
+          {
+            "field": "place_proximity",
+            "quote": "房子附近1公里内最好有MRT或公交站"
+          }
+        ],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "裕廊东",
+            "quote": "裕廊东附近5公里内",
+            "radius_m": 5000,
+            "operator": "lte",
+            "strength": "hard",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": true
+          },
+          {
+            "name": "最近的MRT或公交站",
+            "quote": "房子附近1公里内最好有MRT或公交站",
+            "radius_m": 1000,
+            "operator": "lte",
+            "weight": 1,
+            "strength": "soft",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false,
+            "category": "PublicTransport"
+          }
+        ],
+        "interpretation_notes": [
+          "“裕廊东”已解析为 URA JURONG EAST 区域；区内距离记为 0，区外按到区域边界的最近直线距离排序。区内房源在此距离项上并列，不表示到同名地铁站或中心点为0米；需要站点距离时可指定 JURONG EAST MRT。",
+          "距离范围 5000 米按直线口径处理。在范围内优先更近的房源。",
+          "“最近的MRT或公交站”已保留为软偏好；站点数据或路线证据不可用时将标为待确认，不会忽略此条件。"
+        ],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "restate-geographic-update",
+            "university-geo"
+          ],
+          "coverage": [
+            {
+              "quote": "那我修改要求，我要租裕廊东附近5公里内的房子，预算在2500新币每月，房子附近1公里内最好有MRT或公交站，",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "effective": {
+        "listing_type": "RENT",
+        "criteria": [
+          {
+            "criterion_id": "bathrooms",
+            "field": "bathrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "minimum-bedrooms",
+            "field": "bedrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2500,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "place_proximity:PublicTransport-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "category": "PublicTransport",
+              "name": "最近的MRT或公交站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 5000,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ]
+      },
+      "events": [
+        {
+          "attempt": 1,
+          "duration_ms": 2287,
+          "proposal": {
+            "schema_version": "2.0",
+            "supported": true,
+            "upsert": [
+              {
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard",
+                "weight": null,
+                "target_name": null,
+                "transport_mode": null,
+                "quote": "预算在2500新币每月"
+              }
+            ],
+            "locations": [
+              {
+                "name": "裕廊东",
+                "categories": [],
+                "relation": "any_of",
+                "operator": "lte",
+                "value": 5,
+                "unit": "km",
+                "strength": "hard",
+                "weight": null,
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": true,
+                "quote": "裕廊东附近5公里内"
+              },
+              {
+                "name": null,
+                "categories": [
+                  "MRTStation",
+                  "BusStop"
+                ],
+                "relation": "any_of",
+                "operator": "lte",
+                "value": 1,
+                "unit": "km",
+                "strength": "soft",
+                "weight": null,
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": false,
+                "quote": "房子附近1公里内最好有MRT或公交站"
+              }
+            ],
+            "removals": [],
+            "clarifications": [],
+            "coverage": [
+              {
+                "quote": "那我修改要求，我要租裕廊东附近5公里内的房子，预算在2500新币每月，房子附近1公里内最好有MRT或公交站，",
+                "disposition": "extracted"
+              }
+            ]
+          },
+          "draft": {
+            "upsert": [
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 5000,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "nearer"
+              },
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "category": "PublicTransport",
+                  "name": "最近的MRT或公交站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              }
+            ],
+            "remove_fields": [],
+            "clarifications": [],
+            "sources": [
+              {
+                "field": "price",
+                "quote": "预算在2500新币每月"
+              },
+              {
+                "field": "place_proximity",
+                "quote": "裕廊东附近5公里内"
+              },
+              {
+                "field": "place_proximity",
+                "quote": "房子附近1公里内最好有MRT或公交站"
+              }
+            ],
+            "supported": true,
+            "location_intents": [
+              {
+                "name": "裕廊东",
+                "quote": "裕廊东附近5公里内",
+                "radius_m": 5000,
+                "operator": "lte",
+                "strength": "hard",
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": true
+              },
+              {
+                "name": "最近的MRT或公交站",
+                "quote": "房子附近1公里内最好有MRT或公交站",
+                "radius_m": 1000,
+                "operator": "lte",
+                "weight": 1,
+                "strength": "soft",
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": false,
+                "category": "PublicTransport"
+              }
+            ],
+            "interpretation_notes": [
+              "“裕廊东”已解析为 URA JURONG EAST 区域；区内距离记为 0，区外按到区域边界的最近直线距离排序。区内房源在此距离项上并列，不表示到同名地铁站或中心点为0米；需要站点距离时可指定 JURONG EAST MRT。",
+              "距离范围 5000 米按直线口径处理。在范围内优先更近的房源。",
+              "“最近的MRT或公交站”已保留为软偏好；站点数据或路线证据不可用时将标为待确认，不会忽略此条件。"
+            ],
+            "remove_criterion_ids": [],
+            "extraction": {
+              "version": "2.0",
+              "mode": "model",
+              "attempts": 1,
+              "example_ids": [
+                "restate-geographic-update",
+                "university-geo"
+              ],
+              "coverage": [
+                {
+                  "quote": "那我修改要求，我要租裕廊东附近5公里内的房子，预算在2500新币每月，房子附近1公里内最好有MRT或公交站，",
+                  "disposition": "extracted"
+                }
+              ],
+              "semantic_audit": "passed",
+              "repair_notes": []
+            }
+          },
+          "effective_requirements": {
+            "listing_type": "RENT",
+            "criteria": [
+              {
+                "criterion_id": "bathrooms",
+                "field": "bathrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "minimum-bedrooms",
+                "field": "bedrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "place_proximity:PublicTransport-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "category": "PublicTransport",
+                  "name": "最近的MRT或公交站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 5000,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "nearer"
+              }
+            ]
+          },
+          "audit": {
+            "valid": true,
+            "issues": []
+          }
+        }
+      ],
+      "duration_ms": 2289
+    },
+    {
+      "id": "exact-replay-3",
+      "query": "那我修改要求，我要租裕廊东附近5公里内的房子，预算在2500新币每月，房子附近1公里内最好有MRT或公交站，",
+      "passed": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2500,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 5000,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          },
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "category": "PublicTransport",
+              "name": "最近的MRT或公交站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "price",
+            "quote": "预算在2500新币每月"
+          },
+          {
+            "field": "place_proximity",
+            "quote": "裕廊东附近5公里内的房子"
+          },
+          {
+            "field": "place_proximity",
+            "quote": "房子附近1公里内最好有MRT或公交站"
+          }
+        ],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "裕廊东",
+            "quote": "裕廊东附近5公里内的房子",
+            "radius_m": 5000,
+            "operator": "lte",
+            "strength": "hard",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": true
+          },
+          {
+            "name": "最近的MRT或公交站",
+            "quote": "房子附近1公里内最好有MRT或公交站",
+            "radius_m": 1000,
+            "operator": "lte",
+            "weight": 1,
+            "strength": "soft",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false,
+            "category": "PublicTransport"
+          }
+        ],
+        "interpretation_notes": [
+          "“裕廊东”已解析为 URA JURONG EAST 区域；区内距离记为 0，区外按到区域边界的最近直线距离排序。区内房源在此距离项上并列，不表示到同名地铁站或中心点为0米；需要站点距离时可指定 JURONG EAST MRT。",
+          "距离范围 5000 米按直线口径处理。在范围内优先更近的房源。",
+          "“最近的MRT或公交站”已保留为软偏好；站点数据或路线证据不可用时将标为待确认，不会忽略此条件。"
+        ],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "restate-geographic-update",
+            "university-geo"
+          ],
+          "coverage": [
+            {
+              "quote": "那我修改要求，我要租裕廊东附近5公里内的房子，预算在2500新币每月，房子附近1公里内最好有MRT或公交站，",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "effective": {
+        "listing_type": "RENT",
+        "criteria": [
+          {
+            "criterion_id": "bathrooms",
+            "field": "bathrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "minimum-bedrooms",
+            "field": "bedrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2500,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "place_proximity:PublicTransport-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "category": "PublicTransport",
+              "name": "最近的MRT或公交站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 5000,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ]
+      },
+      "events": [
+        {
+          "attempt": 1,
+          "duration_ms": 2769,
+          "proposal": {
+            "schema_version": "2.0",
+            "supported": true,
+            "upsert": [
+              {
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard",
+                "weight": null,
+                "target_name": null,
+                "transport_mode": null,
+                "quote": "预算在2500新币每月"
+              }
+            ],
+            "locations": [
+              {
+                "name": "裕廊东",
+                "categories": [],
+                "relation": "any_of",
+                "operator": "lte",
+                "value": 5,
+                "unit": "km",
+                "strength": "hard",
+                "weight": null,
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": true,
+                "quote": "裕廊东附近5公里内的房子"
+              },
+              {
+                "name": null,
+                "categories": [
+                  "MRTStation",
+                  "BusStop"
+                ],
+                "relation": "any_of",
+                "operator": "lte",
+                "value": 1,
+                "unit": "km",
+                "strength": "soft",
+                "weight": null,
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": false,
+                "quote": "房子附近1公里内最好有MRT或公交站"
+              }
+            ],
+            "removals": [],
+            "clarifications": [],
+            "coverage": [
+              {
+                "quote": "那我修改要求，我要租裕廊东附近5公里内的房子，预算在2500新币每月，房子附近1公里内最好有MRT或公交站，",
+                "disposition": "extracted"
+              }
+            ]
+          },
+          "draft": {
+            "upsert": [
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 5000,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "nearer"
+              },
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "category": "PublicTransport",
+                  "name": "最近的MRT或公交站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              }
+            ],
+            "remove_fields": [],
+            "clarifications": [],
+            "sources": [
+              {
+                "field": "price",
+                "quote": "预算在2500新币每月"
+              },
+              {
+                "field": "place_proximity",
+                "quote": "裕廊东附近5公里内的房子"
+              },
+              {
+                "field": "place_proximity",
+                "quote": "房子附近1公里内最好有MRT或公交站"
+              }
+            ],
+            "supported": true,
+            "location_intents": [
+              {
+                "name": "裕廊东",
+                "quote": "裕廊东附近5公里内的房子",
+                "radius_m": 5000,
+                "operator": "lte",
+                "strength": "hard",
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": true
+              },
+              {
+                "name": "最近的MRT或公交站",
+                "quote": "房子附近1公里内最好有MRT或公交站",
+                "radius_m": 1000,
+                "operator": "lte",
+                "weight": 1,
+                "strength": "soft",
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": false,
+                "category": "PublicTransport"
+              }
+            ],
+            "interpretation_notes": [
+              "“裕廊东”已解析为 URA JURONG EAST 区域；区内距离记为 0，区外按到区域边界的最近直线距离排序。区内房源在此距离项上并列，不表示到同名地铁站或中心点为0米；需要站点距离时可指定 JURONG EAST MRT。",
+              "距离范围 5000 米按直线口径处理。在范围内优先更近的房源。",
+              "“最近的MRT或公交站”已保留为软偏好；站点数据或路线证据不可用时将标为待确认，不会忽略此条件。"
+            ],
+            "remove_criterion_ids": [],
+            "extraction": {
+              "version": "2.0",
+              "mode": "model",
+              "attempts": 1,
+              "example_ids": [
+                "restate-geographic-update",
+                "university-geo"
+              ],
+              "coverage": [
+                {
+                  "quote": "那我修改要求，我要租裕廊东附近5公里内的房子，预算在2500新币每月，房子附近1公里内最好有MRT或公交站，",
+                  "disposition": "extracted"
+                }
+              ],
+              "semantic_audit": "passed",
+              "repair_notes": []
+            }
+          },
+          "effective_requirements": {
+            "listing_type": "RENT",
+            "criteria": [
+              {
+                "criterion_id": "bathrooms",
+                "field": "bathrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "minimum-bedrooms",
+                "field": "bedrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "place_proximity:PublicTransport-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "category": "PublicTransport",
+                  "name": "最近的MRT或公交站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 5000,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "nearer"
+              }
+            ]
+          },
+          "audit": {
+            "valid": true,
+            "issues": []
+          }
+        }
+      ],
+      "duration_ms": 2772
+    },
+    {
+      "id": "restatement-order",
+      "query": "交通方面最好离MRT或者巴士站一公里以内。月租2500新币以内，房子在裕廊东五公里范围内，其他条件照旧。",
+      "passed": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2500,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "category": "PublicTransport",
+              "name": "最近的MRT或公交站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 5000,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "price",
+            "quote": "月租2500新币以内"
+          },
+          {
+            "field": "place_proximity",
+            "quote": "交通方面最好离MRT或者巴士站一公里以内"
+          },
+          {
+            "field": "place_proximity",
+            "quote": "房子在裕廊东五公里范围内"
+          }
+        ],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "最近的MRT或公交站",
+            "quote": "交通方面最好离MRT或者巴士站一公里以内",
+            "radius_m": 1000,
+            "operator": "lte",
+            "weight": 1,
+            "strength": "soft",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false,
+            "category": "PublicTransport"
+          },
+          {
+            "name": "裕廊东",
+            "quote": "房子在裕廊东五公里范围内",
+            "radius_m": 5000,
+            "operator": "lte",
+            "strength": "hard",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": true
+          }
+        ],
+        "interpretation_notes": [
+          "“最近的MRT或公交站”已保留为软偏好；站点数据或路线证据不可用时将标为待确认，不会忽略此条件。",
+          "“裕廊东”已解析为 URA JURONG EAST 区域；区内距离记为 0，区外按到区域边界的最近直线距离排序。区内房源在此距离项上并列，不表示到同名地铁站或中心点为0米；需要站点距离时可指定 JURONG EAST MRT。",
+          "距离范围 5000 米按直线口径处理。在范围内优先更近的房源。"
+        ],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "university-geo",
+            "replace-location-only"
+          ],
+          "coverage": [
+            {
+              "quote": "交通方面最好离MRT或者巴士站一公里以内。",
+              "disposition": "extracted"
+            },
+            {
+              "quote": "月租2500新币以内，房子在裕廊东五公里范围内，其他条件照旧。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "effective": {
+        "listing_type": "RENT",
+        "criteria": [
+          {
+            "criterion_id": "bathrooms",
+            "field": "bathrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "minimum-bedrooms",
+            "field": "bedrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2500,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "place_proximity:PublicTransport-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "category": "PublicTransport",
+              "name": "最近的MRT或公交站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 5000,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ]
+      },
+      "events": [
+        {
+          "attempt": 1,
+          "duration_ms": 2930,
+          "proposal": {
+            "schema_version": "2.0",
+            "supported": true,
+            "upsert": [
+              {
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard",
+                "weight": null,
+                "target_name": null,
+                "transport_mode": null,
+                "quote": "月租2500新币以内"
+              }
+            ],
+            "locations": [
+              {
+                "name": null,
+                "categories": [
+                  "MRTStation",
+                  "BusStop"
+                ],
+                "relation": "any_of",
+                "operator": "lte",
+                "value": 1,
+                "unit": "km",
+                "strength": "soft",
+                "weight": null,
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": false,
+                "quote": "交通方面最好离MRT或者巴士站一公里以内"
+              },
+              {
+                "name": "裕廊东",
+                "categories": [],
+                "relation": "any_of",
+                "operator": "lte",
+                "value": 5,
+                "unit": "km",
+                "strength": "hard",
+                "weight": null,
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": true,
+                "quote": "房子在裕廊东五公里范围内"
+              }
+            ],
+            "removals": [],
+            "clarifications": [],
+            "coverage": [
+              {
+                "quote": "交通方面最好离MRT或者巴士站一公里以内。",
+                "disposition": "extracted"
+              },
+              {
+                "quote": "月租2500新币以内，房子在裕廊东五公里范围内，其他条件照旧。",
+                "disposition": "extracted"
+              }
+            ]
+          },
+          "draft": {
+            "upsert": [
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "category": "PublicTransport",
+                  "name": "最近的MRT或公交站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 5000,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "nearer"
+              }
+            ],
+            "remove_fields": [],
+            "clarifications": [],
+            "sources": [
+              {
+                "field": "price",
+                "quote": "月租2500新币以内"
+              },
+              {
+                "field": "place_proximity",
+                "quote": "交通方面最好离MRT或者巴士站一公里以内"
+              },
+              {
+                "field": "place_proximity",
+                "quote": "房子在裕廊东五公里范围内"
+              }
+            ],
+            "supported": true,
+            "location_intents": [
+              {
+                "name": "最近的MRT或公交站",
+                "quote": "交通方面最好离MRT或者巴士站一公里以内",
+                "radius_m": 1000,
+                "operator": "lte",
+                "weight": 1,
+                "strength": "soft",
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": false,
+                "category": "PublicTransport"
+              },
+              {
+                "name": "裕廊东",
+                "quote": "房子在裕廊东五公里范围内",
+                "radius_m": 5000,
+                "operator": "lte",
+                "strength": "hard",
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": true
+              }
+            ],
+            "interpretation_notes": [
+              "“最近的MRT或公交站”已保留为软偏好；站点数据或路线证据不可用时将标为待确认，不会忽略此条件。",
+              "“裕廊东”已解析为 URA JURONG EAST 区域；区内距离记为 0，区外按到区域边界的最近直线距离排序。区内房源在此距离项上并列，不表示到同名地铁站或中心点为0米；需要站点距离时可指定 JURONG EAST MRT。",
+              "距离范围 5000 米按直线口径处理。在范围内优先更近的房源。"
+            ],
+            "remove_criterion_ids": [],
+            "extraction": {
+              "version": "2.0",
+              "mode": "model",
+              "attempts": 1,
+              "example_ids": [
+                "university-geo",
+                "replace-location-only"
+              ],
+              "coverage": [
+                {
+                  "quote": "交通方面最好离MRT或者巴士站一公里以内。",
+                  "disposition": "extracted"
+                },
+                {
+                  "quote": "月租2500新币以内，房子在裕廊东五公里范围内，其他条件照旧。",
+                  "disposition": "extracted"
+                }
+              ],
+              "semantic_audit": "passed",
+              "repair_notes": []
+            }
+          },
+          "effective_requirements": {
+            "listing_type": "RENT",
+            "criteria": [
+              {
+                "criterion_id": "bathrooms",
+                "field": "bathrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "minimum-bedrooms",
+                "field": "bedrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "place_proximity:PublicTransport-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "category": "PublicTransport",
+                  "name": "最近的MRT或公交站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 5000,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "nearer"
+              }
+            ]
+          },
+          "audit": {
+            "valid": true,
+            "issues": []
+          }
+        }
+      ],
+      "duration_ms": 2932
+    },
+    {
+      "id": "budget-only",
+      "query": "预算上限改成2600新币，其他条件一个都不改。",
+      "passed": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2600,
+            "unit": "SGD/month",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "price",
+            "quote": "预算上限改成2600新币"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "change-single",
+            "replace-location-only"
+          ],
+          "coverage": [
+            {
+              "quote": "预算上限改成2600新币，其他条件一个都不改。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "effective": {
+        "listing_type": "RENT",
+        "criteria": [
+          {
+            "criterion_id": "bathrooms",
+            "field": "bathrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "minimum-bedrooms",
+            "field": "bedrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2600,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "place_proximity:PublicTransport-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "category": "PublicTransport",
+              "name": "最近的MRT或公交站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 5000,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ]
+      },
+      "events": [
+        {
+          "attempt": 1,
+          "duration_ms": 2126,
+          "proposal": {
+            "schema_version": "2.0",
+            "supported": true,
+            "upsert": [
+              {
+                "field": "price",
+                "operator": "lte",
+                "value": 2600,
+                "unit": "SGD/month",
+                "strength": "hard",
+                "weight": null,
+                "target_name": null,
+                "transport_mode": null,
+                "quote": "预算上限改成2600新币"
+              }
+            ],
+            "locations": [],
+            "removals": [],
+            "clarifications": [],
+            "coverage": [
+              {
+                "quote": "预算上限改成2600新币，其他条件一个都不改。",
+                "disposition": "extracted"
+              }
+            ]
+          },
+          "draft": {
+            "upsert": [
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 2600,
+                "unit": "SGD/month",
+                "strength": "hard"
+              }
+            ],
+            "remove_fields": [],
+            "clarifications": [],
+            "sources": [
+              {
+                "field": "price",
+                "quote": "预算上限改成2600新币"
+              }
+            ],
+            "supported": true,
+            "location_intents": [],
+            "interpretation_notes": [],
+            "remove_criterion_ids": [],
+            "extraction": {
+              "version": "2.0",
+              "mode": "model",
+              "attempts": 1,
+              "example_ids": [
+                "change-single",
+                "replace-location-only"
+              ],
+              "coverage": [
+                {
+                  "quote": "预算上限改成2600新币，其他条件一个都不改。",
+                  "disposition": "extracted"
+                }
+              ],
+              "semantic_audit": "passed",
+              "repair_notes": []
+            }
+          },
+          "effective_requirements": {
+            "listing_type": "RENT",
+            "criteria": [
+              {
+                "criterion_id": "bathrooms",
+                "field": "bathrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "minimum-bedrooms",
+                "field": "bedrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 2600,
+                "unit": "SGD/month",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "place_proximity:PublicTransport-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "category": "PublicTransport",
+                  "name": "最近的MRT或公交站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 5000,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "nearer"
+              }
+            ]
+          },
+          "audit": {
+            "valid": true,
+            "issues": []
+          }
+        }
+      ],
+      "duration_ms": 2127
+    },
+    {
+      "id": "cancel-transport",
+      "query": "不用考虑MRT或公交站的距离了，其余不变。",
+      "passed": true,
+      "draft": {
+        "upsert": [],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "place_proximity",
+            "quote": "不用考虑MRT或公交站的距离了"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [
+          "place_proximity:PublicTransport-preference"
+        ],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "plain-mrt-distance",
+            "replace-location-only"
+          ],
+          "coverage": [
+            {
+              "quote": "不用考虑MRT或公交站的距离了，其余不变。",
+              "disposition": "removed"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "effective": {
+        "listing_type": "RENT",
+        "criteria": [
+          {
+            "criterion_id": "bathrooms",
+            "field": "bathrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "minimum-bedrooms",
+            "field": "bedrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2500,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 5000,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ]
+      },
+      "events": [
+        {
+          "attempt": 1,
+          "duration_ms": 2138,
+          "proposal": {
+            "schema_version": "2.0",
+            "supported": true,
+            "upsert": [],
+            "locations": [],
+            "removals": [
+              {
+                "field": "place_proximity",
+                "criterion_id": "place_proximity:PublicTransport-preference",
+                "quote": "不用考虑MRT或公交站的距离了"
+              }
+            ],
+            "clarifications": [],
+            "coverage": [
+              {
+                "quote": "不用考虑MRT或公交站的距离了，其余不变。",
+                "disposition": "removed"
+              }
+            ]
+          },
+          "draft": {
+            "upsert": [],
+            "remove_fields": [],
+            "clarifications": [],
+            "sources": [
+              {
+                "field": "place_proximity",
+                "quote": "不用考虑MRT或公交站的距离了"
+              }
+            ],
+            "supported": true,
+            "location_intents": [],
+            "interpretation_notes": [],
+            "remove_criterion_ids": [
+              "place_proximity:PublicTransport-preference"
+            ],
+            "extraction": {
+              "version": "2.0",
+              "mode": "model",
+              "attempts": 1,
+              "example_ids": [
+                "plain-mrt-distance",
+                "replace-location-only"
+              ],
+              "coverage": [
+                {
+                  "quote": "不用考虑MRT或公交站的距离了，其余不变。",
+                  "disposition": "removed"
+                }
+              ],
+              "semantic_audit": "passed",
+              "repair_notes": []
+            }
+          },
+          "effective_requirements": {
+            "listing_type": "RENT",
+            "criteria": [
+              {
+                "criterion_id": "bathrooms",
+                "field": "bathrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "minimum-bedrooms",
+                "field": "bedrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 5000,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "nearer"
+              }
+            ]
+          },
+          "audit": {
+            "valid": true,
+            "issues": []
+          }
+        }
+      ],
+      "duration_ms": 2140
+    },
+    {
+      "id": "cancel-layout",
+      "query": "不用1B1B了，卧室和卫生间数量都不作要求，其他照旧。",
+      "passed": true,
+      "draft": {
+        "upsert": [],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "bedrooms",
+            "quote": "卧室和卫生间数量都不作要求"
+          },
+          {
+            "field": "bathrooms",
+            "quote": "卧室和卫生间数量都不作要求"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [
+          "minimum-bedrooms",
+          "bathrooms"
+        ],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "cancel-layout-only",
+            "exact-layout"
+          ],
+          "coverage": [
+            {
+              "quote": "不用1B1B了",
+              "disposition": "removed"
+            },
+            {
+              "quote": "卧室和卫生间数量都不作要求",
+              "disposition": "removed"
+            },
+            {
+              "quote": "其他照旧",
+              "disposition": "context"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "effective": {
+        "listing_type": "RENT",
+        "criteria": [
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2500,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "place_proximity:PublicTransport-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "category": "PublicTransport",
+              "name": "最近的MRT或公交站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 5000,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ]
+      },
+      "events": [
+        {
+          "attempt": 1,
+          "duration_ms": 2437,
+          "proposal": {
+            "schema_version": "2.0",
+            "supported": true,
+            "upsert": [],
+            "locations": [],
+            "removals": [
+              {
+                "field": "bedrooms",
+                "criterion_id": "minimum-bedrooms",
+                "quote": "卧室和卫生间数量都不作要求"
+              },
+              {
+                "field": "bathrooms",
+                "criterion_id": "bathrooms",
+                "quote": "卧室和卫生间数量都不作要求"
+              }
+            ],
+            "clarifications": [],
+            "coverage": [
+              {
+                "quote": "不用1B1B了",
+                "disposition": "removed"
+              },
+              {
+                "quote": "卧室和卫生间数量都不作要求",
+                "disposition": "removed"
+              },
+              {
+                "quote": "其他照旧",
+                "disposition": "context"
+              }
+            ]
+          },
+          "draft": {
+            "upsert": [],
+            "remove_fields": [],
+            "clarifications": [],
+            "sources": [
+              {
+                "field": "bedrooms",
+                "quote": "卧室和卫生间数量都不作要求"
+              },
+              {
+                "field": "bathrooms",
+                "quote": "卧室和卫生间数量都不作要求"
+              }
+            ],
+            "supported": true,
+            "location_intents": [],
+            "interpretation_notes": [],
+            "remove_criterion_ids": [
+              "minimum-bedrooms",
+              "bathrooms"
+            ],
+            "extraction": {
+              "version": "2.0",
+              "mode": "model",
+              "attempts": 1,
+              "example_ids": [
+                "cancel-layout-only",
+                "exact-layout"
+              ],
+              "coverage": [
+                {
+                  "quote": "不用1B1B了",
+                  "disposition": "removed"
+                },
+                {
+                  "quote": "卧室和卫生间数量都不作要求",
+                  "disposition": "removed"
+                },
+                {
+                  "quote": "其他照旧",
+                  "disposition": "context"
+                }
+              ],
+              "semantic_audit": "passed",
+              "repair_notes": []
+            }
+          },
+          "effective_requirements": {
+            "listing_type": "RENT",
+            "criteria": [
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "place_proximity:PublicTransport-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "category": "PublicTransport",
+                  "name": "最近的MRT或公交站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 5000,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "nearer"
+              }
+            ]
+          },
+          "audit": {
+            "valid": true,
+            "issues": []
+          }
+        }
+      ],
+      "duration_ms": 2440
+    },
+    {
+      "id": "transport-radius",
+      "query": "把MRT或公交站的偏好距离从1公里收紧到700米，其余条件保留。",
+      "passed": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 700,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "category": "PublicTransport",
+              "name": "最近的MRT或公交站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "place_proximity",
+            "quote": "把MRT或公交站的偏好距离从1公里收紧到700米"
+          }
+        ],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "最近的MRT或公交站",
+            "quote": "把MRT或公交站的偏好距离从1公里收紧到700米",
+            "radius_m": 700,
+            "operator": "lte",
+            "weight": 1,
+            "strength": "soft",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false,
+            "category": "PublicTransport"
+          }
+        ],
+        "interpretation_notes": [
+          "“最近的MRT或公交站”已保留为软偏好；站点数据或路线证据不可用时将标为待确认，不会忽略此条件。"
+        ],
+        "remove_criterion_ids": [],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "restate-geographic-update",
+            "named-station"
+          ],
+          "coverage": [
+            {
+              "quote": "把MRT或公交站的偏好距离从1公里收紧到700米，其余条件保留。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "effective": {
+        "listing_type": "RENT",
+        "criteria": [
+          {
+            "criterion_id": "bathrooms",
+            "field": "bathrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "minimum-bedrooms",
+            "field": "bedrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2500,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "place_proximity:PublicTransport-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 700,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "category": "PublicTransport",
+              "name": "最近的MRT或公交站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 5000,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ]
+      },
+      "events": [
+        {
+          "attempt": 1,
+          "duration_ms": 2087,
+          "proposal": {
+            "schema_version": "2.0",
+            "supported": true,
+            "upsert": [],
+            "locations": [
+              {
+                "name": null,
+                "categories": [
+                  "MRTStation",
+                  "BusStop"
+                ],
+                "relation": "any_of",
+                "operator": "lte",
+                "value": 700,
+                "unit": "m",
+                "strength": "soft",
+                "weight": null,
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": false,
+                "quote": "把MRT或公交站的偏好距离从1公里收紧到700米"
+              }
+            ],
+            "removals": [],
+            "clarifications": [],
+            "coverage": [
+              {
+                "quote": "把MRT或公交站的偏好距离从1公里收紧到700米，其余条件保留。",
+                "disposition": "extracted"
+              }
+            ]
+          },
+          "draft": {
+            "upsert": [
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 700,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "category": "PublicTransport",
+                  "name": "最近的MRT或公交站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              }
+            ],
+            "remove_fields": [],
+            "clarifications": [],
+            "sources": [
+              {
+                "field": "place_proximity",
+                "quote": "把MRT或公交站的偏好距离从1公里收紧到700米"
+              }
+            ],
+            "supported": true,
+            "location_intents": [
+              {
+                "name": "最近的MRT或公交站",
+                "quote": "把MRT或公交站的偏好距离从1公里收紧到700米",
+                "radius_m": 700,
+                "operator": "lte",
+                "weight": 1,
+                "strength": "soft",
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": false,
+                "category": "PublicTransport"
+              }
+            ],
+            "interpretation_notes": [
+              "“最近的MRT或公交站”已保留为软偏好；站点数据或路线证据不可用时将标为待确认，不会忽略此条件。"
+            ],
+            "remove_criterion_ids": [],
+            "extraction": {
+              "version": "2.0",
+              "mode": "model",
+              "attempts": 1,
+              "example_ids": [
+                "restate-geographic-update",
+                "named-station"
+              ],
+              "coverage": [
+                {
+                  "quote": "把MRT或公交站的偏好距离从1公里收紧到700米，其余条件保留。",
+                  "disposition": "extracted"
+                }
+              ],
+              "semantic_audit": "passed",
+              "repair_notes": []
+            }
+          },
+          "effective_requirements": {
+            "listing_type": "RENT",
+            "criteria": [
+              {
+                "criterion_id": "bathrooms",
+                "field": "bathrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "minimum-bedrooms",
+                "field": "bedrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "place_proximity:PublicTransport-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 700,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "category": "PublicTransport",
+                  "name": "最近的MRT或公交站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 5000,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "nearer"
+              }
+            ]
+          },
+          "audit": {
+            "valid": true,
+            "issues": []
+          }
+        }
+      ],
+      "duration_ms": 2088
+    },
+    {
+      "id": "cancel-closer-only",
+      "query": "只保留裕廊东5公里范围，不用按离裕廊东远近排序，其他要求不变。",
+      "passed": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 5000,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "place_proximity",
+            "quote": "不用按离裕廊东远近排序"
+          },
+          {
+            "field": "place_proximity",
+            "quote": "只保留裕廊东5公里范围"
+          }
+        ],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "裕廊东",
+            "quote": "只保留裕廊东5公里范围",
+            "radius_m": 5000,
+            "operator": "lte",
+            "strength": "hard",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false
+          }
+        ],
+        "interpretation_notes": [
+          "“裕廊东”已解析为 URA JURONG EAST 区域；区内距离记为 0，区外按到区域边界的最近直线距离排序。区内房源在此距离项上并列，不表示到同名地铁站或中心点为0米；需要站点距离时可指定 JURONG EAST MRT。",
+          "距离范围 5000 米按直线口径处理。"
+        ],
+        "remove_criterion_ids": [
+          "place_proximity:URA:AREA:JURONG_EAST-preference"
+        ],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 2,
+          "example_ids": [
+            "replace-location-only",
+            "change-single"
+          ],
+          "coverage": [
+            {
+              "quote": "只保留裕廊东5公里范围",
+              "disposition": "extracted"
+            },
+            {
+              "quote": "不用按离裕廊东远近排序",
+              "disposition": "removed"
+            },
+            {
+              "quote": "其他要求不变",
+              "disposition": "context"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": [
+            "\"Failed to parse. Text: \\\"{\\n  \\\"schema_version\\\": \\\"2.0\\\",\\n  \\\"supported\\\": true,\\n  \\\"upsert\\\": [\\n    {\\n      \\\"field\\\": \\\"place_proximity\\\",\\n      \\\"operator\\\": \\\"lte\\\",\\n      \\\"value\\\": 5000,\\n      \\\"unit\\\": \\\"m\\\",\\n      \\\"strength\\\": \\\"hard\\\",\\n      \\\"weight\\\": null,\\n      \\\"target_name\\\": \\\"JURONG EAST\\\",\\n      \\\"transport_mode\\\": null,\\n      \\\"quote\\\": \\\"只保留裕廊东5公里范围\\\"\\n    }\\n  ],\\n  \\\"locations\\\": [\\n    {\\n      \\\"name\\\": \\\"裕廊东\\\",\\n      \\\"categories\\\": [],\\n      \\\"relation\\\": \\\"any_of\\\",\\n      \\\"operator\\\": \\\"lte\\\",\\n      \\\"value\\\": 5,\\n      \\\"unit\\\": \\\"km\\\",\\n      \\\"strength\\\": \\\"hard\\\",\\n      \\\"weight\\\": null,\\n      \\\"distance_type\\\": \\\"straight_line\\\",\\n      \\\"explicit_station\\\": false,\\n      \\\"prefer_closer\\\": false,\\n      \\\"quote\\\": \\\"只保留裕廊东5公里范围\\\"\\n    }\\n  ],\\n  \\\"removals\\\": [\\n    {\\n      \\\"field\\\": \\\"place_proximity\\\",\\n      \\\"criterion_id\\\": \\\"place_proximity:URA:AREA:JURONG_EAST-preference\\\",\\n      \\\"quote\\\": \\\"不用按离裕廊东远近排序\\\"\\n    }\\n  ],\\n  \\\"clarifications\\\": [],\\n  \\\"coverage\\\": [\\n    {\\n      \\\"quote\\\": \\\"只保留裕廊东5公里范围，不用按离裕廊东远近排序，其他要求不变。\\\",\\n      \\\"disposition\\\": \\\"extracted\\\"\\n    }\\n  ]\\n}\\\". Error: [{\\\"code\\\":\\\"invalid_value\\\",\\\"values\\\":[\\\"price\\\",\\\"bedrooms\\\",\\\"bathrooms\\\",\\\"floor_area_sqft\\\",\\\"land_area_sqft\\\",\\\"build_year\\\",\\\"district\\\",\\\"region_code\\\",\\\"postal_code\\\",\\\"tenure_category\\\",\\\"property_type\\\",\\\"mrt_distance_m\\\",\\\"mrt_walking_mins\\\",\\\"lease_months\\\",\\\"furnishing\\\",\\\"rental_scope\\\",\\\"move_in_date\\\",\\\"amenities\\\",\\\"commute_time\\\",\\\"current_availability\\\"],\\\"path\\\":[\\\"upsert\\\",0,\\\"field\\\"],\\\"message\\\":\\\"Invalid option: expected one of \\\\\\\"price\\\\\\\"|\\\\\\\"bedrooms\\\\\\\"|\\\\\\\"bathrooms\\\\\\\"|\\\\\\\"floor_area_sqft\\\\\\\"|\\\\\\\"land_area_sqft\\\\\\\"|\\\\\\\"build_year\\\\\\\"|\\\\\\\"district\\\\\\\"|\\\\\\\"region_code\\\\\\\"|\\\\\\\"postal_code\\\\\\\"|\\\\\\\"tenure_category\\\\\\\"|\\\\\\\"property_type\\\\\\\"|\\\\\\\"mrt_distance_m\\\\\\\"|\\\\\\\"mrt_walking_mins\\\\\\\"|\\\\\\\"lease_months\\\\\\\"|\\\\\\\"furnishing\\\\\\\"|\\\\\\\"rental_scope\\\\\\\"|\\\\\\\"move_in_date\\\\\\\"|\\\\\\\"amenities\\\\\\\"|\\\\\\\"commute_time\\\\\\\"|\\\\\\\"current_availability\\\\\\\"\\\"}]\\n\\nTroubleshooting URL: https://docs.langcha\""
+          ]
+        }
+      },
+      "effective": {
+        "listing_type": "RENT",
+        "criteria": [
+          {
+            "criterion_id": "bathrooms",
+            "field": "bathrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "minimum-bedrooms",
+            "field": "bedrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2500,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "place_proximity:PublicTransport-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "category": "PublicTransport",
+              "name": "最近的MRT或公交站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 5000,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          }
+        ]
+      },
+      "events": [
+        {
+          "attempt": 1,
+          "duration_ms": 1668,
+          "error": "Failed to parse. Text: \"{\n  \"schema_version\": \"2.0\",\n  \"supported\": true,\n  \"upsert\": [\n    {\n      \"field\": \"place_proximity\",\n      \"operator\": \"lte\",\n      \"value\": 5000,\n      \"unit\": \"m\",\n      \"strength\": \"hard\",\n      \"weight\": null,\n      \"target_name\": \"JURONG EAST\",\n      \"transport_mode\": null,\n      \"quote\": \"只保留裕廊东5公里范围\"\n    }\n  ],\n  \"locations\": [\n    {\n      \"name\": \"裕廊东\",\n      \"categories\": [],\n      \"relation\": \"any_of\",\n      \"operator\": \"lte\",\n      \"value\": 5,\n      \"unit\": \"km\",\n      \"strength\": \"hard\",\n      \"weight\": null,\n      \"distance_type\": \"straight_line\",\n      \"explicit_station\": false,\n      \"prefer_closer\": false,\n      \"quote\": \"只保留裕廊东5公里范围\"\n    }\n  ],\n  \"removals\": [\n    {\n      \"field\": \"place_proximity\",\n      \"criterion_id\": \"place_proximity:URA:AREA:JURONG_EAST-preference\",\n      \"quote\": \"不用按离裕廊东远近排序\"\n    }\n  ],\n  \"clarifications\": [],\n  \"coverage\": [\n    {\n      \"quote\": \"只保留裕廊东5公里范围，不用按离裕廊东远近排序，其他要求不变。\",\n      \"disposition\": \"extracted\"\n    }\n  ]\n}\". Error: [{\"code\":\"invalid_value\",\"values\":[\"price\",\"bedrooms\",\"bathrooms\",\"floor_area_sqft\",\"land_area_sqft\",\"build_year\",\"district\",\"region_code\",\"postal_code\",\"tenure_category\",\"property_type\",\"mrt_distance_m\",\"mrt_walking_mins\",\"lease_months\",\"furnishing\",\"rental_scope\",\"move_in_date\",\"amenities\",\"commute_time\",\"current_availability\"],\"path\":[\"upsert\",0,\"field\"],\"message\":\"Invalid option: expected one of \\\"price\\\"|\\\"bedrooms\\\"|\\\"bathrooms\\\"|\\\"floor_area_sqft\\\"|\\\"land_area_sqft\\\"|\\\"build_year\\\"|\\\"district\\\"|\\\"region_code\\\"|\\\"postal_code\\\"|\\\"tenure_category\\\"|\\\"property_type\\\"|\\\"mrt_distance_m\\\"|\\\"mrt_walking_mins\\\"|\\\"lease_months\\\"|\\\"furnishing\\\"|\\\"rental_scope\\\"|\\\"move_in_date\\\"|\\\"amenities\\\"|\\\"commute_time\\\"|\\\"current_availability\\\"\"}]\n\nTroubleshooting URL: https://docs.langchain.com/oss/javascript/langchain/errors/OUTPUT_PARSING_FAILURE/\n"
+        },
+        {
+          "attempt": 2,
+          "duration_ms": 2750,
+          "proposal": {
+            "schema_version": "2.0",
+            "supported": true,
+            "upsert": [],
+            "locations": [
+              {
+                "name": "裕廊东",
+                "categories": [],
+                "relation": "any_of",
+                "operator": "lte",
+                "value": 5,
+                "unit": "km",
+                "strength": "hard",
+                "weight": null,
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": false,
+                "quote": "只保留裕廊东5公里范围"
+              }
+            ],
+            "removals": [
+              {
+                "field": "place_proximity",
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+                "quote": "不用按离裕廊东远近排序"
+              }
+            ],
+            "clarifications": [],
+            "coverage": [
+              {
+                "quote": "只保留裕廊东5公里范围",
+                "disposition": "extracted"
+              },
+              {
+                "quote": "不用按离裕廊东远近排序",
+                "disposition": "removed"
+              },
+              {
+                "quote": "其他要求不变",
+                "disposition": "context"
+              }
+            ]
+          },
+          "draft": {
+            "upsert": [
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 5000,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              }
+            ],
+            "remove_fields": [],
+            "clarifications": [],
+            "sources": [
+              {
+                "field": "place_proximity",
+                "quote": "不用按离裕廊东远近排序"
+              },
+              {
+                "field": "place_proximity",
+                "quote": "只保留裕廊东5公里范围"
+              }
+            ],
+            "supported": true,
+            "location_intents": [
+              {
+                "name": "裕廊东",
+                "quote": "只保留裕廊东5公里范围",
+                "radius_m": 5000,
+                "operator": "lte",
+                "strength": "hard",
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": false
+              }
+            ],
+            "interpretation_notes": [
+              "“裕廊东”已解析为 URA JURONG EAST 区域；区内距离记为 0，区外按到区域边界的最近直线距离排序。区内房源在此距离项上并列，不表示到同名地铁站或中心点为0米；需要站点距离时可指定 JURONG EAST MRT。",
+              "距离范围 5000 米按直线口径处理。"
+            ],
+            "remove_criterion_ids": [
+              "place_proximity:URA:AREA:JURONG_EAST-preference"
+            ],
+            "extraction": {
+              "version": "2.0",
+              "mode": "model",
+              "attempts": 2,
+              "example_ids": [
+                "replace-location-only",
+                "change-single"
+              ],
+              "coverage": [
+                {
+                  "quote": "只保留裕廊东5公里范围",
+                  "disposition": "extracted"
+                },
+                {
+                  "quote": "不用按离裕廊东远近排序",
+                  "disposition": "removed"
+                },
+                {
+                  "quote": "其他要求不变",
+                  "disposition": "context"
+                }
+              ],
+              "semantic_audit": "passed",
+              "repair_notes": [
+                "\"Failed to parse. Text: \\\"{\\n  \\\"schema_version\\\": \\\"2.0\\\",\\n  \\\"supported\\\": true,\\n  \\\"upsert\\\": [\\n    {\\n      \\\"field\\\": \\\"place_proximity\\\",\\n      \\\"operator\\\": \\\"lte\\\",\\n      \\\"value\\\": 5000,\\n      \\\"unit\\\": \\\"m\\\",\\n      \\\"strength\\\": \\\"hard\\\",\\n      \\\"weight\\\": null,\\n      \\\"target_name\\\": \\\"JURONG EAST\\\",\\n      \\\"transport_mode\\\": null,\\n      \\\"quote\\\": \\\"只保留裕廊东5公里范围\\\"\\n    }\\n  ],\\n  \\\"locations\\\": [\\n    {\\n      \\\"name\\\": \\\"裕廊东\\\",\\n      \\\"categories\\\": [],\\n      \\\"relation\\\": \\\"any_of\\\",\\n      \\\"operator\\\": \\\"lte\\\",\\n      \\\"value\\\": 5,\\n      \\\"unit\\\": \\\"km\\\",\\n      \\\"strength\\\": \\\"hard\\\",\\n      \\\"weight\\\": null,\\n      \\\"distance_type\\\": \\\"straight_line\\\",\\n      \\\"explicit_station\\\": false,\\n      \\\"prefer_closer\\\": false,\\n      \\\"quote\\\": \\\"只保留裕廊东5公里范围\\\"\\n    }\\n  ],\\n  \\\"removals\\\": [\\n    {\\n      \\\"field\\\": \\\"place_proximity\\\",\\n      \\\"criterion_id\\\": \\\"place_proximity:URA:AREA:JURONG_EAST-preference\\\",\\n      \\\"quote\\\": \\\"不用按离裕廊东远近排序\\\"\\n    }\\n  ],\\n  \\\"clarifications\\\": [],\\n  \\\"coverage\\\": [\\n    {\\n      \\\"quote\\\": \\\"只保留裕廊东5公里范围，不用按离裕廊东远近排序，其他要求不变。\\\",\\n      \\\"disposition\\\": \\\"extracted\\\"\\n    }\\n  ]\\n}\\\". Error: [{\\\"code\\\":\\\"invalid_value\\\",\\\"values\\\":[\\\"price\\\",\\\"bedrooms\\\",\\\"bathrooms\\\",\\\"floor_area_sqft\\\",\\\"land_area_sqft\\\",\\\"build_year\\\",\\\"district\\\",\\\"region_code\\\",\\\"postal_code\\\",\\\"tenure_category\\\",\\\"property_type\\\",\\\"mrt_distance_m\\\",\\\"mrt_walking_mins\\\",\\\"lease_months\\\",\\\"furnishing\\\",\\\"rental_scope\\\",\\\"move_in_date\\\",\\\"amenities\\\",\\\"commute_time\\\",\\\"current_availability\\\"],\\\"path\\\":[\\\"upsert\\\",0,\\\"field\\\"],\\\"message\\\":\\\"Invalid option: expected one of \\\\\\\"price\\\\\\\"|\\\\\\\"bedrooms\\\\\\\"|\\\\\\\"bathrooms\\\\\\\"|\\\\\\\"floor_area_sqft\\\\\\\"|\\\\\\\"land_area_sqft\\\\\\\"|\\\\\\\"build_year\\\\\\\"|\\\\\\\"district\\\\\\\"|\\\\\\\"region_code\\\\\\\"|\\\\\\\"postal_code\\\\\\\"|\\\\\\\"tenure_category\\\\\\\"|\\\\\\\"property_type\\\\\\\"|\\\\\\\"mrt_distance_m\\\\\\\"|\\\\\\\"mrt_walking_mins\\\\\\\"|\\\\\\\"lease_months\\\\\\\"|\\\\\\\"furnishing\\\\\\\"|\\\\\\\"rental_scope\\\\\\\"|\\\\\\\"move_in_date\\\\\\\"|\\\\\\\"amenities\\\\\\\"|\\\\\\\"commute_time\\\\\\\"|\\\\\\\"current_availability\\\\\\\"\\\"}]\\n\\nTroubleshooting URL: https://docs.langcha\""
+              ]
+            }
+          },
+          "effective_requirements": {
+            "listing_type": "RENT",
+            "criteria": [
+              {
+                "criterion_id": "bathrooms",
+                "field": "bathrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "minimum-bedrooms",
+                "field": "bedrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "place_proximity:PublicTransport-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "category": "PublicTransport",
+                  "name": "最近的MRT或公交站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 5000,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              }
+            ]
+          },
+          "audit": {
+            "valid": true,
+            "issues": []
+          }
+        }
+      ],
+      "duration_ms": 4421
+    },
+    {
+      "id": "replace-area",
+      "query": "不找裕廊东了，改找南洋理工大学附近3公里内的房子，其他要求不变。",
+      "passed": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 3000,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "place_id": "OSM:way:115105262",
+              "name": "Nanyang Technological University"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "place_id": "OSM:way:115105262",
+              "name": "Nanyang Technological University"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "place_proximity",
+            "quote": "不找裕廊东了"
+          },
+          {
+            "field": "place_proximity",
+            "quote": "不找裕廊东了"
+          },
+          {
+            "field": "place_proximity",
+            "quote": "改找南洋理工大学附近3公里内的房子"
+          }
+        ],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "南洋理工大学",
+            "quote": "改找南洋理工大学附近3公里内的房子",
+            "radius_m": 3000,
+            "operator": "lte",
+            "strength": "hard",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": true
+          }
+        ],
+        "interpretation_notes": [
+          "“南洋理工大学”已匹配到地点目录 Nanyang Technological University；默认采用直线距离，未验证实际路线。",
+          "距离范围 3000 米按直线口径处理。在范围内优先更近的房源。"
+        ],
+        "remove_criterion_ids": [
+          "place_proximity:URA:AREA:JURONG_EAST",
+          "place_proximity:URA:AREA:JURONG_EAST-preference"
+        ],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "replace-location-only",
+            "university-geo"
+          ],
+          "coverage": [
+            {
+              "quote": "不找裕廊东了，改找南洋理工大学附近3公里内的房子，其他要求不变。",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "effective": {
+        "listing_type": "RENT",
+        "criteria": [
+          {
+            "criterion_id": "bathrooms",
+            "field": "bathrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "minimum-bedrooms",
+            "field": "bedrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2500,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "place_proximity:OSM:way:115105262",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 3000,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "place_id": "OSM:way:115105262",
+              "name": "Nanyang Technological University"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:OSM:way:115105262-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "place_id": "OSM:way:115105262",
+              "name": "Nanyang Technological University"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          },
+          {
+            "criterion_id": "place_proximity:PublicTransport-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "category": "PublicTransport",
+              "name": "最近的MRT或公交站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          }
+        ]
+      },
+      "events": [
+        {
+          "attempt": 1,
+          "duration_ms": 2351,
+          "proposal": {
+            "schema_version": "2.0",
+            "supported": true,
+            "upsert": [],
+            "locations": [
+              {
+                "name": "南洋理工大学",
+                "categories": [],
+                "relation": "any_of",
+                "operator": "lte",
+                "value": 3,
+                "unit": "km",
+                "strength": "hard",
+                "weight": null,
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": true,
+                "quote": "改找南洋理工大学附近3公里内的房子"
+              }
+            ],
+            "removals": [
+              {
+                "field": "place_proximity",
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+                "quote": "不找裕廊东了"
+              },
+              {
+                "field": "place_proximity",
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+                "quote": "不找裕廊东了"
+              }
+            ],
+            "clarifications": [],
+            "coverage": [
+              {
+                "quote": "不找裕廊东了，改找南洋理工大学附近3公里内的房子，其他要求不变。",
+                "disposition": "extracted"
+              }
+            ]
+          },
+          "draft": {
+            "upsert": [
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 3000,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "place_id": "OSM:way:115105262",
+                  "name": "Nanyang Technological University"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "place_id": "OSM:way:115105262",
+                  "name": "Nanyang Technological University"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "nearer"
+              }
+            ],
+            "remove_fields": [],
+            "clarifications": [],
+            "sources": [
+              {
+                "field": "place_proximity",
+                "quote": "不找裕廊东了"
+              },
+              {
+                "field": "place_proximity",
+                "quote": "不找裕廊东了"
+              },
+              {
+                "field": "place_proximity",
+                "quote": "改找南洋理工大学附近3公里内的房子"
+              }
+            ],
+            "supported": true,
+            "location_intents": [
+              {
+                "name": "南洋理工大学",
+                "quote": "改找南洋理工大学附近3公里内的房子",
+                "radius_m": 3000,
+                "operator": "lte",
+                "strength": "hard",
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": true
+              }
+            ],
+            "interpretation_notes": [
+              "“南洋理工大学”已匹配到地点目录 Nanyang Technological University；默认采用直线距离，未验证实际路线。",
+              "距离范围 3000 米按直线口径处理。在范围内优先更近的房源。"
+            ],
+            "remove_criterion_ids": [
+              "place_proximity:URA:AREA:JURONG_EAST",
+              "place_proximity:URA:AREA:JURONG_EAST-preference"
+            ],
+            "extraction": {
+              "version": "2.0",
+              "mode": "model",
+              "attempts": 1,
+              "example_ids": [
+                "replace-location-only",
+                "university-geo"
+              ],
+              "coverage": [
+                {
+                  "quote": "不找裕廊东了，改找南洋理工大学附近3公里内的房子，其他要求不变。",
+                  "disposition": "extracted"
+                }
+              ],
+              "semantic_audit": "passed",
+              "repair_notes": []
+            }
+          },
+          "effective_requirements": {
+            "listing_type": "RENT",
+            "criteria": [
+              {
+                "criterion_id": "bathrooms",
+                "field": "bathrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "minimum-bedrooms",
+                "field": "bedrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "place_proximity:OSM:way:115105262",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 3000,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "place_id": "OSM:way:115105262",
+                  "name": "Nanyang Technological University"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:OSM:way:115105262-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "place_id": "OSM:way:115105262",
+                  "name": "Nanyang Technological University"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "nearer"
+              },
+              {
+                "criterion_id": "place_proximity:PublicTransport-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "category": "PublicTransport",
+                  "name": "最近的MRT或公交站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              }
+            ]
+          },
+          "audit": {
+            "valid": true,
+            "issues": []
+          }
+        }
+      ],
+      "duration_ms": 2353
+    },
+    {
+      "id": "transport-and",
+      "query": "原来MRT或公交站二选一的偏好取消，改成地铁站和公交站都必须在800米以内，其他照旧。",
+      "passed": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 800,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "category": "MRTStation",
+              "name": "最近的MRT地铁站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 800,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "category": "BusStop",
+              "name": "最近的公交站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "place_proximity",
+            "quote": "原来MRT或公交站二选一的偏好取消"
+          },
+          {
+            "field": "place_proximity",
+            "quote": "改成地铁站和公交站都必须在800米以内"
+          },
+          {
+            "field": "place_proximity",
+            "quote": "改成地铁站和公交站都必须在800米以内"
+          }
+        ],
+        "supported": true,
+        "location_intents": [
+          {
+            "name": "最近的MRT地铁站",
+            "quote": "改成地铁站和公交站都必须在800米以内",
+            "radius_m": 800,
+            "operator": "lte",
+            "strength": "hard",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false,
+            "category": "MRTStation"
+          },
+          {
+            "name": "最近的公交站",
+            "quote": "改成地铁站和公交站都必须在800米以内",
+            "radius_m": 800,
+            "operator": "lte",
+            "strength": "hard",
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false,
+            "category": "BusStop"
+          }
+        ],
+        "interpretation_notes": [
+          "“最近的MRT地铁站”已保留为硬条件；站点数据或路线证据不可用时将标为待确认，不会忽略此条件。",
+          "“最近的公交站”已保留为硬条件；站点数据或路线证据不可用时将标为待确认，不会忽略此条件。"
+        ],
+        "remove_criterion_ids": [
+          "place_proximity:PublicTransport-preference"
+        ],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "transport-and",
+            "restate-geographic-update"
+          ],
+          "coverage": [
+            {
+              "quote": "原来MRT或公交站二选一的偏好取消",
+              "disposition": "removed"
+            },
+            {
+              "quote": "改成地铁站和公交站都必须在800米以内",
+              "disposition": "extracted"
+            },
+            {
+              "quote": "其他照旧",
+              "disposition": "context"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "effective": {
+        "listing_type": "RENT",
+        "criteria": [
+          {
+            "criterion_id": "bathrooms",
+            "field": "bathrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "minimum-bedrooms",
+            "field": "bedrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2500,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "place_proximity:BusStop",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 800,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "category": "BusStop",
+              "name": "最近的公交站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:MRTStation",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 800,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "category": "MRTStation",
+              "name": "最近的MRT地铁站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 5000,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ]
+      },
+      "events": [
+        {
+          "attempt": 1,
+          "duration_ms": 2447,
+          "proposal": {
+            "schema_version": "2.0",
+            "supported": true,
+            "upsert": [],
+            "locations": [
+              {
+                "name": null,
+                "categories": [
+                  "MRTStation",
+                  "BusStop"
+                ],
+                "relation": "all_of",
+                "operator": "lte",
+                "value": 800,
+                "unit": "m",
+                "strength": "hard",
+                "weight": null,
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": false,
+                "quote": "改成地铁站和公交站都必须在800米以内"
+              }
+            ],
+            "removals": [
+              {
+                "field": "place_proximity",
+                "criterion_id": "place_proximity:PublicTransport-preference",
+                "quote": "原来MRT或公交站二选一的偏好取消"
+              }
+            ],
+            "clarifications": [],
+            "coverage": [
+              {
+                "quote": "原来MRT或公交站二选一的偏好取消",
+                "disposition": "removed"
+              },
+              {
+                "quote": "改成地铁站和公交站都必须在800米以内",
+                "disposition": "extracted"
+              },
+              {
+                "quote": "其他照旧",
+                "disposition": "context"
+              }
+            ]
+          },
+          "draft": {
+            "upsert": [
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 800,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "category": "MRTStation",
+                  "name": "最近的MRT地铁站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 800,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "category": "BusStop",
+                  "name": "最近的公交站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              }
+            ],
+            "remove_fields": [],
+            "clarifications": [],
+            "sources": [
+              {
+                "field": "place_proximity",
+                "quote": "原来MRT或公交站二选一的偏好取消"
+              },
+              {
+                "field": "place_proximity",
+                "quote": "改成地铁站和公交站都必须在800米以内"
+              },
+              {
+                "field": "place_proximity",
+                "quote": "改成地铁站和公交站都必须在800米以内"
+              }
+            ],
+            "supported": true,
+            "location_intents": [
+              {
+                "name": "最近的MRT地铁站",
+                "quote": "改成地铁站和公交站都必须在800米以内",
+                "radius_m": 800,
+                "operator": "lte",
+                "strength": "hard",
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": false,
+                "category": "MRTStation"
+              },
+              {
+                "name": "最近的公交站",
+                "quote": "改成地铁站和公交站都必须在800米以内",
+                "radius_m": 800,
+                "operator": "lte",
+                "strength": "hard",
+                "distance_type": "straight_line",
+                "explicit_station": false,
+                "prefer_closer": false,
+                "category": "BusStop"
+              }
+            ],
+            "interpretation_notes": [
+              "“最近的MRT地铁站”已保留为硬条件；站点数据或路线证据不可用时将标为待确认，不会忽略此条件。",
+              "“最近的公交站”已保留为硬条件；站点数据或路线证据不可用时将标为待确认，不会忽略此条件。"
+            ],
+            "remove_criterion_ids": [
+              "place_proximity:PublicTransport-preference"
+            ],
+            "extraction": {
+              "version": "2.0",
+              "mode": "model",
+              "attempts": 1,
+              "example_ids": [
+                "transport-and",
+                "restate-geographic-update"
+              ],
+              "coverage": [
+                {
+                  "quote": "原来MRT或公交站二选一的偏好取消",
+                  "disposition": "removed"
+                },
+                {
+                  "quote": "改成地铁站和公交站都必须在800米以内",
+                  "disposition": "extracted"
+                },
+                {
+                  "quote": "其他照旧",
+                  "disposition": "context"
+                }
+              ],
+              "semantic_audit": "passed",
+              "repair_notes": []
+            }
+          },
+          "effective_requirements": {
+            "listing_type": "RENT",
+            "criteria": [
+              {
+                "criterion_id": "bathrooms",
+                "field": "bathrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "minimum-bedrooms",
+                "field": "bedrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "place_proximity:BusStop",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 800,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "category": "BusStop",
+                  "name": "最近的公交站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:MRTStation",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 800,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "category": "MRTStation",
+                  "name": "最近的MRT地铁站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 5000,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "nearer"
+              }
+            ]
+          },
+          "audit": {
+            "valid": true,
+            "issues": []
+          }
+        }
+      ],
+      "duration_ms": 2449
+    },
+    {
+      "id": "cancel-one-amenity",
+      "query": "独卫不强求了，其他要求都保留。",
+      "passed": true,
+      "draft": {
+        "upsert": [],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "amenities",
+            "quote": "独卫不强求了"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [
+          "private"
+        ],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "bath-count-is-not-private",
+            "change-single"
+          ],
+          "coverage": [
+            {
+              "quote": "独卫不强求了，其他要求都保留。",
+              "disposition": "removed"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "effective": {
+        "listing_type": "RENT",
+        "criteria": [
+          {
+            "criterion_id": "bathrooms",
+            "field": "bathrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "minimum-bedrooms",
+            "field": "bedrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 2500,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "pets",
+            "field": "amenities",
+            "operator": "eq",
+            "value": "pet_policy",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "place_proximity:PublicTransport-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "category": "PublicTransport",
+              "name": "最近的MRT或公交站"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 5000,
+            "unit": "m",
+            "strength": "hard",
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "place_id": "URA:AREA:JURONG_EAST",
+              "name": "JURONG EAST"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ]
+      },
+      "events": [
+        {
+          "attempt": 1,
+          "duration_ms": 2305,
+          "proposal": {
+            "schema_version": "2.0",
+            "supported": true,
+            "upsert": [],
+            "locations": [],
+            "removals": [
+              {
+                "field": "amenities",
+                "criterion_id": "private",
+                "quote": "独卫不强求了"
+              }
+            ],
+            "clarifications": [],
+            "coverage": [
+              {
+                "quote": "独卫不强求了，其他要求都保留。",
+                "disposition": "removed"
+              }
+            ]
+          },
+          "draft": {
+            "upsert": [],
+            "remove_fields": [],
+            "clarifications": [],
+            "sources": [
+              {
+                "field": "amenities",
+                "quote": "独卫不强求了"
+              }
+            ],
+            "supported": true,
+            "location_intents": [],
+            "interpretation_notes": [],
+            "remove_criterion_ids": [
+              "private"
+            ],
+            "extraction": {
+              "version": "2.0",
+              "mode": "model",
+              "attempts": 1,
+              "example_ids": [
+                "bath-count-is-not-private",
+                "change-single"
+              ],
+              "coverage": [
+                {
+                  "quote": "独卫不强求了，其他要求都保留。",
+                  "disposition": "removed"
+                }
+              ],
+              "semantic_audit": "passed",
+              "repair_notes": []
+            }
+          },
+          "effective_requirements": {
+            "listing_type": "RENT",
+            "criteria": [
+              {
+                "criterion_id": "bathrooms",
+                "field": "bathrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "minimum-bedrooms",
+                "field": "bedrooms",
+                "operator": "eq",
+                "value": 1,
+                "unit": "count",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 2500,
+                "unit": "SGD/month",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "pets",
+                "field": "amenities",
+                "operator": "eq",
+                "value": "pet_policy",
+                "strength": "hard"
+              },
+              {
+                "criterion_id": "place_proximity:PublicTransport-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "category": "PublicTransport",
+                  "name": "最近的MRT或公交站"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 5000,
+                "unit": "m",
+                "strength": "hard",
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "bounded"
+              },
+              {
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+                "field": "place_proximity",
+                "operator": "lte",
+                "value": 1000,
+                "unit": "m",
+                "strength": "soft",
+                "weight": 1,
+                "target": {
+                  "place_id": "URA:AREA:JURONG_EAST",
+                  "name": "JURONG EAST"
+                },
+                "distance_type": "straight_line",
+                "distance_preference": "nearer"
+              }
+            ]
+          },
+          "audit": {
+            "valid": true,
+            "issues": []
+          }
+        }
+      ],
+      "duration_ms": 2307
+    },
+    {
+      "id": "explicit-reset",
+      "query": "之前所有条件都取消，重新来：只要求每月租金不超过1800新币。",
+      "passed": true,
+      "draft": {
+        "upsert": [
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 1800,
+            "unit": "SGD/month",
+            "strength": "hard"
+          }
+        ],
+        "remove_fields": [],
+        "clarifications": [],
+        "sources": [
+          {
+            "field": "bathrooms",
+            "quote": "之前所有条件都取消"
+          },
+          {
+            "field": "bedrooms",
+            "quote": "之前所有条件都取消"
+          },
+          {
+            "field": "price",
+            "quote": "之前所有条件都取消"
+          },
+          {
+            "field": "place_proximity",
+            "quote": "之前所有条件都取消"
+          },
+          {
+            "field": "place_proximity",
+            "quote": "之前所有条件都取消"
+          },
+          {
+            "field": "place_proximity",
+            "quote": "之前所有条件都取消"
+          },
+          {
+            "field": "price",
+            "quote": "只要求每月租金不超过1800新币"
+          }
+        ],
+        "supported": true,
+        "location_intents": [],
+        "interpretation_notes": [],
+        "remove_criterion_ids": [
+          "bathrooms",
+          "minimum-bedrooms",
+          "monthly-rent",
+          "place_proximity:PublicTransport-preference",
+          "place_proximity:URA:AREA:JURONG_EAST",
+          "place_proximity:URA:AREA:JURONG_EAST-preference"
+        ],
+        "extraction": {
+          "version": "2.0",
+          "mode": "model",
+          "attempts": 1,
+          "example_ids": [
+            "rent-interval",
+            "restate-geographic-update"
+          ],
+          "coverage": [
+            {
+              "quote": "之前所有条件都取消，重新来",
+              "disposition": "removed"
+            },
+            {
+              "quote": "只要求每月租金不超过1800新币",
+              "disposition": "extracted"
+            }
+          ],
+          "semantic_audit": "passed",
+          "repair_notes": []
+        }
+      },
+      "effective": {
+        "listing_type": "RENT",
+        "criteria": [
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 1800,
+            "unit": "SGD/month",
+            "strength": "hard"
+          }
+        ]
+      },
+      "events": [
+        {
+          "attempt": 1,
+          "duration_ms": 2564,
+          "proposal": {
+            "schema_version": "2.0",
+            "supported": true,
+            "upsert": [
+              {
+                "field": "price",
+                "operator": "lte",
+                "value": 1800,
+                "unit": "SGD/month",
+                "strength": "hard",
+                "weight": null,
+                "target_name": null,
+                "transport_mode": null,
+                "quote": "只要求每月租金不超过1800新币"
+              }
+            ],
+            "locations": [],
+            "removals": [
+              {
+                "field": "bathrooms",
+                "criterion_id": "bathrooms",
+                "quote": "之前所有条件都取消"
+              },
+              {
+                "field": "bedrooms",
+                "criterion_id": "minimum-bedrooms",
+                "quote": "之前所有条件都取消"
+              },
+              {
+                "field": "price",
+                "criterion_id": "monthly-rent",
+                "quote": "之前所有条件都取消"
+              },
+              {
+                "field": "place_proximity",
+                "criterion_id": "place_proximity:PublicTransport-preference",
+                "quote": "之前所有条件都取消"
+              },
+              {
+                "field": "place_proximity",
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+                "quote": "之前所有条件都取消"
+              },
+              {
+                "field": "place_proximity",
+                "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+                "quote": "之前所有条件都取消"
+              }
+            ],
+            "clarifications": [],
+            "coverage": [
+              {
+                "quote": "之前所有条件都取消，重新来",
+                "disposition": "removed"
+              },
+              {
+                "quote": "只要求每月租金不超过1800新币",
+                "disposition": "extracted"
+              }
+            ]
+          },
+          "draft": {
+            "upsert": [
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 1800,
+                "unit": "SGD/month",
+                "strength": "hard"
+              }
+            ],
+            "remove_fields": [],
+            "clarifications": [],
+            "sources": [
+              {
+                "field": "bathrooms",
+                "quote": "之前所有条件都取消"
+              },
+              {
+                "field": "bedrooms",
+                "quote": "之前所有条件都取消"
+              },
+              {
+                "field": "price",
+                "quote": "之前所有条件都取消"
+              },
+              {
+                "field": "place_proximity",
+                "quote": "之前所有条件都取消"
+              },
+              {
+                "field": "place_proximity",
+                "quote": "之前所有条件都取消"
+              },
+              {
+                "field": "place_proximity",
+                "quote": "之前所有条件都取消"
+              },
+              {
+                "field": "price",
+                "quote": "只要求每月租金不超过1800新币"
+              }
+            ],
+            "supported": true,
+            "location_intents": [],
+            "interpretation_notes": [],
+            "remove_criterion_ids": [
+              "bathrooms",
+              "minimum-bedrooms",
+              "monthly-rent",
+              "place_proximity:PublicTransport-preference",
+              "place_proximity:URA:AREA:JURONG_EAST",
+              "place_proximity:URA:AREA:JURONG_EAST-preference"
+            ],
+            "extraction": {
+              "version": "2.0",
+              "mode": "model",
+              "attempts": 1,
+              "example_ids": [
+                "rent-interval",
+                "restate-geographic-update"
+              ],
+              "coverage": [
+                {
+                  "quote": "之前所有条件都取消，重新来",
+                  "disposition": "removed"
+                },
+                {
+                  "quote": "只要求每月租金不超过1800新币",
+                  "disposition": "extracted"
+                }
+              ],
+              "semantic_audit": "passed",
+              "repair_notes": []
+            }
+          },
+          "effective_requirements": {
+            "listing_type": "RENT",
+            "criteria": [
+              {
+                "criterion_id": "monthly-rent",
+                "field": "price",
+                "operator": "lte",
+                "value": 1800,
+                "unit": "SGD/month",
+                "strength": "hard"
+              }
+            ]
+          },
+          "audit": {
+            "valid": true,
+            "issues": []
+          }
+        }
+      ],
+      "duration_ms": 2566
+    }
+  ]
+}

@@ -75,7 +75,7 @@ def prepare(request, previous, store):
             "new_events": len(events) - (len(previous["events"]) if previous else 0),
         },
         "profile": {
-            "source": "sample",
+            "source": ("mixed" if len({e["source"] for e in events}) > 1 else next(iter({e["source"] for e in events}), "sample")),
             "duration_totals": totals,
             "interest_weights": {
                 k: math.log1p(min(v, 120)) / math.log(121) for k, v in totals.items()

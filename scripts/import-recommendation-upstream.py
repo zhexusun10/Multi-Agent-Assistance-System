@@ -9,6 +9,20 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+EXTENSION = ROOT / 'contracts/releases/recommendation-web-feedback-extension.json'
+
+
+def matches_port(target, expected_hash):
+    if not target.is_file():
+        return False
+    actual = hashlib.sha256(target.read_bytes()).hexdigest()
+    if actual == expected_hash:
+        return True
+    if EXTENSION.is_file():
+        overlay = json.loads(EXTENSION.read_text(encoding='utf-8'))
+        relative = target.relative_to(ROOT).as_posix()
+        return any(e['target'] == relative and e['base_ported_sha256'] == expected_hash and e['extended_sha256'] == actual for e in overlay['files'])
+    return False
 REPLACEMENTS = [
     ("dev.sharedContract.recommendationSubagentContract", "recommendation.contracts"),
     ("dev.recommendationSubagent", "recommendation"),
@@ -39,12 +53,14 @@ def main():
         manifest=json.loads(output.read_text(encoding="utf-8"))
         for entry in manifest['files']:
             target=ROOT/entry['target']
-            if not target.is_file() or hashlib.sha256(target.read_bytes()).hexdigest()!=entry['ported_sha256']:
+            if not matches_port(target, entry['ported_sha256']):
                 raise ValueError(f"Upstream port fingerprint changed: {target}")
-        print(json.dumps({'mode':'manifest-check','files':len(manifest['files']),'business_logic_changes':0}))
+        print(json.dumps({'mode':'manifest-check','files':len(manifest['files']),'business_logic_changes':0,'contract_source_extension':EXTENSION.is_file()}))
         return
     if not args.reference:
         parser.error('--reference is required for import or original-source comparison')
+    if EXTENSION.is_file() and not args.check:
+        parser.error('Real-browser contract extension exists; refusing to overwrite it with the original import. Use --check to compare.')
     reference = Path(args.reference)
     records = []
     for source, destination in [
@@ -59,7 +75,7 @@ def main():
             expected = transformed(original.decode("utf-8"), rel).encode("utf-8")
             target = destination / rel
             if args.check:
-                if not target.is_file() or target.read_bytes() != expected:
+                if not matches_port(target, hashlib.sha256(expected).hexdigest()):
                     raise ValueError(f"Unapproved upstream modification: {target}")
             else:
                 target.parent.mkdir(parents=True, exist_ok=True)

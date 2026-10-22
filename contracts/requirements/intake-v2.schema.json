@@ -1,0 +1,452 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "2.0"
+    },
+    "supported": {
+      "type": "boolean"
+    },
+    "upsert": {
+      "maxItems": 40,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "enum": [
+              "price",
+              "bedrooms",
+              "bathrooms",
+              "floor_area_sqft",
+              "land_area_sqft",
+              "build_year",
+              "district",
+              "region_code",
+              "postal_code",
+              "tenure_category",
+              "property_type",
+              "mrt_distance_m",
+              "mrt_walking_mins",
+              "lease_months",
+              "furnishing",
+              "rental_scope",
+              "move_in_date",
+              "amenities",
+              "commute_time",
+              "current_availability"
+            ],
+            "description": "普通地铁/公交/具名地点距离放locations；只有用户明确要求挂牌或平台标注信息时才允许mrt_distance_m和mrt_walking_mins"
+          },
+          "operator": {
+            "type": "string",
+            "enum": [
+              "eq",
+              "in",
+              "gte",
+              "lte",
+              "between"
+            ]
+          },
+          "value": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ]
+              },
+              {
+                "minItems": 1,
+                "maxItems": 2,
+                "type": "array",
+                "items": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              {
+                "minItems": 1,
+                "maxItems": 28,
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "SGD/month",
+                  "count",
+                  "sqft",
+                  "sqm",
+                  "year",
+                  "m",
+                  "km",
+                  "min",
+                  "month"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "strength": {
+            "type": "string",
+            "enum": [
+              "hard",
+              "soft"
+            ]
+          },
+          "weight": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "target_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "transport_mode": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "transit",
+                  "walking",
+                  "driving",
+                  "unspecified"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "quote": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          }
+        },
+        "required": [
+          "field",
+          "operator",
+          "value",
+          "unit",
+          "strength",
+          "weight",
+          "target_name",
+          "transport_mode",
+          "quote"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "locations": {
+      "maxItems": 12,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 150
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "categories": {
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "MRTStation",
+                "BusStop",
+                "PublicTransport",
+                "Supermarket",
+                "School",
+                "Park",
+                "FoodCourt",
+                "Mall",
+                "Market",
+                "Hospital",
+                "Clinic",
+                "Library"
+              ]
+            }
+          },
+          "relation": {
+            "type": "string",
+            "enum": [
+              "any_of",
+              "all_of"
+            ]
+          },
+          "operator": {
+            "type": "string",
+            "enum": [
+              "near",
+              "lte",
+              "gte",
+              "between"
+            ]
+          },
+          "value": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      {
+                        "type": "number",
+                        "minimum": 0
+                      }
+                    ],
+                    "items": false,
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "m",
+                  "km"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "strength": {
+            "type": "string",
+            "enum": [
+              "hard",
+              "soft"
+            ]
+          },
+          "weight": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "distance_type": {
+            "type": "string",
+            "enum": [
+              "straight_line",
+              "walking",
+              "driving",
+              "transit"
+            ]
+          },
+          "explicit_station": {
+            "type": "boolean"
+          },
+          "prefer_closer": {
+            "type": "boolean"
+          },
+          "quote": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          }
+        },
+        "required": [
+          "name",
+          "categories",
+          "relation",
+          "operator",
+          "value",
+          "unit",
+          "strength",
+          "weight",
+          "distance_type",
+          "explicit_station",
+          "prefer_closer",
+          "quote"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "removals": {
+      "maxItems": 40,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "enum": [
+              "price",
+              "bedrooms",
+              "bathrooms",
+              "floor_area_sqft",
+              "land_area_sqft",
+              "build_year",
+              "district",
+              "region_code",
+              "postal_code",
+              "tenure_category",
+              "property_type",
+              "place_proximity",
+              "mrt_distance_m",
+              "mrt_walking_mins",
+              "lease_months",
+              "furnishing",
+              "rental_scope",
+              "move_in_date",
+              "amenities",
+              "commute_time",
+              "current_availability"
+            ]
+          },
+          "criterion_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "quote": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          }
+        },
+        "required": [
+          "field",
+          "criterion_id",
+          "quote"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "clarifications": {
+      "maxItems": 3,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "quote": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "quote",
+          "question"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "coverage": {
+      "minItems": 1,
+      "maxItems": 40,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "quote": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "disposition": {
+            "type": "string",
+            "enum": [
+              "extracted",
+              "removed",
+              "clarification",
+              "context"
+            ]
+          }
+        },
+        "required": [
+          "quote",
+          "disposition"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "supported",
+    "upsert",
+    "locations",
+    "removals",
+    "clarifications",
+    "coverage"
+  ],
+  "additionalProperties": false
+}

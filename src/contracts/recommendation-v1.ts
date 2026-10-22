@@ -14,7 +14,7 @@ export const FIELD_RULES: Record<string, { kind: 'number'|'integer'|'string'|'bo
   place_proximity: {kind:'number',ops:['lte','gte','between'],unit:'m'},
   mrt_distance_m: {kind:'number',ops:['lte','gte','between'],unit:'m'},
   mrt_walking_mins: {kind:'number',ops:['lte','gte','between'],unit:'min'},
-  lease_months: {kind:'integer',ops:['eq','between'],unit:'month',unsupported:true},
+  lease_months: {kind:'integer',ops:['eq','gte','lte','between'],unit:'month',unsupported:true},
   furnishing: {kind:'string',ops:['eq','in'],unsupported:true},
   rental_scope: {kind:'string',ops:['eq','in'],unsupported:true},
   move_in_date: {kind:'date',ops:['eq','gte','lte'],unsupported:true},
@@ -28,6 +28,7 @@ export const criterionSchema = z.object({
   value:z.unknown(),unit:z.string().optional(),strength:z.enum(['hard','soft']),weight:z.number().positive().finite().optional(),
   target:targetSchema.optional(),distance_type:z.enum(['straight_line','walking','driving','transit','platform_reported']).optional(),
   transport_mode:z.string().optional(),
+  distance_preference:z.enum(['nearer','bounded']).optional(),
 }).strict().superRefine((c,ctx)=>{
   const r=FIELD_RULES[c.field]; const error=(message:string)=>ctx.addIssue({code:'custom',message});
   if(!r) return error(`Unsupported field: ${c.field}`);
@@ -50,6 +51,7 @@ export const criterionSchema = z.object({
   }
   if(c.field==='place_proximity'&&(!c.target||(!c.target.place_id&&!c.target.category)||!c.distance_type)) error('Geographic target and distance_type required');
   if(c.field.startsWith('mrt_')&&c.distance_type!=='platform_reported') error('MRT fields require explicit platform_reported semantics');
+  if(c.distance_preference&&c.field!=='place_proximity')error('distance_preference only applies to place_proximity');
 });
 export type Criterion=z.infer<typeof criterionSchema>;
 export const requirementsSchema=z.object({listing_type:z.literal('RENT'),criteria:z.array(criterionSchema).max(40)}).strict().superRefine((r,c)=>{

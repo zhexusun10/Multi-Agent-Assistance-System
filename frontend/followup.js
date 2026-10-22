@@ -56,7 +56,7 @@ export class FollowupUI{
   }catch(e){this.toast(e.message);}}
   renderActions(){const state=this.getState(),box=$('actions');box.replaceChildren();$('action-count').textContent=state.actions.length;
     box.append(this.el('p','muted','① 编辑并复制草稿 → ② 自行发送，回来确认已发送 → ③ 粘贴回复并确认 → ④ 查看理解、总结与下一步。无需平台 API 配置。'));
-    if(!state.actions.length)box.append(this.el('p','muted','在房源卡片点击“核实并咨询”或“我想看这套”。待核实房源也可进入跟进。'));
+    if(!state.actions.length)box.append(this.el('p','muted','在房源卡片点击“联系经纪人”，可以编辑咨询草稿并选择看房时间。'));
     for(const a of [...state.actions].reverse()){
       const card=this.el('article','action-card');card.dataset.actionId=a.id;card.append(this.el('span','action-status',(statuses[a.status]||a.status)+(a.status==='CONFIRMED'&&a.mode==='simulation'?'（模拟）':'')),this.el('h3','',a.subject),this.el('p','muted',`房源 ${a.listing_ids.join('、')} · 修订 ${a.revision} · ${a.recipient.name} ${a.recipient.channel||''} ${a.recipient.address||a.recipient.email||''} · ${a.mode==='manual'?'用户手动记录':a.mode==='live'?'真实平台':'草稿 / API模拟'}`),this.el('pre','',a.manual?.message_body||composeCustomerMessage(a.body,a.negotiation_notes,a.slots,!!a.template)));
       if(a.verification_context?.some(v=>v.unresolved.length))card.append(this.el('p','listing-warning','待核实事项：'+a.verification_context.flatMap(v=>v.unresolved.map(u=>u.requirement)).join('；')));

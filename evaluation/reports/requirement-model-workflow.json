@@ -1,0 +1,104 @@
+{
+  "checks": [
+    "Original screenshot request retains budget, real NTU target, 1000m MRT-or-bus soft preference all the way to native recommendation; unavailable transit evidence remains unknown",
+    "Budget update preserves geographic relationships, soft preference and stable old criterion IDs",
+    "Rerecommendation with an appended new condition goes through model extraction and does not reuse away the change",
+    "Ambiguous room count stops before recommendation; clarification resumes without dropping the budget or earlier transport/park preferences"
+  ],
+  "external_messages_sent": 0,
+  "queries": [
+    "你好，我要租南洋理工大学附近5公里内的房子，预算在2000新币每月，房子附近1公里内最好有MRT或公交站",
+    "预算改为2300新币，其余条件保持不变。",
+    "按当前条件重新推荐，不过这次最好房子附近700米内有公园。",
+    "还需要两房。",
+    "至少两间卧室，不是恰好两间。"
+  ],
+  "status": "passed",
+  "session_id": "b72d815d-039f-46da-b3fd-90c3045f1089",
+  "requirements": {
+    "criteria": [
+      {
+        "unit": "count",
+        "field": "bedrooms",
+        "value": 2,
+        "operator": "gte",
+        "strength": "hard",
+        "criterion_id": "minimum-bedrooms"
+      },
+      {
+        "unit": "SGD/month",
+        "field": "price",
+        "value": 2300,
+        "operator": "lte",
+        "strength": "hard",
+        "criterion_id": "monthly-rent"
+      },
+      {
+        "unit": "m",
+        "field": "place_proximity",
+        "value": 5000,
+        "target": {
+          "name": "Nanyang Technological University",
+          "place_id": "OSM:way:115105262"
+        },
+        "operator": "lte",
+        "strength": "hard",
+        "criterion_id": "place_proximity:OSM:way:115105262",
+        "distance_type": "straight_line",
+        "distance_preference": "bounded"
+      },
+      {
+        "unit": "m",
+        "field": "place_proximity",
+        "value": 1000,
+        "target": {
+          "name": "Nanyang Technological University",
+          "place_id": "OSM:way:115105262"
+        },
+        "weight": 1,
+        "operator": "lte",
+        "strength": "soft",
+        "criterion_id": "place_proximity:OSM:way:115105262-preference",
+        "distance_type": "straight_line",
+        "distance_preference": "nearer"
+      },
+      {
+        "unit": "m",
+        "field": "place_proximity",
+        "value": 700,
+        "target": {
+          "name": "公园",
+          "category": "Park"
+        },
+        "weight": 1,
+        "operator": "lte",
+        "strength": "soft",
+        "criterion_id": "place_proximity:Park-preference",
+        "distance_type": "straight_line",
+        "distance_preference": "bounded"
+      },
+      {
+        "unit": "m",
+        "field": "place_proximity",
+        "value": 1000,
+        "target": {
+          "name": "最近的MRT或公交站",
+          "category": "PublicTransport"
+        },
+        "weight": 1,
+        "operator": "lte",
+        "strength": "soft",
+        "criterion_id": "place_proximity:PublicTransport-preference",
+        "distance_type": "straight_line",
+        "distance_preference": "bounded"
+      }
+    ],
+    "listing_type": "RENT"
+  },
+  "final_counts": {
+    "assessed": 21431,
+    "eligible": 0,
+    "excluded": 21318,
+    "unverified": 113
+  }
+}

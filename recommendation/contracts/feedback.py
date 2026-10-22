@@ -15,7 +15,7 @@ class ViewingEvent(Contract):
     recommendation_request_id: str = Field(min_length=1)
     listing_id: str = Field(min_length=1)
     event_type: Literal["listing_view_duration"] = "listing_view_duration"
-    source: Literal["sample"] = "sample"
+    source: Literal["sample", "web_detail"] = "sample"
     occurred_at: datetime
     payload: ViewPayload
 

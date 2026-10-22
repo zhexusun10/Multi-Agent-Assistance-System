@@ -1,0 +1,9 @@
+{
+  "checks": [
+    "Chat typing pauses interest measurement without closing the property or requesting new recommendations",
+    "System help modal is not counted as property reading",
+    "Long idle reading is conservatively capped; further idle wall time is not counted",
+    "IndexedDB retries a completion across document recreation without duplicate accumulation or automatic reranking"
+  ],
+  "status": "passed"
+}

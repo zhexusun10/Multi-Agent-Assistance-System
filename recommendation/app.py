@@ -8,7 +8,8 @@ from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.gzip import GZipMiddleware
 
-from .agent.controller import LiveController, ScriptedController
+from .agent.controller import ScriptedController
+from .app_controller import ApplicationLiveController
 from .config import RecommendationConfig
 from .contracts.request import RecommendationRequest
 from .models.candidate import Response
@@ -65,8 +66,9 @@ def execute(request: RecommendationRequest, app_view=False):
         controller_mode = os.getenv("RECOMMENDATION_CONTROLLER", "live")
         if controller_mode not in {"live", "scripted"}:
             raise ValueError("RECOMMENDATION_CONTROLLER must be live or scripted")
-        controller = LiveController() if controller_mode == "live" else ScriptedController()
-        service = RecommendationService(listing, geographic, store, controller, config=RecommendationConfig.from_file(os.getenv("RECOMMENDATION_CONFIG")))
+        config = RecommendationConfig.from_file(os.getenv("RECOMMENDATION_CONFIG"))
+        controller = ApplicationLiveController(timeout=config.limits.timeout_seconds) if controller_mode == "live" else ScriptedController()
+        service = RecommendationService(listing, geographic, store, controller, config=config)
         response = Response.model_validate(service.recommend(request).model_dump())
         native = response.model_dump(mode="json")
         if not app_view:

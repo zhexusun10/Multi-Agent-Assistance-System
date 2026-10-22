@@ -1,0 +1,37 @@
+{
+  "checked_at": "2026-10-22T09:18:33.166Z",
+  "external_messages_sent": 0,
+  "checks": [
+    {
+      "mode": "read-only replay of actual failure",
+      "original_error": "EXPLANATION_GENERATION_FAILED: GROUNDING: numbers 5 are not supported by this paragraph refs requirement:monthly-rent,requirement:minimum-bedrooms,requirement:preferred-district; cite correct facts or remove unnecessary figures. Reference candidates (verify meaning): [{\"number\":5,\"matching_refs\":[\"listing:20283326\",\"compare:1:5\",\"compare:2:5\",\"compare:3:5\",\"compare:4:5\",\"compare:5:6\",\"compare:5:7\",\"compare:5:8\"]}]",
+      "query": "帮我找租房，预算不超过5000新币，至少2房，D05",
+      "answer": "您的要求：\n• 月租不超过5,000新币。\n• 至少2间卧室。\n• 位于D05邮区。\n这三项都是必须满足的条件。\n\n这些房源符合的部分：\n• 预算：记录月租在2,500至4,500新币之间，都在上限内。\n• 邮区：记录均为D05。\n• 卧室：17 Dover Crescent、508 West Coast Drive为2间，456 Clementi Avenue 3、511 West Coast Drive为3间，都达到至少2间。\n\n还需要了解的部分：NEWest、Lyf One-North Singapore、lyf one-north Singapore 80 Nepal Park, Singapore 139409和345 Clementi Avenue 5的卧室数量还没有资料，因此暂时不能确认它们是否达到至少2间；这几套的租金和邮区记录是符合的。\n\n为什么这样排序：目前没有能拉开差距的偏好依据，所以顺序沿用固定次序，并不代表排在前面的更合适；租金较低也没有让房源提前。\n\n注意：还不能确认这几套房源全部符合您的要求；记录的价格和现在是否仍可租，需要联系经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 2,
+        "example_ids": [
+          "mixed-confirmed-pending",
+          "bathroom-count-not-privacy"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [
+          "GROUNDING: numbers 2500 are not supported by this paragraph refs condition:12885293:monthly-rent,condition:18074957:monthly-rent,condition:18689152:monthly-rent,condition:18885948:monthly-rent,condition:12885293:preferred-district,condition:18074957:preferred-district,condition:18689152:preferred-district,condition:18885948:preferred-district,condition:12885293:minimum-bedrooms,condition:18074957:minimum-bedrooms,condition:18689152:minimum-bedrooms,condition:18885948:minimum-bedrooms; cite correct facts or remove unnecessary figures. Reference candidates (verify meaning): [{\"number\":2500,\"matching_refs\":[\"price:500278815\",\"condition:500278815:monthly-rent\",\"compare:1:8\",\"compare:2:8\",\"compare:3:8\",\"compare:4:8\",\"compare:5:8\",\"compare:6:8\"]}]"
+        ],
+        "latency_ms": 7876
+      },
+      "eligible": 4,
+      "unknown": 4
+    }
+  ],
+  "source_hashes": {
+    "src/agents/explanation/contracts.ts": "9c1027464ac37e8d0465a6cab6c9831efe9cc5d0e3b215c3019e02f4b7b3d039",
+    "src/agents/explanation/evidence.ts": "7270ef631ed12cf02f92e29acfb716652e8173eee4ad394e2b8a890370bd7206",
+    "src/agents/explanation/validation.ts": "58d7402435bdf91451fe1aa8c9e53034a87049f54513fe90348ae79e5cf929e7",
+    "src/agents/explanation/generator.ts": "8dfcccf8f8a81444bc3dc9a24ac94ddf7dd041b14205c1f88dd11d08a806651a",
+    "src/agents/explanation/prompt.ts": "ce12d51b9ec8b01ab5b84c094598c4d916a7201c542d8981aac67c39b5380ac8",
+    "skills/evidence-based-explanation/SKILL.md": "f82b18cac632bcd58761ff340cf96d517e075f14e41701f94866d3514c8129cc"
+  },
+  "status": "passed"
+}

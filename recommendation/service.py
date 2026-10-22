@@ -237,7 +237,7 @@ class RecommendationService:
                         else []
                     ),
                     warnings=[
-                        "Sample viewing durations are simulated observations.",
+                        ("Browser detail durations are attention estimates, not verified preferences." if any(e["source"] == "web_detail" for e in ctx["events"]) else "Sample viewing durations are simulated observations."),
                         "Posting time does not establish current availability.",
                     ],
                     state=state,

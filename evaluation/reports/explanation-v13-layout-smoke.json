@@ -1,0 +1,147 @@
+{
+  "tag": "v13-layout-smoke",
+  "split": "all",
+  "checked_at": "2026-10-22T05:54:39.288Z",
+  "model": "openai:deepseek-flash",
+  "hashes": {
+    "src/agents/explanation/contracts.ts": "17a205adb4cf9e78cd0dce89014213256110ee53d57d789be08b2044528e88c8",
+    "src/agents/explanation/evidence.ts": "928d7c5ee11515dcd2f125eaa39cd8e6d2f550083b463fd33ac6ccbd18fe8c0f",
+    "src/agents/explanation/prompt.ts": "ce9336226ecfc8d8b6fdf1372e15fd4627730d1f7b9e828dacfd4f994ef36a07",
+    "src/agents/explanation/few-shot.ts": "dda3246e5b87304d19b65d632352de972602b3be11bbd28156b4fbe1f2ce74b1",
+    "src/agents/explanation/validation.ts": "93a5dbabdbe597fd40866e87af3c22c0f3378a498d9a7d65c887bb6cd77c7f8c",
+    "src/agents/explanation/generator.ts": "5a3955bfa7f01d45679231c97429112055cc1e224d27ae22d90e10600c138917",
+    "skills/evidence-based-explanation/SKILL.md": "f82b18cac632bcd58761ff340cf96d517e075f14e41701f94866d3514c8129cc",
+    "evaluation/explanation-cases.ts": "69306d510c7ab71f1f751a755a0f4a8268b25258ae4b2ab64f3a43e6b401a1b3",
+    "evaluation/evaluate-explanation.ts": "788986a0746fcb4bf5cf6f4a97137dfa370cbad2f1ad0e6cbce80bd97caf57de"
+  },
+  "judge_repairs": [],
+  "external_block": null,
+  "planned_cases": 3,
+  "unattempted": [],
+  "metrics": {
+    "cases": 3,
+    "passed": 2,
+    "grounded": 2,
+    "ranking_correct": 2,
+    "covers_question": 3,
+    "natural": 3,
+    "concise": 3,
+    "exceptions": 0,
+    "repaired": 1,
+    "average_characters": 778
+  },
+  "by_scenario": {
+    "multiple": {
+      "cases": 3,
+      "passed": 2,
+      "grounded": 2,
+      "ranking_correct": 2,
+      "covers_question": 3,
+      "natural": 3,
+      "concise": 3,
+      "exceptions": 0,
+      "repaired": 1,
+      "average_characters": 778
+    }
+  },
+  "results": [
+    {
+      "id": "multiple-dev-3",
+      "scenario": "multiple",
+      "split": "development",
+      "query": "为什么第一套放在前面？",
+      "gold": "预算与学校直线5公里先筛选，排序同时考虑更靠近学校及租金1800以内，不能说唯一按距离或价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明Garden Court因租金1600在1800以内且直线约1.6公里而排前，Willow更近但1900超软预算；明确排序是距离与价格共同作用，非唯一按距离或价格；补充硬条件均满足及价格/可租需确认，未虚构。"
+      },
+      "answer": "Garden Court 排在前面，是因为它同时满足了两项偏好：记录月租1600新币，在您希望尽量不超过1800新币的范围内；到南洋理工大学的直线距离约1.6公里。\n\nWillow Residence 离学校更近，直线约850米，但记录月租1900新币，比1800新币的期望高出100新币，这项偏好没有达到。\n\n排序是离学校更近和月租尽量不超过1800新币共同作用的结果，不是只看距离，也不是租金越低越靠前。\n\n两套都满足月租不超过3000新币、距学校不超过5000米的必须条件。注意：记录的价格和当前是否可租，还需要联系确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 2,
+        "example_ids": [
+          "multiple-preferences",
+          "two-listing-comparison"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [
+          "GROUNDING: numbers 5 are not supported by this paragraph refs condition:83000002:rent,condition:83000001:rent,availability:current; cite correct facts or remove unnecessary figures. Reference candidates (verify meaning): [{\"number\":5,\"matching_refs\":[\"condition:83000002:university\",\"condition:83000001:university\",\"requirement:university\"]}]"
+        ],
+        "latency_ms": 5488
+      },
+      "characters": 264,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 7013
+    },
+    {
+      "id": "multiple-dev-6",
+      "scenario": "multiple",
+      "split": "development",
+      "query": "Why were these homes selected and ordered this way?",
+      "gold": "预算与学校直线5公里先筛选，排序同时考虑更靠近学校及租金1800以内，不能说唯一按距离或价格排序。",
+      "passed": false,
+      "grading": {
+        "grounded": false,
+        "ranking_correct": false,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "事实错误：Garden Court 距NTU为1600m，Willow Residence为850m，答案把两者距离说反（称第一套更近、差750m）。因此排序理由错误：实际第一套更便宜但更远，第二套更近但超1800。筛选（预算3000、5km直线）与双偏好排序框架正确，但具体符合情况与排序解释与事实矛盾，grounded与ranking_correct均不成立。"
+      },
+      "answer": "Your requirements:\n• Rent no more than S$3,000 per month (must meet).\n• Within 5km of NTU, measured as straight-line distance (must meet), and preferably closer.\n• Ideally rent no more than S$1,800 per month.\n\nWhat fits:\n• Budget: recorded rents are S$1,600 and S$1,900 per month, both under your S$3,000 limit.\n• Location: straight-line distances to NTU are about 850m and 1,600m, both within 5km.\n• Lower-rent preference: the S$1,600 home meets the S$1,800 target; the S$1,900 home is S$100 above it.\n\nWhy this order: both homes meet the must-have conditions, and the order reflects two preferences together — being closer to NTU and keeping rent at or below S$1,800. The first home is closer and also meets the lower-rent target, while the second is farther and slightly above it. The 750m difference is straight-line only; actual walking or commuting differences would need route details.\n\nNote: recorded prices and current availability still need to be confirmed with the agent.",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "multiple-preferences",
+          "english-explanation"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 4155
+      },
+      "characters": 983,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 5926
+    },
+    {
+      "id": "multiple-hold-2",
+      "scenario": "multiple",
+      "split": "holdout",
+      "query": "Can you explain the current order without assuming the top home is definitely best?",
+      "gold": "预算与学校直线5公里先筛选，排序同时考虑更靠近学校及租金1800以内，不能说唯一按距离或价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "Grounded: prices stated as recorded, distances as straight-line, availability flagged as needing confirmation, no walking route claimed. Ranking correct: explains hard filters (≤S$3,000, ≤5,000 m straight-line) then combined soft preferences (closer to NTU, ≤S$1,800), explicitly not nearest-first or price-only, and does not assert top home is best. Covers question: lists requirements, per-home fit, and the ordering rationale. Natural and within length limits."
+      },
+      "answer": "Your requirements:\n• Rent no more than S$3,000/month (must meet).\n• Within 5,000 m of Nanyang Technological University, straight-line distance (must meet); within that range, closer is preferred.\n• Rent no more than S$1,800/month (preferred, not required).\n\nHow these homes fit:\n• Both are recorded at S$1,600 and S$1,900/month, under your S$3,000 limit.\n• Both are within 5,000 m of NTU by straight-line distance: about 1,600 m and 850 m.\n• Only the first is recorded at or under S$1,800/month; the second is S$100 above that preferred level.\n\nWhy this order: the order reflects both preferences together — being closer to NTU and staying within S$1,800/month — so it is not simply a nearest-first list. The second home is closer by about 750 m straight-line, while the first meets the lower-rent preference. Neither factor alone decides the order, and the top home is not being presented as definitely the best.\n\nNote: recorded prices and current availability still need to be confirmed with the agent. Actual walking distance and commute differences would also need route information.",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "multiple-preferences",
+          "bathroom-count-not-privacy"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 3045
+      },
+      "characters": 1087,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4706
+    }
+  ]
+}

@@ -16,7 +16,7 @@ if($entry){
 }
 if(Get-NetTCPConnection -State Listen -LocalPort $port -ErrorAction SilentlyContinue){throw "Port $port still occupied"}
 $env:PYTHONUTF8='1'
-if($Name -eq 'graph'){$exe=(Get-Command node).Source;$arguments=@('--env-file=.env','dist/server.js')}
+if($Name -eq 'graph'){$exe=(Get-Command node).Source;$arguments=@('scripts/with-project-env.mjs','dist/server.js')}
 else{$exe=Join-Path $projectRoot '.venv\Scripts\python.exe';$module=if($Name -eq 'retrieval'){'retrieval.app:app'}elseif($Name -eq 'recommendation'){'recommendation.app:app'}elseif($Name -eq 'data-api'){if([System.IO.File]::ReadAllText((Join-Path $projectRoot '.env')) -match '(?m)^DATA_MODE=full\s*$'){'scripts.full_data_api:app'}else{'scripts.sample_data_api:app'}}else{'api.main:app'};$arguments=@('-m','uvicorn',$module,'--host','127.0.0.1','--port',"$port")}
 $runtime=Join-Path $projectRoot 'data\.runtime'
 $p=Start-Process -FilePath $exe -ArgumentList $arguments -WorkingDirectory $projectRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $runtime "$Name.stdout.log") -RedirectStandardError (Join-Path $runtime "$Name.stderr.log")

@@ -1,0 +1,267 @@
+{
+  "tag": "v18-literals-smoke",
+  "split": "all",
+  "checked_at": "2026-10-22T09:16:48.348Z",
+  "model": "openai:deepseek-flash",
+  "hashes": {
+    "src/agents/explanation/contracts.ts": "9c1027464ac37e8d0465a6cab6c9831efe9cc5d0e3b215c3019e02f4b7b3d039",
+    "src/agents/explanation/evidence.ts": "7270ef631ed12cf02f92e29acfb716652e8173eee4ad394e2b8a890370bd7206",
+    "src/agents/explanation/prompt.ts": "ce12d51b9ec8b01ab5b84c094598c4d916a7201c542d8981aac67c39b5380ac8",
+    "src/agents/explanation/few-shot.ts": "0747dfd904523556d513cab9221e5846213c32e85320797744570f99e5f5bb28",
+    "src/agents/explanation/validation.ts": "58d7402435bdf91451fe1aa8c9e53034a87049f54513fe90348ae79e5cf929e7",
+    "src/agents/explanation/generator.ts": "8dfcccf8f8a81444bc3dc9a24ac94ddf7dd041b14205c1f88dd11d08a806651a",
+    "skills/evidence-based-explanation/SKILL.md": "f82b18cac632bcd58761ff340cf96d517e075f14e41701f94866d3514c8129cc",
+    "evaluation/explanation-cases.ts": "4a4197b9d6e196ed82cd8b7f0c51a601fab646a9421eb0c230351ede18e31720",
+    "evaluation/evaluate-explanation.ts": "788986a0746fcb4bf5cf6f4a97137dfa370cbad2f1ad0e6cbce80bd97caf57de"
+  },
+  "judge_repairs": [],
+  "external_block": null,
+  "planned_cases": 6,
+  "unattempted": [],
+  "metrics": {
+    "cases": 6,
+    "passed": 6,
+    "grounded": 6,
+    "ranking_correct": 6,
+    "covers_question": 6,
+    "natural": 6,
+    "concise": 6,
+    "exceptions": 0,
+    "repaired": 1,
+    "average_characters": 572.5
+  },
+  "by_scenario": {
+    "district_mixed": {
+      "cases": 2,
+      "passed": 2,
+      "grounded": 2,
+      "ranking_correct": 2,
+      "covers_question": 2,
+      "natural": 2,
+      "concise": 2,
+      "exceptions": 0,
+      "repaired": 1,
+      "average_characters": 712
+    },
+    "district": {
+      "cases": 2,
+      "passed": 2,
+      "grounded": 2,
+      "ranking_correct": 2,
+      "covers_question": 2,
+      "natural": 2,
+      "concise": 2,
+      "exceptions": 0,
+      "repaired": 0,
+      "average_characters": 433
+    },
+    "postal_date": {
+      "cases": 2,
+      "passed": 2,
+      "grounded": 2,
+      "ranking_correct": 2,
+      "covers_question": 2,
+      "natural": 2,
+      "concise": 2,
+      "exceptions": 0,
+      "repaired": 0,
+      "average_characters": 572.5
+    }
+  },
+  "results": [
+    {
+      "id": "district_mixed-dev-1",
+      "scenario": "district_mixed",
+      "split": "development",
+      "query": "为什么推荐这几套房子？",
+      "gold": "要求月租5000以内、至少2卧室、D05。全部记录租金2500至4500且都在D05。Dover/Clementi/West Coast的已知卧室2或3符合；NEWest、Lyf、Nepal Park、345 Clementi缺卧室资料不能说没有或未达到，不能把整组笼统说全部符合或整组都未知。无软偏好及浏览依据，沿用固定顺序而非便宜排前。分项要求、具体符合项、清楚说明缺卧室资料，再一条短排序及注意。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "分项列出预算/卧室/邮区要求及符合情况，四套已确认卧室达标、四套卧室资料缺失且未笼统断言，排序说明为固定顺序非最优，并提示价格与可租状态需确认。无虚构事实，符合金标准。"
+      },
+      "answer": "您的要求：\n• 月租不超过5,000新币，必须满足。\n• 卧室至少2间，必须满足。\n• 邮区为D05，必须满足。\n\n这些房源符合的部分：\n• 预算：记录月租在2,500至4,500新币之间，八套都在上限内。\n• 邮区：八套都位于D05。\n• 卧室：17 Dover Crescent、508 West Coast Drive为2间，456 Clementi Avenue 3、511 West Coast Drive为3间，这四套已确认达到至少2间；NEWest、Lyf One-North Singapore、80 Nepal Park、345 Clementi Avenue 5的卧室数量还没有资料。\n\n还需要了解的部分：\n• NEWest、Lyf One-North Singapore、80 Nepal Park、345 Clementi Avenue 5的卧室数量，目前还不能确认是否达到至少2间。\n\n为什么这样排序：现有资料还不足以判断哪套更合适，因此按固定顺序展示，顺序仅供浏览，不代表第一套最好。\n\n注意：还不能确认这几套房源全部符合您的要求；记录的价格和现在是否仍可租，需要联系经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 2,
+        "example_ids": [
+          "mixed-confirmed-pending",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [
+          "SEMANTIC_AUDIT: [{\"code\":\"style\",\"detail\":\"排序段使用“目前没有可用的偏好依据来区分这些房源”这类生硬表述，接近被禁止的“没有可比较的排序依据”式工程措辞；应改为自然说法，如“现有资料还不足以判断哪套更合适，顺序仅供浏览”。\"},{\"code\":\"coverage\",\"detail\":\"“这些房源符合的部分”中预算与邮区写成“都位于D05”“都在上限内”，但第5至第8套卧室未知，整体表述易被读成全部满足；虽后文有说明，仍宜在符合项中明确区分已确认满足的4套与资料不全的4套。\"}]"
+        ],
+        "latency_ms": 8760
+      },
+      "characters": 504,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 10264
+    },
+    {
+      "id": "district_mixed-dev-6",
+      "scenario": "district_mixed",
+      "split": "development",
+      "query": "Why were these homes selected and ordered this way?",
+      "gold": "要求月租5000以内、至少2卧室、D05。全部记录租金2500至4500且都在D05。Dover/Clementi/West Coast的已知卧室2或3符合；NEWest、Lyf、Nepal Park、345 Clementi缺卧室资料不能说没有或未达到，不能把整组笼统说全部符合或整组都未知。无软偏好及浏览依据，沿用固定顺序而非便宜排前。分项要求、具体符合项、清楚说明缺卧室资料，再一条短排序及注意。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "分项列出租金/卧室/区域要求，租金区间2500-4500与D05均属实；前四套卧室2或3符合，后四套卧室未知明确说明而非否定；排序说明为浏览顺序、无软偏好依据，符合金标准；末尾提示租金与可租状态需核实，未虚构。语言自然、无内部字段。"
+      },
+      "answer": "Your requirements:\n• Monthly rent no more than S$5,000.\n• At least 2 bedrooms.\n• District D05.\n\nWhat fits:\n• Rent: recorded rents are S$2,500–4,500 per month, all within your limit.\n• District: all eight homes are recorded in D05.\n• Bedrooms: the first four homes have 2 or 3 bedrooms, meeting your minimum.\n\nStill to check:\n• Bedroom counts for NEWest, Lyf One-North Singapore, 80 Nepal Park and 345 Clementi Avenue 5 are not recorded, so their bedroom requirement cannot yet be confirmed.\n\nWhy this order: the available information does not yet show which home suits you better, so the current order is for browsing only. The four homes with confirmed details are listed first, followed by the four with unconfirmed bedroom counts in the order returned.\n\nNote: it cannot yet be confirmed that all these homes meet your full requirements. Recorded rents and current availability still need to be checked with the agent.",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "mixed-confirmed-pending",
+          "english-explanation"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 3647
+      },
+      "characters": 920,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 5445
+    },
+    {
+      "id": "district-dev-1",
+      "scenario": "district",
+      "split": "development",
+      "query": "为什么推荐这几套房子？",
+      "gold": "要求月租不超过5000新币、至少2间卧室、D05邮区。两套记录4000和4500、2和3间卧室，邮区D05，三项全部符合。没有软偏好或浏览依据，固定展示顺序，不代表按价格排，也不能杜撰缺少已确认的卧室资料。当前价格与是否可租需确认。分项呈现三项要求及符合项，不把D05当数值5。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "分项列出三项硬性要求及两套符合情况（4000/4500、2/3卧、D05），未把D05当数值；说明固定顺序非价格排序、资料不足，并提示价格与可租需确认，无杜撰。"
+      },
+      "answer": "您的要求：\n• 月租不超过5000新币/月。\n• 卧室至少2间。\n• 邮区为D05。\n\n这些房源符合的部分：\n• 预算：两套记录月租分别为4000和4500新币，都在5000新币以内。\n• 户型：一套2间卧室，另一套3间卧室，都达到至少2间。\n• 地点：两套都在D05邮区。\n\n为什么这样排序：目前没有可用于区分这两套的偏好，现有资料还不足以判断哪套更合适，因此沿用固定顺序展示，第一套并不代表明显更好。\n\n注意：记录中的价格和当前是否仍可租，需要联系经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "stable-order",
+          "mixed-confirmed-pending"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2822
+      },
+      "characters": 232,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4172
+    },
+    {
+      "id": "district-dev-6",
+      "scenario": "district",
+      "split": "development",
+      "query": "Why were these homes selected and ordered this way?",
+      "gold": "要求月租不超过5000新币、至少2间卧室、D05邮区。两套记录4000和4500、2和3间卧室，邮区D05，三项全部符合。没有软偏好或浏览依据，固定展示顺序，不代表按价格排，也不能杜撰缺少已确认的卧室资料。当前价格与是否可租需确认。分项呈现三项要求及符合项，不把D05当数值5。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "分项列出三项硬性要求及两套符合情况（4000/4500、2/3卧、D05），说明顺序仅为浏览、无偏好依据、不代表更优，并提示价格与可租需确认；未杜撰缺失卧室资料，未把D05当数值。事实与金标准一致。"
+      },
+      "answer": "Your requirements:\n• Monthly rent no more than S$5,000 (must meet).\n• At least 2 bedrooms (must meet).\n• District D05 (must meet).\n\nWhat fits:\n• Rent: recorded at S$4,000 and S$4,500 per month, both under your limit.\n• Bedrooms: 2 and 3 bedrooms, both meeting your minimum.\n• Location: both are in D05.\n\nWhy this order: there is not yet enough information about your preferences to tell which home suits you better, so the current order is just for browsing and does not mean the first one is clearly better.\n\nNote: the recorded rents are S$4,000 and S$4,500; current prices and availability still need to be confirmed with the agent.",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "stable-order",
+          "english-explanation"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2943
+      },
+      "characters": 634,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4442
+    },
+    {
+      "id": "postal_date-dev-1",
+      "scenario": "postal_date",
+      "split": "development",
+      "query": "为什么推荐这几套房子？",
+      "gold": "用户要求5000以内、至少2卧室、D05、邮编139409及最晚2026-12-01入住。租金4000至4500、卧室2或3、D05和139409的记录符合；入住日期未知，不能确认12月1日前可入住，不是已经确定不符合。没有排序偏好，顺序供浏览。精确邮区邮编和日期不是可舍入数量；不能从编码数字推断房价或卧室数。当前租金可租仍需确认。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "分项列出需求与符合情况，入住日期标为未知而非不符合，排序说明资料不足仅供浏览，并提示价格与可租需确认；无虚构事实，中文约400字符。"
+      },
+      "answer": "您的要求：\n• 月租不超过 5000 新币/月。\n• 卧室至少 2 间。\n• 位于 D05 邮区，邮编 139409。\n• 入住日不晚于 2026 年 12 月 1 日。\n\n这些房源符合的部分：\n• 租金：17 Dover Crescent 记录月租 4000 新币，456 Clementi Avenue 3 为 4500 新币，都在预算内。\n• 卧室：前者 2 间，后者 3 间，都达到至少 2 间。\n• 地点：两套都在 D05 邮区、邮编 139409。\n\n还需要了解的部分：\n• 两套房的入住日期资料都还缺，无法确认能否在 2026 年 12 月 1 日前入住。\n\n为什么这样排序：目前资料还不足以判断哪套更合适，前后顺序仅供浏览，不代表第一套更好。\n\n注意：还不能确认这两套房源全部符合您的要求；记录中的价格和现在是否仍可租，需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "unknown-hard-condition",
+          "mixed-confirmed-pending"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 4847
+      },
+      "characters": 377,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 6549
+    },
+    {
+      "id": "postal_date-dev-6",
+      "scenario": "postal_date",
+      "split": "development",
+      "query": "Why were these homes selected and ordered this way?",
+      "gold": "用户要求5000以内、至少2卧室、D05、邮编139409及最晚2026-12-01入住。租金4000至4500、卧室2或3、D05和139409的记录符合；入住日期未知，不能确认12月1日前可入住，不是已经确定不符合。没有排序偏好，顺序供浏览。精确邮区邮编和日期不是可舍入数量；不能从编码数字推断房价或卧室数。当前租金可租仍需确认。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "分项列出五项需求及对应符合情况，入住日期标为未知而非不符合；排序说明为无偏好、仅供浏览，符合金标准；提醒租金与可租状态需向中介确认。无虚构事实，语言自然简洁。"
+      },
+      "answer": "Your requirements:\n• Monthly rent no more than S$5,000.\n• At least 2 bedrooms.\n• District D05.\n• Postal code 139409.\n• Move-in date no later than 1 December 2026.\n\nWhat fits:\n• Budget: recorded rents are S$4,000 and S$4,500 per month, both under your limit.\n• Bedrooms: 2 bedrooms in the first home and 3 in the second.\n• Location: both are recorded in district D05 with postal code 139409.\n\nStill to check:\n• Whether either home can be occupied by 1 December 2026; no move-in information is recorded yet.\n\nWhy this order: there is not yet enough information to judge which home suits you better, so the order is for browsing only.\n\nNote: it cannot yet be confirmed that both homes meet all your requirements. Please check current rent and availability with the agent.",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "unknown-hard-condition",
+          "english-explanation"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 3667
+      },
+      "characters": 768,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4764
+    }
+  ]
+}

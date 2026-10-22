@@ -1,0 +1,442 @@
+{
+  "external_messages_sent": 0,
+  "cases": [
+    {
+      "name": "initial",
+      "query": "你好，我要租裕廊东附近5公里内的房子，预算在2500新币每月，房子附近1公里内最好有MRT或公交站，要求房型为1B1B",
+      "requirements": {
+        "criteria": [
+          {
+            "unit": "count",
+            "field": "bathrooms",
+            "value": 1,
+            "operator": "eq",
+            "strength": "hard",
+            "criterion_id": "bathrooms"
+          },
+          {
+            "unit": "count",
+            "field": "bedrooms",
+            "value": 1,
+            "operator": "eq",
+            "strength": "hard",
+            "criterion_id": "minimum-bedrooms"
+          },
+          {
+            "unit": "SGD/month",
+            "field": "price",
+            "value": 2500,
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "monthly-rent"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 1000,
+            "target": {
+              "name": "最近的MRT或公交站",
+              "category": "PublicTransport"
+            },
+            "weight": 1,
+            "operator": "lte",
+            "strength": "soft",
+            "criterion_id": "place_proximity:PublicTransport-preference",
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 5000,
+            "target": {
+              "name": "JURONG EAST",
+              "place_id": "URA:AREA:JURONG_EAST"
+            },
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 1000,
+            "target": {
+              "name": "JURONG EAST",
+              "place_id": "URA:AREA:JURONG_EAST"
+            },
+            "weight": 1,
+            "operator": "lte",
+            "strength": "soft",
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ],
+        "listing_type": "RENT"
+      },
+      "requirements_version": 1,
+      "request_id": "2621f6d3-2a81-4c0d-bca8-3b510fb73ade",
+      "answer": "这四套都还不能确定符合你的全部要求。已确认的是卧室数为1、记录月租在2500新币以内；但独卫、到裕廊东5公里内以及1公里内有MRT或公交站这几项都缺少资料，需要进一步核实，资料不足并不代表没有。\n\n排序上，这组都是待确认选项，没有可比较的偏好依据，因此沿用当前展示顺序，不代表第一套更合适；租金较低也不等于排名更靠前。\n\n记录中的价格和现在是否仍可租，都需要联系经纪人确认。",
+      "duration_seconds": 26.59
+    },
+    {
+      "name": "screenshot-update",
+      "query": "那我修改要求，我要租裕廊东附近5公里内的房子，预算在2500新币每月，房子附近1公里内最好有MRT或公交站，",
+      "requirements": {
+        "criteria": [
+          {
+            "unit": "count",
+            "field": "bathrooms",
+            "value": 1,
+            "operator": "eq",
+            "strength": "hard",
+            "criterion_id": "bathrooms"
+          },
+          {
+            "unit": "count",
+            "field": "bedrooms",
+            "value": 1,
+            "operator": "eq",
+            "strength": "hard",
+            "criterion_id": "minimum-bedrooms"
+          },
+          {
+            "unit": "SGD/month",
+            "field": "price",
+            "value": 2500,
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "monthly-rent"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 1000,
+            "target": {
+              "name": "最近的MRT或公交站",
+              "category": "PublicTransport"
+            },
+            "weight": 1,
+            "operator": "lte",
+            "strength": "soft",
+            "criterion_id": "place_proximity:PublicTransport-preference",
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 5000,
+            "target": {
+              "name": "JURONG EAST",
+              "place_id": "URA:AREA:JURONG_EAST"
+            },
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 1000,
+            "target": {
+              "name": "JURONG EAST",
+              "place_id": "URA:AREA:JURONG_EAST"
+            },
+            "weight": 1,
+            "operator": "lte",
+            "strength": "soft",
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ],
+        "listing_type": "RENT"
+      },
+      "requirements_version": 1,
+      "request_id": "398c912b-884f-4fd1-a166-1d521c91092b",
+      "answer": "这四套的记录月租都在2500新币以内，卧室数也符合要求，但裕廊东5公里直线范围、独卫以及1公里内是否有MRT或公交站都还缺少资料，所以还不能确定它们符合全部要求，只是待确认选项。\n\n因为位置和交通信息都未确认，目前没有可比较的排序依据，展示顺序不代表谁更合适；租金低也不等于排名更靠前。建议先向经纪人问清这几项，以及现在是否仍可租、价格是否仍是记录中的数额。",
+      "duration_seconds": 26.92
+    },
+    {
+      "name": "cancel-layout",
+      "query": "不用1B1B了，卧室和卫生间数量都不作要求，其他条件照旧。",
+      "requirements": {
+        "criteria": [
+          {
+            "unit": "SGD/month",
+            "field": "price",
+            "value": 2500,
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "monthly-rent"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 1000,
+            "target": {
+              "name": "最近的MRT或公交站",
+              "category": "PublicTransport"
+            },
+            "weight": 1,
+            "operator": "lte",
+            "strength": "soft",
+            "criterion_id": "place_proximity:PublicTransport-preference",
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 5000,
+            "target": {
+              "name": "JURONG EAST",
+              "place_id": "URA:AREA:JURONG_EAST"
+            },
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 1000,
+            "target": {
+              "name": "JURONG EAST",
+              "place_id": "URA:AREA:JURONG_EAST"
+            },
+            "weight": 1,
+            "operator": "lte",
+            "strength": "soft",
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ],
+        "listing_type": "RENT"
+      },
+      "requirements_version": 2,
+      "request_id": "21bbe8d1-9592-465e-ab2d-63dd1abd4c94",
+      "answer": "去掉卧室和卫生间数量要求后，这四套的记录月租都在2500新币以内，但离裕廊东和最近地铁或公交站的距离还缺资料，所以还不能确定它们符合全部要求，只是待确认选项。\n\n这组没有可比较的排序依据，展示顺序不代表谁更合适；租金较低也不等于排名更靠前。记录价格和现在是否仍可租，都需要联系经纪人确认。",
+      "duration_seconds": 72.72
+    },
+    {
+      "name": "replace-area",
+      "query": "不找裕廊东了，改为新加坡国立大学附近5公里内，预算和交通偏好保持不变。",
+      "requirements": {
+        "criteria": [
+          {
+            "unit": "SGD/month",
+            "field": "price",
+            "value": 2500,
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "monthly-rent"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 5000,
+            "target": {
+              "name": "National University of Singapore",
+              "place_id": "OSM:way:54519165"
+            },
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "place_proximity:OSM:way:54519165",
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 1000,
+            "target": {
+              "name": "National University of Singapore",
+              "place_id": "OSM:way:54519165"
+            },
+            "weight": 1,
+            "operator": "lte",
+            "strength": "soft",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 1000,
+            "target": {
+              "name": "最近的MRT或公交站",
+              "category": "PublicTransport"
+            },
+            "weight": 1,
+            "operator": "lte",
+            "strength": "soft",
+            "criterion_id": "place_proximity:PublicTransport-preference",
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          }
+        ],
+        "listing_type": "RENT"
+      },
+      "requirements_version": 3,
+      "request_id": "d8527827-415d-4895-b1f3-c34ade1689b1",
+      "answer": "按新条件，月租不超过2500新币、距新加坡国立大学直线5公里内是必须门槛。前四套的租金和学校距离都有资料确认符合；排序只按“越靠近学校越好”这一偏好，前三套都达到，其中两套约961米、一套约972米，距离接近，先后差别不大；第四套约1036米，未达到这项偏好，所以排在它们之后。\n\n后四套的学校距离还缺资料，不能确定符合全部要求，只是待确认选项，先后不代表优劣。附近地铁或公交是否在1公里内也还不能确认；记录的价格和当前是否可租需向经纪人核实。",
+      "duration_seconds": 75.83
+    }
+  ],
+  "session_id": "5e0395d7-edf0-4d10-80a8-434c934e3528",
+  "ui": {
+    "status": "passed",
+    "checks": [
+      "desktop: screenshot update completes, all prior conditions retained, four pending cards, no error/overflow",
+      "mobile: screenshot update completes, all prior conditions retained, four pending cards, no error/overflow"
+    ],
+    "browser_errors": []
+  },
+  "status": "passed",
+  "final_requirements": {
+    "criteria": [
+      {
+        "unit": "SGD/month",
+        "field": "price",
+        "value": 2500,
+        "operator": "lte",
+        "strength": "hard",
+        "criterion_id": "monthly-rent"
+      },
+      {
+        "unit": "m",
+        "field": "place_proximity",
+        "value": 5000,
+        "target": {
+          "name": "National University of Singapore",
+          "place_id": "OSM:way:54519165"
+        },
+        "operator": "lte",
+        "strength": "hard",
+        "criterion_id": "place_proximity:OSM:way:54519165",
+        "distance_type": "straight_line",
+        "distance_preference": "bounded"
+      },
+      {
+        "unit": "m",
+        "field": "place_proximity",
+        "value": 1000,
+        "target": {
+          "name": "National University of Singapore",
+          "place_id": "OSM:way:54519165"
+        },
+        "weight": 1,
+        "operator": "lte",
+        "strength": "soft",
+        "criterion_id": "place_proximity:OSM:way:54519165-preference",
+        "distance_type": "straight_line",
+        "distance_preference": "nearer"
+      },
+      {
+        "unit": "m",
+        "field": "place_proximity",
+        "value": 1000,
+        "target": {
+          "name": "最近的MRT或公交站",
+          "category": "PublicTransport"
+        },
+        "weight": 1,
+        "operator": "lte",
+        "strength": "soft",
+        "criterion_id": "place_proximity:PublicTransport-preference",
+        "distance_type": "straight_line",
+        "distance_preference": "bounded"
+      }
+    ],
+    "listing_type": "RENT"
+  },
+  "screenshot_result": {
+    "requirements": {
+      "criteria": [
+        {
+          "unit": "count",
+          "field": "bathrooms",
+          "value": 1,
+          "operator": "eq",
+          "strength": "hard",
+          "criterion_id": "bathrooms"
+        },
+        {
+          "unit": "count",
+          "field": "bedrooms",
+          "value": 1,
+          "operator": "eq",
+          "strength": "hard",
+          "criterion_id": "minimum-bedrooms"
+        },
+        {
+          "unit": "SGD/month",
+          "field": "price",
+          "value": 2500,
+          "operator": "lte",
+          "strength": "hard",
+          "criterion_id": "monthly-rent"
+        },
+        {
+          "unit": "m",
+          "field": "place_proximity",
+          "value": 1000,
+          "target": {
+            "name": "最近的MRT或公交站",
+            "category": "PublicTransport"
+          },
+          "weight": 1,
+          "operator": "lte",
+          "strength": "soft",
+          "criterion_id": "place_proximity:PublicTransport-preference",
+          "distance_type": "straight_line",
+          "distance_preference": "bounded"
+        },
+        {
+          "unit": "m",
+          "field": "place_proximity",
+          "value": 5000,
+          "target": {
+            "name": "JURONG EAST",
+            "place_id": "URA:AREA:JURONG_EAST"
+          },
+          "operator": "lte",
+          "strength": "hard",
+          "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+          "distance_type": "straight_line",
+          "distance_preference": "bounded"
+        },
+        {
+          "unit": "m",
+          "field": "place_proximity",
+          "value": 1000,
+          "target": {
+            "name": "JURONG EAST",
+            "place_id": "URA:AREA:JURONG_EAST"
+          },
+          "weight": 1,
+          "operator": "lte",
+          "strength": "soft",
+          "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+          "distance_type": "straight_line",
+          "distance_preference": "nearer"
+        }
+      ],
+      "listing_type": "RENT"
+    },
+    "answer": "这四套的记录月租都在2500新币以内，卧室数也符合要求，但裕廊东5公里直线范围、独卫以及1公里内是否有MRT或公交站都还缺少资料，所以还不能确定它们符合全部要求，只是待确认选项。\n\n因为位置和交通信息都未确认，目前没有可比较的排序依据，展示顺序不代表谁更合适；租金低也不等于排名更靠前。建议先向经纪人问清这几项，以及现在是否仍可租、价格是否仍是记录中的数额。",
+    "verified": 0,
+    "unverified": 4
+  }
+}

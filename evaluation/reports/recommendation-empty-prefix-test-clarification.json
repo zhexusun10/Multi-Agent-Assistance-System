@@ -1,0 +1,111 @@
+{
+  "external_messages_sent": 0,
+  "cases": [
+    {
+      "name": "jurong-east-1b1b",
+      "query": "你好，我要租裕廊东附近5公里内的房子，预算在2500新币每月，房子附近1公里内最好有MRT或公交站，要求房型为1B1B",
+      "status": "passed",
+      "duration_seconds": 34.19,
+      "requirements": {
+        "criteria": [
+          {
+            "unit": "count",
+            "field": "bathrooms",
+            "value": 1,
+            "operator": "eq",
+            "strength": "hard",
+            "criterion_id": "bathrooms"
+          },
+          {
+            "unit": "count",
+            "field": "bedrooms",
+            "value": 1,
+            "operator": "eq",
+            "strength": "hard",
+            "criterion_id": "minimum-bedrooms"
+          },
+          {
+            "unit": "SGD/month",
+            "field": "price",
+            "value": 2500,
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "monthly-rent"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 1000,
+            "target": {
+              "name": "最近的MRT或公交站",
+              "category": "PublicTransport"
+            },
+            "weight": 1,
+            "operator": "lte",
+            "strength": "soft",
+            "criterion_id": "place_proximity:PublicTransport-preference",
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 5000,
+            "target": {
+              "name": "JURONG EAST",
+              "place_id": "URA:AREA:JURONG_EAST"
+            },
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 1000,
+            "target": {
+              "name": "JURONG EAST",
+              "place_id": "URA:AREA:JURONG_EAST"
+            },
+            "weight": 1,
+            "operator": "lte",
+            "strength": "soft",
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ],
+        "listing_type": "RENT"
+      },
+      "answer": "这四套都还不能确定符合你的全部要求。已确认的是卧室数为1、记录月租在2500新币以内；但到裕廊东5公里内、1公里内有MRT或公交站、以及卫浴情况都缺少资料，需要逐套核实，资料不足不代表没有。\n\n因此目前的顺序只是待确认选项的展示顺序，没有可比较的排序依据，不能据此判断哪套更近、交通更方便或更合适；租金较低也不代表排在前面。\n\n记录价格和现在是否仍可租，都需要联系经纪人确认。",
+      "app_status": "no_match",
+      "native_status": "needs_clarification",
+      "verified": 0,
+      "unverified": 4,
+      "execution": {
+        "tokens": 20740,
+        "strategy": "complete-pool weighted ranking",
+        "trace_id": "5f8fd956-40bb-415c-b596-afb5688071e9",
+        "data_mode": "database",
+        "trace_ref": "sqlite:5f8fd956-40bb-415c-b596-afb5688071e9",
+        "tool_calls": 4,
+        "duration_ms": 19030.99999995902,
+        "model_calls": 4,
+        "controller_mode": "live",
+        "scoring_version": "weighted-v1",
+        "model_identifier": "openai:deepseek-flash"
+      },
+      "tools": [
+        "retrieve_listings",
+        "get_geographic_evidence",
+        "validate_hard_constraints",
+        "rank_candidates"
+      ],
+      "normalized_model_outputs": 1
+    }
+  ],
+  "status": "failed",
+  "error": "Unexpected intake clarification: ['99间卧室这个数量看起来异常，是否确认要至少99间卧室，还是输入有误（例如9间或笔误）？']"
+}

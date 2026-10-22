@@ -35,13 +35,12 @@ test('public agent failure does not expose raw Zod or SDK diagnostics',()=>{
   const failure=describeAgentFailure('a','[{"code":"custom","message":"Expected unit m","path":["upsert",0]}]');
   assert.equal(failure.code,'REQUIREMENT_STAGE_FAILED');assert(!failure.message.includes('Expected unit'));assert(!failure.message.includes('upsert'));assert(failure.message.includes('尚未进入房源推荐'));
 });
-test('unspecified soft weight is normalized by code; invalid explicit weight still fails',async()=>{
-  const proposal={upsert:[{criterion_id:'near-supermarket',field:'place_proximity',operator:'lte',value:800,unit:'m',strength:'soft',target:{category:'Supermarket'},distance_type:'straight_line'}],remove_fields:[],clarifications:[],sources:[{field:'place_proximity',quote:'最好超市直线距离800米以内'}],supported:true};
-  const mock=(output:unknown)=>({withStructuredOutput:()=>({invoke:async()=>output})}) as unknown as BaseChatModel;
-  const d=await extractRequirements('最好超市直线距离800米以内',empty,mock(proposal));assert.equal(d.upsert[0].weight,1);
-  const wrongStrength=await extractRequirements('最好超市直线距离800米以内',empty,mock({...proposal,upsert:[{...proposal.upsert[0],strength:'hard'}]}));assert.equal(wrongStrength.upsert[0].strength,'soft');
-  await assert.rejects(()=>extractRequirements('最好家具齐全',empty,mock({...proposal,upsert:[{criterion_id:'furnishing',field:'furnishing',operator:'eq',value:'fully_furnished',strength:'soft',weight:-1}],sources:[{field:'furnishing',quote:'最好家具齐全'}]})));
-  const ambiguous=await extractRequirements('预算3000，预算3500以内也可以',empty,mock({upsert:[],remove_fields:[],sources:[],clarifications:[],supported:true}));assert(ambiguous.clarifications.length>0);
+test('model proposes semantic requirements; null soft weight is normalized but invalid weights fail',async()=>{
+  const query='最好超市直线距离800米以内';
+  const proposal={schema_version:'2.0',supported:true,upsert:[],locations:[{name:null,categories:['Supermarket'],relation:'any_of',operator:'lte',value:800,unit:'m',strength:'soft',weight:null,distance_type:'straight_line',explicit_station:false,prefer_closer:false,quote:query}],removals:[],clarifications:[],coverage:[{quote:query,disposition:'extracted'}]};
+  const mock=(output:unknown)=>({withStructuredOutput:(_schema:unknown,options:any)=>({invoke:async()=>options?.name==='audit_requirement_intake'?{valid:true,issues:[]}:output})}) as unknown as BaseChatModel;
+  const d=await extractRequirements(query,empty,mock(proposal));assert.equal(d.location_intents?.[0].weight,1);
+  await assert.rejects(()=>extractRequirements(query,empty,mock({...proposal,locations:[{...proposal.locations[0],weight:-1}]})));
 });
 test('compound search and summary preserves dependency order; existing-result summary stays direct',()=>{
   const result=(intent:string,intent_group:string,requested_tasks:string[]=[])=>({intent,intent_group,requested_tasks,confidence:0.9} as Parameters<typeof planIntent>[0]);

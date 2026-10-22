@@ -1,0 +1,31 @@
+{
+  "query": "地址离nus越近越好，然后1个房间",
+  "checked_at": "2026-10-22T12:48:42.167Z",
+  "limits": {
+    "cases": 1,
+    "requests": 3,
+    "maxInputCharacters": 24000,
+    "maxOutputTokens": 1600,
+    "concurrency": 1
+  },
+  "live": false,
+  "requests": 0,
+  "source_hashes": {
+    "src/agents/explanation/contracts.ts": "d699fb05713f9be2162ba3126b870f88636d8fa611c020c5538c27f244ff41b7",
+    "src/agents/explanation/evidence.ts": "d237bf54837d92704e5318db5a75a2b97cb126c2213a96b255454858909c6a6a",
+    "src/agents/explanation/prompt.ts": "9058e32aafeeb9ae4ccd0798a57d91e474646cf1ce65f7d30c056f05b9c2395d",
+    "src/agents/explanation/few-shot.ts": "1823f36ff01af861b2620c2c12c04d9ab6049858db426f718f0468c7d4793802",
+    "src/agents/explanation/generator.ts": "7d8add9f5ea9b42bdc0ddfc52faf355b7a67182ce4ff45949c9c7e7fcc09f2f6",
+    "src/agents/explanation/model-input.ts": "8123476e930fa464bf9e66c78d595caca2474be434e52966d700eb40f84a97d6",
+    "skills/evidence-based-explanation/SKILL.md": "4c87fa8e98d179e19e9d1745dd42892cd79271c5d2c0c6eaf2c9b0c5cc428880"
+  },
+  "serialized_prompt_characters": [
+    23775,
+    18803
+  ],
+  "evidence_characters": {
+    "original": 56999,
+    "model": 13923
+  },
+  "status": "offline_passed_no_api_calls"
+}

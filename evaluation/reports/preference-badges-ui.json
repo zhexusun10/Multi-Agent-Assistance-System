@@ -1,0 +1,25 @@
+{
+  "model_requests": 0,
+  "backend_requests": 0,
+  "checks": [
+    {
+      "viewport": 1600,
+      "list_and_detail": "passed",
+      "preference_badges": [
+        "偏好 · 距新加坡国立大学 2,517 米（直线，更近优先）",
+        "偏好 · 距超市 60 米（直线，希望 ≤ 800 米）"
+      ],
+      "latest_modules_loaded": true
+    },
+    {
+      "viewport": 390,
+      "list_and_detail": "passed",
+      "preference_badges": [
+        "偏好 · 距新加坡国立大学 2,517 米（直线，更近优先）",
+        "偏好 · 距超市 60 米（直线，希望 ≤ 800 米）"
+      ],
+      "latest_modules_loaded": true
+    }
+  ],
+  "status": "passed"
+}

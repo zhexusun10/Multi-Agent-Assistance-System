@@ -1,0 +1,119 @@
+{
+  "query": "地址离nus越近越好，然后1个房间",
+  "checked_at": "2026-10-22T12:49:05.605Z",
+  "limits": {
+    "cases": 1,
+    "requests": 3,
+    "maxInputCharacters": 24000,
+    "maxOutputTokens": 1600,
+    "concurrency": 1
+  },
+  "live": true,
+  "requests": 1,
+  "source_hashes": {
+    "src/agents/explanation/contracts.ts": "d699fb05713f9be2162ba3126b870f88636d8fa611c020c5538c27f244ff41b7",
+    "src/agents/explanation/evidence.ts": "d237bf54837d92704e5318db5a75a2b97cb126c2213a96b255454858909c6a6a",
+    "src/agents/explanation/prompt.ts": "9058e32aafeeb9ae4ccd0798a57d91e474646cf1ce65f7d30c056f05b9c2395d",
+    "src/agents/explanation/few-shot.ts": "1823f36ff01af861b2620c2c12c04d9ab6049858db426f718f0468c7d4793802",
+    "src/agents/explanation/generator.ts": "7d8add9f5ea9b42bdc0ddfc52faf355b7a67182ce4ff45949c9c7e7fcc09f2f6",
+    "src/agents/explanation/model-input.ts": "8123476e930fa464bf9e66c78d595caca2474be434e52966d700eb40f84a97d6",
+    "skills/evidence-based-explanation/SKILL.md": "4c87fa8e98d179e19e9d1745dd42892cd79271c5d2c0c6eaf2c9b0c5cc428880"
+  },
+  "previous_requests": 2,
+  "serialized_prompt_characters": [
+    23775,
+    18803
+  ],
+  "evidence_characters": {
+    "original": 56999,
+    "model": 13923
+  },
+  "answer": "您的要求：\n• 1间卧室，必须满足。\n• 月租不超过5,000新币，必须满足。\n• 位于D05。\n• 离新加坡国立大学越近越好，没有设定距离上限。\n• 希望超市在800米直线距离内。\n\n这些房源符合的部分：\n• 卧室与预算：441B Clementi Avenue 3、449 Clementi Avenue 3（两套）和728 Clementi West Street 2都记录为1间卧室，月租在1,400至3,280新币之间，低于您的上限。\n• 邮区：这几套都记录在D05。\n• 超市：这几套到超市的直线距离约60至305米，都在800米内。\n• 到新加坡国立大学：这几套的直线距离约1,832至2,517米，其中728 Clementi West Street 2最近。\n\n还需要了解的部分：\n• NEWest、Lyf One-North Singapore、lyf one-north Singapore 80 Nepal Park, Singapore 139409、345 Clementi Avenue 5的卧室数量还没有资料，因此不能确认是否满足1间卧室。\n• 前三套到新加坡国立大学和超市的距离也还没有资料。\n• 345 Clementi Avenue 5的卧室数量待确认，但它到学校约2,561米、到超市约57米，这两项有记录。\n\n为什么这样排序：入选排名的四套同时按离学校更近和超市更近来比较。441B Clementi Avenue 3排在449 Clementi Avenue 3之前，是因为它到超市更近（约60米对140米），而449到学校更近（约2,370米对2,517米），两项综合后441B在前，并不是它在每一项上都最近。卧室、预算和邮区只用于筛选，不额外加分。其余四套因卧室资料不全，没有进入这组排名，顺序仅供浏览。\n\n注意：还不能确认这几套房源全部符合您的要求；记录的价格和现在是否仍可租，需要联系经纪人确认。",
+  "output": {
+    "version": "2.0",
+    "focus_listing_ids": [
+      "500285985",
+      "500238705",
+      "500276652",
+      "500264398",
+      "20283326",
+      "24039352",
+      "500186462",
+      "500278815"
+    ],
+    "paragraphs": [
+      {
+        "text": "您的要求：\n• 1间卧室，必须满足。\n• 月租不超过5,000新币，必须满足。\n• 位于D05。\n• 离新加坡国立大学越近越好，没有设定距离上限。\n• 希望超市在800米直线距离内。",
+        "support_refs": [
+          "requirement:minimum-bedrooms",
+          "requirement:monthly-rent",
+          "requirement:preferred-district",
+          "requirement:place_proximity:OSM:way:54519165-preference",
+          "requirement:place_proximity:Supermarket-preference"
+        ]
+      },
+      {
+        "text": "这些房源符合的部分：\n• 卧室与预算：441B Clementi Avenue 3、449 Clementi Avenue 3（两套）和728 Clementi West Street 2都记录为1间卧室，月租在1,400至3,280新币之间，低于您的上限。\n• 邮区：这几套都记录在D05。\n• 超市：这几套到超市的直线距离约60至305米，都在800米内。\n• 到新加坡国立大学：这几套的直线距离约1,832至2,517米，其中728 Clementi West Street 2最近。",
+        "support_refs": [
+          "condition:500285985:minimum-bedrooms",
+          "condition:500285985:monthly-rent",
+          "condition:500285985:preferred-district",
+          "condition:500285985:place_proximity:Supermarket-preference",
+          "condition:500285985:place_proximity:OSM:way:54519165-preference",
+          "condition:500238705:minimum-bedrooms",
+          "condition:500238705:monthly-rent",
+          "condition:500238705:preferred-district",
+          "condition:500238705:place_proximity:Supermarket-preference",
+          "condition:500238705:place_proximity:OSM:way:54519165-preference",
+          "condition:500276652:minimum-bedrooms",
+          "condition:500276652:monthly-rent",
+          "condition:500276652:preferred-district",
+          "condition:500276652:place_proximity:Supermarket-preference",
+          "condition:500276652:place_proximity:OSM:way:54519165-preference",
+          "condition:500264398:minimum-bedrooms",
+          "condition:500264398:monthly-rent",
+          "condition:500264398:preferred-district",
+          "condition:500264398:place_proximity:Supermarket-preference",
+          "condition:500264398:place_proximity:OSM:way:54519165-preference"
+        ]
+      },
+      {
+        "text": "还需要了解的部分：\n• NEWest、Lyf One-North Singapore、lyf one-north Singapore 80 Nepal Park, Singapore 139409、345 Clementi Avenue 5的卧室数量还没有资料，因此不能确认是否满足1间卧室。\n• 前三套到新加坡国立大学和超市的距离也还没有资料。\n• 345 Clementi Avenue 5的卧室数量待确认，但它到学校约2,561米、到超市约57米，这两项有记录。",
+        "support_refs": [
+          "coverage:missing",
+          "condition:20283326:minimum-bedrooms",
+          "condition:24039352:minimum-bedrooms",
+          "condition:500186462:minimum-bedrooms",
+          "condition:500278815:minimum-bedrooms",
+          "condition:20283326:place_proximity:OSM:way:54519165-preference",
+          "condition:20283326:place_proximity:Supermarket-preference",
+          "condition:24039352:place_proximity:OSM:way:54519165-preference",
+          "condition:24039352:place_proximity:Supermarket-preference",
+          "condition:500186462:place_proximity:OSM:way:54519165-preference",
+          "condition:500186462:place_proximity:Supermarket-preference",
+          "condition:500278815:place_proximity:OSM:way:54519165-preference",
+          "condition:500278815:place_proximity:Supermarket-preference"
+        ]
+      },
+      {
+        "text": "为什么这样排序：入选排名的四套同时按离学校更近和超市更近来比较。441B Clementi Avenue 3排在449 Clementi Avenue 3之前，是因为它到超市更近（约60米对140米），而449到学校更近（约2,370米对2,517米），两项综合后441B在前，并不是它在每一项上都最近。卧室、预算和邮区只用于筛选，不额外加分。其余四套因卧室资料不全，没有进入这组排名，顺序仅供浏览。",
+        "support_refs": [
+          "ranking:method",
+          "compare-ranking:1:2",
+          "compare-distance:1:2:place_proximity:OSM:way:54519165-preference",
+          "compare-distance:1:2:place_proximity:Supermarket-preference"
+        ]
+      },
+      {
+        "text": "注意：还不能确认这几套房源全部符合您的要求；记录的价格和现在是否仍可租，需要联系经纪人确认。",
+        "support_refs": [
+          "ranking:method",
+          "availability:current"
+        ]
+      }
+    ]
+  },
+  "total_requests": 3,
+  "verification": "real writer + local schema/reference/number checks; independent model audit not rerun under cost cap",
+  "status": "passed"
+}

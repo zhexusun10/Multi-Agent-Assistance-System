@@ -1,0 +1,10 @@
+{
+  "checks": [
+    "desktop: four pending cards, 1B1B and all distance/budget conditions retained, no raw budget error or overflow",
+    "mobile: four pending cards, 1B1B and all distance/budget conditions retained, no raw budget error or overflow"
+  ],
+  "external_messages_sent": 0,
+  "model_requests_sent": 0,
+  "status": "passed",
+  "browser_errors": []
+}

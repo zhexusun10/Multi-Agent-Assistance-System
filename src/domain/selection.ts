@@ -11,5 +11,5 @@ export function resolveListingSelection(rec:RecommendationResponse|null|undefine
  const pool=/待核实(?:候选|列表|房源)?/.test(query)?rec?.unverified_candidates||[]:/已核验|已验证/.test(query)?rec?.recommendations||[]:candidates;
  const n=ordinal?(map[ordinal[1]]??Number(ordinal[1]||ordinal[2])):pool.length===1?1:0;
  const item=Number.isInteger(n)&&n>0?pool[n-1]:null;
- if(!item)throw new BusinessError('SELECTION_REQUIRED','请点击房源卡片的“我想看这套”，或说“我要看第1套”，也可以提供房源 ID。');return item;
+ if(!item)throw new BusinessError('SELECTION_REQUIRED','请点击房源卡片的“联系经纪人”，或说“我要看第1套”，也可以提供房源 ID。');return item;
 }

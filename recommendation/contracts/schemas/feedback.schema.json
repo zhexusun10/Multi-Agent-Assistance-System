@@ -59,8 +59,11 @@
       "type": "string"
     },
     "source": {
-      "const": "sample",
       "default": "sample",
+      "enum": [
+        "sample",
+        "web_detail"
+      ],
       "title": "Source",
       "type": "string"
     }

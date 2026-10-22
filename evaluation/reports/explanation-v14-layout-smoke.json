@@ -1,0 +1,147 @@
+{
+  "tag": "v14-layout-smoke",
+  "split": "all",
+  "checked_at": "2026-10-22T05:56:15.042Z",
+  "model": "openai:deepseek-flash",
+  "hashes": {
+    "src/agents/explanation/contracts.ts": "aad9f68b4fcaef678693968c4291ea3b469b72a3c35605bd5f0ff8185d80c227",
+    "src/agents/explanation/evidence.ts": "a381b636fc6666bea7f794ede981aad5f376ecc6a1f5fd57d7f179a759399862",
+    "src/agents/explanation/prompt.ts": "2e93aba4b4169ff81d258c917897d0926c57039f4e49c4beb1ac204413a8a44d",
+    "src/agents/explanation/few-shot.ts": "a6b7b4987cff85b39a1ba0a10962fa227a1877db4604693bf1a6db18e7f6de15",
+    "src/agents/explanation/validation.ts": "93a5dbabdbe597fd40866e87af3c22c0f3378a498d9a7d65c887bb6cd77c7f8c",
+    "src/agents/explanation/generator.ts": "7282034e4cce35c7b28ad608d0af8ff091043aaba4d8f100bd461866160fb9f3",
+    "skills/evidence-based-explanation/SKILL.md": "f82b18cac632bcd58761ff340cf96d517e075f14e41701f94866d3514c8129cc",
+    "evaluation/explanation-cases.ts": "69306d510c7ab71f1f751a755a0f4a8268b25258ae4b2ab64f3a43e6b401a1b3",
+    "evaluation/evaluate-explanation.ts": "788986a0746fcb4bf5cf6f4a97137dfa370cbad2f1ad0e6cbce80bd97caf57de"
+  },
+  "judge_repairs": [],
+  "external_block": null,
+  "planned_cases": 3,
+  "unattempted": [],
+  "metrics": {
+    "cases": 3,
+    "passed": 3,
+    "grounded": 3,
+    "ranking_correct": 3,
+    "covers_question": 3,
+    "natural": 3,
+    "concise": 3,
+    "exceptions": 0,
+    "repaired": 1,
+    "average_characters": 734
+  },
+  "by_scenario": {
+    "multiple": {
+      "cases": 3,
+      "passed": 3,
+      "grounded": 3,
+      "ranking_correct": 3,
+      "covers_question": 3,
+      "natural": 3,
+      "concise": 3,
+      "exceptions": 0,
+      "repaired": 1,
+      "average_characters": 734
+    }
+  },
+  "results": [
+    {
+      "id": "multiple-dev-3",
+      "scenario": "multiple",
+      "split": "development",
+      "query": "为什么第一套放在前面？",
+      "gold": "预算与学校直线5公里先筛选，排序同时考虑更靠近学校及租金1800以内，不能说唯一按距离或价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均通过预算3000与学校直线5公里硬筛选，并指出排序是“更近学校”与“租金1800以内”两项软偏好权衡，未误称唯一按距离或价格排序；距离与价格数值与房源事实一致，且提示价格未确认、可租状态未知。结构清晰、无内部字段。"
+      },
+      "answer": "Garden Court 排在前面，是因为它更符合您“月租尽量不超过1800新币”的偏好：记录月租1600新币，而 Willow Residence 记录月租1900新币，比这一期望高100新币。\n\n不过，离南洋理工大学更近的是 Willow Residence，直线约850米；Garden Court 约1600米。两套都在5000米范围内，也都满足月租不超过3000新币的必须条件。\n\n所以这次排序是“离学校更近”和“月租尽量不超过1800新币”共同权衡的结果，并非只按离学校远近排；Garden Court 在租金偏好上更合适，因此排在前面。\n\n注意：记录中的价格和当前是否可租，还需要联系确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "multiple-preferences",
+          "two-listing-comparison"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 3219
+      },
+      "characters": 302,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4761
+    },
+    {
+      "id": "multiple-dev-6",
+      "scenario": "multiple",
+      "split": "development",
+      "query": "Why were these homes selected and ordered this way?",
+      "gold": "预算与学校直线5公里先筛选，排序同时考虑更靠近学校及租金1800以内，不能说唯一按距离或价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "Grounded: prices/dists match listings (1600/1600m, 1900/850m), straight-line 5km, availability unknown flagged. Ranking correct: explains combined weighting of closer + ≤1800, explicitly says not solely by distance or price. Covers question: lists requirements, per-home fit, ordering rationale, availability caveat. Natural and within length."
+      },
+      "answer": "Your requirements:\n• Rent no more than S$3,000 per month (must meet).\n• Within 5km of Nanyang Technological University by straight-line distance (must meet), and preferably closer.\n• Ideally rent at or below S$1,800 per month.\n\nWhat fits:\n• Both homes are within the S$3,000 budget and the 5km limit.\n• Garden Court is recorded at S$1,600 per month and 1,600m from the university, so it also meets the preferred rent level.\n• Willow Residence is recorded at S$1,900 per month and 850m from the university; it is above the preferred rent level but still within budget.\n\nWhy this order: the two preferences are weighed together. Garden Court meets the lower-rent preference but is farther away; Willow Residence is closer but above the preferred rent. The first home comes ahead on the combined result, not because it is closer. Neither home wins on every preference.\n\nNote: recorded prices do not confirm current availability; please check the current rent and whether each home is still available with the agent.",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "multiple-preferences-english",
+          "english-explanation"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 3579
+      },
+      "characters": 1012,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 5099
+    },
+    {
+      "id": "multiple-hold-2",
+      "scenario": "multiple",
+      "split": "holdout",
+      "query": "Can you explain the current order without assuming the top home is definitely best?",
+      "gold": "预算与学校直线5公里先筛选，排序同时考虑更靠近学校及租金1800以内，不能说唯一按距离或价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "Grounded: prices/distance values match listings; straight-line distance stated; availability flagged unknown. Ranking: explains hard filters (budget 3000, 5km) then trade-off between closer (Willow 850m) and cheaper (Garden 1600), not claiming single-criterion ordering. Covers question: lists requirements, per-home fit, and notes top isn't best on every point. Natural and within length."
+      },
+      "answer": "Your requirements:\n• Rent no more than S$3,000 per month (must meet).\n• Within 5km of Nanyang Technological University by straight-line distance (must meet), and preferably closer.\n• Preferably rent at or below S$1,800 per month.\n\nWhat fits:\n• Both homes are within the S$3,000 budget and the 5km straight-line limit.\n• Garden Court is recorded at S$1,600 per month and 1,600m from the university.\n• Willow Residence is recorded at S$1,900 per month and 850m from the university.\n\nWhy this order: the two preferences pull in opposite directions. Garden Court meets the lower-rent preference but is farther away; Willow Residence is closer but S$100 above the preferred rent level. The order reflects both together, so the top home is not best on every point, and the second is not simply worse.\n\nNote: the recorded rents and current availability still need to be confirmed with the agent.",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 2,
+        "example_ids": [
+          "multiple-preferences-english",
+          "bathroom-count-not-privacy"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [
+          "Function \"write_rental_explanation_v2\" arguments:\n\n{\"version\": \"2.0\", \"focus_listing_ids\": [\"83000002\", \"83000001\"], \"paragraphs\": [{\"text\": \"Your requirements:\\n• Rent no more than S$3,000 per month (must meet).\\n• Within 5km of Nanyang Technological University by straight-line distance (must meet), and preferably closer.\\n• Preferably rent at or below S$1,800 per month.\", \"support_refs\": [\"requirement:rent\", \"requirement:university\", \"requirement:cheaper\"]}, {\"text\": \"What fits:\\n• Both homes are within the S$3,000 budget and the 5km straight-line limit.\\n• Garden Court is recorded at S$1,600 per month and 1,600m from the university.\\n• Willow Residence is recorded at S$1,900 per month and 850m from the university.\", \"support_refs\": [\"condition:83000002:rent\", \"condition:83000001:rent\", \"condition:83000002:university\", \"condition:83000001:university\"]}, {\"text\": \"Why this order: the two preferences pull in opposite directions. Garden Court meets the lower-rent preference but is farther away; Willow Residence is closer but S$100 above the preferred rent level. The order reflects both together, so the top home is not best on every point, and the second is not simply worse.\", \"support_refs\": [\"ranking:method\", \"condition:83000002:cheaper\", \"condition:83000001:cheaper\", \"compare-distance:1:2:university\"]}, {\"text\": \"Note: the recorded rents and current availability still need to be confirmed with the agent.\", \"support_refs\": [\"availability:current\"]}]}}\n\nare not valid JSON.\nError: Unexpected non-whitespace character after JSON at position 1423 (line 1 column 1424)\n\nTroubleshooting URL: https://docs.langchain.com/oss/javascript/langchain/errors/OUTPUT_PARSING_FAILURE/\n"
+        ],
+        "latency_ms": 5769
+      },
+      "characters": 888,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 7375
+    }
+  ]
+}

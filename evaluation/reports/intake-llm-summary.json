@@ -1,0 +1,600 @@
+{
+  "checked_at": "2026-10-22T03:46:41.918Z",
+  "model": "openai:deepseek-flash",
+  "production_mode": "model-first + strict Zod/JSON Schema + catalog resolution and effective-state preview + independent LLM semantic audit + bounded correction",
+  "metrics": {
+    "cases": 197,
+    "exact_pass": 197,
+    "exact_accuracy": 1,
+    "slot_precision": 1,
+    "slot_recall": 1,
+    "slot_f1": 1,
+    "exceptions": 0,
+    "repair_cases": 6,
+    "p95_latency_ms": 2822
+  },
+  "development": {
+    "cases": 155,
+    "exact_pass": 155,
+    "exact_accuracy": 1,
+    "slot_precision": 1,
+    "slot_recall": 1,
+    "slot_f1": 1,
+    "exceptions": 0,
+    "repair_cases": 4,
+    "p95_latency_ms": 2704
+  },
+  "holdout": {
+    "cases": 42,
+    "exact_pass": 42,
+    "exact_accuracy": 1,
+    "slot_precision": 1,
+    "slot_recall": 1,
+    "slot_f1": 1,
+    "exceptions": 0,
+    "repair_cases": 2,
+    "p95_latency_ms": 3305
+  },
+  "groups": {
+    "amenities": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2508
+    },
+    "area-min": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2283
+    },
+    "area-soft": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2812
+    },
+    "area-sqm": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2275
+    },
+    "availability": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2270
+    },
+    "bathrooms-min": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2431
+    },
+    "bedrooms-min": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 3612
+    },
+    "build-year": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2399
+    },
+    "bus-distance": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2704
+    },
+    "clarification": {
+      "cases": 4,
+      "exact_pass": 4,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 1,
+      "p95_latency_ms": 5082
+    },
+    "commute": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2309
+    },
+    "complex": {
+      "cases": 4,
+      "exact_pass": 4,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 3305
+    },
+    "district": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2519
+    },
+    "facility-soft": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 1,
+      "p95_latency_ms": 4059
+    },
+    "furnishing": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2256
+    },
+    "geo-range": {
+      "cases": 2,
+      "exact_pass": 2,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2359
+    },
+    "land-area": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2474
+    },
+    "layout": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2473
+    },
+    "lease": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2634
+    },
+    "move-in": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2570
+    },
+    "mrt-distance": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2396
+    },
+    "nearby-vague": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 1,
+      "p95_latency_ms": 3063
+    },
+    "nus-radius": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2643
+    },
+    "postal": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2296
+    },
+    "private-bath": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2321
+    },
+    "property-type": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2230
+    },
+    "update": {
+      "cases": 7,
+      "exact_pass": 7,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2464
+    },
+    "region": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2294
+    },
+    "removal": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2456
+    },
+    "rent-max": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2655
+    },
+    "rent-range": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2514
+    },
+    "rent-soft": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2822
+    },
+    "reported-mrt": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 1,
+      "p95_latency_ms": 3498
+    },
+    "reported-mrt-distance": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2291
+    },
+    "supermarket": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2530
+    },
+    "tenure": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2294
+    },
+    "transport-and": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2319
+    },
+    "transport-or": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2606
+    },
+    "walking-distance": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 2,
+      "p95_latency_ms": 3569
+    },
+    "whole-unit": {
+      "cases": 5,
+      "exact_pass": 5,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 0,
+      "p95_latency_ms": 2391
+    }
+  },
+  "semantic_audit_passed": 197,
+  "hashes": {
+    "src/agents/requirement/contracts.ts": "f39c1a8263d43072233ef34706c2e9a8a3154306e60fb475ed8253512acb47c6",
+    "src/agents/requirement/extractor.ts": "c9fe4c093b8aa3532df091c884f0f073d368d89ec3d8da2b7e7189b10cfbb388",
+    "src/agents/requirement/audit-context.ts": "bd0927be29118e53ab436ff317226113c26014e3fe5ade8e790f76e02a3ecb06",
+    "src/agents/requirement/prompt.ts": "fc330dd1ab46cffd32bef5a2ac74e1479ef1d3ea1c001438578605cf6c41a98f",
+    "src/agents/requirement/validation.ts": "2eb62c51fc2dfd26da833ca7ff2ec3292467bd61025bbfd7d06d5d7a5e876125",
+    "src/agents/requirement/few-shot.ts": "eff87feb3ce37b32447f653a098190318f199f41e6c45eb3fccef9f15c58acd1",
+    "skills/rental-requirement-intake/SKILL.md": "9dea7d95449c5c7264e7578e620698f09b16f45becdf559b35f2081ebb20a2f8",
+    "evaluation/intake-llm-cases.ts": "548ceb1de39e9f428aa7e192461d81ebcb3bd63299bed3aed15617b4f1f32a8d"
+  },
+  "scorer_adjustments": [
+    {
+      "id": "reported-mrt-1",
+      "reason": "Gold slot omitted required platform_reported semantics; actual output was correct"
+    },
+    {
+      "id": "reported-mrt-2",
+      "reason": "Gold slot omitted required platform_reported semantics; actual output was correct"
+    },
+    {
+      "id": "reported-mrt-3",
+      "reason": "Gold slot omitted required platform_reported semantics; actual output was correct"
+    },
+    {
+      "id": "reported-mrt-4",
+      "reason": "Gold slot omitted required platform_reported semantics; actual output was correct"
+    },
+    {
+      "id": "update-budget-3",
+      "reason": "Delete-old-budget plus set-new-budget is semantically equivalent to replacement and preserves the final ID"
+    },
+    {
+      "id": "update-budget-4",
+      "reason": "Delete-old-budget plus set-new-budget is semantically equivalent to replacement and preserves the final ID"
+    }
+  ],
+  "iterations": [
+    {
+      "version": "v1",
+      "metrics": {
+        "cases": 147,
+        "exact_pass": 141,
+        "exact_accuracy": 0.9591836734693877,
+        "slot_precision": 0.9705882352941176,
+        "slot_recall": 0.9763313609467456,
+        "slot_f1": 0.9734513274336284,
+        "exceptions": 0,
+        "repair_cases": 7,
+        "p95_latency_ms": 2094
+      },
+      "note": "147 original development cases; scorer defects corrected without changing original model outputs"
+    },
+    {
+      "version": "v2",
+      "metrics": {
+        "cases": 155,
+        "exact_pass": 153,
+        "exact_accuracy": 0.9870967741935484,
+        "slot_precision": 0.9943502824858758,
+        "slot_recall": 0.9943502824858758,
+        "slot_f1": 0.9943502824858758,
+        "exceptions": 1,
+        "repair_cases": 7,
+        "p95_latency_ms": 3646
+      }
+    },
+    {
+      "version": "v3",
+      "metrics": {
+        "cases": 155,
+        "exact_pass": 153,
+        "exact_accuracy": 0.9870967741935484,
+        "slot_precision": 1,
+        "slot_recall": 0.9887005649717514,
+        "slot_f1": 0.9943181818181819,
+        "exceptions": 2,
+        "repair_cases": 6,
+        "p95_latency_ms": 3471
+      }
+    },
+    {
+      "version": "v4",
+      "metrics": {
+        "cases": 155,
+        "exact_pass": 155,
+        "exact_accuracy": 1,
+        "slot_precision": 1,
+        "slot_recall": 1,
+        "slot_f1": 1,
+        "exceptions": 0,
+        "repair_cases": 5,
+        "p95_latency_ms": 2765
+      }
+    }
+  ],
+  "regression": {
+    "tag": "v9-update",
+    "metrics": {
+      "cases": 197,
+      "exact_pass": 197,
+      "exact_accuracy": 1,
+      "slot_precision": 1,
+      "slot_recall": 1,
+      "slot_f1": 1,
+      "exceptions": 0,
+      "repair_cases": 6,
+      "p95_latency_ms": 2822
+    },
+    "note": "Reused frozen development/holdout corpus as regression; not a new untouched holdout"
+  },
+  "reports": [
+    "intake-llm-v9-update-model.json"
+  ],
+  "limitations": [
+    "Fixed local corpus, not a claim of universal natural-language accuracy",
+    "197-case corpus assesses extraction; actual resolved multiround state transitions have a separate regression report",
+    "MRT/bus data integration and real route tools remain separate; extracted unmet evidence stays unknown",
+    "No changes to native recommendation scoring, ranking or final-gate kernels"
+  ]
+}

@@ -36,3 +36,6 @@
 远程 `/recommend` 当前假设同一可信本机/开发环境，未实现跨组织认证。队友接入时需共同确认 source_ref / candidate_pool_ref 的跨服务解析方式、保留期、失效规则、行为贡献及评分版本。当前前端证据解析器完整支持本项目生成的 data_api 引用；不能将远程任意字符串自动当成本地 UUID。
 
 当前基线返回的 `state_id=baseline:<request_id>` 是可回传状态标识，完整已评估候选 ID 集保存在 candidate_pool_ref，但基线每次仍重新核查当前数据集（full模式为21,431条完整快照），不承诺算法级候选复用。显式需求权重大于行为推断；基线对反馈只去重、保存和传输，不宣称已实现行为兴趣画像。
+# 真实浏览反馈扩展（2026-10-21）
+
+`recommendation-web-feedback-extension.json` 在原生迁移清单之上记录5个契约/来源元数据文件的扩展前后指纹，以及保持不变的排名、验证与工具核心指纹。`web_detail` 表示浏览采集账本确认的完成区间；`sample` 保留演示兼容。真实数据不会冒充样例，评分算法不变。使用 `scripts/import-recommendation-upstream.py --check` 同时校验原版迁移与扩展。

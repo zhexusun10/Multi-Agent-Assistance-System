@@ -2,7 +2,8 @@ import {z} from 'zod';
 
 // A score scale is not a user-specified radius and never excludes a candidate.
 export const DEFAULT_PROXIMITY_SCALE_M=1000;
-export const locationIntentSchema=z.object({name:z.string().min(1).max(150),quote:z.string().min(1),radius_m:z.number().positive().max(1000000).optional(),strength:z.enum(['hard','soft']),distance_type:z.enum(['straight_line','walking','driving','transit']),explicit_station:z.boolean(),category:z.literal('MRTStation').optional()}).strict();
+export const PLACE_CATEGORIES=['MRTStation','BusStop','PublicTransport','Supermarket','School','Park','FoodCourt','Mall','Market','Hospital','Clinic','Library'] as const;
+export const locationIntentSchema=z.object({name:z.string().min(1).max(150),quote:z.string().min(1),radius_m:z.number().nonnegative().max(1000000).optional(),range_m:z.tuple([z.number().nonnegative(),z.number().nonnegative()]).optional(),operator:z.enum(['lte','gte','between']).optional(),weight:z.number().positive().optional(),strength:z.enum(['hard','soft']),distance_type:z.enum(['straight_line','walking','driving','transit']),explicit_station:z.boolean(),prefer_closer:z.boolean().optional(),category:z.enum(PLACE_CATEGORIES).optional()}).strict();
 export type LocationIntent=z.infer<typeof locationIntentSchema>;
 export const CATEGORY_NAMES:[RegExp,string][]=[[/^(?:超市|supermarket)$/i,'Supermarket'],[/^(?:学校|school)$/i,'School'],[/^(?:公园|park)$/i,'Park'],[/^(?:食阁|food court)$/i,'FoodCourt'],[/^(?:商场|mall)$/i,'Mall']];
 const digits:Record<string,number>={'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10,'半':0.5};

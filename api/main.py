@@ -67,7 +67,10 @@ async def stream_graph(graph_request: httpx.Request, client: httpx.AsyncClient):
             await upstream.aclose()
             await client.aclose()
 
-    return StreamingResponse(relay(), media_type="text/event-stream")
+    return StreamingResponse(relay(), media_type="text/event-stream", headers={
+        "Cache-Control": "no-cache, no-store, no-transform",
+        "X-Accel-Buffering": "no",
+    })
 
 
 @app.post("/api/query")
@@ -151,7 +154,7 @@ def favicon():
 
 @app.api_route("/api/{path:path}", methods=["GET", "POST"])
 async def business_proxy(path: str, request: Request):
-    allowed = path in {"config", "sessions", "state", "feedback", "evidence", "calendar", "followups", "summaries/daily", "integrations/templates", "webhooks/whatsapp", "webhooks/telegram"} or path.startswith("actions/") or path.startswith("artifacts/") or (request.method == "GET" and (path.startswith("locations/") or path.startswith("listings/")))
+    allowed = path in {"config", "sessions", "state", "feedback", "evidence", "calendar", "followups", "summaries/daily", "integrations/templates", "webhooks/whatsapp", "webhooks/telegram"} or (request.method == "POST" and path == "behavior/views") or (request.method == "GET" and path == "behavior/summary") or path.startswith("actions/") or path.startswith("artifacts/") or (request.method == "GET" and (path.startswith("locations/") or path.startswith("listings/")))
     if not allowed:
         raise HTTPException(404, "Not found")
     headers = {"Authorization": request.headers["authorization"]} if "authorization" in request.headers else {}
@@ -167,6 +170,8 @@ async def business_proxy(path: str, request: Request):
         except httpx.HTTPError:
             raise HTTPException(503, "业务服务暂不可用")
         forwarded = {name: value for name, value in result.headers.items() if name.lower() in {"content-type", "content-disposition", "cache-control"}}
+        if path == "state":
+            forwarded["cache-control"] = "no-store"
         return Response(result.content, status_code=result.status_code, headers=forwarded)
 
 
