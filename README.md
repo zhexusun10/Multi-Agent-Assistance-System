@@ -127,3 +127,11 @@ npm run test:live
 - [Follow-up 工程设计、状态机、范围与测试](docs/Follow-up工程实现与验收.md)
 
 “平台已受理”不代表已读或看房确认；待核实房源可以咨询和约看，未知条件仍保持未知。发出后可创建、调整、完成跟进提醒，生成当天会话与跟进文档。当前只实现两个消息 API，日历为本地日历与 ICS，文档为数据库存储和下载。
+
+## Testing and acceptance evidence
+
+Start with the [Group 42 QA handoff](evaluation/README.md) for the current English
+report and tracker, recorded results, open issues, complete original evidence
+and historical archive. The recommendation fixes and QA evidence are published
+in [PR 2](https://github.com/zhexusun10/Multi-Agent-Assistance-System/pull/2)
+for review; overall system acceptance remains PENDING.

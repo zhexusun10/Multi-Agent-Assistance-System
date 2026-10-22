@@ -10,6 +10,12 @@ const digits:Record<string,number>={'一':1,'二':2,'两':2,'三':3,'四':4,'五
 /** A listing is the subject of a proximity relation, never its geographic destination. */
 export function isListingReference(name:string){return /^(?:(?:这套|那套|这|那|该|所租的|我租的|我要租的|想租的)\s*)?(?:房子|房屋|房源|住房|住宅|房间|单间|公寓|房|property|listing|home|house|apartment|room)$/i.test(name.trim());}
 export function isGenericMrt(name:string){return /^(?:(?:最近的?|任意的?|任一|一个|一座|附近的)|(?:the|an?|any|nearest)\s+)?(?:MRT(?:\s*(?:station|站))?|地铁站?|捷运站)$/i.test(name.trim());}
+/** Separate destination identity from the relation and radius-update wording. */
+export function cleanLocationName(name:string){
+  return name.replace(/^(?:(?:我(?:想|要|希望)?(?:找|租|住在)?|帮我找|想找|找|租|住在|最好|希望|优先|要求|必须|就是|位置(?:改为|是|为)?|到|离|距)\s*)+/,'')
+    .replace(/(?:的\s*)?(?:(?:直线|实际步行|步行|开车|驾车)\s*)?距离\s*(?:(?:改为|改成|调整为|调整到|缩小到|扩大到)\s*)?$/i,'')
+    .replace(/(?:的\s*)?(?:改为|改成|调整为|调整到|缩小到|扩大到)\s*$/,'').trim();
+}
 export function parseLocationIntents(query:string):LocationIntent[]{
   const intents:LocationIntent[]=[];
   for(const clause of query.split(/[，,。；;\n]/).map(s=>s.trim()).filter(Boolean)){
@@ -25,7 +31,7 @@ export function parseLocationIntents(query:string):LocationIntent[]{
     else if(near){name=near[1];}
     else if(!/面积|平方米|平方英尺|sqft|sqm/i.test(clause)){const specific=clause.match(/(?:到|离|距|to\s+)?\s*(.+?)\s*(\d+(?:\.\d+)?|[一二两三四五六七八九十半])\s*(公里|千米|km|米|m\b)/i);if(specific){name=specific[1];tail=specific[2]+specific[3];bareDistance=true;}}
     if(!name)continue;
-    name=name.replace(/^(?:(?:我(?:想|要|希望)?(?:找|租|住在)?|帮我找|想找|找|租|住在|最好|希望|优先|要求|必须|就是|位置(?:改为|是|为)?|到|离|距)\s*)+/,'').trim();
+    name=cleanLocationName(name);
     if(!name)continue;
     if(bareDistance&&CATEGORY_NAMES.some(([pattern])=>pattern.test(name.replace(/(?:(?:直线|步行|开车)(?:距离)?|距离)$/,'').trim())))continue;
     const combined=name+' '+tail;

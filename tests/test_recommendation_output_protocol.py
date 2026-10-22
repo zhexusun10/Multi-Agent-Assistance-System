@@ -59,11 +59,12 @@ def test_real_failure_replay_stops_after_one_four_tool_pass(tmp_path,monkeypatch
         response=service.recommend(request());expected=oracle.recommend(request())
         assert response.status==expected.status=="needs_clarification"
         assert not response.recommendations and response.unverified_candidates
-        assert response.execution.model_calls==4 and response.execution.tool_calls==4
+        assert response.execution.model_calls==3 and response.execution.tool_calls==4
         assert [v.model_dump() for v in response.unverified_candidates]==[v.model_dump() for v in expected.unverified_candidates]
         trace=service.store.trace(request().conversation_id)
         assert trace['steps'][-1]['kind']=='final_gate' and trace['steps'][-1]['passed']
-        assert any(s.get('output',{}).get('app_output_protocol',{}).get('final_output_normalized') for s in trace['steps'])
+        assert trace['controller_completion']=='assessed_empty_ranking'
+        assert len(calls)==3  # The merged controller needs no extra model call for an empty ranking.
     finally:
         service.close();oracle.close()
 
@@ -82,7 +83,10 @@ def test_native_final_gate_still_rejects_invented_shortlists(tmp_path,monkeypatc
     monkeypatch.setattr(LiveController,'invoke',invoke)
     service=make_service(tmp_path,ApplicationLiveController(),'invalid-proposal')
     try:
-        result=service.recommend(request())
+        # Use a known, satisfiable hard condition so ranking is nonempty and the
+        # malicious final proposal actually reaches the final gate.
+        req=RecommendationRequest.model_validate({**request().model_dump(),"requirements":{"listing_type":"RENT","criteria":[{"criterion_id":"budget","field":"price","operator":"lte","value":10000,"unit":"SGD/month","strength":"hard"}]}})
+        result=service.recommend(req)
         assert result.status=='error' and result.error.code=='INVALID_PROPOSAL'
         assert not result.recommendations
         assert service.store.current(request().conversation_id) is None

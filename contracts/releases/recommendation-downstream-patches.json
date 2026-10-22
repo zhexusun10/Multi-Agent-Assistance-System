@@ -1,0 +1,17 @@
+{
+  "upstream_commit": "907cfa839d2665b3702450eb40acd4c96fe9296c",
+  "project_base_commit": "89131897f56bbc176c30246a451f118f7de0209f",
+  "purpose": "Declared local recommendation-fit remediation; original upstream fingerprints retained. Team review and final system signoff remain pending.",
+  "files": [
+    {
+      "target": "recommendation/agent/controller.py",
+      "base_ported_sha256": "a17495fcca30a3fdfb35ad7f28db3468087b212ab21b57855b10eb6cc6bf4ede",
+      "patched_sha256": "54a20b4c24304357a3086e79c295cac903916903d914743336eac31b0c6df2c3",
+      "issue": "DEF11 controller terminal output and final-gate recovery",
+      "changes": [
+        "Complete assessed empty rankings through the existing final gate",
+        "Retain tool history and explicit error feedback across bounded final-gate repairs"
+      ]
+    }
+  ]
+}

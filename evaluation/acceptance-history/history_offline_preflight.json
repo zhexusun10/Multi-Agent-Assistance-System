@@ -1,0 +1,48 @@
+{
+  "checked_at": "2026-10-20T14:37:05.199474+00:00",
+  "evidence_class": "FRESH_STATIC",
+  "commit": "907cfa839d2665b3702450eb40acd4c96fe9296c",
+  "method": "Inspect committed file references and file existence. Launchers and Docker were not executed.",
+  "findings": [
+    {
+      "id": "DEF01",
+      "severity": "S2",
+      "status": "OPEN",
+      "title": "Development requirements reference moved files",
+      "files": [
+        "requirements-dev.txt"
+      ],
+      "actual": "Missing include files: data/graph_requirements.txt, data/requirements.txt",
+      "expected": "All recursive requirements paths resolve from a clean checkout.",
+      "retest": "Resolve requirements-dev.txt recursively, then install in a fresh disposable venv."
+    },
+    {
+      "id": "DEF02",
+      "severity": "S2",
+      "status": "OPEN",
+      "title": "Launchers reference removed compose and graph CLI paths",
+      "files": [
+        "scripts/start-app.ps1",
+        "scripts/local-data.ps1"
+      ],
+      "actual": "data/compose.yaml is absent; canonical compose is dataPreprocessing/compose.yaml. local-data.ps1 also calls removed data/knowledge_graph.py.",
+      "expected": "Fresh sample and full launch paths resolve before Docker or model operations.",
+      "retest": "Validate both compose files with docker compose config, then start Sample and Full in disposable volumes. Verify import and read-only parity."
+    },
+    {
+      "id": "DEF03",
+      "severity": "S2",
+      "status": "OPEN",
+      "title": "Data API and bootstrap import the former package namespace",
+      "files": [
+        "scripts/full_data_api.py",
+        "scripts/sample_data_api.py",
+        "scripts/bootstrap_sample.py",
+        "dataPreprocessing/service/app.py"
+      ],
+      "actual": "Old data.core, data.service, data.graph and data.storage imports reference moved modules. Python test collection reproduces ModuleNotFoundError: data.core.",
+      "expected": "Data services and bootstrap import the current dataPreprocessing package. The untouched commit collects its tests.",
+      "retest": "Run pytest dataPreprocessing/tests tests/test_api.py tests/test_webhook_gateway.py in a clean test environment. Import entry points, then exercise /ready, capabilities and complete listing scans."
+    }
+  ]
+}

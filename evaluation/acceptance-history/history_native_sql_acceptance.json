@@ -1,0 +1,176 @@
+{
+  "checked_at": "2026-10-20T16:55:23.872837+00:00",
+  "commit": "89131897f56bbc176c30246a451f118f7de0209f",
+  "controller": "scripted",
+  "real_model_calls": 0,
+  "database": "real PostgreSQL 16",
+  "assessed_per_case": 21431,
+  "cases": [
+    {
+      "id": "N01",
+      "status": "passed",
+      "counts": {
+        "assessed": 21431,
+        "eligible": 161,
+        "unverified": 6,
+        "excluded": 21264
+      },
+      "verified_ids": [
+        "12885293",
+        "18074957",
+        "18689152",
+        "18885948"
+      ],
+      "unverified_ids": [
+        "20283326",
+        "24039352",
+        "500186462",
+        "500278815"
+      ],
+      "elapsed_seconds": 10.083,
+      "immutable_replay": true,
+      "body_conflict": 409
+    },
+    {
+      "id": "N02",
+      "status": "passed",
+      "counts": {
+        "assessed": 21431,
+        "eligible": 129,
+        "unverified": 6,
+        "excluded": 21296
+      },
+      "verified_ids": [
+        "12885293",
+        "18074957",
+        "18689152",
+        "18885948"
+      ],
+      "unverified_ids": [
+        "20283326",
+        "24039352",
+        "500186462",
+        "500278815"
+      ],
+      "elapsed_seconds": 9.141,
+      "immutable_replay": true,
+      "body_conflict": 409
+    },
+    {
+      "id": "N03",
+      "status": "passed",
+      "counts": {
+        "assessed": 21431,
+        "eligible": 0,
+        "unverified": 0,
+        "excluded": 21431
+      },
+      "verified_ids": [],
+      "unverified_ids": [],
+      "elapsed_seconds": 6.467,
+      "immutable_replay": true,
+      "body_conflict": 409
+    },
+    {
+      "id": "N04",
+      "status": "passed",
+      "counts": {
+        "assessed": 21431,
+        "eligible": 9793,
+        "unverified": 0,
+        "excluded": 11638
+      },
+      "verified_ids": [
+        "15736604",
+        "20454257",
+        "20528290",
+        "20563989"
+      ],
+      "unverified_ids": [],
+      "elapsed_seconds": 8.065,
+      "immutable_replay": true,
+      "body_conflict": 409
+    },
+    {
+      "id": "N05",
+      "status": "passed",
+      "counts": {
+        "assessed": 21431,
+        "eligible": 8418,
+        "unverified": 4,
+        "excluded": 13009
+      },
+      "verified_ids": [
+        "10065953",
+        "10251061",
+        "10311736",
+        "10554699"
+      ],
+      "unverified_ids": [
+        "16820804",
+        "500194402",
+        "500209091",
+        "500256682"
+      ],
+      "elapsed_seconds": 8.339,
+      "immutable_replay": true,
+      "body_conflict": 409
+    },
+    {
+      "id": "N06",
+      "status": "passed",
+      "counts": {
+        "assessed": 21431,
+        "eligible": 0,
+        "unverified": 21431,
+        "excluded": 0
+      },
+      "verified_ids": [],
+      "unverified_ids": [
+        "10065953",
+        "10251061",
+        "10311736",
+        "10554699"
+      ],
+      "elapsed_seconds": 6.969,
+      "immutable_replay": true,
+      "body_conflict": 409
+    },
+    {
+      "id": "N07",
+      "status": "passed",
+      "counts": {
+        "assessed": 21431,
+        "eligible": 161,
+        "unverified": 6,
+        "excluded": 21264
+      },
+      "verified_ids": [
+        "12885293"
+      ],
+      "unverified_ids": [
+        "20283326",
+        "24039352",
+        "500186462",
+        "500278815"
+      ],
+      "elapsed_seconds": 7.284,
+      "immutable_replay": true,
+      "body_conflict": 409
+    }
+  ],
+  "checks": [
+    "Full canonical scan per case",
+    "Independent eligibility and unknown/excluded groups",
+    "Lexicographic stable tie order",
+    "Soft threshold exact scores",
+    "Unverified candidates preserve source order without score",
+    "Limit enforcement",
+    "Immutable replay",
+    "Changed-body conflict",
+    "Authentication rejection",
+    "Stale reference rejection",
+    "Controller scripted and model calls zero"
+  ],
+  "status": "passed"
+}
