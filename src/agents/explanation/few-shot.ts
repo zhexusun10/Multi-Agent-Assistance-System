@@ -1,74 +1,46 @@
 import type {ExplanationOutput} from './contracts.js';
 type Example={id:string;tags:string[];question:string;context:string;output:ExplanationOutput};
-const answer=(paragraphs:[string,string[]][],ids:string[]=[]):ExplanationOutput=>({version:'2.0',focus_listing_ids:ids,paragraphs:paragraphs.map(([text,support_refs])=>({text,support_refs}))});
+const answer=(items:[string,string,string[]][],note='记录的租金和现在是否仍可租，请联系经纪人确认。'):ExplanationOutput=>({version:'2.0',focus_listing_ids:items.map(x=>x[0]),paragraphs:[
+  {listing_id:null,text:'以下信息可能帮助您更好地比较这几套房子：',support_refs:['guide:purpose']},
+  ...items.map(([listing_id,text,support_refs])=>({listing_id,text,support_refs})),
+  {listing_id:null,text:note,support_refs:['availability:current']},
+]});
 export const EXPLANATION_EXAMPLES:Example[]=[
-  {id:'bathroom-count-not-privacy',tags:['1B1B','一室一卫','卫生间数量'],question:'为什么推荐这几套房子？',context:'用户要求：月租2500以内、1间卧室、1个卫生间、裕廊东5公里内；希望MRT或公交1公里内。记录月租1600至1900、1间卧室符合，卫生间数量、裕廊东距离和站点距离未知，列表未评分。没有专用卫浴要求。refs：requirements,layout:known,bath-count:unknown,location:unknown,transit:unknown,ranking:method,availability:current。',output:answer([
-    ['您的要求：\n• 月租不超过2,500新币。\n• 1间卧室、1个卫生间。\n• 裕廊东5公里内。\n• 最好在1公里内有MRT或公交站。',['requirements']],
-    ['这些房源符合的部分：\n• 预算：记录月租在1,600至1,900新币之间，低于您的上限。\n• 卧室：记录均为1间，符合您对卧室数量的要求。',['layout:known']],
-    ['还需要了解的部分：\n• 卫生间数量：还没有足够资料确认是否为1个。\n• 到裕廊东的距离：暂时不能确认是否在5公里内。\n• 附近交通：暂时不能确认1公里内是否有MRT或公交站。',['bath-count:unknown','location:unknown','transit:unknown']],
-    ['为什么这样排序：目前资料不足以判断哪套更合适，前后顺序仅供浏览。',['ranking:method']],
-    ['注意：还不能确认这几套房源全部符合您的要求；当前租金和是否仍可租，也需要联系经纪人了解。',['bath-count:unknown','location:unknown','availability:current']]])},
-  {id:'mixed-confirmed-pending',tags:['这几套','整体','一组'],question:'这组推荐是怎么考虑的？',context:'同一列表包含资料能确认的匹配项和缺少学校距离的待确认项。有资料的房源符合预算和学校范围，排序唯一实际依据是靠近学校。待确认的没有评分、原顺序展示。所有MRT或公交偏好未知。refs：selection,ranking:method,transit:unknown,availability:current。',output:answer([
-    ['您的要求：\n• 月租在预算内。\n• 在学校附近，并且希望越近越好。\n• 最好靠近MRT或公交站。',['selection','transit:unknown']],
-    ['这些房源符合的部分：\n• 预算：已有租金记录都在预算内。\n• 学校距离：有距离资料的房源符合范围要求；其余房源还缺距离资料。',['selection']],
-    ['还需要了解的部分：\n• 部分房源到学校的距离。\n• 各套房源附近的MRT或公交情况。',['selection','transit:unknown']],
-    ['为什么这样排序：有距离资料的房源按离学校的直线距离由近到远展示；缺距离资料的房源暂时不能比较远近。',['ranking:method']],
-    ['注意：还不能确认列表中每套房源都符合您的全部要求，当前租金和是否仍可租也需要联系确认。',['selection','availability:current']]])},
-  {id:'whole-list-distance',tags:['为什么','几套','推荐','理由'],question:'怎么选出来这几间的？',context:'要求月租不超过2400、学校4公里内且更近优先、希望MRT1公里内。记录月租1800至2200、到学校直线900至1600米均符合。唯一实际排序因素为靠近学校。MRT距离未知。refs：requirements,selection,ranking:method,transit:unknown,availability:current。',output:answer([
-    ['您的要求：\n• 月租不超过2,400新币。\n• 学校4公里内，优先离学校更近的。\n• 最好在1公里内有MRT站。',['requirements']],
-    ['这些房源符合的部分：\n• 预算：记录月租1,800至2,200新币，都在预算内。\n• 学校距离：直线约900至1,600米，都在您要求的4公里内。',['selection']],
-    ['还需要了解的部分：\n• MRT距离：还没有足够资料确认各套是否在站点1公里内。',['transit:unknown']],
-    ['为什么这样排序：符合预算和距离范围后，按离学校的直线距离由近到远展示，所以离学校更近的排在前面。',['ranking:method']],
-    ['注意：附近MRT的情况还需要了解，当前价格和是否仍可租请联系经纪人确认。',['transit:unknown','availability:current']]])},
-  {id:'budget-not-price-sort',tags:['便宜','价格','低','租金','贵'],question:'为什么没把最便宜的放最前面？',context:'必须预算2600。排序仅靠近学校；价格是筛选门槛。fact refs：ranking:method,availability:current。',output:answer([
-    ['预算用于先筛掉超支的房子；符合预算后，这次主要看离学校的直线距离，所以排在前面的未必是租金最低的。',['ranking:method']],
-    ['记录的租金和现在是否可租，还需要向经纪人确认。',['availability:current']]])},
-  {id:'two-listing-comparison',tags:['比较','前两','第一','第二','对比'],question:'前两间差别在哪？',context:'第1套Palm House，月租2100、学校直线900米；第2套Fern Court，月租1850、学校直线1600米。排序仅靠近学校。refs：p1,p2,d1,d2,ranking:method,availability:current。',output:answer([
-    ['Palm House 离学校更近，直线约900米；Fern Court 约1.6公里，但每月租金更低。',['p1','p2','d1','d2']],
-    ['这次排序更重视离学校近，所以 Palm House 在前。你可以在通勤距离和月租之间取舍，当前价格及是否可租仍需确认。',['ranking:method','availability:current']]])},
-  {id:'close-distance-comparison',tags:['前两套有什么区别','距离差','差几米'],question:'解释学校距离如何影响排序，以及前两套有什么区别。',context:'第一套Lake House距学校直线812米，月租1100；第二套Orchid Court直线820米，月租500。必须预算2000、学校5公里内，唯一排序偏好更近。两套直线差约8米，租金差600；没有实际路线。refs：requirements,p1,p2,d1,d2,comparison,ranking:method,availability:current。',output:answer([
-    ['前两套都在您2,000新币的预算和学校5公里范围内。\n• Lake House：记录月租1,100新币，到学校直线约812米。\n• Orchid Court：记录月租500新币，到学校直线约820米。',['requirements','p1','p2','d1','d2']],
-    ['这次按离学校的直线距离由近到远排列，所以Lake House在前。两套直线距离只差约8米；Orchid Court每月租金低600新币，您可以结合价格考虑。实际走多远、通勤有何差别还需要了解路线。',['ranking:method','comparison']],
-    ['注意：当前价格和是否仍可租，请联系经纪人确认。',['availability:current']]])},
-  {id:'unknown-hard-condition',tags:['独卫','卫浴','待确认','待核实','符合'],question:'推荐了就说明肯定有独卫吗？',context:'房源满足预算，独卫必须条件未知。待确认列表没有排序分。refs：bath:unknown,price:known,ranking:method,availability:current。',output:answer([
-    ['还不能确定。这些房子的记录租金符合预算，但还没有足够资料确认是否配有专用卫生间。',['bath:unknown','price:known']],
-    ['目前也没有足够依据判断哪套更适合；可以先问清独卫情况及现在是否仍可租。',['ranking:method','availability:current']]])},
-  {id:'multiple-preferences',tags:['排序','面积','多个','综合','公园'],question:'是在按离学校近远排序吗？',context:'必须预算、学校范围。排序共同考虑学校距离、公园距离、面积偏好，没有唯一主因。refs：ranking:method,availability:current。',output:answer([
-    ['这次会一起考虑离学校和公园的直线距离，以及你希望的面积大小。符合必须要求后，综合这些偏好来排，所以离学校最近的也不一定排第一。',['ranking:method']],
-    ['当前是否还可租，需要再联系确认。',['availability:current']]])},
-  {id:'multiple-preferences-english',tags:['two preferences','both preferences','trade-off'],question:'Why were these homes selected and ordered this way?',context:'Hard limits: rent3000/month and university5km straight-line. Soft: closer university and rent1800/month or less. Display order: 1 Garden View, rent1700, distance1600m; 2 Maple House, rent2000, distance900m. Both factors determine order. FIRST IS FARTHER BUT CHEAPER; SECOND IS CLOSER BUT EXCEEDS SOFT RENT TARGET, still within hard budget. refs requirements,rent1,rent2,distance1,distance2,ranking:method,availability:current.',output:answer([
-    ['Your requirements:\n• Rent up to S$3,000 per month.\n• Within 5km of the university by straight-line distance.\n• Prefer a closer home and rent at or below S$1,800.',['requirements']],
-    ['What fits:\n• Both homes are within the hard budget and distance limits.\n• Garden View is recorded at S$1,700 and 1,600m from the university.\n• Maple House is recorded at S$2,000 and 900m from the university.',['rent1','rent2','distance1','distance2']],
-    ['Why this order: both preferences are considered together. Garden View meets your lower-rent preference but is farther away; Maple House is closer but above the preferred rent level. The first home comes ahead in the combined result, not because it is closer. Neither home wins on every preference.',['ranking:method','rent1','rent2','distance1','distance2']],
-    ['Note: please confirm current rent and availability with the agent.',['availability:current']]])},
-  {id:'behavior-is-secondary',tags:['浏览','兴趣','看过','习惯'],question:'我之前点开的房子会影响这个结果吗？',context:'本轮实际使用已有浏览记录：房型和面积；明确偏好为主要，浏览为辅助。refs：ranking:method,availability:current。',output:answer([
-    ['会有一些参考作用。这次先满足你的必须要求，再主要考虑你明确说出的偏好；之前浏览过的房型和面积，也作为辅助线索。它们不会替代你说清楚的要求。',['ranking:method']],
-    ['是否仍可租还需要联系经纪人确认。',['availability:current']]])},
-  {id:'behavior-ranking',tags:['浏览兴趣','第一套放在前面'],question:'为什么第一套放在前面？',context:'用户只要求预算3000以内，没有明确软偏好。两套租金1900、1600均在预算内。实际排序用了此前浏览记录中的房型和面积；推荐方compare-interest:1:2明确第一套整体上更符合这些浏览兴趣。没有原始参考面积值，不得猜偏爱大房或每项都更像。refs requirement:rent,rent:both,ranking:method,ranking:behavior,compare-interest:1:2,availability:current。',output:answer([
-    ['两套的记录月租都在您3,000新币的预算内。',['requirement:rent','rent:both']],
-    ['这次您没有明确提出其他排序偏好，所以参考了此前浏览房源的房型、面积等兴趣线索。推荐方的整体匹配结果显示，第一套更贴近这些浏览线索，因此放在前面；这不代表您已经明确要求某种房型或面积。',['ranking:method','ranking:behavior','compare-interest:1:2']],
-    ['注意：记录的价格和现在是否仍可租，需要联系经纪人确认。',['availability:current']]])},
-  {id:'stable-order',tags:['第一','最好','优势','分数','高'],question:'第一套是不是明显最好？',context:'没有软偏好也没有可用浏览记录；固定次序，不是更优。refs：ranking:method,availability:current。',output:answer([
-    ['目前还不能这样判断。这几套符合已有的必须要求，但你还没有给出足够的偏好来区分它们，所以现在沿用固定展示顺序。第一套排在前面，不代表更适合你。',['ranking:method']],
-    ['当前是否仍可租，还需要联系确认。',['availability:current']]])},
-  {id:'empty-results',tags:['没有','找不到','无房'],question:'怎么这次没有推荐？',context:'本次范围内无可展示结果，不能推断整个市场；不自动改条件。refs：ranking:method,results:empty。',output:answer([
-    ['按你目前的要求，这次还没有找到能展示的房源。我们可以先讨论你愿意调整预算还是距离范围，再重新找。',['ranking:method','results:empty']]])},
-  {id:'english-explanation',tags:['why','recommend','these','properties'],question:'Why did you choose these properties?',context:'Requirements: monthly rent up to 2400; within 4km of university, nearer preferred; transit within 1km preferred. Recorded rent1800-2200, university straight-line900-1600m. Only university distance ranks; transit unknown. refs: requirements,selection,ranking:method,transit:unknown,availability:current.',output:answer([
-    ['Your requirements:\n• Rent up to S$2,400 per month.\n• Within 4km of the university, preferably closer.\n• Ideally within 1km of public transport.',['requirements']],
-    ['What fits:\n• Budget: recorded rents are S$1,800–2,200 per month.\n• Location: straight-line distances of about 900–1,600m are within your limit.',['selection']],
-    ['Still to check:\n• Whether public transport is within 1km of each home.',['transit:unknown']],
-    ['Why this order: among homes within your limits, shorter straight-line distances to the university come first.',['ranking:method']],
-    ['Note: nearby transport remains unconfirmed. Please check current rent and availability with the agent.',['transit:unknown','availability:current']]])},
-  {id:'route-is-not-line',tags:['步行','分钟','走路','路线'],question:'直线800米就十分钟能走到吗？',context:'只知直线800米，没有实际步行路线。距离为排序参考。refs：distance:known,ranking:method,availability:current。',output:answer([
-    ['还不能换算成步行时间。现在知道的是直线约800米，实际走多远、要多久，还得看道路和出入口。这次只是参考直线距离，优先展示更近的选项。',['distance:known','ranking:method']],
-    ['现在是否仍可租，也需要联系确认。',['availability:current']]])},
+ {id:'whole-list-distance',tags:['为什么','几套','推荐','理由','怎么选'],question:'这几套怎么选？',context:'本轮1 Orchard Home，月租2200，挂牌面积700sqft，具名超市Fresh Mart直线250米；2 Lake Home月租2400，挂牌面积900sqft，具名Lake MRT挂牌标注600米。用户只提预算2600。面积和配套为未主动要求的补充资料。真实排名不因介绍改变。refs rent:1,area:1,market:1,rent:2,area:2,mrt:2,price-diff,area-diff。',output:answer([
+  ['example-a','第1套 Orchard Home：记录月租2,200新币，比Lake Home每月少200新币，如果您更看重每月租金，可以重点比较。附近Fresh Mart超市直线约250米，日常采购多一个选择。',['rent:1','price-diff','market:1']],
+  ['example-b','第2套 Lake Home：挂牌面积900平方英尺，比Orchard Home多200平方英尺，可以进一步了解空间安排。挂牌标注Lake MRT约600米，也为选择公共交通提供参考；实际出入口和步行路线还需了解。',['area:2','area-diff','mrt:2']],
+ ])},
+ {id:'bathroom-count-not-privacy',tags:['1B1B','卫生间','独卫'],question:'介绍一下这两套房',context:'1 Maple Home月租1800，挂牌记1个卫生间但推荐未验证用户的1卫必须条件；2 Cedar Home月租1900，挂牌面积650sqft；没有独立使用权证据。refs rent:1,bath:1,unverified:1,area:2。',output:answer([
+  ['example-a','第1套 Maple Home：记录月租1,800新币，可以作为控制月租的选择。挂牌写有1个卫生间，不过这项要求在本轮推荐中还没验证，需要向经纪人进一步确认；数量本身也不能证明是专用卫生间。',['rent:1','bath:1','unverified:1']],
+  ['example-b','第2套 Cedar Home：挂牌面积650平方英尺，可以进一步了解格局与使用范围；这不是单独卧室面积的保证。',['area:2']],
+ ])},
+ {id:'mixed-confirmed-pending',tags:['资料','未知','一组'],question:'这组房有什么特点？',context:'1 Grove月租2000、2卧室，超市Local Mart直线300米，预算与卧室已符合。2 Meadow月租1800，卧室未知，公园River Park直线500米，不在已验证排名。refs rent:1,market:1,rent:2,park:2,beds:unknown。',output:answer([
+  ['example-a','第1套 Grove：记录的两间卧室和月租2,000新币符合您的条件；另外，Local Mart超市直线约300米，日常采购多一个选择。',['rent:1','market:1']],
+  ['example-b','第2套 Meadow：记录月租1,800新币，附近River Park直线约500米，可作为户外活动地点考虑。不过卧室数量还缺资料，现在不能确认是否符合您的户型要求。',['rent:2','park:2','beds:unknown']],
+ ])},
+ {id:'stable-order',tags:['没偏好','都符合','区别'],question:'都符合预算，该怎么选？',context:'固定顺序并非价格排序。1 Green租1800面积500sqft，2 Blue租2000面积700sqft，额外字段为面积；不能说综合最佳。refs area:1,area:2,rent:1,rent:2,price-diff,area-diff。',output:answer([
+  ['example-a','第1套 Green：记录月租1,800新币，比Blue每月少200新币；挂牌面积500平方英尺。如果您更想控制月租，可以先了解这套的格局。',['rent:1','price-diff','area:1']],
+  ['example-b','第2套 Blue：挂牌面积700平方英尺，比Green多200平方英尺，但记录月租也高一些。可以结合实际租住范围，比较是否值得增加这部分预算。',['area:2','area-diff','rent:2']],
+ ])},
+ {id:'distance-tradeoff-with-unranked',tags:['越近越好','学校','超市','一间'],question:'改成离学校近一点，一间卧室',context:'1 Grove学校直线2500米、超市Local Mart60米；2 Elm学校2300米、超市Fresh Mart140米。两项综合贡献令Grove在前，不改变顺序。预算仅筛选。refs school:1,market:1,school:2,market:2,school-diff。',output:answer([
+  ['example-a','第1套 Grove：Local Mart超市直线约60米，采购配套是一个值得考虑的特点；到学校直线约2.5公里，您可以结合实际路线再权衡。',['school:1','market:1']],
+  ['example-b','第2套 Elm：到学校直线约2.3公里，比Grove更近一些；Fresh Mart超市直线约140米，也可作为采购选择。如果您更在意学校距离，可以重点比较这套。',['school:2','school-diff','market:2']],
+ ])},
+ {id:'multiple-preferences',tags:['价格','便宜','面积','贵'],question:'为什么第一套不一定最便宜？',context:'用户明确问排名。1 Garden租1700学校1600米、面积700sqft；2 Maple租2000学校900米、面积800sqft。距离与软租金共同排序，Garden先。refs rent:1,area:1,school:1,rent:2,area:2,school:2,ranking:method。',output:answer([
+  ['example-a','第1套 Garden：月租记录1,700新币，挂牌面积700平方英尺；到学校直线约1.6公里。它的月租较低，适合您优先比较预算取舍。',['rent:1','area:1','school:1']],
+  ['example-b','第2套 Maple：学校直线约900米，挂牌面积800平方英尺；月租记录为2,000新币。它在学校距离方面更有吸引力，但月租较高。这次原顺序综合了租金偏好和学校距离，并非只按其中一项。',['school:2','area:2','rent:2','ranking:method']],
+ ])},
+ {id:'multiple-preferences-english',tags:['why','choose','compare','English'],question:'How should I choose between these homes?',context:'1 Maple recorded rent2200,listing area700sqft,Fresh Mart250m straight-line;2 Lake rent2400,listing area900sqft,Lake MRT600m platform reported. Area/transit not requested. refs price-diff,market:1,area:2,mrt:2。',output:{version:'2.0',focus_listing_ids:['example-a','example-b'],paragraphs:[
+  {listing_id:null,text:'These details may help you compare the homes:',support_refs:['guide:purpose']},
+  {listing_id:'example-a',text:'1. Maple: Its recorded monthly rent is S$200 lower than Lake. Fresh Mart is about 250 metres away in a straight line, offering a nearby option for groceries.',support_refs:['price-diff','market:1']},
+  {listing_id:'example-b',text:'2. Lake: The listed floor area is 900 sq ft. The listing reports Lake MRT at about 600 metres, a useful public transport reference; the actual walking route remains unverified.',support_refs:['area:2','mrt:2']},
+  {listing_id:null,text:'Please confirm current rent, availability and actual routes with the agent.',support_refs:['availability:current']},
+ ]}},
+ {id:'empty-results',tags:['没有房','空'],question:'这次没有房源吗？',context:'本轮没有可展示房源，不能推断全市场无房，不能自动改条件。refs results:empty。',output:{version:'2.0',focus_listing_ids:[],paragraphs:[{listing_id:null,text:'这次条件下暂时没有能展示的房源。您愿意先调整预算、范围还是户型要求？',support_refs:['results:empty']}]}},
+ {id:'behavior-ranking',tags:['浏览','兴趣'],question:'这些房子各有什么优势？',context:'房型与面积浏览线索参与原排序，但介绍可讲已有特点，不猜用户明确偏好。1 Pine面积800sqft；2 Oak租金2100，超市Corner Mart直线200米。refs area:1,rent:2,market:2。',output:answer([
+  ['example-a','第1套 Pine：挂牌面积800平方英尺，可以作为比较空间安排的一个参考，具体租住范围还需了解。',['area:1']],
+  ['example-b','第2套 Oak：记录月租2,100新币，Corner Mart超市直线约200米，日常采购多一个选择。',['rent:2','market:2']],
+ ])},
 ];
-EXPLANATION_EXAMPLES.push({id:'distance-tradeoff-with-unranked',tags:['越近越好','一间','1个房间'],question:'改成离学校越近越好，只要一间卧室。',context:'预算5000、1卧室、D05必须。两项排序偏好：学校更近、超市800米内。入选排名：1 Grove Flat，学校2500米、超市60米；2 Elm Flat，学校2300米、超市140米；两项贡献综合后第1在前。补充展示Meadow Flat缺卧室信息，学校2550米、超市57米，not_ranked；已知距离不代表参与排名。预算仅筛选不奖励排名。学校偏好comparison_only，无硬半径。refs requirements,known,missing,ranking,comparison,availability。',output:answer([
-  ['您的要求：\n• 月租不超过5,000新币。\n• 一间卧室，位于D05。\n• 离学校越近越好，也希望超市在800米内。',['requirements']],
-  ['这些房源符合的部分：Grove Flat和Elm Flat的卧室、预算和邮区记录符合，附近超市的直线距离分别约60米和140米，都在您希望的范围内。',['known']],
-  ['还需要了解的部分：Meadow Flat缺少卧室数量资料。它有学校和超市距离记录，但还不能确认是否满足一间卧室，因此只是补充展示，没有进入本次排名。',['missing']],
-  ['为什么这样排序：这次同时考虑学校和超市的距离。Grove Flat到超市更近，Elm Flat到学校更近；综合这两项偏好后Grove Flat在前，并不是它每一项都最近。',['ranking','comparison']],
-  ['注意：部分房源的卧室数量还需了解；当前租金和是否仍可租，请联系确认。',['missing','availability']],
-])});
-const genericTags=new Set(['为什么','几套','推荐','理由','why','recommend','these','properties']);
+const genericTags=new Set(['为什么','几套','推荐','理由','why']);
 export function selectExplanationExamples(query:string,count=2,contextId?:string){return EXPLANATION_EXAMPLES.map((e,i)=>({e,i,score:(e.id===contextId?100:0)+e.tags.reduce((n,t)=>n+(query.toLowerCase().includes(t.toLowerCase())?(genericTags.has(t)?1:4+Math.min(t.length,12)/12):0),0)})).sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,count).map(x=>x.e);}

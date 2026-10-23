@@ -2,6 +2,7 @@
 import asyncio
 import hmac
 import os
+import json
 
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, Header, HTTPException
@@ -12,6 +13,7 @@ from .agent.controller import ScriptedController
 from .app_controller import ApplicationLiveController
 from .config import RecommendationConfig
 from .contracts.request import RecommendationRequest
+from .app_contract import ApplicationRecommendationRequest
 from .models.candidate import Response
 from .repositories.connections import ROOT, repositories
 from .service import RecommendationService
@@ -34,13 +36,15 @@ def authorize(x_recommendation_token: str = Header(default="")):
         raise HTTPException(401, "Internal recommendation service credential required")
 
 
-def execute(request: RecommendationRequest, app_view=False):
+def execute(request: RecommendationRequest, app_view=False, behavior_context=None):
     """Construct SQLite connection on the executing thread; never share it across threads."""
     listing, geographic = repositories(os.getenv("RECOMMENDATION_DATA_MODE", "database"))
     store = None
     try:
         store = StateStore(state_path())
         transport_request = request.model_dump(mode="json")
+        if behavior_context is not None:
+            transport_request['behavior_context'] = behavior_context
         if app_view:
             # App operations can be superseded after the native run commits but
             # before its response is adopted by the UI. Resolve the native head at
@@ -54,7 +58,9 @@ def execute(request: RecommendationRequest, app_view=False):
                 if binding:
                     if binding[0] != fingerprint:
                         raise HTTPException(409, "IDEMPOTENCY_CONFLICT: app request ID is bound to another body")
-                    request = RecommendationRequest.model_validate_json(binding[1])
+                    native_binding = json.loads(binding[1])
+                    native_binding.pop('behavior_context', None)
+                    request = RecommendationRequest.model_validate(native_binding)
                 else:
                     # A pre-existing native cached response must retain its original
                     # request identity. Let native reserve/replay reject changed bodies.
@@ -62,7 +68,10 @@ def execute(request: RecommendationRequest, app_view=False):
                     previous = store.current(request.conversation_id)
                     if not cached and previous:
                         request = request.model_copy(update={"previous_state_id":previous["state_id"]})
-                    store.db.execute("INSERT INTO app_transport_requests VALUES(?,?,?,?)", (request.conversation_id,request.request_id,fingerprint,request.model_dump_json()))
+                    persisted_request = request.model_dump(mode='json')
+                    if behavior_context is not None:
+                        persisted_request['behavior_context'] = behavior_context
+                    store.db.execute("INSERT INTO app_transport_requests VALUES(?,?,?,?)", (request.conversation_id,request.request_id,fingerprint,json.dumps(persisted_request)))
         controller_mode = os.getenv("RECOMMENDATION_CONTROLLER", "live")
         if controller_mode not in {"live", "scripted"}:
             raise ValueError("RECOMMENDATION_CONTROLLER must be live or scripted")
@@ -109,7 +118,7 @@ def health():
     return {"status": "ok", "provider": "jiangshan-native", "upstream": "907cfa8", "controller": os.getenv("RECOMMENDATION_CONTROLLER", "live")}
 
 
-async def run(request, app_view):
+async def run(request, app_view, behavior_context=None):
     # Native SQLite already serializes commits. Queue outside its transaction to avoid
     # spending the 30-second SQLite busy timeout while another model call is running.
     try:
@@ -118,7 +127,7 @@ async def run(request, app_view):
         raise HTTPException(503, "Recommendation worker busy; retry the same request ID") from None
     try:
         # Shield the worker: losing an HTTP client must not release the lock mid-commit.
-        task = asyncio.create_task(run_in_threadpool(execute, request, app_view))
+        task = asyncio.create_task(run_in_threadpool(execute, request, app_view, behavior_context))
         try:
             return await asyncio.shield(task)
         except asyncio.CancelledError:
@@ -134,5 +143,6 @@ async def recommend(request: RecommendationRequest):
 
 
 @app.post("/app/recommend", dependencies=[Depends(authorize)])
-async def app_recommend(request: RecommendationRequest):
-    return await run(request, True)
+async def app_recommend(request: ApplicationRecommendationRequest):
+    context = request.behavior_context.model_dump(mode='json') if request.behavior_context is not None else None
+    return await run(request.native_request(), True, context)

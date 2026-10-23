@@ -9,6 +9,7 @@ import {generateExplanation} from '../src/agents/explanation/generator.js';
 import {buildExplanation} from '../src/domain/explanation.js';
 import {planIntent} from '../src/agents/orchestrator/agent-orchestrator.js';
 import {describeAgentFailure} from '../src/domain/errors.js';
+import {guideResponse} from './helpers/explanation-guide.js';
 const fixture=()=>{const {req,rec}=explanationFixture('distance');return {req,rec,bundle:makeExplanationBundle(req,rec,'解释这几套')};};
 const response=()=>({version:'2.0',focus_listing_ids:[],paragraphs:[{text:'这些房子先按你的必须要求筛选，再优先考虑离学校更近的。地铁和公交距离仍需了解，当前是否可租还需要联系确认。',support_refs:['ranking:method','availability:current']}]});
 function mock(writer:(n:number)=>unknown,audit:(n:number)=>unknown=()=>({valid:true,issues:[]})){
@@ -51,7 +52,7 @@ test('bathroom count selects a count-specific explanation example, without impor
   const {req,rec}=explanationFixture('bath_count'),bundle=makeExplanationBundle(req,rec,'解释这几套');
   assert(bundle.facts.some(f=>f.ref==='bathroom-count-not-privacy'));
   assert(!req.criteria.some(c=>c.field==='amenities'&&c.value==='private_bathroom'));
-  const m=mock(()=>({...response(),paragraphs:[{text:'这些房子的卫生间数量还不能确认。目前还无法判断哪套更适合您，现在是否仍可租，需要联系确认。',support_refs:['ranking:method','availability:current']}]}));
+  const m=mock(()=>guideResponse(req,rec));
   const result=await generateExplanation(req,rec,'test','解释这几套',m.model,'role');
   assert(result.generation.example_ids.includes('bathroom-count-not-privacy'));
   const privateCase=explanationFixture('hard_unknown');assert(!makeExplanationBundle(privateCase.req,privateCase.rec,'解释').facts.some(f=>f.ref==='bathroom-count-not-privacy'));
@@ -154,7 +155,7 @@ test('English questions cannot silently receive a Chinese explanation',()=>{
 });
 test('every English repair ends with an explicit English language instruction after Chinese feedback',async()=>{
   const {req,rec}=fixture(),inputs:any[][]=[];
-  const englishOutput={...response(),paragraphs:[{text:'These homes fit the budget and location limits. The order favors a shorter straight-line distance to the university. Nearby transport and current availability remain unconfirmed.',support_refs:['ranking:method','availability:current']}]};
+  const englishOutput=guideResponse(req,rec,'Why were these homes selected and ordered this way?',true);
   const model={withStructuredOutput:(_s:unknown,o:any)=>({invoke:async(messages:any[])=>{
     if(o.name!=='write_rental_explanation_v2')return {valid:true,issues:[]};
     inputs.push(messages);return inputs.length===1?response():englishOutput;
@@ -163,18 +164,18 @@ test('every English repair ends with an explicit English language instruction af
   assert.equal(result.generation.attempts,2);assert.equal(inputs.length,2);
   for(const messages of inputs)assert.match(String(messages.at(-1).content),/OUTPUT LANGUAGE: English only/);
   assert.match(String(inputs[1].at(-2).content),/Rewrite the complete answer in English/);
-  assert.equal(result.summary,englishOutput.paragraphs[0].text);
+  assert.equal(result.summary,englishOutput.paragraphs.map(p=>p.text).join('\n\n'));
 });
 test('LLM text is the actual user summary and does not mutate recommendations',async()=>{
-  const {req,rec}=fixture(),before=structuredClone(rec),m=mock(response);
-  const out=await generateExplanation(req,rec,'test','解释',m.model,'role');assert.equal(out.summary,response().paragraphs[0].text);assert.equal(out.generation.mode,'llm_grounded');assert.deepEqual(rec,before);assert.deepEqual(m.counts(),{writes:1,audits:1});
+  const {req,rec}=fixture(),before=structuredClone(rec),m=mock(()=>guideResponse(req,rec));
+  const out=await generateExplanation(req,rec,'test','解释',m.model,'role');assert.equal(out.summary,guideResponse(req,rec).paragraphs.map(p=>p.text).join('\n\n'));assert.equal(out.generation.mode,'llm_grounded');assert.deepEqual(rec,before);assert.deepEqual(m.counts(),{writes:1,audits:1});
 });
 test('invalid references trigger a fresh model answer instead of silent deterministic fallback',async()=>{
-  const {req,rec}=fixture(),m=mock(n=>n===1?{...response(),paragraphs:[{text:'你好',support_refs:['fake']}]}:response());
+  const {req,rec}=fixture(),m=mock(n=>{const r=guideResponse(req,rec);if(n===1)r.paragraphs[0].support_refs=['fake'];return r;});
   const out=await generateExplanation(req,rec,'test','解释',m.model,'role');assert.equal(out.generation.attempts,2);assert.deepEqual(m.counts(),{writes:2,audits:1});
 });
 test('independent semantic review returns false ranking attribution for bounded repair',async()=>{
-  const {req,rec}=fixture(),m=mock(response,n=>n===1?{valid:false,issues:[{code:'ranking',detail:'不能说按价格排序'}]}:{valid:true,issues:[]});
+  const {req,rec}=fixture(),m=mock(()=>guideResponse(req,rec),n=>n===1?{valid:false,issues:[{code:'ranking',detail:'不能说按价格排序'}]}:{valid:true,issues:[]});
   const out=await generateExplanation(req,rec,'test','解释',m.model,'role');assert.equal(out.generation.attempts,2);assert.equal(out.generation.repair_notes.length,1);
 });
 test('repeated invalid prose stops after three attempts',async()=>{

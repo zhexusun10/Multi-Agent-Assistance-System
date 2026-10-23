@@ -17,8 +17,9 @@ export class ViewTracker{
     this.timer=setInterval(()=>this.tick(),1000);
   }
   surface(){const dialog=document.querySelector('dialog[open]');if(dialog)return dialog.dataset.readingListingId===this.view?.listing_id?dialog:null;return this.view?.root||null;}
-  focused(){return matchMedia('(pointer:coarse)').matches?this.windowActive:document.hasFocus();}
-  eligible(){return !!this.view?.loaded&&this.view.root.isConnected&&!this.view.root.hidden&&!!this.surface()&&!document.hidden&&this.focused()&&this.region&&performance.now()-this.lastActivity<30000;}
+  focused(){return this.windowActive&&document.hasFocus();}
+  visible(){const surface=this.surface();if(!surface||surface.hidden||!surface.isConnected)return false;const r=surface.getBoundingClientRect(),style=getComputedStyle(surface);if(style.display==='none'||style.visibility!=='visible'||Number(style.opacity)===0)return false;const w=Math.max(0,Math.min(r.right,innerWidth)-Math.max(r.left,0)),h=Math.max(0,Math.min(r.bottom,innerHeight)-Math.max(r.top,0));return r.width>0&&r.height>0&&w*h>=Math.min(r.width,innerWidth)*Math.min(r.height,innerHeight)*.5;}
+  eligible(){return !!this.view?.loaded&&this.visible()&&!document.hidden&&this.focused()&&this.region&&performance.now()-this.lastActivity<30000;}
   open(view){this.close('session');this.view={...view,view_session_id:crypto.randomUUID()};this.region=true;this.lastActivity=performance.now();this.tick();}
   loaded(){if(this.view){this.view.loaded=true;this.lastActivity=performance.now();this.tick();}}
   close(reason='return'){this.finish(reason);this.view=null;this.region=false;this.onStatus('浏览偏好只在下次重新推荐时使用。');}
@@ -27,6 +28,7 @@ export class ViewTracker{
   finish(reason='other_area'){
     const s=this.segment;if(!s)return;this.segment=null;s.clock.sample(performance.now(),false,this.lastActivity);
     const packet=this.packet(s,'complete',reason);this.persisting=this.persisting.then(()=>this.outbox.enqueue(packet)).catch(()=>{});
+    if(reason==='pagehide')void this.send(packet,true).catch(()=>{}); // Immediate keepalive; same event ID makes queued retry idempotent.
   }
   async tick(){
     const eligible=this.eligible(),now=performance.now(),s=this.segment;

@@ -1,15 +1,17 @@
+import {RequirementRefinementUI} from './requirement-refinement.js?v=20261023-behavior2';
 import {ListingDetailsUI} from './listing-details.js';
 import {FollowupUI} from './followup.js';
 import {renderMatches,rentElement} from './property-presentation.js?v=20261022-soft-preferences';
 import {ListingNavigator} from './listing-navigator.js';
-import {BehaviorOutbox} from './behavior-outbox.js';
-import {ViewTracker} from './view-tracker.js';
+import {BehaviorOutbox} from './behavior-outbox.js?v=20261023-behavior2';
+import {ViewTracker} from './view-tracker.js?v=20261023-behavior2';
 import {PropertyDetailView} from './property-detail-view.js?v=20261022-soft-preferences';
 import {SessionSync,readSse as sse} from './session-sync.js';
+import {SessionHistoryUI} from './session-history.js?v=20261023-behavior';
 const $=id=>document.getElementById(id);
 const el=(tag,className,text)=>{const e=document.createElement(tag);if(className)e.className=className;if(text!==undefined)e.textContent=text;return e;};
 let owner=localStorage.getItem('rental.owner');if(!owner){owner=crypto.randomUUID()+crypto.randomUUID();localStorage.setItem('rental.owner',owner);}
-let session=localStorage.getItem('rental.session'),state=null,config=null,cursor=0,streamController=null,busy=false,refreshTimer=null,activeAction=null,pendingActionSelection=null;
+let session=localStorage.getItem('rental.session'),state=null,config=null,cursor=0,streamController=null,queryController=null,busy=false,refreshTimer=null,activeAction=null,pendingActionSelection=null;
 let sessions=JSON.parse(localStorage.getItem('rental.sessions')||'[]');
 let recommendationRenderKey=null,messageRenderSession=null,renderedMessages=[];
 const labels={price:'月租',bedrooms:'卧室',bathrooms:'卫浴',floor_area_sqft:'面积',land_area_sqft:'土地面积',build_year:'建成年份',district:'邮区',region_code:'区域',postal_code:'邮编',property_type:'房型',place_proximity:'地点距离',furnishing:'家具',rental_scope:'租赁范围',lease_months:'租期',commute_time:'通勤',current_availability:'当前可租'};
@@ -19,10 +21,21 @@ function toast(text){$('toast').textContent=text;$('toast').classList.remove('hi
 async function api(path,body,options={}){const r=await fetch('/api/'+path,{method:body===undefined?'GET':'POST',cache:'no-store',headers:headers(),body:body===undefined?undefined:JSON.stringify(body),...options});if(!r.ok){let m;try{m=await r.json();}catch{m={detail:'服务暂不可用'};}throw Error(typeof m.detail==='string'?m.detail:JSON.stringify(m.detail||m));}return r.json();}
 function safeUrl(value){try{const u=new URL(value);return ['https:','http:'].includes(u.protocol)?u.href:null;}catch{return null;}}
 function remember(title){if(!sessions.some(s=>s.id===session))sessions.unshift({id:session,title:title||'新的租房对话'});else if(title){const s=sessions.find(s=>s.id===session);if(s.title==='新的租房对话')s.title=title;}sessions=sessions.slice(0,30);localStorage.setItem('rental.sessions',JSON.stringify(sessions));renderSessions();}
-function renderSessions(){$('session-list').replaceChildren();for(const s of sessions){const b=el('button',s.id===session?'selected':'',s.title);b.onclick=()=>switchSession(s.id);$('session-list').append(b);}}
+const sessionHistory=new SessionHistoryUI({root:$('session-list'),el,onSelect:id=>switchSession(id),onDelete:deleteSession});
+function renderSessions(){sessionHistory.render(sessions,session);}
+async function deleteSession(id){try{
+  const current=id===session;
+  if(current){propertyDetail.close();queryController?.abort();await Promise.race([tracker.flush(),new Promise(resolve=>setTimeout(resolve,1800))]);}
+  await api(`sessions/${id}`,undefined,{method:'DELETE'});
+  await behaviorOutbox.removeSession(id);sessions=sessions.filter(s=>s.id!==id);localStorage.setItem('rental.sessions',JSON.stringify(sessions));
+  if(current){streamController?.abort();busy=false;$('send').disabled=false;localStorage.removeItem('rental.session');session=null;state=null;cursor=0;messageRenderSession=null;renderedMessages=[];recommendationRenderKey=null;
+    if(sessions.length){try{await switchSession(sessions[0].id);}catch{await newSession();}}else await newSession();
+  }else renderSessions();
+  toast('对话已删除');
+}catch(e){toast(e.message);}}
 async function switchSession(id){propertyDetail.close();await Promise.race([tracker.flush(),new Promise(resolve=>setTimeout(resolve,1800))]);pendingActionSelection=null;streamController?.abort();session=id;localStorage.setItem('rental.session',id);await refresh();cursor=state.last_event_id;remember();listen();}
 async function newSession(){try{propertyDetail.close();pendingActionSelection=null;streamController?.abort();state=await api('sessions',{});session=state.session_id;cursor=0;localStorage.setItem('rental.session',session);remember();render();listen();$('query').focus();}catch(e){toast(e.message);}}
-function message(role,text,knowledge){const row=el('div','message '+role);row.append(el('span','message-avatar',role==='user'?'你':'⌂'));const content=el('div','message-content');content.append(el('div','message-name',role==='user'?'你':'栖居 · 协作助手'),el('div','message-text',text));if(knowledge?.citations?.length){const details=el('details','knowledge-sources');details.append(el('summary','',`查看资料摘录与来源（${knowledge.citations.length}）`));for(const [i,c] of knowledge.citations.entries()){const section=el('section','knowledge-source');section.append(el('strong','',`[${i+1}] ${c.title} · ${c.heading}`),el('blockquote','',c.quote),el('small','muted',`资料整理复核：${c.checked_at} · ${c.scope==='system_help'?'项目使用说明':'官方资料整理与项目建议，请核对适用范围'}`));for(const source of c.sources){if(source.url.startsWith('project://'))section.append(el('div','muted',source.title));else if(safeUrl(source.url)){const a=el('a','',source.title);a.href=source.url;a.target='_blank';a.rel='noopener noreferrer';section.append(a);}}details.append(section);}content.append(details);}row.append(content);return row;}
+function message(role,text,knowledge,refinementId){const row=el('div','message '+role);row.append(el('span','message-avatar',role==='user'?'你':'⌂'));const content=el('div','message-content');content.append(el('div','message-name',role==='user'?'你':'栖居 · 协作助手'),el('div','message-text',text));if(knowledge?.citations?.length){const details=el('details','knowledge-sources');details.append(el('summary','',`查看资料摘录与来源（${knowledge.citations.length}）`));for(const [i,c] of knowledge.citations.entries()){const section=el('section','knowledge-source');section.append(el('strong','',`[${i+1}] ${c.title} · ${c.heading}`),el('blockquote','',c.quote),el('small','muted',`资料整理复核：${c.checked_at} · ${c.scope==='system_help'?'项目使用说明':'官方资料整理与项目建议，请核对适用范围'}`));for(const source of c.sources){if(source.url.startsWith('project://'))section.append(el('div','muted',source.title));else if(safeUrl(source.url)){const a=el('a','',source.title);a.href=source.url;a.target='_blank';a.rel='noopener noreferrer';section.append(a);}}details.append(section);}content.append(details);}if(refinementId)refinementUI.mount(refinementId,content);row.append(content);return row;}
 function renderMessages(){
   const box=$('messages'),keys=state.messages.map(m=>JSON.stringify(m));
   const sameSession=messageRenderSession===session;
@@ -31,7 +44,7 @@ function renderMessages(){
   const appendOnly=sameSession&&renderedMessages.length>0&&keys.length>=renderedMessages.length&&renderedMessages.every((key,i)=>keys[i]===key);
   if(!appendOnly)box.replaceChildren();
   if(!keys.length)box.append(message('assistant','你好，我会先整理你的租房条件，再核查房源、解释结果，并协助准备跟进草稿。\n\n可以从预算、卧室数量或邮区开始。说“预算改为4500”时，其他已确认的条件会保留。'));
-  else for(const m of state.messages.slice(appendOnly?renderedMessages.length:0))box.append(message(m.role,m.text,m.knowledge));
+  else for(const m of state.messages.slice(appendOnly?renderedMessages.length:0))box.append(message(m.role,m.text,m.knowledge,m.refinement_id));
   messageRenderSession=session;renderedMessages=keys;
   // A complete answer arrives at once after validation. Smooth scrolling plus
   // replacing the old DOM could leave it below the viewport until another send.
@@ -85,7 +98,7 @@ async function changeAction(a,action,input={}){try{await api(`actions/${a.id}/${
 function renderActions(){followUI.renderActions();}
 async function download(id,format){try{const r=await fetch(`/api/artifacts/${id}?session_id=${encodeURIComponent(session)}&format=${format}`,{headers:headers()});if(!r.ok)throw Error('文档下载失败');const blob=await r.blob(),url=URL.createObjectURL(blob),a=el('a');a.href=url;a.download=`rental-summary-${id}.${format==='html'?'html':'md'}`;a.click();setTimeout(()=>URL.revokeObjectURL(url),3000);}catch(e){toast(e.message);}}
 function renderDocuments(){const box=$('documents');box.replaceChildren();box.append(button('生成当前推荐总结',()=>sendQuery('生成当前推荐的总结文档')));followUI.dailyControls(box);if(!state.artifacts.length){empty(box,'▤','总结包含完整需求、推荐对比、未知事项、下一步与可追溯来源。');return;}for(const a of [...state.artifacts].reverse()){const card=el('article','doc-card');card.append(el('h3','',a.title||'租房需求与推荐总结'),el('p','muted',`需求版本 ${a.requirements_version} · ${new Date(a.created_at).toLocaleString('zh-CN')}\n${a.source_request_id===state.latest_request_id?'基于当前推荐':'基于历史推荐，保留原始版本'}`),button('下载 Markdown',()=>download(a.id,'md')),document.createTextNode(' '),button('下载 HTML',()=>download(a.id,'html')));box.append(card);}}
-function render(){if(!state)return;propertyDetail.sync();renderMessages();renderCriteria();renderRecommendations();renderActions();renderDocuments();if(document.querySelector('[data-tab=calendar]').classList.contains('active'))followUI.renderCalendar();if(pendingActionSelection&&state.actions.some(a=>!pendingActionSelection.seen.has(a.id)&&a.listing_ids.includes(pendingActionSelection.listingId))){pendingActionSelection=null;activateTab('actions');}}
+function render(){if(!state)return;propertyDetail.sync();renderMessages();refinementUI.sync();renderCriteria();renderRecommendations();renderActions();renderDocuments();if(document.querySelector('[data-tab=calendar]').classList.contains('active'))followUI.renderCalendar();if(pendingActionSelection&&state.actions.some(a=>!pendingActionSelection.seen.has(a.id)&&a.listing_ids.includes(pendingActionSelection.listingId))){pendingActionSelection=null;activateTab('actions');}}
 const stateSync=new SessionSync({getSession:()=>session,getState:()=>state,fetchState:id=>api(`state?session_id=${encodeURIComponent(id)}`,undefined,{signal:AbortSignal.timeout(10000)}),applyState:next=>{state=next;render();if(!busy&&!state.pending_operations?.length)$('agent-stage').textContent=state.pending?.clarifications?.length?'等待你补充':'本轮已更新';}});
 async function refresh(){await stateSync.refresh();}
 function scheduleRefresh(){clearTimeout(refreshTimer);refreshTimer=setTimeout(()=>refresh().catch(e=>toast(e.message)),120);}
@@ -110,7 +123,7 @@ async function listen(){
   finally{clearInterval(watchdog);}
   if((!controller.signal.aborted||stalled)&&current===session)setTimeout(()=>{if(current===session&&streamController===controller)void listen();},1500);
 }
-async function sendQuery(text){if(busy)return;if(!text.trim())return;busy=true;$('send').disabled=true;$('agent-stage').textContent='正在处理';await tracker.beforeQuery();remember(text.slice(0,24));const requestId=crypto.randomUUID();try{const response=await fetch('/api/query',{method:'POST',headers:headers(),body:JSON.stringify({query:text,session_id:session,request_id:requestId,...(state.latest_request_id?{source_request_id:state.latest_request_id}:{})})});$('query').value='';for await(const {event} of sse(response)){if(event.type==='error')throw Error(event.detail);}await refresh();}catch(e){toast(e.message);}finally{busy=false;$('send').disabled=false;$('query').focus();}}
+async function sendQuery(text){if(busy)return;if(!text.trim())return;const controller=new AbortController();queryController=controller;busy=true;$('send').disabled=true;$('agent-stage').textContent='正在处理';await tracker.beforeQuery();remember(text.slice(0,24));const requestId=crypto.randomUUID();try{const response=await fetch('/api/query',{method:'POST',headers:headers(),signal:controller.signal,body:JSON.stringify({query:text,session_id:session,request_id:requestId,...(state.latest_request_id?{source_request_id:state.latest_request_id}:{})})});$('query').value='';for await(const {event} of sse(response)){if(event.type==='error')throw Error(event.detail);}await refresh();}catch(e){if(e.name!=='AbortError')toast(e.message);}finally{if(queryController===controller){queryController=null;busy=false;$('send').disabled=false;$('query').focus();}}}
 // A healthy-looking stream can lose a completion notification (sleep, proxy,
 // reconnect). Pending work therefore reconciles independently of another query.
 let lastReconcile=0;
@@ -134,6 +147,7 @@ function observeExposures(){
   }}, {root:$('recommendations'),threshold:.5});
   for(const node of $('recommendations').querySelectorAll('.listing-main'))exposureObserver.observe(node);
 }
+const refinementUI=new RequirementRefinementUI({api,el,scope:owner,getState:()=>state,beforeSubmit:()=>tracker.beforeQuery(),onSubmitted:async result=>{if(result.status==='queued')$('agent-stage').textContent='正在按补充需求推荐';await refresh();}});
 const followUI=new FollowupUI({api,getState:()=>state,getSession:()=>session,getConfig:()=>config,refresh,toast,el,button,showDetail,changeAction,activateTab,sendQuery});
 $('chat-form').onsubmit=e=>{e.preventDefault();sendQuery($('query').value);};$('query').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();if(!e.isComposing)sendQuery($('query').value);}};
 document.querySelectorAll('[data-query]').forEach(b=>b.onclick=()=>sendQuery(b.dataset.query));

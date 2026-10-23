@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "model_calls": 0,
+  "isolated_schema": true,
+  "checks": [
+    "no signal on opening/default draft",
+    "valid slots plus explicit save",
+    "no duplicate on stale revision",
+    "remove time/cancel withdraws",
+    "fixed request cutoff",
+    "accepted duration and retry idempotence",
+    "native transport handoff",
+    "owner-only deletion and no resurrection"
+  ]
+}

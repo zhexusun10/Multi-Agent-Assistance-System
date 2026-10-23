@@ -1,5 +1,7 @@
 # Recommendation Contract V1 可执行联调模型
 
+2026-10-23新增行为上下文交接：完整字段与新增标记见[浏览时长与Book Viewing Listing契约](../../docs/Recommendation_Contract_浏览时长与看房意向.md)。`recommendation-app-request-1.0.schema.json`对应应用原生入口`/app/recommend`（含behavior_context）；原始`/recommend`保持原契约。新增看房意向已传递和存档，尚未改动江山的评分公式。
+
 > 当前默认提供方已切换为江山原生模块。本文原有字段表描述应用内部兼容模型 / 显式 baseline；不能将它作为原生 `/recommend` 规范。原生权威定义是 `recommendation/contracts/*.py`、`recommendation/models/*.py` 和 `recommendation/contracts/schemas/*.json`。双向映射与缺口见 [原生接入说明](../../docs/Recommendation_Agent_原生接入说明.md)。`recommendation-upstream-907cfa8.json` 保存原生文件来源及迁移后指纹。
 
 本目录把 Recommendation Agent Contract V1 的说明落实为可执行的本项目联调 profile，传输版本保持 `1.0`。它不是已经由四人共同冻结的新协议。主来源为 `D:\Real Estate Agent\design\sources\recommendation_agent_contract_v1.md`。

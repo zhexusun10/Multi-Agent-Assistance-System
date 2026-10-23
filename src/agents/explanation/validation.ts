@@ -17,6 +17,27 @@ export function validateExplanation(raw:unknown,bundle:ExplanationBundle):Explan
   const ids=bundle.listings.map(l=>l.listing_id),positions=output.focus_listing_ids.map(id=>ids.indexOf(id));
   if(new Set(output.focus_listing_ids).size!==positions.length||positions.some((n,i)=>n<0||(i>0&&n<positions[i-1])))throw Error('FOCUS: unknown/reordered listing selection');
   if(ids.some(id=>new RegExp('\\b'+id+'\\b').test(text)))throw Error('STYLE: listing ID in prose');
+  const guide=bundle.decision_support;
+  if(guide){
+    if(JSON.stringify(output.focus_listing_ids)!==JSON.stringify(guide.target_listing_ids))throw Error('FOCUS: cover exactly the target homes in display order');
+    const blocks=output.paragraphs.filter(p=>p.listing_id);
+    if(JSON.stringify(blocks.map(p=>p.listing_id))!==JSON.stringify(guide.target_listing_ids))throw Error('COVERAGE: one paragraph per target home, each bound to listing_id, in display order');
+    for(const p of blocks){
+      const profile=guide.profiles.find(l=>l.listing_id===p.listing_id)!;
+      const refs=[...profile.known_refs,...profile.extra_refs,...profile.highlight_refs,...profile.caution_refs];
+      if(!p.support_refs.some(r=>refs.includes(r)))throw Error('GROUNDING: each home needs its own factual support');
+      if(guide.mode==='guide'&&profile.additional_refs.length&&!p.support_refs.some(r=>profile.additional_refs.includes(r)))throw Error('COVERAGE: introduce at least one available additional decision fact for this home, beyond repeating requirements');
+      if(profile.caution_refs.some(r=>!p.support_refs.includes(r)))throw Error('COVERAGE: preserve this home\'s important unknown or conflicting facts');
+      for(const ref of p.support_refs){
+        const f=bundle.facts.find(f=>f.ref===ref);
+        if(f?.listing_ids.length&&!f.listing_ids.includes(p.listing_id!))throw Error('GROUNDING: another home\'s facts cannot support this listing paragraph');
+      }
+    }
+    if(/您的要求[：:]|这些房源符合的部分[：:]/.test(text))throw Error('STYLE: use per-home decision guidance, not the old requirement recap template');
+    // Straight-line/annotation evidence cannot support route convenience claims.
+    if(/交通(?:十分|非常|很)?便利|交通方便|通勤方便|出行(?:十分|非常|很)?方便|步行方便|四通八达|walk(?:ing)?\s+distance|easy\s+commut/i.test(text))throw Error('GROUNDING: use named transport, measured distance and its metric; do not guarantee route convenience');
+    if(/卧室面积|bedroom (?:area|size)/i.test(text)&&!/(?:不是|不代表|不能|不保证|not|cannot)/i.test(text))throw Error('GROUNDING: listing floor area is not verified bedroom area');
+  }
   const factMap=new Map(bundle.facts.map(f=>[f.ref,f])),used=new Set<string>();
   for(const p of output.paragraphs){
     if(p.support_refs.some(ref=>!factMap.has(ref)))throw Error('GROUNDING: unknown support reference');
@@ -42,6 +63,12 @@ export function validateExplanation(raw:unknown,bundle:ExplanationBundle):Explan
       literals.push(l.title);
     }
     let prose=p.text.replace(/^\s*\d+[.)、]\s*/gm,''); // List indices are layout, not housing facts.
+    if(guide&&p.listing_id){
+      const position=guide.profiles.find(l=>l.listing_id===p.listing_id)!.position;
+      prose=prose.replace(/^\s*第\s*(\d+)\s*套/,(_whole,n)=>{
+        if(Number(n)!==position)throw Error('FOCUS: listing heading position disagrees with its ID');return '';
+      });
+    }
     // Mask only whole, exactly cited string values. Do not whitelist all district
     // codes, borrow another paragraph's values, or make their digits quantities.
     for(const literal of [...new Set(literals)].sort((a,b)=>b.length-a.length)){
@@ -58,6 +85,6 @@ export function validateExplanation(raw:unknown,bundle:ExplanationBundle):Explan
     const missing=numbers.filter(n=>!allowed.some(a=>Math.abs(a-n)<=Math.max(.5,Math.abs(a)*.025)));
     if(missing.length){const hints=missing.map(n=>({number:n,matching_refs:bundle.facts.filter(f=>f.numbers.some(a=>Math.abs(a-n)<=Math.max(.5,Math.abs(a)*.025))).slice(0,8).map(f=>f.ref)}));throw Error('GROUNDING: numbers '+missing.join(',')+' are not supported by this paragraph refs '+p.support_refs.join(',')+'; cite correct facts or remove unnecessary figures. Reference candidates (verify meaning): '+JSON.stringify(hints));}
   }
-  if(bundle.required_refs.some(ref=>!used.has(ref)))throw Error('COVERAGE: explain ranking and briefly note current availability');
+  if(bundle.required_refs.some(ref=>!used.has(ref)))throw Error('COVERAGE: include the required current facts and availability, plus ranking only when requested');
   return output;
 }

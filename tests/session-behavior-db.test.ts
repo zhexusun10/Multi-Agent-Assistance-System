@@ -1,0 +1,48 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {randomUUID} from 'node:crypto';
+import {writeFile} from 'node:fs/promises';
+import pg from 'pg';
+import {DomainStore} from '../src/stores/domain.js';
+import {PostgresAgentTaskStore} from '../src/agent-task-store.js';
+import {PostgresSessionEventStore} from '../src/session-store.js';
+import {ActionService} from '../src/domain/actions.js';
+import {BehaviorService} from '../src/domain/behavior.js';
+import {collectBehaviorContext} from '../src/domain/behavior-context.js';
+import {explanationFixture} from '../evaluation/explanation-cases.js';
+import {nativeRequest} from '../src/adapters/native-recommendation.js';
+test('isolated DB: saved-slot intent, revision/cancel/cutoff, browser ownership and conversation deletion',{skip:process.env.BEHAVIOR_CONTEXT_DB_TEST!=='1'},async()=>{
+ const connectionString=process.env.TEST_DATABASE_URL||process.env.DATABASE_URL,admin=new pg.Pool({connectionString}),schema='behavior_context_test_'+randomUUID().replaceAll('-','');
+ await admin.query(`CREATE SCHEMA "${schema}"`);const pool=new pg.Pool({connectionString,options:`-c search_path=${schema}`}),tasks=new PostgresAgentTaskStore(pool),events=new PostgresSessionEventStore(pool),store=new DomainStore(pool,tasks,events);
+ try{
+  await tasks.setup();await events.setup();await store.setup();const owner='isolated-owner-'+randomUUID(),sid=await store.create(owner),other=await store.create(owner),op=randomUUID(),f=explanationFixture('stable'),source=f.rec.request_id;
+  f.rec.conversation_id=sid;f.rec.state.coverage.dataset_version=process.env.DATASET_VERSION||'synthetic';await pool.query("INSERT INTO domain_operations(id,session_id,request_id,query,kind,status) VALUES($1,$2,$3,'fixture','search','completed')",[op,sid,randomUUID()]);
+  await pool.query('INSERT INTO recommendation_calls(id,session_id,operation_id,request,response) VALUES($1,$2,$3,$4,$5)',[source,sid,op,JSON.stringify({requirements_version:f.rec.requirements_version}),JSON.stringify(f.rec)]);
+  await store.transaction(async tx=>{const s=await store.lock(tx,sid);Object.assign(s,{requirements:f.req,requirements_version:f.rec.requirements_version,recommendation:f.rec,latest_request_id:source,active_operation_id:op});await store.saveState(tx,s);});
+  const service=new ActionService(store),s=await store.state(sid),action=service.draft(s,[f.rec.recommendations[0].listing.listing_id],'VIEWING');
+  await pool.query('INSERT INTO workflow_actions(id,session_id,body) VALUES($1,$2,$3)',[action.id,sid,JSON.stringify(action)]);
+  const collect=async(cutoff:Date|string=new Date())=>store.transaction(tx=>collectBehaviorContext(tx,sid,cutoff,false));
+  assert.deepEqual((await collect()).book_viewing_listings,[]);
+  const patch={revision:1,subject:action.subject,body:action.body,recipient:action.recipient,slots:null};
+  const noTime=await service.change(sid,action.id,'edit',patch,owner);assert.deepEqual((await collect()).book_viewing_listings,[]);
+  const slots={starts_at:new Date(Date.now()+86400000).toISOString(),ends_at:new Date(Date.now()+90000000).toISOString(),time_zone:'Asia/Singapore'};
+  const timed=await service.change(sid,action.id,'edit',{...patch,revision:noTime.revision,slots},owner);
+  const cutoff=(await pool.query('SELECT clock_timestamp() AS t')).rows[0].t;
+  const context=await collect(cutoff);assert.equal(context.book_viewing_listings.length,1);assert.equal(context.book_viewing_listings[0].appointment_confirmed,false);
+  await assert.rejects(service.change(sid,action.id,'edit',{...patch,revision:noTime.revision,slots},owner),/修改|变化/);
+  await service.change(sid,action.id,'edit',{...patch,revision:timed.revision,slots:null},owner);assert.deepEqual((await collect()).book_viewing_listings,[]);assert.equal((await collect(cutoff)).book_viewing_listings.length,1);
+  let a=(await pool.query('SELECT body FROM workflow_actions WHERE id=$1',[action.id])).rows[0].body;
+  a=await service.change(sid,action.id,'edit',{...patch,revision:a.revision,slots},owner);await service.change(sid,action.id,'cancel',{revision:a.revision},owner);assert.deepEqual((await collect()).book_viewing_listings,[]);
+  const behavior=new BehaviorService(store),base={session_id:sid,source_request_id:source,requirements_version:f.rec.requirements_version,listing_id:action.listing_ids[0],tab_id:randomUUID(),view_session_id:randomUUID(),segment_id:randomUUID()};
+  await behavior.record(owner,{...base,event_id:randomUUID(),kind:'begin',sequence:0,active_duration_ms:0});
+  await pool.query("UPDATE listing_view_segments SET started_at=clock_timestamp()-interval '40 seconds' WHERE segment_id=$1",[base.segment_id]);
+  const done={...base,event_id:randomUUID(),kind:'complete',sequence:1,active_duration_ms:12345,end_reason:'hidden'};await behavior.record(owner,done);await behavior.record(owner,done);
+  const observed=await collect();assert.equal(observed.listing_view_durations[0].duration_seconds,12.345);assert.equal(observed.listing_view_durations[0].view_count,1);
+  assert.deepEqual(nativeRequest({contract_version:'1.0',request_id:randomUUID(),conversation_id:sid,requirements_version:1,requirements:f.req,result_limit:4,feedback:[],behavior_context:observed}).request.behavior_context,observed);
+  await tasks.enqueue(sid,[{agent:'a',prompt:'test only'}]);await assert.rejects(store.deleteSession(sid,'wrong-owner'),/会话/);
+  assert.equal((await store.deleteSession(sid,owner)).status,'deleted');assert.equal((await store.deleteSession(sid,owner)).status,'deleted');
+  await assert.rejects(store.assertOwner(sid,owner),/已删除/);await assert.rejects(store.state(sid),/已删除/);await assert.rejects(store.transaction(tx=>store.lock(tx,sid)),/已删除/);
+  assert.equal((await tasks.pendingPairs()).length,0);await store.assertOwner(other,owner);await assert.rejects(behavior.record(owner,{...done,event_id:randomUUID()}),/已删除/);
+  await writeFile('evaluation/reports/session-behavior-db.json',JSON.stringify({status:'passed',model_calls:0,isolated_schema:true,checks:['no signal on opening/default draft','valid slots plus explicit save','no duplicate on stale revision','remove time/cancel withdraws','fixed request cutoff','accepted duration and retry idempotence','native transport handoff','owner-only deletion and no resurrection']},null,2)+'\n');
+ }finally{await pool.end();if(!/^behavior_context_test_[a-f0-9]{32}$/.test(schema))throw Error('unsafe schema');await admin.query(`DROP SCHEMA "${schema}" CASCADE`);await admin.end();}
+});

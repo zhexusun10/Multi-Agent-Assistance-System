@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import {nativeScoresSchema} from './recommendation-native.js';
+import {behaviorContextSchema} from './behavior-context.js';
 
 export const FIELD_RULES: Record<string, { kind: 'number'|'integer'|'string'|'boolean'|'date'; ops: string[]; unit?: string; unsupported?: boolean }> = {
   price: {kind:'number',ops:['eq','gte','lte','between'],unit:'SGD/month'},
@@ -66,7 +67,7 @@ export const feedbackSchema=z.object({event_id:z.string().min(1),listing_id:z.st
   if(e.event_type==='explicit_attribute_feedback'&&(!['positive','negative'].includes(String(e.payload.sentiment))||typeof e.payload.attribute!=='string'))c.addIssue({code:'custom',message:'Attribute feedback needs attribute and sentiment'});
 });
 export type Feedback=z.infer<typeof feedbackSchema>;
-export const recommendationRequestSchema=z.object({contract_version:z.literal('1.0'),request_id:z.string().min(1),conversation_id:z.string().min(1),requirements_version:z.number().int().nonnegative(),requirements:requirementsSchema,feedback:z.array(feedbackSchema).default([]),previous_state_id:z.string().min(1).optional(),result_limit:z.number().int().min(1).max(20)}).strict();
+export const recommendationRequestSchema=z.object({contract_version:z.literal('1.0'),request_id:z.string().min(1),conversation_id:z.string().min(1),requirements_version:z.number().int().nonnegative(),requirements:requirementsSchema,feedback:z.array(feedbackSchema).default([]),behavior_context:behaviorContextSchema.optional(),previous_state_id:z.string().min(1).optional(),result_limit:z.number().int().min(1).max(20)}).strict();
 export type RecommendationRequest=z.infer<typeof recommendationRequestSchema>;
 export const evidenceSchema=z.object({evidence_id:z.string().min(1),listing_id:z.string().regex(/^\d+$/),field_path:z.string(),value:z.unknown(),unit:z.string().optional(),distance_type:z.string().optional(),raw_distance_type:z.string().optional(),target:targetSchema.optional(),source_kind:z.enum(['data_api','fixture','recommendation_service']),source_ref:z.string().min(1),dataset_version:z.string().min(1),retrieved_at:at,verified_at:at.nullable(),route_verified:z.boolean().optional(),measurement_method:z.string().optional()}).strict();
 export type Evidence=z.infer<typeof evidenceSchema>;

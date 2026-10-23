@@ -1,4 +1,5 @@
 import os
+import re
 from pathlib import Path
 from typing import Any
 
@@ -152,10 +153,13 @@ def favicon():
     return Response(status_code=204)
 
 
-@app.api_route("/api/{path:path}", methods=["GET", "POST"])
+@app.api_route("/api/{path:path}", methods=["GET", "POST", "DELETE"])
 async def business_proxy(path: str, request: Request):
-    allowed = path in {"config", "sessions", "state", "feedback", "evidence", "calendar", "followups", "summaries/daily", "integrations/templates", "webhooks/whatsapp", "webhooks/telegram"} or (request.method == "POST" and path == "behavior/views") or (request.method == "GET" and path == "behavior/summary") or path.startswith("actions/") or path.startswith("artifacts/") or (request.method == "GET" and (path.startswith("locations/") or path.startswith("listings/")))
-    if not allowed:
+    if request.method == "DELETE":
+        if not re.fullmatch(r"sessions/[0-9a-fA-F-]{36}", path):
+            raise HTTPException(404, "Not found")
+    allowed = path in {"config", "sessions", "state", "feedback", "evidence", "calendar", "followups", "summaries/daily", "integrations/templates", "webhooks/whatsapp", "webhooks/telegram"} or (request.method == "POST" and path == "behavior/views") or (request.method == "POST" and re.fullmatch(r"refinements/[0-9a-fA-F-]{36}/(?:submit|dismiss)", path)) or (request.method == "GET" and path == "behavior/summary") or path.startswith("actions/") or path.startswith("artifacts/") or (request.method == "GET" and (path.startswith("locations/") or path.startswith("listings/")))
+    if not allowed and not (request.method == "DELETE" and re.fullmatch(r"sessions/[0-9a-fA-F-]{36}", path)):
         raise HTTPException(404, "Not found")
     headers = {"Authorization": request.headers["authorization"]} if "authorization" in request.headers else {}
     for name in ("x-hub-signature-256", "x-telegram-bot-api-secret-token"):

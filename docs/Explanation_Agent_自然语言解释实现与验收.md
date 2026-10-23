@@ -1,5 +1,7 @@
 # Explanation Agent：自然语言解释实现与验收
 
+> 此文保留V2的历史设计与验收记录。当前角色、格式和配套资料读取已由[V3逐套房源介绍与选房辅助](Explanation_Agent_选房介绍实现.md)替代；下文旧模型回归结果不代表V3真实模型验收。
+
 实现日期：2026-10-21；2026-10-22更新分项解释及对话同步恢复。用户界面中的推荐解释由LLM生成；Recommendation算法、评分和结果顺序未改变。
 
 **Explanation 模块验收尚未全部完成。** 具体已完成项、待办和阻塞见evaluation/reports/explanation-summary.json；不把旧轮结果当作当前版本全部通过。

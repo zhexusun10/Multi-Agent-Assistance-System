@@ -91,7 +91,15 @@ const server=createServer(async(req,res)=>{
     if(workflow&&req.method==='POST'&&url.pathname==='/behavior/views')return send(200,await behavior.record(owner,await readBody(req)));
     if(workflow&&req.method==='GET'&&url.pathname==='/behavior/summary'){const id=z.string().uuid().parse(url.searchParams.get('session_id'));await store.assertOwner(id,owner);return send(200,await behavior.summary(id));}
     if(workflow&&req.method==='POST'&&url.pathname==='/sessions'){const id=await store.create(owner);return send(201,await store.state(id));}
+    if(workflow&&req.method==='DELETE'&&/^\/sessions\/[^/]+$/.test(url.pathname)){const id=z.string().uuid().parse(url.pathname.split('/')[2]);return send(200,await store.deleteSession(id,owner));}
     if(workflow&&req.method==='GET'&&url.pathname==='/state'){const id=z.string().min(1).parse(url.searchParams.get('session_id'));await store.assertOwner(id,owner);return send(200,{...await store.state(id),...await workflow.followup.snapshot(id)});}
+    if(workflow&&req.method==='POST'&&/^\/refinements\/[^/]+\/(submit|dismiss)$/.test(url.pathname)){
+      const id=z.string().uuid().parse(url.pathname.split('/')[2]),{session_id,...input}=await readBody(req),session=z.string().uuid().parse(session_id);await store.assertOwner(session,owner);
+      if(url.pathname.endsWith('/dismiss')){z.object({}).strict().parse(input);return send(200,await workflow.refinement.dismiss(session,id));}
+      const result=await workflow.refinement.submit(session,id,input);
+      if(result.status==='queued')void master.wakePendingTasks().catch(e=>console.error('Refinement task wake failed',e.name));
+      return send(result.status==='queued'?202:200,result);
+    }
     if(workflow&&req.method==='GET'&&/^\/listings\/\d+\/presentation$/.test(url.pathname)){
       const id=z.string().regex(/^\d{1,20}$/).parse(url.pathname.split('/')[2]),session=z.string().min(1).parse(url.searchParams.get('session_id')),request=z.string().uuid().parse(url.searchParams.get('source_request_id'));await store.assertOwner(session,owner);
       const current=await store.state(session);

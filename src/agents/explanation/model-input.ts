@@ -5,7 +5,7 @@ import type {ExplanationBundle,ExplanationOutput} from './contracts.js';
  * This does not select homes, change their order, or recompute recommendation.
  */
 export function explanationModelInput(bundle:ExplanationBundle){
-  const selected=new Set(bundle.listings.filter(l=>bundle.question.includes(l.title)||bundle.question.includes(l.listing_id)).map(l=>l.listing_id));
+  const selected=new Set(bundle.decision_support?.target_listing_ids||bundle.listings.filter(l=>bundle.question.includes(l.title)||bundle.question.includes(l.listing_id)).map(l=>l.listing_id));
   const ordinals:Record<string,number>={'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8};
   for(const match of bundle.question.matchAll(/第\s*([一二三四五六七八\d]+)\s*套|(?:property|listing)\s*#?\s*(\d+)\b/gi)){
     const index=(ordinals[match[1]]??Number(match[1]||match[2]))-1;
@@ -14,7 +14,13 @@ export function explanationModelInput(bundle:ExplanationBundle){
   if(!selected.size)for(const id of (bundle.ranking.ranked_listing_ids.length?bundle.ranking.ranked_listing_ids:bundle.listings.map(l=>l.listing_id)).slice(0,2))selected.add(id);
   // A focused explanation may compare a selected home with the first ranked one.
   if(selected.size===1&&bundle.listings[0])selected.add(bundle.listings[0].listing_id);
-  const facts=bundle.facts.filter(f=>!f.ref.startsWith('native-rationale:')&&!f.ref.startsWith('listing:')&&(f.kind!=='comparison'||f.listing_ids.every(id=>selected.has(id))));
+  // General guides use per-home highlights instead of every pairwise table.
+  // Focused questions keep the relevant pairwise comparisons as before.
+  const guide=bundle.decision_support?.mode==='guide';
+  const highlights=new Set(bundle.decision_support?.profiles.flatMap(p=>p.highlight_refs)||[]);
+  const facts=bundle.facts.filter(f=>!f.ref.startsWith('native-rationale:')&&!f.ref.startsWith('listing:')&&
+    (!bundle.decision_support||bundle.decision_support.explain_order||f.kind!=='ranking')&&
+    (f.kind!=='comparison'||highlights.has(f.ref)||(!guide&&f.listing_ids.every(id=>selected.has(id)))));
   const toModel=new Map(facts.map((f,i)=>[f.ref,'f'+(i+1)])),toInternal=new Map([...toModel].map(([a,b])=>[b,a]));
   // Titles are already keyed once by listing_id in listings; do not repeat
   // every street address in each requirement's observation matrix.

@@ -9,11 +9,13 @@ import {explanationSystemPrompt,EXPLANATION_AUDIT_PROMPT,EXPLANATION_PARAMETERS 
 import {selectExplanationExamples} from './few-shot.js';
 import {validateExplanation} from './validation.js';
 import {explanationModelInput,translateExplanationRefs,modelExplanationOutput} from './model-input.js';
+import {addDecisionSupport} from './decision-support.js';
+import type {ExplanationEnrichment} from './enrichment.js';
 
-export async function generateExplanation(req:Requirements,rec:RecommendationResponse,dataset:string,question:string,model:BaseChatModel|undefined,skill:string,archive?:unknown){
+export async function generateExplanation(req:Requirements,rec:RecommendationResponse,dataset:string,question:string,model:BaseChatModel|undefined,skill:string,archive?:unknown,enrichment:ExplanationEnrichment[]=[]){
   if(!model)throw Error('EXPLANATION_MODEL_REQUIRED');
-  const bundle=makeExplanationBundle(req,rec,question,archive),generated=await explainBundle(bundle,model,skill);
-  return {...buildExplanation(req,rec,dataset,''),summary:generated.text,question,narrative:generated.output,generation:generated.metadata};
+  const bundle=addDecisionSupport(makeExplanationBundle(req,rec,question,archive),req,rec,enrichment),generated=await explainBundle(bundle,model,skill);
+  return {...buildExplanation(req,rec,dataset,''),summary:generated.text,question,narrative:generated.output,generation:{...generated.metadata,enrichment_refs:enrichment.map(e=>e.source_ref)}};
 }
 export async function explainBundle(bundle:ExplanationBundle,model:BaseChatModel,skill:string){
   const english=!/[\u3400-\u9fff]/.test(bundle.question)&&/[a-z]{2}/i.test(bundle.question);
@@ -37,7 +39,7 @@ export async function explainBundle(bundle:ExplanationBundle,model:BaseChatModel
       const output=validateExplanation(translateExplanationRefs(raw,packed.toInternal),bundle);
       const audit=explanationAuditSchema.parse(await auditor.invoke([new SystemMessage(EXPLANATION_AUDIT_PROMPT),new HumanMessage(JSON.stringify({bundle:packed.input,output:modelExplanationOutput(output,packed.toModel)}))],{signal:signal()}));
       if(!audit.valid||audit.issues.length)throw Error('SEMANTIC_AUDIT: '+JSON.stringify(audit.issues));
-      return {text:output.paragraphs.map(p=>p.text).join('\n\n'),output,metadata:{version:'2.0',mode:'llm_grounded',attempts:attempt,example_ids:examples.map(e=>e.id),semantic_audit:'passed',repair_notes:repairs,evidence_characters:{original:packed.source_characters,model:packed.prompt_characters},latency_ms:Date.now()-started}};
+      return {text:output.paragraphs.map(p=>p.text).join('\n\n'),output,metadata:{version:'3.0',mode:'llm_grounded',purpose:'listing_decision_support',attempts:attempt,example_ids:examples.map(e=>e.id),semantic_audit:'passed',repair_notes:repairs,evidence_characters:{original:packed.source_characters,model:packed.prompt_characters},latency_ms:Date.now()-started}};
     }catch(error){
       const message=error instanceof Error?error.message:String(error);
       const correctable=error instanceof z.ZodError||/^(STYLE|FOCUS|GROUNDING|COVERAGE|SEMANTIC_AUDIT):/.test(message)||/parse|JSON|schema|tool.call/i.test(message);

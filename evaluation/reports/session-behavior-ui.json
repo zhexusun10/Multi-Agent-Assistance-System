@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "model_calls": 0,
+  "query_posts": 0,
+  "checks": [
+    "detail visible/focused starts; blur/covered-window event stops and sends accepted milliseconds",
+    "hidden/minimized/tab-background visibility event excludes hidden interval",
+    "detail outside visible viewport does not accrue time",
+    "return completes detail interval; list/exposure never becomes duration; displayed order remains fixed",
+    "arrow opens red delete button; deleting inactive chat never selects it",
+    "delete persists after refresh; deleting last active chat creates clean conversation without a model query"
+  ],
+  "complete_packets": 4,
+  "visibility_test": "real browser event handlers; hidden/blur properties simulated, no claim to measure eye attention"
+}

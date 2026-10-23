@@ -1,0 +1,159 @@
+{
+  "status": "passed",
+  "model_calls": 0,
+  "recommender": "recorded fixture, no native algorithm changes",
+  "checks": [
+    "persistent card after explanation",
+    "deduplicated card",
+    "structured A without LLM",
+    "complete B request and fresh source",
+    "C completion and exhaustion",
+    "double-submit idempotence",
+    "cross-session rejected",
+    "old version rejected",
+    "all skipped keeps current results without queued work",
+    "dismissal suppresses further cards"
+  ],
+  "requirements_before": {
+    "criteria": [
+      {
+        "unit": "count",
+        "field": "bedrooms",
+        "value": 1,
+        "operator": "eq",
+        "strength": "hard",
+        "criterion_id": "minimum-bedrooms"
+      },
+      {
+        "unit": "SGD/month",
+        "field": "price",
+        "value": 5000,
+        "operator": "lte",
+        "strength": "hard",
+        "criterion_id": "monthly-rent"
+      },
+      {
+        "unit": "m",
+        "field": "place_proximity",
+        "value": 1000,
+        "target": {
+          "name": "National University of Singapore",
+          "place_id": "OSM:way:54519165"
+        },
+        "weight": 1,
+        "operator": "lte",
+        "strength": "soft",
+        "criterion_id": "place_proximity:OSM:way:54519165-preference",
+        "distance_type": "straight_line",
+        "distance_preference": "nearer"
+      },
+      {
+        "unit": "m",
+        "field": "place_proximity",
+        "value": 800,
+        "target": {
+          "name": "超市",
+          "category": "Supermarket"
+        },
+        "weight": 1,
+        "operator": "lte",
+        "strength": "soft",
+        "criterion_id": "place_proximity:Supermarket-preference",
+        "distance_type": "straight_line",
+        "distance_preference": "bounded"
+      },
+      {
+        "field": "district",
+        "value": "D05",
+        "operator": "eq",
+        "strength": "hard",
+        "criterion_id": "preferred-district"
+      }
+    ],
+    "listing_type": "RENT"
+  },
+  "requirements_after": {
+    "criteria": [
+      {
+        "unit": "sqft",
+        "field": "floor_area_sqft",
+        "value": 322.917313,
+        "weight": 1,
+        "operator": "gte",
+        "strength": "soft",
+        "criterion_id": "floor_area_sqft-preference"
+      },
+      {
+        "unit": "count",
+        "field": "bedrooms",
+        "value": 1,
+        "operator": "eq",
+        "strength": "hard",
+        "criterion_id": "minimum-bedrooms"
+      },
+      {
+        "unit": "SGD/month",
+        "field": "price",
+        "value": 5000,
+        "operator": "lte",
+        "strength": "hard",
+        "criterion_id": "monthly-rent"
+      },
+      {
+        "unit": "SGD/month",
+        "field": "price",
+        "value": 2000,
+        "weight": 1,
+        "operator": "lte",
+        "strength": "soft",
+        "criterion_id": "monthly-rent-preference"
+      },
+      {
+        "unit": "m",
+        "field": "place_proximity",
+        "value": 1000,
+        "target": {
+          "name": "National University of Singapore",
+          "place_id": "OSM:way:54519165"
+        },
+        "weight": 1,
+        "operator": "lte",
+        "strength": "soft",
+        "criterion_id": "place_proximity:OSM:way:54519165-preference",
+        "distance_type": "straight_line",
+        "distance_preference": "nearer"
+      },
+      {
+        "unit": "m",
+        "field": "place_proximity",
+        "value": 800,
+        "target": {
+          "name": "超市",
+          "category": "Supermarket"
+        },
+        "weight": 1,
+        "operator": "lte",
+        "strength": "soft",
+        "criterion_id": "place_proximity:Supermarket-preference",
+        "distance_type": "straight_line",
+        "distance_preference": "bounded"
+      },
+      {
+        "field": "district",
+        "value": "D05",
+        "operator": "eq",
+        "strength": "hard",
+        "criterion_id": "preferred-district"
+      },
+      {
+        "field": "property_type",
+        "value": "Apartment",
+        "weight": 1,
+        "operator": "eq",
+        "strength": "soft",
+        "criterion_id": "property_type-preference"
+      }
+    ],
+    "listing_type": "RENT"
+  }
+}

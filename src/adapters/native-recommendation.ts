@@ -27,7 +27,7 @@ export function nativeRequest(req:RecommendationRequest){
   const supported=(f:RecommendationRequest['feedback'][number])=>f.event_type==='active_view'&&['sample','web_detail'].includes(String(f.payload.source));
   const feedback=req.feedback.filter(supported).map(f=>({event_id:f.event_id,conversation_id:req.conversation_id,recommendation_request_id:f.payload.recommendation_request_id,listing_id:f.listing_id,event_type:'listing_view_duration',source:f.payload.source,occurred_at:f.occurred_at,payload:{view_session_id:f.payload.view_session_id,duration_seconds:Number(f.payload.active_duration_ms)/1000}}));
   const previous=req.previous_state_id?.startsWith('native:')?req.previous_state_id.slice(7):null;
-  return {request:{contract_version:'1.0',request_id:req.request_id,conversation_id:req.conversation_id,requirements_version:req.requirements_version+1,requirements:{listing_type:'RENT',criteria},feedback,previous_state_id:previous,result_limit:Math.min(4,req.result_limit)},unsupported,ignored_feedback:req.feedback.filter(f=>!supported(f)).map(f=>f.event_id)};
+  return {request:{contract_version:'1.0',request_id:req.request_id,conversation_id:req.conversation_id,requirements_version:req.requirements_version+1,requirements:{listing_type:'RENT',criteria},feedback,...(req.behavior_context?{behavior_context:req.behavior_context}:{}),previous_state_id:previous,result_limit:Math.min(4,req.result_limit)},unsupported,ignored_feedback:req.feedback.filter(f=>!supported(f)).map(f=>f.event_id)};
 }
 
 type Counts={assessed:number;eligible:number;unverified:number;excluded:number};

@@ -125,6 +125,8 @@
     "kind": "integer",
     "ops": [
       "eq",
+      "gte",
+      "lte",
       "between"
     ],
     "unit": "month",

@@ -1,0 +1,205 @@
+{
+  "status": "passed",
+  "checked_at": "2026-10-22T16:09:49.446Z",
+  "model_calls": 0,
+  "source": "recorded NUS recommendation; current local SQL detail and Neo4j context",
+  "recommendation_unchanged": true,
+  "read_only_requests": 16,
+  "tool_traces": 16,
+  "source_archives": 8,
+  "prompt_characters": 23087,
+  "original_bundle_characters": 80589,
+  "listings": [
+    {
+      "listing_id": "500285985",
+      "title": "441B Clementi Avenue 3",
+      "position": 1,
+      "details": {
+        "details": "available",
+        "nearby": "available"
+      },
+      "additional_fields": [
+        "bathrooms",
+        "type",
+        "area-unit",
+        "nearby:MRT",
+        "nearby:Market",
+        "nearby:FoodCourt",
+        "nearby:Mall",
+        "nearby:Park"
+      ],
+      "highlights": [
+        "advantage:500285985:price",
+        "advantage:500285985:floor_area_sqft"
+      ],
+      "important_cautions": []
+    },
+    {
+      "listing_id": "500238705",
+      "title": "449 Clementi Avenue 3",
+      "position": 2,
+      "details": {
+        "details": "available",
+        "nearby": "available"
+      },
+      "additional_fields": [
+        "bathrooms",
+        "type",
+        "area-unit",
+        "nearby:MRT",
+        "nearby:Market",
+        "nearby:FoodCourt",
+        "nearby:Mall",
+        "nearby:Park"
+      ],
+      "highlights": [
+        "advantage:500238705:price",
+        "advantage:500238705:floor_area_sqft"
+      ],
+      "important_cautions": []
+    },
+    {
+      "listing_id": "500276652",
+      "title": "449 Clementi Avenue 3",
+      "position": 3,
+      "details": {
+        "details": "available",
+        "nearby": "available"
+      },
+      "additional_fields": [
+        "bathrooms",
+        "type",
+        "area-unit",
+        "nearby:MRT",
+        "nearby:Market",
+        "nearby:FoodCourt",
+        "nearby:Mall",
+        "nearby:Park"
+      ],
+      "highlights": [
+        "advantage:500276652:price",
+        "advantage:500276652:floor_area_sqft"
+      ],
+      "important_cautions": []
+    },
+    {
+      "listing_id": "500264398",
+      "title": "728 Clementi West Street 2",
+      "position": 4,
+      "details": {
+        "details": "available",
+        "nearby": "available"
+      },
+      "additional_fields": [
+        "bathrooms",
+        "type",
+        "area-unit",
+        "nearby:Market",
+        "nearby:FoodCourt",
+        "nearby:Mall",
+        "nearby:Park",
+        "nearby:Clinic"
+      ],
+      "highlights": [
+        "advantage:500264398:price",
+        "advantage:500264398:floor_area_sqft"
+      ],
+      "important_cautions": []
+    },
+    {
+      "listing_id": "20283326",
+      "title": "NEWest",
+      "position": 5,
+      "details": {
+        "details": "available",
+        "nearby": "available"
+      },
+      "additional_fields": [
+        "bathrooms",
+        "type",
+        "area-unit",
+        "nearby:MRT"
+      ],
+      "highlights": [
+        "advantage:20283326:price",
+        "advantage:20283326:floor_area_sqft"
+      ],
+      "important_cautions": [
+        "condition:20283326:minimum-bedrooms"
+      ]
+    },
+    {
+      "listing_id": "24039352",
+      "title": "Lyf One-North Singapore",
+      "position": 6,
+      "details": {
+        "details": "available",
+        "nearby": "available"
+      },
+      "additional_fields": [
+        "bathrooms",
+        "type",
+        "area-unit",
+        "nearby:MRT"
+      ],
+      "highlights": [
+        "advantage:24039352:floor_area_sqft"
+      ],
+      "important_cautions": [
+        "condition:24039352:minimum-bedrooms"
+      ]
+    },
+    {
+      "listing_id": "500186462",
+      "title": "lyf one-north Singapore 80 Nepal Park, Singapore 139409",
+      "position": 7,
+      "details": {
+        "details": "available",
+        "nearby": "available"
+      },
+      "additional_fields": [
+        "bathrooms",
+        "type",
+        "area-unit",
+        "nearby:MRT"
+      ],
+      "highlights": [
+        "advantage:500186462:price"
+      ],
+      "important_cautions": [
+        "condition:500186462:minimum-bedrooms"
+      ]
+    },
+    {
+      "listing_id": "500278815",
+      "title": "345 Clementi Avenue 5",
+      "position": 8,
+      "details": {
+        "details": "available",
+        "nearby": "available"
+      },
+      "additional_fields": [
+        "bathrooms",
+        "type",
+        "area-unit",
+        "nearby:MRT",
+        "nearby:Market",
+        "nearby:FoodCourt",
+        "nearby:Mall",
+        "nearby:Park"
+      ],
+      "highlights": [
+        "advantage:500278815:price",
+        "advantage:500278815:floor_area_sqft"
+      ],
+      "important_cautions": [
+        "condition:500278815:minimum-bedrooms"
+      ]
+    }
+  ],
+  "limits": [
+    "No paid model generation or semantic audit was run.",
+    "No actual bus/MRT route or travel time was verified.",
+    "Supplementary fields never upgrade recommendation criterion outcomes."
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "model_calls": 0,
+  "query_posts": 0,
+  "checks": [
+    "three-page form in message history",
+    "explicit hard/soft selection",
+    "invalid range blocks submission",
+    "back/forward preserves choices",
+    "refresh restores local draft",
+    "state polling preserves inputs",
+    "no reranking before submit",
+    "one structured submit and new explanation",
+    "read-only historical card and no repeated questions",
+    "mobile layout and dismiss without recommendation",
+    "natural-language search version changes disable old cards"
+  ],
+  "status": "passed"
+}

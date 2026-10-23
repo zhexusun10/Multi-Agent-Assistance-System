@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "model_calls": 0,
+  "query_posts": 0,
+  "checks": [
+    "all five application services healthy",
+    "owner-only same-origin delete API",
+    "idempotent repeat delete",
+    "deleted state rejected with 410",
+    "other conversation preserved",
+    "native app endpoint exposes the new behavior contract"
+  ]
+}

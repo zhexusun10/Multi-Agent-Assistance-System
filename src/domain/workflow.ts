@@ -9,6 +9,7 @@ import { draftSchema,extractRequirements,mergeRequirements,criterion,type Requir
 import { recommendationRequestSchema,validateResponse,feedbackSchema,type RecommendationRequest,type Feedback } from '../contracts/recommendation-v1.js';
 import { renderSummary,criterionText } from './explanation.js';
 import {generateExplanation} from '../agents/explanation/generator.js';
+import {ExplanationEnricher} from '../agents/explanation/enrichment.js';
 import { ActionService } from './actions.js';
 import { KnowledgeService } from './knowledge.js';
 import { RecommendationGateway } from '../adapters/recommendation.js';
@@ -25,20 +26,26 @@ import {ManualFollowupService} from './manual-followup.js';
 import {notesFromFollowupQuery} from '../shared/followup-message.js';
 import {ListingPresentationService} from './listing-presentation.js';
 import {prepareBrowserFeedback,browserInterestNotice} from './behavior.js';
+import {collectBehaviorContext} from './behavior-context.js';
+import {RequirementRefinementService} from '../agents/requirement/refinement/service.js';
 
 const resultEnvelope=z.object({schema_version:z.literal('1.1'),agent:z.enum(['a','b','c','d']),operation_id:z.string().uuid(),requirements_version:z.number().int(),payload_ref:z.string().uuid(),payload_hash:z.string()}).strict();
 export type Plan={assignments:Assignment[];answer:string};
 export class WorkflowService{
+  readonly refinement:RequirementRefinementService;
   readonly orchestrator:AgentOrchestrator;
   readonly listingPresentation:ListingPresentationService;
+  readonly explanationEnricher:ExplanationEnricher;
   readonly manual:ManualFollowupService;
   readonly actions:ActionService;readonly followup:FollowupService;readonly tools:ToolExecutor;readonly data:DataHttpAdapter;readonly locations:LocationService;readonly recommender:RecommendationGateway;readonly knowledge:KnowledgeService;
   constructor(readonly store:DomainStore,readonly dataset:string,readonly model?:BaseChatModel,intentModel?:BaseChatModel,knowledgeModels:{answer?:BaseChatModel;rewriteModel?:BaseChatModel;rerankModel?:BaseChatModel}={}){
+    this.refinement=new RequirementRefinementService(store,dataset);
     this.orchestrator=new AgentOrchestrator(intentModel||model);
     this.followup=new FollowupService(store);this.actions=new ActionService(store,this.followup);this.manual=new ManualFollowupService(store,model);
     this.tools=new ToolExecutor(async trace=>{await store.pool.query('INSERT INTO tool_traces(id,session_id,operation_id,body) VALUES($1,$2,$3,$4)',[trace.id,trace.session_id,trace.operation_id,JSON.stringify(trace)]);});
     this.data=new DataHttpAdapter(process.env.DATA_API_URL||'http://127.0.0.1:8089',this.tools,(ctx,body)=>store.savePayload(ctx.sessionId,ctx.operationId,body));
     this.listingPresentation=new ListingPresentationService(this.data,dataset);
+    this.explanationEnricher=new ExplanationEnricher(this.data,this.tools,(ctx,body)=>store.savePayload(ctx.sessionId,ctx.operationId,body));
     this.locations=new LocationService(this.data,this.tools,(ctx,body)=>store.savePayload(ctx.sessionId,ctx.operationId,body));
     this.recommender=new RecommendationGateway(this.data,(ctx,body)=>store.savePayload(ctx.sessionId,ctx.operationId,body),process.env.RECOMMENDATION_MODE||'baseline',process.env.RECOMMENDATION_API_URL,this.locations);
     this.knowledge=new KnowledgeService(process.env.KNOWLEDGE_MODE||'hybrid_rrf',knowledgeModels.answer||model,knowledgeModels);
@@ -99,7 +106,11 @@ export class WorkflowService{
     const {env,body}=await this.store.verifyTask(prompt,sessionId,taskId,agent);const prior=await this.store.pool.query('SELECT envelope FROM agent_result_payloads WHERE task_id=$1',[taskId]);if(prior.rows[0])return JSON.stringify(prior.rows[0].envelope);
     const ctx=this.context(sessionId,env),profile=await loadProfile(agent);let payload:unknown;
     await this.store.pool.query('INSERT INTO tool_traces(id,session_id,operation_id,body) VALUES($1,$2,$3,$4)',[randomUUID(),sessionId,env.operation_id,JSON.stringify({tool:'skill_loaded',agent,sha256:profile.sha256})]);
-    if(agent==='a'){
+    if(agent==='a'&&body.input_mode==='structured'){
+      // UI answers were validated against the server's question plan. Do not
+      // reinterpret explicit choices through a second natural-language model.
+      payload={draft:draftSchema.parse(body.draft),feedback:[]};
+    }else if(agent==='a'){
       const pending=body.pending||null;
       const base=pending?mergeRequirements(body.requirements,pending):body.requirements;
       const query=body.query;
@@ -122,7 +133,8 @@ export class WorkflowService{
       if(!body.recommendation)throw new BusinessError('NO_RECOMMENDATION','请先检索房源。');
       const rec=body.recommendation;
       const archive=rec.native?await this.store.loadPayload(rec.native.exchange_ref,sessionId):undefined;
-      payload={explanation:await generateExplanation(body.requirements,rec,this.dataset,body.query||'',this.model,profile.instructions,archive)};
+      const enrichment=await this.explanationEnricher.load(rec,ctx);
+      payload={explanation:await generateExplanation(body.requirements,rec,this.dataset,body.query||'',this.model,profile.instructions,archive,enrichment)};
     }else if(body.kind==='daily')payload={kind:'daily',date:singaporeDate()};
     else if(body.kind==='knowledge'||body.kind==='status'){
       if(body.kind==='status'){
@@ -202,7 +214,8 @@ export class WorkflowService{
             const interest=await prepareBrowserFeedback(tx,s,operation.created_at);
             const feedback=(await tx.query('SELECT body FROM listing_feedback WHERE session_id=$1 AND consumed_request_id IS NULL AND (created_at <= $2 OR event_id=$3) ORDER BY created_at,event_id',[s.session_id,operation.created_at,`explicit:${env.operation_id}`])).rows.map(x=>x.body);
             const requestId=randomUUID(),previous=s.recommendation?.state.state_id;
-            const request=recommendationRequestSchema.parse({contract_version:'1.0',request_id:requestId,conversation_id:s.session_id,requirements_version:s.requirements_version,requirements:s.requirements,feedback,...(previous?{previous_state_id:previous}:{}),result_limit:5});
+            const behavior_context=await collectBehaviorContext(tx,s.session_id,operation.created_at,interest.ready);
+            const request=recommendationRequestSchema.parse({contract_version:'1.0',request_id:requestId,conversation_id:s.session_id,requirements_version:s.requirements_version,requirements:s.requirements,feedback,behavior_context,...(previous?{previous_state_id:previous}:{}),result_limit:5});
             await tx.query('INSERT INTO recommendation_calls(id,session_id,operation_id,request,feedback_cutoff,interest_context) VALUES($1,$2,$3,$4,$5,$6)',[requestId,s.session_id,env.operation_id,JSON.stringify(request),operation.created_at,JSON.stringify(interest)]);
             s.latest_request_id=requestId;await next('b',{request,interpretation_notes:draft.interpretation_notes||[]},'recommend');
           }
@@ -217,7 +230,9 @@ export class WorkflowService{
           if(response.status==='needs_clarification'){const questions=response.clarifications.map(x=>x.question);this.store.message(s,'assistant',questions.join('\n'));await this.store.event(tx,s.session_id,{type:'clarification',payload:{questions}},`clarify:${task.id}`);}
           else{s.recommendation=response;await next('c',{requirements:s.requirements,recommendation:response,query:operation.query},'explain');}
         }else if(task.agent==='c'){
-          const source=payload.explanation.source_request_id;const sourceOperation=(await tx.query('SELECT operation_id FROM recommendation_calls WHERE id=$1',[source])).rows[0]?.operation_id;if(source!==s.latest_request_id||sourceOperation!==s.active_operation_id)throw new BusinessError('RESULT_STALE','推荐已变化，此解释已失效。');s.explanation=payload.explanation;this.store.message(s,'assistant',payload.explanation.summary);await this.store.event(tx,s.session_id,{type:'workflow_result',payload:{explanation:payload.explanation,source_request_id:source}},`result:${task.id}`);
+          const source=payload.explanation.source_request_id;const sourceOperation=(await tx.query('SELECT operation_id FROM recommendation_calls WHERE id=$1',[source])).rows[0]?.operation_id;if(source!==s.latest_request_id||sourceOperation!==s.active_operation_id)throw new BusinessError('RESULT_STALE','推荐已变化，此解释已失效。');s.explanation=payload.explanation;this.store.message(s,'assistant',payload.explanation.summary);
+          const refinementId=await this.refinement.generate(tx,s);if(refinementId)s.messages.at(-1)!.refinement_id=refinementId;
+          await this.store.event(tx,s.session_id,{type:'workflow_result',payload:{explanation:payload.explanation,source_request_id:source}},`result:${task.id}`);
           if(isSearch&&operation.intent_plan?.deferred_summary)await next('d',{kind:'summary',requirements:s.requirements,recommendation:s.recommendation},'followup-summary');
         }else if(payload.kind==='knowledge'){this.store.message(s,'assistant',payload.knowledge.answer,payload.knowledge);await this.store.event(tx,s.session_id,{type:'workflow_result',payload:{knowledge:payload.knowledge}},`knowledge:${task.id}`);}
         else if(payload.kind==='selection_needed'){this.store.message(s,'assistant',payload.message);await this.store.event(tx,s.session_id,{type:'workflow_result',payload:{selection_needed:true,message:payload.message}},`selection:${task.id}`);}
