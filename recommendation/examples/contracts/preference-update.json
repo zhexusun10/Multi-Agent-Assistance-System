@@ -1,5 +1,5 @@
 {
-  "contract_version": "1.0",
+  "contract_version": "2.0",
   "request_id": "sample-preference",
   "conversation_id": "contract-example",
   "requirements_version": 2,
@@ -55,7 +55,14 @@
       }
     ]
   },
-  "feedback": [],
-  "previous_state_id": "2d7fb683-4431-429b-994e-139be0816703",
-  "result_limit": 4
+  "previous_state_id": "7ed59ede-8f95-4116-b3e8-9b777bef51f0",
+  "result_limit": null,
+  "feedback": {
+    "previous_round": null,
+    "appointments": []
+  },
+  "cold_start": {
+    "exited": false,
+    "exited_pool_key": null
+  }
 }

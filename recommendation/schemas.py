@@ -4,7 +4,7 @@ from recommendation.contracts.request import (
     RecommendationRequest,
 )
 from recommendation.contracts.requirements import Requirements
-from recommendation.contracts.feedback import ViewingEvent
+from recommendation.contracts.feedback import FeedbackSnapshot
 from .models.candidate import Response
 
 DIRECTORY = (
@@ -18,7 +18,7 @@ def generate(check=False):
         ("request", RecommendationRequest),
         ("response", Response),
         ("requirements", Requirements),
-        ("feedback", ViewingEvent),
+        ("feedback", FeedbackSnapshot),
     ]:
         expected = (
             json.dumps(model.model_json_schema(), indent=2, sort_keys=True) + "\n"

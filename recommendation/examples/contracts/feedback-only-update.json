@@ -1,5 +1,5 @@
 {
-  "contract_version": "1.0",
+  "contract_version": "2.0",
   "request_id": "sample-feedback",
   "conversation_id": "contract-example",
   "requirements_version": 1,
@@ -55,60 +55,74 @@
       }
     ]
   },
-  "feedback": [
-    {
-      "event_id": "7ab06906-9d62-4626-8eaa-23c2b6ae5abd",
-      "conversation_id": "contract-example",
-      "recommendation_request_id": "sample-initial",
-      "listing_id": "fixture-01",
-      "event_type": "listing_view_duration",
-      "source": "sample",
-      "occurred_at": "2026-10-18T07:35:56.834355Z",
-      "payload": {
-        "view_session_id": "d3471268-8555-4eea-962a-790b15f6293f",
-        "duration_seconds": 90.0
-      }
+  "previous_state_id": "d63431b1-26c9-46e5-a017-6d71c06e161c",
+  "result_limit": null,
+  "feedback": {
+    "previous_round": {
+      "request_id": "sample-initial",
+      "shown_listing_ids": [
+        "fixture-01",
+        "fixture-03",
+        "fixture-05",
+        "fixture-07",
+        "fixture-09",
+        "fixture-02",
+        "fixture-04",
+        "fixture-06",
+        "fixture-08"
+      ],
+      "browsing": [
+        {
+          "listing_id": "fixture-01",
+          "status": "recorded",
+          "duration_seconds": 90.0
+        },
+        {
+          "listing_id": "fixture-03",
+          "status": "recorded",
+          "duration_seconds": 30.0
+        },
+        {
+          "listing_id": "fixture-05",
+          "status": "recorded",
+          "duration_seconds": 30.0
+        },
+        {
+          "listing_id": "fixture-07",
+          "status": "recorded",
+          "duration_seconds": 30.0
+        },
+        {
+          "listing_id": "fixture-09",
+          "status": "recorded",
+          "duration_seconds": 30.0
+        },
+        {
+          "listing_id": "fixture-02",
+          "status": "recorded",
+          "duration_seconds": 30.0
+        },
+        {
+          "listing_id": "fixture-04",
+          "status": "recorded",
+          "duration_seconds": 30.0
+        },
+        {
+          "listing_id": "fixture-06",
+          "status": "recorded",
+          "duration_seconds": 30.0
+        },
+        {
+          "listing_id": "fixture-08",
+          "status": "recorded",
+          "duration_seconds": 30.0
+        }
+      ]
     },
-    {
-      "event_id": "971e12c4-fffb-40b8-aa29-38a0eea6b368",
-      "conversation_id": "contract-example",
-      "recommendation_request_id": "sample-initial",
-      "listing_id": "fixture-03",
-      "event_type": "listing_view_duration",
-      "source": "sample",
-      "occurred_at": "2026-10-18T07:35:56.834420Z",
-      "payload": {
-        "view_session_id": "878ebf5b-f342-4dc1-86e0-3296aaa4493f",
-        "duration_seconds": 30.0
-      }
-    },
-    {
-      "event_id": "298ca531-cb77-49c0-a15f-682a3c1ffa71",
-      "conversation_id": "contract-example",
-      "recommendation_request_id": "sample-initial",
-      "listing_id": "fixture-05",
-      "event_type": "listing_view_duration",
-      "source": "sample",
-      "occurred_at": "2026-10-18T07:35:56.834425Z",
-      "payload": {
-        "view_session_id": "ff97c19c-d069-4521-98d2-118e5ec24d71",
-        "duration_seconds": 30.0
-      }
-    },
-    {
-      "event_id": "98e3a723-665a-4c8b-ad0e-0897446c19f3",
-      "conversation_id": "contract-example",
-      "recommendation_request_id": "sample-initial",
-      "listing_id": "fixture-07",
-      "event_type": "listing_view_duration",
-      "source": "sample",
-      "occurred_at": "2026-10-18T07:35:56.834429Z",
-      "payload": {
-        "view_session_id": "fd318862-9147-40b1-8cf8-628bfd7def6e",
-        "duration_seconds": 30.0
-      }
-    }
-  ],
-  "previous_state_id": "5c440fb9-4dbb-4d07-a210-78caeff73100",
-  "result_limit": 4
+    "appointments": []
+  },
+  "cold_start": {
+    "exited": false,
+    "exited_pool_key": null
+  }
 }

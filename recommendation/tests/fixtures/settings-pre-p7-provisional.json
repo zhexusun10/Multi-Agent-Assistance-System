@@ -1,0 +1,106 @@
+{
+  "config_version": 1,
+  "recommendation": {
+    "default_result_limit": 10,
+    "max_result_limit": 10
+  },
+  "ranking": {
+    "soft_weight": 0.6,
+    "behavior_weight": 0.4,
+    "soft": {
+      "numeric_bounds": {
+        "price": [
+          0.0,
+          20000.0
+        ],
+        "bedrooms": [
+          0.0,
+          10.0
+        ],
+        "floor_area_sqft": [
+          0.0,
+          10000.0
+        ]
+      }
+    },
+    "behavior": {
+      "appointment_weight": 0.6,
+      "browsing_weight": 0.4,
+      "missing_branch_contribution": 0.0,
+      "redistribute_missing_branch_weight": false,
+      "counted_appointment_statuses": [
+        "CONFIRMED",
+        "MANUAL_REPLIED",
+        "MANUAL_SENT"
+      ],
+      "reference_scope": "in_pool"
+    },
+    "browsing": {
+      "transform": "log1p",
+      "duration_cap_seconds": null,
+      "time_scale_seconds": 30.0
+    },
+    "similarity": {
+      "suppression": "hard_criteria",
+      "feature_weights": {
+        "price": 0.2,
+        "property_type": 0.2,
+        "bedrooms": 0.16,
+        "floor_area_sqft": 0.2,
+        "geography": 0.24
+      },
+      "numeric_scaling": "iqr",
+      "geographic_scale_m": 3000.0,
+      "geography_district_fallback": true,
+      "min_comparison_coverage": 0.5
+    }
+  },
+  "geography": {
+    "station_distance_method": "nearest_exit"
+  },
+  "cold_start": {
+    "enabled": true,
+    "reenter_on_pool_rebuild": true,
+    "min_evidence_coverage": 0.8,
+    "max_boundary_tie_group_size": 5,
+    "min_top_k_stability": 0.9,
+    "price_sampling": {
+      "target_sample_size": 30,
+      "quantile_bins": 5
+    },
+    "stability": {
+      "trials": 20,
+      "weight_perturbation_fraction": 0.2
+    }
+  },
+  "selection": {
+    "tie_max_score_span": 0.02,
+    "random_policy": "uniform_without_replacement",
+    "seed_namespace": "recommendation-selection-v1"
+  },
+  "cache": {
+    "enabled": true,
+    "ttl_seconds": 0,
+    "max_entries_per_conversation": 2,
+    "pool_retention_per_conversation": 4,
+    "memory_max_entries": 4
+  },
+  "entity_resolution": {
+    "max_search_attempts": 3,
+    "max_candidates": 5
+  },
+  "controller": {
+    "max_model_turns": 8,
+    "max_tool_calls": 20,
+    "max_resolution_tool_calls": 6,
+    "timeout_seconds": 90.0,
+    "repairs": 2,
+    "model_result_candidates": 100
+  },
+  "trace": {
+    "mode": "summary",
+    "preview_rows": 10,
+    "debug_max_rows": 200,
+    "max_string_chars": 4000
+  }
+}

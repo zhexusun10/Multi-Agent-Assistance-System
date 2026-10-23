@@ -1,0 +1,817 @@
+{
+ "description": "Orchestrator feedback sidecar cases (spec R7). TS: buildFeedbackSidecar(input.recommendation, input.durations, input.actions, input.cold_start) deep-equals expected. Python: after round v2-r1 of conversation v2-fixture, a contract-2.0 request carrying the expected sidecar is never INVALID_FEEDBACK.",
+ "cases": [
+  {
+   "name": "native-adopted",
+   "input": {
+    "recommendation": {
+     "request_id": "v2-r1",
+     "status": "success",
+     "recommendations": [
+      {
+       "listing": {
+        "listing_id": "fixture-01"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-03"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-05"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-07"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-09"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-02"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-04"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-06"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-08"
+       }
+      }
+     ],
+     "unverified_candidates": [],
+     "native": {
+      "contract": "2.0",
+      "ranking": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ]
+     }
+    },
+    "durations": [
+     {
+      "listing_id": "fixture-01",
+      "recommendation_request_id": "v2-r1",
+      "active_duration_ms": 60000
+     },
+     {
+      "listing_id": "fixture-01",
+      "recommendation_request_id": "v2-r1",
+      "active_duration_ms": 30000
+     },
+     {
+      "listing_id": "fixture-09",
+      "recommendation_request_id": "v2-r1",
+      "active_duration_ms": 1500
+     },
+     {
+      "listing_id": "fixture-03",
+      "recommendation_request_id": "v2-older-round",
+      "active_duration_ms": 5000
+     }
+    ],
+    "actions": [
+     {
+      "action_id": "act-3",
+      "action_type": "VIEWING",
+      "status": "MANUAL_REPLIED",
+      "listing_ids": [
+       "fixture-07"
+      ]
+     },
+     {
+      "action_id": "act-1",
+      "action_type": "VIEWING",
+      "status": "MANUAL_SENT",
+      "listing_ids": [
+       "fixture-07"
+      ]
+     },
+     {
+      "action_id": "act-2",
+      "action_type": "VIEWING",
+      "status": "DRAFT",
+      "listing_ids": [
+       "fixture-09"
+      ]
+     },
+     {
+      "action_id": "act-4",
+      "action_type": "VIEWING",
+      "status": "CANCELLED",
+      "listing_ids": [
+       "fixture-09"
+      ]
+     },
+     {
+      "action_id": "act-5",
+      "action_type": "MESSAGE",
+      "status": "CONFIRMED",
+      "listing_ids": [
+       "fixture-02"
+      ]
+     },
+     {
+      "action_id": "act-6",
+      "action_type": "VIEWING",
+      "status": "CONFIRMED",
+      "listing_ids": [
+       "fixture-04",
+       "fixture-02"
+      ]
+     },
+     {
+      "action_id": "act-7",
+      "action_type": "VIEWING",
+      "status": "SIMULATED",
+      "listing_ids": [
+       "fixture-06"
+      ]
+     },
+     {
+      "action_id": "act-8",
+      "action_type": "VIEWING",
+      "status": "PENDING_REVIEW",
+      "listing_ids": [
+       "fixture-08"
+      ]
+     }
+    ],
+    "cold_start": null
+   },
+   "expected": {
+    "previous_round": {
+     "request_id": "v2-r1",
+     "shown_listing_ids": [
+      "fixture-01",
+      "fixture-03",
+      "fixture-05",
+      "fixture-07",
+      "fixture-09",
+      "fixture-02",
+      "fixture-04",
+      "fixture-06",
+      "fixture-08"
+     ],
+     "browsing": [
+      {
+       "listing_id": "fixture-01",
+       "status": "recorded",
+       "duration_seconds": 90
+      },
+      {
+       "listing_id": "fixture-03",
+       "status": "missing",
+       "duration_seconds": null
+      },
+      {
+       "listing_id": "fixture-05",
+       "status": "missing",
+       "duration_seconds": null
+      },
+      {
+       "listing_id": "fixture-07",
+       "status": "missing",
+       "duration_seconds": null
+      },
+      {
+       "listing_id": "fixture-09",
+       "status": "recorded",
+       "duration_seconds": 1.5
+      },
+      {
+       "listing_id": "fixture-02",
+       "status": "missing",
+       "duration_seconds": null
+      },
+      {
+       "listing_id": "fixture-04",
+       "status": "missing",
+       "duration_seconds": null
+      },
+      {
+       "listing_id": "fixture-06",
+       "status": "missing",
+       "duration_seconds": null
+      },
+      {
+       "listing_id": "fixture-08",
+       "status": "missing",
+       "duration_seconds": null
+      }
+     ]
+    },
+    "appointments": [
+     {
+      "listing_id": "fixture-02",
+      "statuses": [
+       "CONFIRMED"
+      ],
+      "action_ids": [
+       "act-6"
+      ]
+     },
+     {
+      "listing_id": "fixture-04",
+      "statuses": [
+       "CONFIRMED"
+      ],
+      "action_ids": [
+       "act-6"
+      ]
+     },
+     {
+      "listing_id": "fixture-07",
+      "statuses": [
+       "MANUAL_REPLIED",
+       "MANUAL_SENT"
+      ],
+      "action_ids": [
+       "act-1",
+       "act-3"
+      ]
+     }
+    ],
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   }
+  },
+  {
+   "name": "hard-gap-projection",
+   "note": "hardGap moved every native item into V1 unverified; the user still saw them, so shown = native ranking",
+   "input": {
+    "recommendation": {
+     "request_id": "v2-r1",
+     "status": "no_match",
+     "recommendations": [],
+     "unverified_candidates": [
+      {
+       "listing": {
+        "listing_id": "fixture-01"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-03"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-05"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-07"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-09"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-02"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-04"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-06"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-08"
+       }
+      }
+     ],
+     "native": {
+      "contract": "2.0",
+      "ranking": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ]
+     }
+    },
+    "durations": [
+     {
+      "listing_id": "fixture-01",
+      "recommendation_request_id": "v2-r1",
+      "active_duration_ms": 60000
+     },
+     {
+      "listing_id": "fixture-01",
+      "recommendation_request_id": "v2-r1",
+      "active_duration_ms": 30000
+     },
+     {
+      "listing_id": "fixture-09",
+      "recommendation_request_id": "v2-r1",
+      "active_duration_ms": 1500
+     },
+     {
+      "listing_id": "fixture-03",
+      "recommendation_request_id": "v2-older-round",
+      "active_duration_ms": 5000
+     }
+    ],
+    "actions": [],
+    "cold_start": null
+   },
+   "expected": {
+    "previous_round": {
+     "request_id": "v2-r1",
+     "shown_listing_ids": [
+      "fixture-01",
+      "fixture-03",
+      "fixture-05",
+      "fixture-07",
+      "fixture-09",
+      "fixture-02",
+      "fixture-04",
+      "fixture-06",
+      "fixture-08"
+     ],
+     "browsing": [
+      {
+       "listing_id": "fixture-01",
+       "status": "recorded",
+       "duration_seconds": 90
+      },
+      {
+       "listing_id": "fixture-03",
+       "status": "missing",
+       "duration_seconds": null
+      },
+      {
+       "listing_id": "fixture-05",
+       "status": "missing",
+       "duration_seconds": null
+      },
+      {
+       "listing_id": "fixture-07",
+       "status": "missing",
+       "duration_seconds": null
+      },
+      {
+       "listing_id": "fixture-09",
+       "status": "recorded",
+       "duration_seconds": 1.5
+      },
+      {
+       "listing_id": "fixture-02",
+       "status": "missing",
+       "duration_seconds": null
+      },
+      {
+       "listing_id": "fixture-04",
+       "status": "missing",
+       "duration_seconds": null
+      },
+      {
+       "listing_id": "fixture-06",
+       "status": "missing",
+       "duration_seconds": null
+      },
+      {
+       "listing_id": "fixture-08",
+       "status": "missing",
+       "duration_seconds": null
+      }
+     ]
+    },
+    "appointments": [],
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   }
+  },
+  {
+   "name": "baseline-round",
+   "input": {
+    "recommendation": {
+     "request_id": "v2-r1",
+     "status": "success",
+     "recommendations": [
+      {
+       "listing": {
+        "listing_id": "fixture-01"
+       }
+      }
+     ],
+     "unverified_candidates": []
+    },
+    "durations": [
+     {
+      "listing_id": "fixture-01",
+      "recommendation_request_id": "v2-r1",
+      "active_duration_ms": 60000
+     },
+     {
+      "listing_id": "fixture-01",
+      "recommendation_request_id": "v2-r1",
+      "active_duration_ms": 30000
+     },
+     {
+      "listing_id": "fixture-09",
+      "recommendation_request_id": "v2-r1",
+      "active_duration_ms": 1500
+     },
+     {
+      "listing_id": "fixture-03",
+      "recommendation_request_id": "v2-older-round",
+      "active_duration_ms": 5000
+     }
+    ],
+    "actions": [
+     {
+      "action_id": "act-3",
+      "action_type": "VIEWING",
+      "status": "MANUAL_REPLIED",
+      "listing_ids": [
+       "fixture-07"
+      ]
+     },
+     {
+      "action_id": "act-1",
+      "action_type": "VIEWING",
+      "status": "MANUAL_SENT",
+      "listing_ids": [
+       "fixture-07"
+      ]
+     },
+     {
+      "action_id": "act-2",
+      "action_type": "VIEWING",
+      "status": "DRAFT",
+      "listing_ids": [
+       "fixture-09"
+      ]
+     },
+     {
+      "action_id": "act-4",
+      "action_type": "VIEWING",
+      "status": "CANCELLED",
+      "listing_ids": [
+       "fixture-09"
+      ]
+     },
+     {
+      "action_id": "act-5",
+      "action_type": "MESSAGE",
+      "status": "CONFIRMED",
+      "listing_ids": [
+       "fixture-02"
+      ]
+     },
+     {
+      "action_id": "act-6",
+      "action_type": "VIEWING",
+      "status": "CONFIRMED",
+      "listing_ids": [
+       "fixture-04",
+       "fixture-02"
+      ]
+     },
+     {
+      "action_id": "act-7",
+      "action_type": "VIEWING",
+      "status": "SIMULATED",
+      "listing_ids": [
+       "fixture-06"
+      ]
+     },
+     {
+      "action_id": "act-8",
+      "action_type": "VIEWING",
+      "status": "PENDING_REVIEW",
+      "listing_ids": [
+       "fixture-08"
+      ]
+     }
+    ],
+    "cold_start": null
+   },
+   "expected": {
+    "previous_round": null,
+    "appointments": [
+     {
+      "listing_id": "fixture-02",
+      "statuses": [
+       "CONFIRMED"
+      ],
+      "action_ids": [
+       "act-6"
+      ]
+     },
+     {
+      "listing_id": "fixture-04",
+      "statuses": [
+       "CONFIRMED"
+      ],
+      "action_ids": [
+       "act-6"
+      ]
+     },
+     {
+      "listing_id": "fixture-07",
+      "statuses": [
+       "MANUAL_REPLIED",
+       "MANUAL_SENT"
+      ],
+      "action_ids": [
+       "act-1",
+       "act-3"
+      ]
+     }
+    ],
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   }
+  },
+  {
+   "name": "legacy-contract-1.0-round",
+   "input": {
+    "recommendation": {
+     "request_id": "v2-r1",
+     "status": "success",
+     "recommendations": [
+      {
+       "listing": {
+        "listing_id": "fixture-01"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-03"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-05"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-07"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-09"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-02"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-04"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-06"
+       }
+      },
+      {
+       "listing": {
+        "listing_id": "fixture-08"
+       }
+      }
+     ],
+     "unverified_candidates": [],
+     "native": {
+      "ranking": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ]
+     }
+    },
+    "durations": [
+     {
+      "listing_id": "fixture-01",
+      "recommendation_request_id": "v2-r1",
+      "active_duration_ms": 60000
+     },
+     {
+      "listing_id": "fixture-01",
+      "recommendation_request_id": "v2-r1",
+      "active_duration_ms": 30000
+     },
+     {
+      "listing_id": "fixture-09",
+      "recommendation_request_id": "v2-r1",
+      "active_duration_ms": 1500
+     },
+     {
+      "listing_id": "fixture-03",
+      "recommendation_request_id": "v2-older-round",
+      "active_duration_ms": 5000
+     }
+    ],
+    "actions": [],
+    "cold_start": null
+   },
+   "expected": {
+    "previous_round": null,
+    "appointments": [],
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   }
+  },
+  {
+   "name": "empty-native-round",
+   "input": {
+    "recommendation": {
+     "request_id": "v2-r1",
+     "status": "no_match",
+     "recommendations": [],
+     "unverified_candidates": [],
+     "native": {
+      "contract": "2.0",
+      "ranking": []
+     }
+    },
+    "durations": [],
+    "actions": [],
+    "cold_start": null
+   },
+   "expected": {
+    "previous_round": null,
+    "appointments": [],
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   }
+  },
+  {
+   "name": "no-previous-round-cold-start-exited",
+   "input": {
+    "recommendation": null,
+    "durations": [],
+    "actions": [
+     {
+      "action_id": "act-3",
+      "action_type": "VIEWING",
+      "status": "MANUAL_REPLIED",
+      "listing_ids": [
+       "fixture-07"
+      ]
+     },
+     {
+      "action_id": "act-1",
+      "action_type": "VIEWING",
+      "status": "MANUAL_SENT",
+      "listing_ids": [
+       "fixture-07"
+      ]
+     },
+     {
+      "action_id": "act-2",
+      "action_type": "VIEWING",
+      "status": "DRAFT",
+      "listing_ids": [
+       "fixture-09"
+      ]
+     },
+     {
+      "action_id": "act-4",
+      "action_type": "VIEWING",
+      "status": "CANCELLED",
+      "listing_ids": [
+       "fixture-09"
+      ]
+     },
+     {
+      "action_id": "act-5",
+      "action_type": "MESSAGE",
+      "status": "CONFIRMED",
+      "listing_ids": [
+       "fixture-02"
+      ]
+     },
+     {
+      "action_id": "act-6",
+      "action_type": "VIEWING",
+      "status": "CONFIRMED",
+      "listing_ids": [
+       "fixture-04",
+       "fixture-02"
+      ]
+     },
+     {
+      "action_id": "act-7",
+      "action_type": "VIEWING",
+      "status": "SIMULATED",
+      "listing_ids": [
+       "fixture-06"
+      ]
+     },
+     {
+      "action_id": "act-8",
+      "action_type": "VIEWING",
+      "status": "PENDING_REVIEW",
+      "listing_ids": [
+       "fixture-08"
+      ]
+     }
+    ],
+    "cold_start": {
+     "exited": true,
+     "exited_pool_key": "c953b122c9f9bfb8b4a7fe31b740571b11c64dc2eb86b9f9b87f7e6b277e0cbc"
+    }
+   },
+   "expected": {
+    "previous_round": null,
+    "appointments": [
+     {
+      "listing_id": "fixture-02",
+      "statuses": [
+       "CONFIRMED"
+      ],
+      "action_ids": [
+       "act-6"
+      ]
+     },
+     {
+      "listing_id": "fixture-04",
+      "statuses": [
+       "CONFIRMED"
+      ],
+      "action_ids": [
+       "act-6"
+      ]
+     },
+     {
+      "listing_id": "fixture-07",
+      "statuses": [
+       "MANUAL_REPLIED",
+       "MANUAL_SENT"
+      ],
+      "action_ids": [
+       "act-1",
+       "act-3"
+      ]
+     }
+    ],
+    "cold_start": {
+     "exited": true,
+     "exited_pool_key": "c953b122c9f9bfb8b4a7fe31b740571b11c64dc2eb86b9f9b87f7e6b277e0cbc"
+    }
+   }
+  }
+ ]
+}

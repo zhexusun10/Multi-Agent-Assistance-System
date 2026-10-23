@@ -44,139 +44,345 @@
             "type": "string"
           },
           "additionalProperties": {
-            "type": "object",
-            "properties": {
-              "explicit_score": {
-                "anyOf": [
-                  {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "soft_score": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "behavior_score": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "appointment_score": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "browsing_score": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "combined_score": {
                     "type": "number",
                     "minimum": 0,
                     "maximum": 1
                   },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "implicit_score": {
-                "anyOf": [
-                  {
+                  "soft_weight": {
                     "type": "number",
                     "minimum": 0,
                     "maximum": 1
                   },
-                  {
-                    "type": "null"
-                  }
-                ]
-              },
-              "combined_score": {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
-              },
-              "explicit_weight": {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
-              },
-              "implicit_weight": {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
-              },
-              "evidence_coverage": {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
-              },
-              "contributions": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "feature": {
-                      "type": "string"
-                    },
-                    "reference": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
-                    },
-                    "raw_difference": {
-                      "type": [
-                        "number",
-                        "null"
-                      ]
-                    },
-                    "scale": {
-                      "type": [
-                        "number",
-                        "null"
-                      ]
-                    },
-                    "similarity": {
-                      "anyOf": [
-                        {
+                  "behavior_weight": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "appointment_weight": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "browsing_weight": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "soft_evidence_coverage": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "comparison_coverage": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "contributions": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "feature": {
+                          "type": "string"
+                        },
+                        "branch": {
+                          "type": "string",
+                          "enum": [
+                            "soft",
+                            "appointment",
+                            "browsing"
+                          ]
+                        },
+                        "reference": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "raw_difference": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "scale": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "similarity": {
+                          "anyOf": [
+                            {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "weight": {
                           "type": "number",
                           "minimum": 0,
                           "maximum": 1
                         },
-                        {
-                          "type": "null"
+                        "contribution": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "unknown": {
+                          "type": "boolean"
+                        },
+                        "method": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
                         }
-                      ]
-                    },
-                    "weight": {
-                      "type": "number",
-                      "minimum": 0,
-                      "maximum": 1
-                    },
-                    "contribution": {
-                      "type": "number",
-                      "minimum": 0,
-                      "maximum": 1
-                    },
-                    "unknown": {
-                      "type": "boolean"
+                      },
+                      "required": [
+                        "feature",
+                        "branch",
+                        "reference",
+                        "raw_difference",
+                        "scale",
+                        "similarity",
+                        "weight",
+                        "contribution",
+                        "unknown",
+                        "method"
+                      ],
+                      "additionalProperties": false
                     }
                   },
-                  "required": [
-                    "feature",
-                    "reference",
-                    "raw_difference",
-                    "scale",
-                    "similarity",
-                    "weight",
-                    "contribution",
-                    "unknown"
-                  ],
-                  "additionalProperties": false
-                }
+                  "suppressed_features": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "ordering": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "soft_score",
+                  "behavior_score",
+                  "appointment_score",
+                  "browsing_score",
+                  "combined_score",
+                  "soft_weight",
+                  "behavior_weight",
+                  "appointment_weight",
+                  "browsing_weight",
+                  "soft_evidence_coverage",
+                  "comparison_coverage",
+                  "contributions",
+                  "suppressed_features",
+                  "ordering"
+                ],
+                "additionalProperties": false
               },
-              "suppressed_features": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "ordering": {
-                "type": "string"
+              {
+                "type": "object",
+                "properties": {
+                  "explicit_score": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "implicit_score": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "combined_score": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "explicit_weight": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "implicit_weight": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "evidence_coverage": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "contributions": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "feature": {
+                          "type": "string"
+                        },
+                        "reference": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "raw_difference": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "scale": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "similarity": {
+                          "anyOf": [
+                            {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "weight": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "contribution": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "unknown": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "feature",
+                        "reference",
+                        "raw_difference",
+                        "scale",
+                        "similarity",
+                        "weight",
+                        "contribution",
+                        "unknown"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "suppressed_features": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "ordering": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "explicit_score",
+                  "implicit_score",
+                  "combined_score",
+                  "explicit_weight",
+                  "implicit_weight",
+                  "evidence_coverage",
+                  "contributions",
+                  "suppressed_features",
+                  "ordering"
+                ],
+                "additionalProperties": false
               }
-            },
-            "required": [
-              "explicit_score",
-              "implicit_score",
-              "combined_score",
-              "explicit_weight",
-              "implicit_weight",
-              "evidence_coverage",
-              "contributions",
-              "suppressed_features",
-              "ordering"
-            ],
-            "additionalProperties": false
+            ]
           }
         },
         "criterion_results": {
@@ -196,6 +402,86 @@
           "type": "array",
           "items": {
             "type": "string"
+          }
+        },
+        "contract": {
+          "type": "string",
+          "const": "2.0"
+        },
+        "pool": {
+          "anyOf": [
+            {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "selection": {
+          "anyOf": [
+            {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {}
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resolution": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          }
+        },
+        "config_hash": {
+          "type": "string"
+        },
+        "selection_reasons": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "selection_reason": {
+                "type": "string",
+                "enum": [
+                  "ranked",
+                  "leader",
+                  "tie_group_sample",
+                  "price_exploration_sample",
+                  "small_pool"
+                ]
+              },
+              "selection_note": {
+                "type": "string"
+              },
+              "score_rank": {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "selection_reason",
+              "selection_note",
+              "score_rank"
+            ],
+            "additionalProperties": false
           }
         }
       },

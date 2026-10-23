@@ -1,0 +1,3510 @@
+{
+ "description": "Native contract 2.0 request cases. Python: RecommendationRequest.model_validate (valid <-> accepted; error is a substring of the validation message) and, for service_error cases (INVALID_FEEDBACK, STALE_REQUIREMENTS), the service after rounds v2-r1 (conversation v2-fixture) and v2-other-r1 (conversation v2-other). TS: nativeRequestSchema.safeParse (valid <-> success).",
+ "setup_requirements": {
+  "listing_type": "RENT",
+  "criteria": [
+   {
+    "criterion_id": "budget",
+    "field": "price",
+    "operator": "lte",
+    "value": 3000,
+    "strength": "hard",
+    "weight": 1,
+    "utility": "threshold",
+    "unit": "SGD/month"
+   },
+   {
+    "criterion_id": "bedrooms",
+    "field": "bedrooms",
+    "operator": "gte",
+    "value": 2,
+    "strength": "hard",
+    "weight": 1,
+    "utility": "threshold"
+   },
+   {
+    "criterion_id": "district",
+    "field": "district_code",
+    "operator": "in",
+    "value": [
+     "D05"
+    ],
+    "strength": "soft",
+    "weight": 1,
+    "utility": "threshold"
+   }
+  ]
+ },
+ "cases": [
+  {
+   "name": "initial",
+   "valid": true,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": null,
+     "appointments": []
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   }
+  },
+  {
+   "name": "complete-previous-round",
+   "valid": true,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   }
+  },
+  {
+   "name": "zero-seconds",
+   "valid": true,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 0
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   }
+  },
+  {
+   "name": "all-missing",
+   "valid": true,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "missing"
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "missing"
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing"
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "missing"
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "missing"
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "missing"
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "missing"
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "missing"
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "missing"
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   }
+  },
+  {
+   "name": "empty-appointments",
+   "valid": true,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": []
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   }
+  },
+  {
+   "name": "appointment-dedup-one-entry-per-listing",
+   "valid": true,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_REPLIED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2",
+        "act-3"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   }
+  },
+  {
+   "name": "result-limit-10",
+   "valid": true,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   }
+  },
+  {
+   "name": "result-limit-null-uses-config-default",
+   "valid": true,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": null,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   }
+  },
+  {
+   "name": "contract-version-omitted",
+   "valid": true,
+   "body": {
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "note": "Documented rule: an unversioned body is read as the current contract (same convention as contract 1.0, which also defaulted contract_version); an explicit 1.0 is rejected."
+  },
+  {
+   "name": "duplicate-appointment-listing",
+   "valid": false,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED"
+       ],
+       "action_ids": [
+        "act-1"
+       ]
+      },
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "error": "duplicate appointment listings"
+  },
+  {
+   "name": "duplicate-appointment-action-id",
+   "valid": false,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-1"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "error": "duplicate appointment action_ids"
+  },
+  {
+   "name": "empty-appointment-statuses",
+   "valid": false,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [],
+       "action_ids": [
+        "act-1"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "error": "at least 1"
+  },
+  {
+   "name": "negative-seconds",
+   "valid": false,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": -1
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "error": "greater than or equal to 0"
+  },
+  {
+   "name": "recorded-without-seconds",
+   "valid": false,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "error": "recorded browsing requires"
+  },
+  {
+   "name": "missing-with-seconds",
+   "valid": false,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": 5
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "error": "missing browsing must not carry"
+  },
+  {
+   "name": "duplicate-browsing-record",
+   "valid": false,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "error": "duplicate browsing records"
+  },
+  {
+   "name": "browsing-missing-a-shown-listing",
+   "valid": false,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "error": "exactly one record per shown listing"
+  },
+  {
+   "name": "browsing-for-unshown-listing",
+   "valid": false,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-11",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "error": "exactly one record per shown listing"
+  },
+  {
+   "name": "duplicate-shown-listing",
+   "valid": false,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-01",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "error": "duplicate shown_listing_ids"
+  },
+  {
+   "name": "result-limit-11",
+   "valid": false,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 11,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "error": "less than or equal to 10"
+  },
+  {
+   "name": "contract-1.0-body",
+   "valid": false,
+   "body": {
+    "contract_version": "1.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "error": "UNSUPPORTED_VERSION"
+  },
+  {
+   "name": "v1-event-array-feedback",
+   "valid": false,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": [
+     {
+      "event_id": "e1",
+      "listing_id": "fixture-01",
+      "event_type": "listing_view_duration"
+     }
+    ],
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "error": "valid dictionary"
+  },
+  {
+   "name": "cold-start-exited-without-pool-key",
+   "valid": false,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": true,
+     "exited_pool_key": null
+    }
+   },
+   "error": "exited_pool_key is required"
+  },
+  {
+   "name": "unknown-field",
+   "valid": false,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    },
+    "unverified_candidates": []
+   },
+   "error": "Extra inputs are not permitted"
+  },
+  {
+   "name": "draft-appointment-status",
+   "valid": true,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "DRAFT"
+       ],
+       "action_ids": [
+        "act-9"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "service_error": "INVALID_FEEDBACK",
+   "note": "Schema-valid; native rejects statuses outside ranking.behavior.counted_appointment_statuses. The TS sidecar never emits it."
+  },
+  {
+   "name": "wrong-round-unknown-request",
+   "valid": true,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-never-committed",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "service_error": "INVALID_FEEDBACK"
+  },
+  {
+   "name": "wrong-round-other-conversation",
+   "valid": true,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-other-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-08"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-08",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "service_error": "INVALID_FEEDBACK",
+   "note": "v2-other-r1 is committed in conversation v2-other with the same listings."
+  },
+  {
+   "name": "shown-set-differs-from-round",
+   "valid": true,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-case",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": {
+      "request_id": "v2-r1",
+      "shown_listing_ids": [
+       "fixture-01",
+       "fixture-03",
+       "fixture-05",
+       "fixture-07",
+       "fixture-09",
+       "fixture-02",
+       "fixture-04",
+       "fixture-06",
+       "fixture-11"
+      ],
+      "browsing": [
+       {
+        "listing_id": "fixture-01",
+        "status": "recorded",
+        "duration_seconds": 90
+       },
+       {
+        "listing_id": "fixture-03",
+        "status": "recorded",
+        "duration_seconds": 0
+       },
+       {
+        "listing_id": "fixture-05",
+        "status": "missing",
+        "duration_seconds": null
+       },
+       {
+        "listing_id": "fixture-07",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-09",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-02",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-04",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-06",
+        "status": "recorded",
+        "duration_seconds": 30
+       },
+       {
+        "listing_id": "fixture-11",
+        "status": "recorded",
+        "duration_seconds": 30
+       }
+      ]
+     },
+     "appointments": [
+      {
+       "listing_id": "fixture-07",
+       "statuses": [
+        "CONFIRMED",
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "act-1",
+        "act-2"
+       ]
+      }
+     ]
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "service_error": "INVALID_FEEDBACK"
+  },
+  {
+   "name": "stale-requirements-changed-same-version",
+   "valid": true,
+   "body": {
+    "contract_version": "2.0",
+    "request_id": "v2-stale-requirements",
+    "conversation_id": "v2-fixture",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 2500,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "previous_state_id": null,
+    "result_limit": 10,
+    "feedback": {
+     "previous_round": null,
+     "appointments": []
+    },
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "service_error": "STALE_REQUIREMENTS",
+   "note": "Changed requirements (budget 3000 -> 2500) without a newer requirements_version than the head v2-r1 (1). The backwards-version branch needs a head above version 1 and is covered by recommendation/tests/test_recommendation.py::test_stale_requirements_version_backwards_or_changed_without_newer_version."
+  }
+ ]
+}

@@ -28,7 +28,10 @@ with sync_playwright() as p:
     area=card.locator('.claim').filter(has_text='按区域距离记为0').first
     area.scroll_into_view_if_needed()
     page.screenshot(path=str(ROOT/'evaluation/screenshots/11-area-distance-context.png'))
-    assert int(page.locator('#result-count').inner_text())==5
+    # Data-dependent since the 10-result limit (native contract 2.0 returns no unverified group; the baseline returns at
+    # most result_limit per group): the counter must equal the cards actually rendered.
+    shown=page.locator('.listing-card').count()
+    assert 1<=shown<=20 and int(page.locator('#result-count').inner_text())==shown,(shown,page.locator('#result-count').inner_text())
     checks.append('pending candidates remain actionable; result count and area-distance meaning match the visible list')
     card.get_by_role('button',name='我想看这套',exact=True).click()
     action=page.locator('.action-card').first

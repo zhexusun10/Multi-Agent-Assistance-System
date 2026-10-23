@@ -726,6 +726,30 @@
     "response.native.unscored_listing_ids": {
       "section": "附录：原生接入兼容元数据",
       "origin": "本次新增（907cfa8 原生接入）"
+    },
+    "response.native.contract": {
+      "section": "附录：原生接入兼容元数据",
+      "origin": "本次新增（原生契约 2.0，可选）"
+    },
+    "response.native.pool": {
+      "section": "附录：原生接入兼容元数据",
+      "origin": "本次新增（原生契约 2.0，可选）"
+    },
+    "response.native.selection": {
+      "section": "附录：原生接入兼容元数据",
+      "origin": "本次新增（原生契约 2.0，可选）"
+    },
+    "response.native.resolution": {
+      "section": "附录：原生接入兼容元数据",
+      "origin": "本次新增（原生契约 2.0，可选）"
+    },
+    "response.native.config_hash": {
+      "section": "附录：原生接入兼容元数据",
+      "origin": "本次新增（原生契约 2.0，可选）"
+    },
+    "response.native.selection_reasons": {
+      "section": "附录：原生接入兼容元数据",
+      "origin": "本次新增（原生契约 2.0，可选）"
     }
   },
   "open_payload_conventions": {

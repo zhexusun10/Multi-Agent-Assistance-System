@@ -1,5 +1,5 @@
 {
-  "contract_version": "1.0",
+  "contract_version": "2.0",
   "request_id": "sample-initial",
   "conversation_id": "contract-example",
   "requirements_version": 1,
@@ -55,7 +55,14 @@
       }
     ]
   },
-  "feedback": [],
   "previous_state_id": null,
-  "result_limit": 4
+  "result_limit": null,
+  "feedback": {
+    "previous_round": null,
+    "appointments": []
+  },
+  "cold_start": {
+    "exited": false,
+    "exited_pool_key": null
+  }
 }

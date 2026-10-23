@@ -2,8 +2,9 @@ import argparse, json, uuid, os
 from pathlib import Path
 from pydantic import ValidationError
 from recommendation.contracts.requirements import Requirements
-from recommendation.contracts.feedback import ViewingEvent
+from recommendation.contracts.feedback import FeedbackSnapshot
 from recommendation.contracts.request import (
+    ColdStartInput,
     RecommendationRequest,
 )
 from recommendation.contracts.errors import RecommendationError
@@ -17,29 +18,36 @@ from ..repositories.connections import (
 from ..agent.controller import ScriptedController, LiveController
 from ..state.store import StateStore
 from ..service import RecommendationService
-from ..tracing.trace import now
-from ..context.manager import prepare
+from ..context.manager import check_feedback
 from ..config import RecommendationConfig
+from . import debug
 
 
-def feedback_example(response):
+def feedback_example(response, appointments=()):
+    """Filled sample snapshot (simulates the orchestrator): browsing for every shown listing of
+    ``response`` (90 s for rank 1, 30 s for the rest) plus the given appointment signals."""
+    ids = [r.listing.listing_id for r in response.recommendations]
     return {
-        "events": [
-            {
-                "event_id": str(uuid.uuid4()),
-                "recommendation_request_id": response.request_id,
-                "listing_id": r.listing.listing_id,
-                "event_type": "listing_view_duration",
-                "source": "sample",
-                "occurred_at": now(),
-                "payload": {
-                    "view_session_id": str(uuid.uuid4()),
-                    "duration_seconds": 90 if i == 0 else 30,
-                },
-            }
-            for i, r in enumerate(response.recommendations)
-        ]
+        "previous_round": {
+            "request_id": response.request_id,
+            "shown_listing_ids": ids,
+            "browsing": [
+                {"listing_id": listing_id, "status": "recorded", "duration_seconds": 90 if i == 0 else 30}
+                for i, listing_id in enumerate(ids)
+            ],
+        },
+        "appointments": list(appointments),
     }
+
+
+def feedback_template(response, previous_input=None):
+    """Previous-round snapshot template: one browsing record per shown listing with a null
+    duration placeholder (fill in seconds, or set status "missing"), plus the appointments of
+    the previous INPUT (never native history). Loading it unfilled is rejected."""
+    template = feedback_example(response, (previous_input or FeedbackSnapshot()).model_dump(mode="json")["appointments"])
+    for record in template["previous_round"]["browsing"]:
+        record["duration_seconds"] = None
+    return template
 
 
 def read_payload(arg):
@@ -96,12 +104,52 @@ def check_connections(data_mode, controller):
     return report
 
 
+def response_summary(result):
+    """Compact lines for a response (status, pool cache hit/miss, selection, items)."""
+    lines = [f"Summary: status={result.status} request_id={result.request_id} "
+             f"config_hash={result.execution.config_hash[:12]}"]
+    if result.error:
+        lines.append(f"  error: {result.error.code}: {result.error.message} (retryable={result.error.retryable})")
+    pool = result.pool
+    if pool:
+        hit = {"reused": "HIT", "built": "MISS"}.get(pool.cache, pool.cache)
+        lines.append(f"  pool: cache={pool.cache} ({hit}) size={pool.size} source_count={pool.source_count} "
+                     f"excluded_hard_fail={pool.excluded_hard_fail} excluded_hard_unknown={pool.excluded_hard_unknown} "
+                     f"pool_version={pool.pool_version[:12]}")
+    selection = result.selection
+    if selection:
+        cold = selection.cold_start
+        lines.append(f"  selection: mode={selection.mode} seed={selection.seed[:12]} leaders={selection.leaders} "
+                     f"tie_group={selection.tie_group.size if selection.tie_group else 0} cold_start="
+                     f"{'active' if cold.active else 'inactive'} (exit_conditions_met={cold.exit_conditions_met})")
+        if cold.evaluated and cold.exit_conditions_met:
+            lines.append(f"  cold start exit conditions met: an orchestrator adopting this response sends cold_start "
+                         f"{{exited: true, exited_pool_key: {cold.pool_key[:12]}...}} next (stage it with load-request)")
+    for item in result.recommendations:
+        lines.append(f"  #{item.rank} {item.listing.listing_id} score_rank={item.score_rank} "
+                     f"combined={item.scores.combined_score:.4f} reason={item.selection_reason}")
+    for r in result.resolution:
+        if r.status in ("ambiguous", "unresolved"):
+            lines.append(f"  resolution: {r.criterion_id} {r.status} ({r.reason}); candidates="
+                         f"{[c.entity_id for c in r.candidates]}")
+    lines += [f"  clarification: {c}" for c in result.clarifications]
+    return "\n".join(lines)
+
+
 class Terminal:
     def __init__(self, args):
         self.args = args
-        self.config = RecommendationConfig.from_file(getattr(args, "config", None))
+        self.base_config = RecommendationConfig.from_file(getattr(args, "config", None))
+        self.config = self.base_config  # + session overrides (set-config); never written to a file
+        self.overrides = {}
+        self.seed = None  # set-seed test override of the selection base seed
         self.store = StateStore(args.state_path)
         self.service = None
+        self.controller = None  # debug.ObservedController of the service
+        self.events = debug.Events()
+        self.step = None  # debug.StepSession (scripted step mode)
+        self.view_source = "run"
+        self.run_dispatcher = None  # dispatcher retained from this terminal's latest run
         self.conversation = args.conversation_id or str(uuid.uuid4())
         self.load()
 
@@ -110,7 +158,10 @@ class Terminal:
 
         current = self.store.current(self.conversation)
         self.current = current
-        self.events = []
+        self.feedback = FeedbackSnapshot()
+        self.last_input = (
+            FeedbackSnapshot.model_validate(current["request"]["feedback"]) if current else None
+        )
         self.pending_request = None
         self.response = None
         self.requirements = (
@@ -119,6 +170,14 @@ class Terminal:
             else None
         )
         self.version = current["request"]["requirements_version"] if current else 0
+        # Orchestrator-managed request fields stay as last committed until load-request changes them.
+        self.cold_start = (
+            ColdStartInput.model_validate(current["request"]["cold_start"]) if current else ColdStartInput()
+        )
+        self.result_limit = current["request"].get("result_limit") if current else None
+        self.step = None
+        self.view_source = "run"
+        self.run_dispatcher = None
         if current:
             self.response = Response.model_validate(
                 self.store.cached(self.conversation, current["request"]["request_id"])[
@@ -134,9 +193,59 @@ class Terminal:
             conversation_id=self.conversation,
             requirements_version=self.version,
             requirements=self.requirements,
-            feedback=self.events,
+            feedback=self.feedback,
+            cold_start=self.cold_start,
+            result_limit=self.result_limit,
             previous_state_id=self.current["state_id"] if self.current else None,
         )
+
+    def ensure_service(self):
+        if self.service is None:
+            listing, geo = repositories(self.args.data_mode)
+            inner = LiveController() if self.args.controller == "live" else ScriptedController()
+            self.controller = debug.ObservedController(inner, self.events)
+            # Progress comes from the observing controller (structured events), not the service hook.
+            self.service = RecommendationService(listing, geo, self.store, self.controller, config=self.config)
+        return self.service
+
+    def apply_config(self, config):
+        """Session settings for NEW requests (the service freezes settings per request)."""
+        self.config = config
+        if self.service is not None:
+            self.service.config = config
+        self.input_changed()
+
+    def input_changed(self):
+        """Staged input changed: the next recommend mints a new request_id; step stages that
+        depend on the change are invalidated."""
+        self.pending_request = None
+        if self.step is not None:
+            self.pending_request = self.request()
+            try:
+                level, invalidated = self.step.update(self.pending_request, self.config, self.seed)
+            except (ValueError, ValidationError, RecommendationError) as e:
+                self.step, self.view_source = None, "run"
+                detail = f"{e.detail.code}: {e.detail.message}" if isinstance(e, RecommendationError) else str(e)
+                print(f"Step session discarded: the new input does not pass the run checks ({detail}).")
+                return
+            if level is not None:
+                print(f"Step session: input changed -> invalidated: {', '.join(invalidated) or 'no completed stage'}; "
+                      f"still current: {', '.join(self.step.completed()) or 'none'}")
+
+    def step_session(self):
+        if self.pending_request is None:
+            self.pending_request = self.request()
+        if self.step is None:
+            self.step = debug.StepSession(self, self.pending_request, self.config, self.seed)
+            print(f"Step session for request {self.pending_request.request_id} (the request recommend will submit).")
+        else:
+            self.step.update(self.pending_request, self.config, self.seed)
+        return self.step
+
+    def print_response(self, result):
+        if not getattr(self.args, "brief", False):
+            print(result.model_dump_json(indent=2))
+        print(response_summary(result))
 
     def command(self, line):
         command, _, arg = line.partition(" ")
@@ -153,69 +262,58 @@ class Terminal:
             if parsed != self.requirements:
                 self.version += 1
             self.requirements = parsed
-            self.pending_request = None
             print(f"Accepted requirements v{self.version}; committed result unchanged.")
+            self.input_changed()
             return
         if command == "feedback":
+            # Full snapshot replace (orchestrator semantics): nothing is merged with earlier input.
             payload = read_payload(arg)
-            events = []
-            if (
-                not isinstance(payload, dict)
-                or set(payload) != {"events"}
-                or not isinstance(payload["events"], list)
-            ):
-                raise ValueError("Expected an events array")
-            for item in payload["events"]:
-                if not isinstance(item, dict):
-                    raise ValueError("Each event must be an object")
-                if item.get("conversation_id", self.conversation) != self.conversation:
-                    raise ValueError("Conflicting conversation_id")
-                events.append(
-                    ViewingEvent.model_validate(
-                        {**item, "conversation_id": self.conversation}
-                    )
-                )
-            staged = self.request().model_copy(
-                update={"feedback": self.events + events}
+            if not isinstance(payload, dict):
+                raise ValueError("Expected a feedback snapshot object {previous_round, appointments}")
+            snapshot = FeedbackSnapshot.model_validate(payload)
+            staged = self.request().model_copy(update={"feedback": snapshot})
+            check_feedback(staged, self.store, self.config)  # Validate before replacing staged input.
+            self.feedback = snapshot
+            round_ = snapshot.previous_round
+            print(
+                f"Staged feedback snapshot: previous_round={round_.request_id if round_ else None}, "
+                f"{len(round_.browsing) if round_ else 0} browsing records, "
+                f"{len(snapshot.appointments)} appointment listings; replaces any staged snapshot."
             )
-            prepare(
-                staged, self.current, self.store
-            )  # Validate references before modifying staged input.
-            self.events += events
-            self.pending_request = None
-            print(f"Accepted {len(events)} events; staged until recommend commits.")
+            self.input_changed()
             return
-        if command == "feedback-example":
+        if command in ("feedback-example", "feedback-template"):
             if not self.response or not self.response.recommendations:
                 raise ValueError("No verified response available")
-            payload = feedback_example(self.response)
+            payload = (
+                feedback_example(self.response)
+                if command == "feedback-example"
+                else feedback_template(self.response, self.last_input)
+            )
             print(json.dumps(payload, indent=2))
             if arg:
                 Path(arg).write_text(json.dumps(payload, indent=2) + "\n")
             return
         if command == "recommend":
-            if self.service is None:
-                listing, geo = repositories(self.args.data_mode)
-                controller = (
-                    LiveController()
-                    if self.args.controller == "live"
-                    else ScriptedController()
-                )
-                self.service = RecommendationService(
-                    listing,
-                    geo,
-                    self.store,
-                    controller,
-                    progress=lambda name: print(f"tool: {name}", flush=True),
-                    config=self.config,
-                )
+            self.ensure_service()
+            # Always a NEW request_id, except the retry of a failed pending request (R14).
             if self.pending_request is None:
                 self.pending_request = self.request()
+            if self.step is not None:
+                print("Step session closed: recommend submits the full request.")
+                self.step = None
+            self.view_source = "run"
+            self.controller.begin()
+            self.controller.seed_override = self.seed
             result = self.service.recommend(self.pending_request)
             from ..schemas import validate_response
 
             validate_response(result)
-            print(result.model_dump_json(indent=2))
+            try:
+                self.controller.report_gates(self.store.trace(self.conversation, result.request_id).get("stages"))
+            except RecommendationError:
+                pass
+            self.print_response(result)
             directory = Path(self.args.state_path).resolve().parent / "exports"
             directory.mkdir(exist_ok=True)
             # Generated IDs, never caller-controlled path components.
@@ -258,8 +356,10 @@ class Terminal:
                         ),
                     )
                 self.response = result
+                self.run_dispatcher = self.controller.dispatcher
                 self.current = self.store.current(self.conversation)
-                self.events = []
+                self.last_input = self.pending_request.feedback
+                self.feedback = FeedbackSnapshot()
                 self.pending_request = None
             return
         if command == "show-state":
@@ -273,9 +373,7 @@ class Terminal:
                             if self.requirements
                             else None
                         ),
-                        "pending_feedback": [
-                            e.model_dump(mode="json") for e in self.events
-                        ],
+                        "staged_feedback": self.feedback.model_dump(mode="json"),
                         "committed_state_id": (
                             self.current["state_id"] if self.current else None
                         ),
@@ -288,34 +386,45 @@ class Terminal:
                 )
             )
             return
-        if command == "show-trace":
-            print(
-                json.dumps(self.store.trace(self.conversation, arg or None), indent=2)
-            )
-            return
         if command == "reset":
             self.conversation = str(uuid.uuid4())
             self.load()
             print("Conversation:", self.conversation)
             return
+        if debug.handle(self, command, arg):
+            return
         if command not in ("help", ""):
-            raise ValueError("Unknown command")
-        print(
-            "check-connections | requirements [@file] | feedback [@file] | feedback-example [file] | recommend | show-state | show-trace [request-id] | reset | exit"
-        )
+            raise ValueError("Unknown command (help lists the commands)")
+        print(debug.HELP)
+
+    def lines(self):
+        """Interactive prompt, or the --script file (each command echoed after the prompt)."""
+        script = getattr(self.args, "script", None)
+        if not script:
+            while True:
+                yield input("recommendation> ").strip()
+        for raw in Path(script).read_text().splitlines():
+            line = raw.strip()
+            if not line or line.startswith("#"):
+                continue
+            print(f"recommendation> {line}", flush=True)
+            yield line
 
     def run(self):
         print(
-            f"data-mode={self.args.data_mode} controller={self.args.controller} conversation={self.conversation}\nState: {self.args.state_path}\nUse help for commands. Committed state resumes; staged input is not saved on exit."
+            f"data-mode={self.args.data_mode} controller={self.args.controller} conversation={self.conversation}\nState: {self.args.state_path}\nSettings: {self.config.source} (config_hash {self.config.config_hash[:12]})\nUse help for commands. Committed state resumes; staged input is not saved on exit."
         )
+        if not self.current and self.store.legacy_head(self.conversation):
+            print("Note: this conversation only has legacy contract-1.0 state; the next request starts a fresh v2 chain.")
         try:
-            while True:
+            for line in self.lines():
                 try:
-                    line = input("recommendation> ").strip()
                     if line == "exit":
                         break
                     self.command(line)
-                except (ValueError, ValidationError, RecommendationError, OSError) as e:
+                except RecommendationError as e:
+                    print(f"{e.detail.code}: {e.detail.message}")
+                except (ValueError, ValidationError, OSError) as e:
                     print(str(e))
                 except ImportError:
                     print(
@@ -346,10 +455,12 @@ def main():
         ),
     )
     parser.add_argument("--check-connections", action="store_true")
+    parser.add_argument("--script", help="Run the commands of this file (one per line, # comments) instead of the prompt")
+    parser.add_argument("--brief", action="store_true", help="Print response summaries instead of full JSON (artifacts keep the full JSON)")
     parser.add_argument(
         "--config",
         default=os.getenv("RECOMMENDATION_CONFIG"),
-        help="Application-owned scoring and execution policy JSON",
+        help="Alternative settings file (YAML or JSON, same schema as recommendation/settings/recommendation.yaml); default: the committed YAML",
     )
     args = parser.parse_args()
     if args.check_connections:

@@ -1,78 +1,140 @@
 {
   "$defs": {
-    "ViewPayload": {
+    "AppointmentSignal": {
+      "additionalProperties": false,
+      "description": "One entry per listing: every non-draft VIEWING action status and action ID for it.",
+      "properties": {
+        "action_ids": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Action Ids",
+          "type": "array"
+        },
+        "listing_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Listing Id",
+          "type": "string"
+        },
+        "statuses": {
+          "items": {
+            "maxLength": 64,
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Statuses",
+          "type": "array"
+        }
+      },
+      "required": [
+        "listing_id",
+        "statuses",
+        "action_ids"
+      ],
+      "title": "AppointmentSignal",
+      "type": "object"
+    },
+    "BrowsingRecord": {
       "additionalProperties": false,
       "properties": {
         "duration_seconds": {
-          "minimum": 0,
-          "title": "Duration Seconds",
-          "type": "number"
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration Seconds"
         },
-        "view_session_id": {
+        "listing_id": {
+          "maxLength": 128,
           "minLength": 1,
-          "title": "View Session Id",
+          "title": "Listing Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "recorded",
+            "missing"
+          ],
+          "title": "Status",
           "type": "string"
         }
       },
       "required": [
-        "view_session_id",
-        "duration_seconds"
+        "listing_id",
+        "status"
       ],
-      "title": "ViewPayload",
+      "title": "BrowsingRecord",
+      "type": "object"
+    },
+    "PreviousRound": {
+      "additionalProperties": false,
+      "properties": {
+        "browsing": {
+          "items": {
+            "$ref": "#/$defs/BrowsingRecord"
+          },
+          "title": "Browsing",
+          "type": "array"
+        },
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Request Id",
+          "type": "string"
+        },
+        "shown_listing_ids": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 10,
+          "minItems": 1,
+          "title": "Shown Listing Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "request_id",
+        "shown_listing_ids",
+        "browsing"
+      ],
+      "title": "PreviousRound",
       "type": "object"
     }
   },
   "additionalProperties": false,
   "properties": {
-    "conversation_id": {
-      "minLength": 1,
-      "title": "Conversation Id",
-      "type": "string"
+    "appointments": {
+      "items": {
+        "$ref": "#/$defs/AppointmentSignal"
+      },
+      "title": "Appointments",
+      "type": "array"
     },
-    "event_id": {
-      "minLength": 1,
-      "title": "Event Id",
-      "type": "string"
-    },
-    "event_type": {
-      "const": "listing_view_duration",
-      "default": "listing_view_duration",
-      "title": "Event Type",
-      "type": "string"
-    },
-    "listing_id": {
-      "minLength": 1,
-      "title": "Listing Id",
-      "type": "string"
-    },
-    "occurred_at": {
-      "format": "date-time",
-      "title": "Occurred At",
-      "type": "string"
-    },
-    "payload": {
-      "$ref": "#/$defs/ViewPayload"
-    },
-    "recommendation_request_id": {
-      "minLength": 1,
-      "title": "Recommendation Request Id",
-      "type": "string"
-    },
-    "source": {
-      "const": "sample",
-      "default": "sample",
-      "title": "Source",
-      "type": "string"
+    "previous_round": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PreviousRound"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     }
   },
-  "required": [
-    "event_id",
-    "conversation_id",
-    "recommendation_request_id",
-    "listing_id",
-    "occurred_at",
-    "payload"
-  ],
-  "title": "ViewingEvent",
+  "title": "FeedbackSnapshot",
   "type": "object"
 }

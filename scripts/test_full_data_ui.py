@@ -22,7 +22,7 @@ with sync_playwright() as p:
     expect(page.locator('body')).to_have_attribute('data-ready','true')
     expect(page.locator('#dataset-note')).to_contain_text('21,431')
     expect(page.locator('#dataset-kind')).to_have_text('完整历史快照')
-    expect(page.locator('.listing-card')).to_have_count(5)
+    expect(page.locator('.listing-card')).to_have_count(10)
     expect(page.locator('.coverage')).to_contain_text('21431')
     card=page.locator('.listing-card').first
     expect(card.locator('.listing-details-panel')).to_have_attribute('data-loaded','true',timeout=20000)

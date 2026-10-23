@@ -1,0 +1,111 @@
+# Recommendation subagent settings: the single source of every tunable algorithm parameter.
+#
+# Loader: recommendation/settings/loader.py (pydantic, extra keys forbidden, validated at load).
+# Production uses ONLY this committed file. RECOMMENDATION_CONFIG / --config may point to an
+# alternative file of the same schema (YAML or JSON by suffix) for tests and experiments; the
+# config_hash of whatever file was used is recorded with every run.
+# Never put credentials, DSNs, URLs or tokens here (rejected by the loader and by a test).
+#
+# Source annotation per value (P7 calibration; per-key evidence in
+# evaluation/recommendation-exploration-2026-10-23/TUNING.md, method and data in CALIBRATION.md):
+#   confirmed          rule fixed by the user's plan / confirmed decisions (spec section 1, R1) or an
+#                      explicit rule of the authoritative spec (TUNING.md cites it)
+#   existing-default   value of the previous weighted-v1 policy, RunLimits or code constant
+#   experiment-result  value chosen (changed or kept) from a P7 measurement on the live data,
+#                      the live catalog or a reproducible run (python -m recommendation.analysis.calibrate)
+#   provisional        spec R2 label: design choice NOT yet calibrated. P7 could not calibrate these
+#                      values (they need real user feedback / dwell data); each one is listed under
+#                      "Decisions pending for the user" in OPEN_ITEMS.md and the P7 calibration item
+#                      is reported as partial (VALIDATION.md)
+# null means "not calibrated"; the loader rejects null for any parameter reachable in the
+# enabled configuration (browsing.duration_cap_seconds is the one documented exception:
+# null there means explicitly uncapped).
+#
+# Migration status: every key below is in effect (since P6; recommendation/settings/pending.py
+# lists nothing). That module keeps the extension point for a future key that is validated
+# before its feature exists: such a key gets a phase marker on its line (format in pending.py),
+# an entry in its table, and is recorded in every trace; a test keeps both identical.
+
+config_version: 1
+
+recommendation:
+  default_result_limit: 10          # confirmed (plan: default 10, fewer when the pool is smaller)
+  max_result_limit: 10              # confirmed; must equal the native contract maximum (cross-layer test)
+
+ranking:
+  soft_weight: 0.60                 # confirmed (total = 0.60 soft + 0.40 behaviour)
+  behavior_weight: 0.40             # confirmed
+  soft:
+    numeric_bounds:                 # existing-default (weighted-v1 minimize/maximize utility bounds)
+      price: [0, 20000]             # existing-default
+      bedrooms: [0, 10]             # existing-default
+      floor_area_sqft: [0, 10000]   # existing-default
+  behavior:
+    appointment_weight: 0.60        # confirmed
+    browsing_weight: 0.40           # confirmed
+    missing_branch_contribution: 0.0          # confirmed (missing behaviour branch contributes 0)
+    redistribute_missing_branch_weight: false # confirmed (branch weights are never redistributed)
+    counted_appointment_statuses: [MANUAL_SENT, MANUAL_REPLIED, CONFIRMED]  # confirmed (R1b); other statuses are rejected (INVALID_FEEDBACK)
+    reference_scope: in_pool        # confirmed (decision 3: only references inside the current pool)
+  browsing:                         # previous-round browsing references (ranking/scoring_v2.py)
+    transform: log1p                # confirmed (logarithmic growth)
+    duration_cap_seconds: null      # confirmed: null = explicitly uncapped (not "uncalibrated")
+    time_scale_seconds: 30          # provisional (not calibrated: no real dwell data exists); weight = log1p(t / scale)
+  similarity:
+    suppression: hard_criteria      # confirmed (decision 1); alternatives: all_criteria | none
+    feature_weights:                # provisional (not calibrated: preference weights, no real feedback to fit them)
+      price: 0.20                   # provisional (decision 2: price is a similarity feature; its calibration is pending)
+      property_type: 0.20           # provisional
+      bedrooms: 0.16                # provisional
+      floor_area_sqft: 0.20         # provisional
+      geography: 0.24               # provisional
+    numeric_scaling: p05_p95        # experiment-result (std is dominated by price outliers; iqr is 0 for bedrooms in 5 of 9 pools)
+    geographic_scale_m: 3000        # existing-default (weighted-v1 geography scale)
+    geography_district_fallback: true   # experiment-result (60 % of listings lack coordinates)
+    min_comparison_coverage: 0.5    # experiment-result (> 0.5 makes most pairs unavailable: floor area missing)
+
+geography:                          # native geography: recommendation/geography/ (catalog, resolver, distances)
+  station_distance_method: nearest_exit   # confirmed (R1c: LTA station entity, nearest recorded exit); alternative: exit_centroid
+
+cold_start:                         # cold-start diagnostics + price exploration: recommendation/ranking/selection.py, exploration.py
+  enabled: true                     # confirmed (plan Step 7)
+  reenter_on_pool_rebuild: true     # confirmed (decision 4)
+  min_evidence_coverage: 0.80       # confirmed (C threshold)
+  max_boundary_tie_group_size: 5    # confirmed (B threshold)
+  min_top_k_stability: 0.90         # confirmed (S threshold)
+  price_sampling:
+    target_sample_size: 30          # confirmed as initial experimental value (not a statistical guarantee)
+    quantile_bins: 5                # experiment-result (kept; more bins leave more price bins without a slot)
+  stability:
+    trials: 20                      # experiment-result (kept; S std <= 0.021, exit decision agrees with 1000 trials)
+    weight_perturbation_fraction: 0.2   # provisional (not calibrated: what counts as a reasonable perturbation is a design choice; epsilon was derived under it)
+
+selection:                          # select-v1 (tie group, seeds R3): recommendation/ranking/selection.py
+  tie_max_score_span: 0.01          # experiment-result (epsilon; score gaps > 0.005 keep their order under the perturbation)
+  random_policy: uniform_without_replacement  # confirmed
+  seed_namespace: recommendation-selection-v1 # confirmed
+
+cache:                              # pool cache: recommendation/state/pool_cache.py, tools/pool_builder.py
+  enabled: true                     # confirmed (plan Step 4: pool cache)
+  ttl_seconds: 0                    # confirmed (spec section 2: no TTL, invalidated only by pool_key / data_version; 0 encodes it, R2)
+  max_entries_per_conversation: 2   # provisional (reusable cache index entries per conversation: the newest BUILT ones, a hit does not refresh, spec section 5)
+  pool_retention_per_conversation: 4  # provisional (most recently used pool contents kept for '<trace>/pool' per conversation, spec R13; kept separate from the index bound, must be >= it)
+  memory_max_entries: 4             # provisional (per-process in-memory LRU bound, spec R13)
+
+entity_resolution:                  # recommendation/geography/resolver.py
+  max_search_attempts: 3            # experiment-result (kept; search_places calls per criterion; tools/geo_tools.py)
+  max_candidates: 5                 # experiment-result (kept; candidates listed for an ambiguous target)
+
+controller:
+  max_model_turns: 8                # existing-default (RunLimits.model_turns; raising it is a pending decision, OPEN_ITEMS.md)
+  max_tool_calls: 20                # existing-default (RunLimits.tool_calls)
+  max_resolution_tool_calls: 6      # experiment-result (kept); search/query/bind tool calls, counted inside max_tool_calls (tools/registry.py)
+  timeout_seconds: 90               # existing-default (RunLimits.timeout_seconds)
+  repairs: 2                        # existing-default (RunLimits.repairs)
+  model_result_candidates: 100      # existing-default (RunLimits.model_result_candidates)
+
+trace:
+  mode: summary                     # confirmed (plan Step 9: slim default trace); RECOMMENDATION_TRACE_MODE may toggle
+  preview_rows: 10                  # experiment-result (kept; stage/tool previews and trace ID lists = one result page)
+  debug_max_rows: 200               # experiment-result (kept; debug trace rows in total)
+  max_string_chars: 4000            # existing-default (former tracing/slim.py TEXT_LIMIT; characters kept of one string in tool data / arguments)

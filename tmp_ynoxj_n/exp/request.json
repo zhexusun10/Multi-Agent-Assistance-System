@@ -1,0 +1,53 @@
+{
+  "contract_version": "2.0",
+  "request_id": "661e8aa6-c7cc-44b6-976c-b2c298e31a5b",
+  "conversation_id": "c",
+  "requirements_version": 1,
+  "requirements": {
+    "listing_type": "RENT",
+    "criteria": [
+      {
+        "criterion_id": "budget",
+        "field": "price",
+        "operator": "lte",
+        "value": 3000.0,
+        "unit": "SGD/month",
+        "strength": "hard",
+        "weight": 1.0,
+        "utility": "threshold",
+        "destination_id": null,
+        "destination_name": null,
+        "category": null,
+        "distance_type": null,
+        "transport_mode": null
+      },
+      {
+        "criterion_id": "district",
+        "field": "district_code",
+        "operator": "in",
+        "value": [
+          "D05"
+        ],
+        "unit": null,
+        "strength": "soft",
+        "weight": 1.0,
+        "utility": "threshold",
+        "destination_id": null,
+        "destination_name": null,
+        "category": null,
+        "distance_type": null,
+        "transport_mode": null
+      }
+    ]
+  },
+  "previous_state_id": null,
+  "result_limit": null,
+  "feedback": {
+    "previous_round": null,
+    "appointments": []
+  },
+  "cold_start": {
+    "exited": false,
+    "exited_pool_key": null
+  }
+}

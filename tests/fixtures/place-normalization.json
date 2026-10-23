@@ -1,0 +1,1566 @@
+{
+ "description": "Shared place-name normalisation cases: TS normalizePlace (src/adapters/locations.ts) and Python recommendation.geography.normalize.normalize_place must both return expected for every input. Expected values were generated from the TS implementation.",
+ "source": "src/adapters/locations.ts normalizePlace",
+ "cases": [
+  {
+   "input": "Clementi",
+   "expected": "clementi"
+  },
+  {
+   "input": "clementi",
+   "expected": "clementi"
+  },
+  {
+   "input": "CLEMENTI MRT STATION",
+   "expected": "clementi"
+  },
+  {
+   "input": "Clementi MRT",
+   "expected": "clementi"
+  },
+  {
+   "input": "ClementiMRT",
+   "expected": "clementi"
+  },
+  {
+   "input": "Clementi  mrt  station",
+   "expected": "clementi"
+  },
+  {
+   "input": "The Clementi MRT Station",
+   "expected": "clementi"
+  },
+  {
+   "input": "the  thomson",
+   "expected": "thomson"
+  },
+  {
+   "input": "theatre",
+   "expected": "theatre"
+  },
+  {
+   "input": "The",
+   "expected": "the"
+  },
+  {
+   "input": "金文泰",
+   "expected": "金文泰"
+  },
+  {
+   "input": "金文泰地铁站",
+   "expected": "金文泰"
+  },
+  {
+   "input": "金文泰地铁",
+   "expected": "金文泰"
+  },
+  {
+   "input": "金文泰站",
+   "expected": "金文泰"
+  },
+  {
+   "input": "克莱门特MRT",
+   "expected": "克莱门特"
+  },
+  {
+   "input": "Bishan捷运站",
+   "expected": "bishan"
+  },
+  {
+   "input": "武吉班让轻轨站",
+   "expected": "武吉班让轻轨"
+  },
+  {
+   "input": "Bukit Panjang LRT",
+   "expected": "bukitpanjang"
+  },
+  {
+   "input": "Bukit Panjang LRT Station",
+   "expected": "bukitpanjang"
+  },
+  {
+   "input": "Bukit Panjang Station",
+   "expected": "bukitpanjang"
+  },
+  {
+   "input": "one-north",
+   "expected": "onenorth"
+  },
+  {
+   "input": "ONE-NORTH MRT STATION",
+   "expected": "onenorth"
+  },
+  {
+   "input": "St. Andrew's",
+   "expected": "standrews"
+  },
+  {
+   "input": "Holland V (Holland Village)",
+   "expected": "hollandvhollandvillage"
+  },
+  {
+   "input": "Raffles Place MRT",
+   "expected": "rafflesplace"
+  },
+  {
+   "input": "Ｃｌｅｍｅｎｔｉ　ＭＲＴ",
+   "expected": "clementi"
+  },
+  {
+   "input": "Clementi﻿MRT",
+   "expected": "clementi"
+  },
+  {
+   "input": "ClementiMRT",
+   "expected": "clementi"
+  },
+  {
+   "input": "Clementi\u001fMRT",
+   "expected": "clementi\u001f"
+  },
+  {
+   "input": "clementi mrt\n",
+   "expected": "clementi"
+  },
+  {
+   "input": "clementi mrt\nx",
+   "expected": "clementix"
+  },
+  {
+   "input": "Tampines\tEast",
+   "expected": "tampineseast"
+  },
+  {
+   "input": "mrtstation",
+   "expected": ""
+  },
+  {
+   "input": "mrt station",
+   "expected": ""
+  },
+  {
+   "input": "lrt",
+   "expected": ""
+  },
+  {
+   "input": "LRT",
+   "expected": ""
+  },
+  {
+   "input": "站",
+   "expected": ""
+  },
+  {
+   "input": "捷运站",
+   "expected": ""
+  },
+  {
+   "input": "kranji station",
+   "expected": "kranji"
+  },
+  {
+   "input": "station road",
+   "expected": "road"
+  },
+  {
+   "input": "Stationery Mall",
+   "expected": "stationerymall"
+  },
+  {
+   "input": "MRT Clementi",
+   "expected": "clementi"
+  },
+  {
+   "input": "Clementi-MRT",
+   "expected": "clementi"
+  },
+  {
+   "input": "Clementi_mrt",
+   "expected": "clementi"
+  },
+  {
+   "input": "clementi.mrt",
+   "expected": "clementi"
+  },
+  {
+   "input": "İstanbul",
+   "expected": "i̇stanbul"
+  },
+  {
+   "input": "ΟΔΟΣ",
+   "expected": "οδος"
+  },
+  {
+   "input": "Straße",
+   "expected": "straße"
+  },
+  {
+   "input": "ﬁve",
+   "expected": "five"
+  },
+  {
+   "input": "①",
+   "expected": "1"
+  },
+  {
+   "input": "Ⅻ",
+   "expected": "xii"
+  },
+  {
+   "input": "NUS",
+   "expected": "nus"
+  },
+  {
+   "input": "NUS ISS",
+   "expected": "nusiss"
+  },
+  {
+   "input": "National University of Singapore",
+   "expected": "nationaluniversityofsingapore"
+  },
+  {
+   "input": "新加坡国立大学",
+   "expected": "新加坡国立大学"
+  },
+  {
+   "input": "Nanyang Technological University",
+   "expected": "nanyangtechnologicaluniversity"
+  },
+  {
+   "input": "  Ang  Mo  Kio  ",
+   "expected": "angmokio"
+  },
+  {
+   "input": "Woodlands North MRT Station",
+   "expected": "woodlandsnorth"
+  },
+  {
+   "input": "HarbourFront",
+   "expected": "harbourfront"
+  },
+  {
+   "input": "Dhoby Ghaut MRT/Interchange",
+   "expected": "dhobyghaut/interchange"
+  },
+  {
+   "input": "Pasir Ris’s",
+   "expected": "pasirriss"
+  },
+  {
+   "input": "Toa Payoh Central",
+   "expected": "toapayohcentral"
+  },
+  {
+   "input": "　Bedok　",
+   "expected": "bedok"
+  },
+  {
+   "input": "Bedok​North",
+   "expected": "bedok​north"
+  },
+  {
+   "input": "mrtx",
+   "expected": "mrtx"
+  },
+  {
+   "input": "xmrt",
+   "expected": "x"
+  },
+  {
+   "input": "Mrt Mrt",
+   "expected": ""
+  },
+  {
+   "input": "station station",
+   "expected": ""
+  },
+  {
+   "input": "THE MRT",
+   "expected": ""
+  },
+  {
+   "input": "the mrt",
+   "expected": ""
+  },
+  {
+   "input": "themrt",
+   "expected": "the"
+  },
+  {
+   "input": "ADMIRALTY MRT STATION",
+   "expected": "admiralty"
+  },
+  {
+   "input": "ALJUNIED MRT STATION",
+   "expected": "aljunied"
+  },
+  {
+   "input": "ANG MO KIO MRT STATION",
+   "expected": "angmokio"
+  },
+  {
+   "input": "BAKAU LRT STATION",
+   "expected": "bakau"
+  },
+  {
+   "input": "BANGKIT LRT STATION",
+   "expected": "bangkit"
+  },
+  {
+   "input": "BARTLEY MRT STATION",
+   "expected": "bartley"
+  },
+  {
+   "input": "BAYFRONT MRT STATION",
+   "expected": "bayfront"
+  },
+  {
+   "input": "BAYSHORE MRT STATION",
+   "expected": "bayshore"
+  },
+  {
+   "input": "BEAUTY WORLD MRT STATION",
+   "expected": "beautyworld"
+  },
+  {
+   "input": "BEDOK MRT STATION",
+   "expected": "bedok"
+  },
+  {
+   "input": "BEDOK NORTH MRT STATION",
+   "expected": "bedoknorth"
+  },
+  {
+   "input": "BEDOK RESERVOIR MRT STATION",
+   "expected": "bedokreservoir"
+  },
+  {
+   "input": "BENCOOLEN MRT STATION",
+   "expected": "bencoolen"
+  },
+  {
+   "input": "BENDEMEER MRT STATION",
+   "expected": "bendemeer"
+  },
+  {
+   "input": "BISHAN MRT STATION",
+   "expected": "bishan"
+  },
+  {
+   "input": "BOON KENG MRT STATION",
+   "expected": "boonkeng"
+  },
+  {
+   "input": "BOON LAY MRT STATION",
+   "expected": "boonlay"
+  },
+  {
+   "input": "BOTANIC GARDENS MRT STATION",
+   "expected": "botanicgardens"
+  },
+  {
+   "input": "BRADDELL MRT STATION",
+   "expected": "braddell"
+  },
+  {
+   "input": "BRAS BASAH MRT STATION",
+   "expected": "brasbasah"
+  },
+  {
+   "input": "BRIGHT HILL MRT STATION",
+   "expected": "brighthill"
+  },
+  {
+   "input": "BUANGKOK MRT STATION",
+   "expected": "buangkok"
+  },
+  {
+   "input": "BUGIS MRT STATION",
+   "expected": "bugis"
+  },
+  {
+   "input": "BUKIT BATOK MRT STATION",
+   "expected": "bukitbatok"
+  },
+  {
+   "input": "BUKIT GOMBAK MRT STATION",
+   "expected": "bukitgombak"
+  },
+  {
+   "input": "BUKIT PANJANG LRT STATION",
+   "expected": "bukitpanjang"
+  },
+  {
+   "input": "BUKIT PANJANG MRT STATION",
+   "expected": "bukitpanjang"
+  },
+  {
+   "input": "BUONA VISTA MRT STATION",
+   "expected": "buonavista"
+  },
+  {
+   "input": "CALDECOTT MRT STATION",
+   "expected": "caldecott"
+  },
+  {
+   "input": "CANBERRA MRT STATION",
+   "expected": "canberra"
+  },
+  {
+   "input": "CANTONMENT MRT STATION",
+   "expected": "cantonment"
+  },
+  {
+   "input": "CASHEW MRT STATION",
+   "expected": "cashew"
+  },
+  {
+   "input": "CHANGI AIRPORT MRT STATION",
+   "expected": "changiairport"
+  },
+  {
+   "input": "CHENG LIM LRT STATION",
+   "expected": "chenglim"
+  },
+  {
+   "input": "CHINATOWN MRT STATION",
+   "expected": "chinatown"
+  },
+  {
+   "input": "CHINESE GARDEN MRT STATION",
+   "expected": "chinesegarden"
+  },
+  {
+   "input": "CHOA CHU KANG LRT STATION",
+   "expected": "choachukang"
+  },
+  {
+   "input": "CHOA CHU KANG MRT STATION",
+   "expected": "choachukang"
+  },
+  {
+   "input": "CITY HALL MRT STATION",
+   "expected": "cityhall"
+  },
+  {
+   "input": "CLARKE QUAY MRT STATION",
+   "expected": "clarkequay"
+  },
+  {
+   "input": "COMMONWEALTH MRT STATION",
+   "expected": "commonwealth"
+  },
+  {
+   "input": "COMPASSVALE LRT STATION",
+   "expected": "compassvale"
+  },
+  {
+   "input": "CORAL EDGE LRT STATION",
+   "expected": "coraledge"
+  },
+  {
+   "input": "COVE LRT STATION",
+   "expected": "cove"
+  },
+  {
+   "input": "DAKOTA MRT STATION",
+   "expected": "dakota"
+  },
+  {
+   "input": "DAMAI LRT STATION",
+   "expected": "damai"
+  },
+  {
+   "input": "DHOBY GHAUT MRT STATION",
+   "expected": "dhobyghaut"
+  },
+  {
+   "input": "DOVER MRT STATION",
+   "expected": "dover"
+  },
+  {
+   "input": "DOWNTOWN MRT STATION",
+   "expected": "downtown"
+  },
+  {
+   "input": "ESPLANADE MRT STATION",
+   "expected": "esplanade"
+  },
+  {
+   "input": "EUNOS MRT STATION",
+   "expected": "eunos"
+  },
+  {
+   "input": "EXPO MRT STATION",
+   "expected": "expo"
+  },
+  {
+   "input": "FAJAR LRT STATION",
+   "expected": "fajar"
+  },
+  {
+   "input": "FARMWAY LRT STATION",
+   "expected": "farmway"
+  },
+  {
+   "input": "FARRER PARK MRT STATION",
+   "expected": "farrerpark"
+  },
+  {
+   "input": "FARRER ROAD MRT STATION",
+   "expected": "farrerroad"
+  },
+  {
+   "input": "FERNVALE LRT STATION",
+   "expected": "fernvale"
+  },
+  {
+   "input": "FORT CANNING MRT STATION",
+   "expected": "fortcanning"
+  },
+  {
+   "input": "GARDENS BY THE BAY MRT STATION",
+   "expected": "gardensbythebay"
+  },
+  {
+   "input": "GEYLANG BAHRU MRT STATION",
+   "expected": "geylangbahru"
+  },
+  {
+   "input": "GREAT WORLD MRT STATION",
+   "expected": "greatworld"
+  },
+  {
+   "input": "GUL CIRCLE MRT STATION",
+   "expected": "gulcircle"
+  },
+  {
+   "input": "HARBOURFRONT MRT STATION",
+   "expected": "harbourfront"
+  },
+  {
+   "input": "HAVELOCK MRT STATION",
+   "expected": "havelock"
+  },
+  {
+   "input": "HAW PAR VILLA MRT STATION",
+   "expected": "hawparvilla"
+  },
+  {
+   "input": "HILLVIEW MRT STATION",
+   "expected": "hillview"
+  },
+  {
+   "input": "HOLLAND VILLAGE MRT STATION",
+   "expected": "hollandvillage"
+  },
+  {
+   "input": "HOUGANG MRT STATION",
+   "expected": "hougang"
+  },
+  {
+   "input": "HUME MRT STATION",
+   "expected": "hume"
+  },
+  {
+   "input": "JALAN BESAR MRT STATION",
+   "expected": "jalanbesar"
+  },
+  {
+   "input": "JELAPANG LRT STATION",
+   "expected": "jelapang"
+  },
+  {
+   "input": "JOO KOON MRT STATION",
+   "expected": "jookoon"
+  },
+  {
+   "input": "JURONG EAST MRT STATION",
+   "expected": "jurongeast"
+  },
+  {
+   "input": "KADALOOR LRT STATION",
+   "expected": "kadaloor"
+  },
+  {
+   "input": "KAKI BUKIT MRT STATION",
+   "expected": "kakibukit"
+  },
+  {
+   "input": "KALLANG MRT STATION",
+   "expected": "kallang"
+  },
+  {
+   "input": "KANGKAR LRT STATION",
+   "expected": "kangkar"
+  },
+  {
+   "input": "KATONG PARK MRT STATION",
+   "expected": "katongpark"
+  },
+  {
+   "input": "KEAT HONG LRT STATION",
+   "expected": "keathong"
+  },
+  {
+   "input": "KEMBANGAN MRT STATION",
+   "expected": "kembangan"
+  },
+  {
+   "input": "KENT RIDGE MRT STATION",
+   "expected": "kentridge"
+  },
+  {
+   "input": "KEPPEL MRT STATION",
+   "expected": "keppel"
+  },
+  {
+   "input": "KHATIB MRT STATION",
+   "expected": "khatib"
+  },
+  {
+   "input": "KING ALBERT PARK MRT STATION",
+   "expected": "kingalbertpark"
+  },
+  {
+   "input": "KOVAN MRT STATION",
+   "expected": "kovan"
+  },
+  {
+   "input": "KRANJI MRT STATION",
+   "expected": "kranji"
+  },
+  {
+   "input": "KUPANG LRT STATION",
+   "expected": "kupang"
+  },
+  {
+   "input": "LABRADOR PARK MRT STATION",
+   "expected": "labradorpark"
+  },
+  {
+   "input": "LAKESIDE MRT STATION",
+   "expected": "lakeside"
+  },
+  {
+   "input": "LAVENDER MRT STATION",
+   "expected": "lavender"
+  },
+  {
+   "input": "LAYAR LRT STATION",
+   "expected": "layar"
+  },
+  {
+   "input": "LENTOR MRT STATION",
+   "expected": "lentor"
+  },
+  {
+   "input": "LITTLE INDIA MRT STATION",
+   "expected": "littleindia"
+  },
+  {
+   "input": "LORONG CHUAN MRT STATION",
+   "expected": "lorongchuan"
+  },
+  {
+   "input": "MACPHERSON MRT STATION",
+   "expected": "macpherson"
+  },
+  {
+   "input": "MARINA BAY MRT STATION",
+   "expected": "marinabay"
+  },
+  {
+   "input": "MARINA SOUTH MRT STATION",
+   "expected": "marinasouth"
+  },
+  {
+   "input": "MARINA SOUTH PIER MRT STATION",
+   "expected": "marinasouthpier"
+  },
+  {
+   "input": "MARINE PARADE MRT STATION",
+   "expected": "marineparade"
+  },
+  {
+   "input": "MARINE TERRACE MRT STATION",
+   "expected": "marineterrace"
+  },
+  {
+   "input": "MARSILING MRT STATION",
+   "expected": "marsiling"
+  },
+  {
+   "input": "MARYMOUNT MRT STATION",
+   "expected": "marymount"
+  },
+  {
+   "input": "MATTAR MRT STATION",
+   "expected": "mattar"
+  },
+  {
+   "input": "MAXWELL MRT STATION",
+   "expected": "maxwell"
+  },
+  {
+   "input": "MAYFLOWER MRT STATION",
+   "expected": "mayflower"
+  },
+  {
+   "input": "MERIDIAN LRT STATION",
+   "expected": "meridian"
+  },
+  {
+   "input": "MOUNTBATTEN MRT STATION",
+   "expected": "mountbatten"
+  },
+  {
+   "input": "NAPIER MRT STATION",
+   "expected": "napier"
+  },
+  {
+   "input": "NEWTON MRT STATION",
+   "expected": "newton"
+  },
+  {
+   "input": "NIBONG LRT STATION",
+   "expected": "nibong"
+  },
+  {
+   "input": "NICOLL HIGHWAY MRT STATION",
+   "expected": "nicollhighway"
+  },
+  {
+   "input": "NOVENA MRT STATION",
+   "expected": "novena"
+  },
+  {
+   "input": "OASIS LRT STATION",
+   "expected": "oasis"
+  },
+  {
+   "input": "ORCHARD BOULEVARD MRT STATION",
+   "expected": "orchardboulevard"
+  },
+  {
+   "input": "ORCHARD MRT STATION",
+   "expected": "orchard"
+  },
+  {
+   "input": "OUTRAM PARK MRT STATION",
+   "expected": "outrampark"
+  },
+  {
+   "input": "PASIR PANJANG MRT STATION",
+   "expected": "pasirpanjang"
+  },
+  {
+   "input": "PASIR RIS MRT STATION",
+   "expected": "pasirris"
+  },
+  {
+   "input": "PAYA LEBAR MRT STATION",
+   "expected": "payalebar"
+  },
+  {
+   "input": "PENDING LRT STATION",
+   "expected": "pending"
+  },
+  {
+   "input": "PETIR LRT STATION",
+   "expected": "petir"
+  },
+  {
+   "input": "PHOENIX LRT STATION",
+   "expected": "phoenix"
+  },
+  {
+   "input": "PIONEER MRT STATION",
+   "expected": "pioneer"
+  },
+  {
+   "input": "POTONG PASIR MRT STATION",
+   "expected": "potongpasir"
+  },
+  {
+   "input": "PRINCE EDWARD ROAD MRT STATION",
+   "expected": "princeedwardroad"
+  },
+  {
+   "input": "PROMENADE MRT STATION",
+   "expected": "promenade"
+  },
+  {
+   "input": "PUNGGOL COAST MRT STATION",
+   "expected": "punggolcoast"
+  },
+  {
+   "input": "PUNGGOL LRT STATION",
+   "expected": "punggol"
+  },
+  {
+   "input": "PUNGGOL MRT STATION",
+   "expected": "punggol"
+  },
+  {
+   "input": "PUNGGOL POINT LRT STATION",
+   "expected": "punggolpoint"
+  },
+  {
+   "input": "QUEENSTOWN MRT STATION",
+   "expected": "queenstown"
+  },
+  {
+   "input": "RAFFLES PLACE MRT STATION",
+   "expected": "rafflesplace"
+  },
+  {
+   "input": "RANGGUNG LRT STATION",
+   "expected": "ranggung"
+  },
+  {
+   "input": "REDHILL MRT STATION",
+   "expected": "redhill"
+  },
+  {
+   "input": "RENJONG LRT STATION",
+   "expected": "renjong"
+  },
+  {
+   "input": "RIVIERA LRT STATION",
+   "expected": "riviera"
+  },
+  {
+   "input": "ROCHOR MRT STATION",
+   "expected": "rochor"
+  },
+  {
+   "input": "RUMBIA LRT STATION",
+   "expected": "rumbia"
+  },
+  {
+   "input": "SAM KEE LRT STATION",
+   "expected": "samkee"
+  },
+  {
+   "input": "SAMUDERA LRT STATION",
+   "expected": "samudera"
+  },
+  {
+   "input": "SEGAR LRT STATION",
+   "expected": "segar"
+  },
+  {
+   "input": "SEMBAWANG MRT STATION",
+   "expected": "sembawang"
+  },
+  {
+   "input": "SENGKANG MRT STATION",
+   "expected": "sengkang"
+  },
+  {
+   "input": "SENJA LRT STATION",
+   "expected": "senja"
+  },
+  {
+   "input": "SERANGOON MRT STATION",
+   "expected": "serangoon"
+  },
+  {
+   "input": "SHENTON WAY MRT STATION",
+   "expected": "shentonway"
+  },
+  {
+   "input": "SIGLAP MRT STATION",
+   "expected": "siglap"
+  },
+  {
+   "input": "SIMEI MRT STATION",
+   "expected": "simei"
+  },
+  {
+   "input": "SIXTH AVENUE MRT STATION",
+   "expected": "sixthavenue"
+  },
+  {
+   "input": "SOMERSET MRT STATION",
+   "expected": "somerset"
+  },
+  {
+   "input": "SOO TECK LRT STATION",
+   "expected": "sooteck"
+  },
+  {
+   "input": "SOUTH VIEW LRT STATION",
+   "expected": "southview"
+  },
+  {
+   "input": "SPRINGLEAF MRT STATION",
+   "expected": "springleaf"
+  },
+  {
+   "input": "STADIUM MRT STATION",
+   "expected": "stadium"
+  },
+  {
+   "input": "STEVENS MRT STATION",
+   "expected": "stevens"
+  },
+  {
+   "input": "SUMANG LRT STATION",
+   "expected": "sumang"
+  },
+  {
+   "input": "TAI SENG MRT STATION",
+   "expected": "taiseng"
+  },
+  {
+   "input": "TAMPINES EAST MRT STATION",
+   "expected": "tampineseast"
+  },
+  {
+   "input": "TAMPINES MRT STATION",
+   "expected": "tampines"
+  },
+  {
+   "input": "TAMPINES WEST MRT STATION",
+   "expected": "tampineswest"
+  },
+  {
+   "input": "TAN KAH KEE MRT STATION",
+   "expected": "tankahkee"
+  },
+  {
+   "input": "TANAH MERAH MRT STATION",
+   "expected": "tanahmerah"
+  },
+  {
+   "input": "TANJONG KATONG MRT STATION",
+   "expected": "tanjongkatong"
+  },
+  {
+   "input": "TANJONG PAGAR MRT STATION",
+   "expected": "tanjongpagar"
+  },
+  {
+   "input": "TANJONG RHU MRT STATION",
+   "expected": "tanjongrhu"
+  },
+  {
+   "input": "TECK LEE LRT STATION",
+   "expected": "tecklee"
+  },
+  {
+   "input": "TECK WHYE LRT STATION",
+   "expected": "teckwhye"
+  },
+  {
+   "input": "TELOK AYER MRT STATION",
+   "expected": "telokayer"
+  },
+  {
+   "input": "TELOK BLANGAH MRT STATION",
+   "expected": "telokblangah"
+  },
+  {
+   "input": "THANGGAM LRT STATION",
+   "expected": "thanggam"
+  },
+  {
+   "input": "TIONG BAHRU MRT STATION",
+   "expected": "tiongbahru"
+  },
+  {
+   "input": "TOA PAYOH MRT STATION",
+   "expected": "toapayoh"
+  },
+  {
+   "input": "TONGKANG LRT STATION",
+   "expected": "tongkang"
+  },
+  {
+   "input": "TUAS CRESCENT MRT STATION",
+   "expected": "tuascrescent"
+  },
+  {
+   "input": "TUAS LINK MRT STATION",
+   "expected": "tuaslink"
+  },
+  {
+   "input": "TUAS WEST ROAD MRT STATION",
+   "expected": "tuaswestroad"
+  },
+  {
+   "input": "UBI MRT STATION",
+   "expected": "ubi"
+  },
+  {
+   "input": "UPPER CHANGI MRT STATION",
+   "expected": "upperchangi"
+  },
+  {
+   "input": "UPPER THOMSON MRT STATION",
+   "expected": "upperthomson"
+  },
+  {
+   "input": "WOODLANDS MRT STATION",
+   "expected": "woodlands"
+  },
+  {
+   "input": "WOODLANDS NORTH MRT STATION",
+   "expected": "woodlandsnorth"
+  },
+  {
+   "input": "WOODLANDS SOUTH MRT STATION",
+   "expected": "woodlandssouth"
+  },
+  {
+   "input": "WOODLEIGH MRT STATION",
+   "expected": "woodleigh"
+  },
+  {
+   "input": "YEW TEE MRT STATION",
+   "expected": "yewtee"
+  },
+  {
+   "input": "YIO CHU KANG MRT STATION",
+   "expected": "yiochukang"
+  },
+  {
+   "input": "YISHUN MRT STATION",
+   "expected": "yishun"
+  },
+  {
+   "input": "BEDOK",
+   "expected": "bedok"
+  },
+  {
+   "input": "BOON LAY",
+   "expected": "boonlay"
+  },
+  {
+   "input": "BUKIT BATOK",
+   "expected": "bukitbatok"
+  },
+  {
+   "input": "BUKIT MERAH",
+   "expected": "bukitmerah"
+  },
+  {
+   "input": "BUKIT PANJANG",
+   "expected": "bukitpanjang"
+  },
+  {
+   "input": "BUKIT TIMAH",
+   "expected": "bukittimah"
+  },
+  {
+   "input": "CENTRAL WATER CATCHMENT",
+   "expected": "centralwatercatchment"
+  },
+  {
+   "input": "CHANGI",
+   "expected": "changi"
+  },
+  {
+   "input": "CHOA CHU KANG",
+   "expected": "choachukang"
+  },
+  {
+   "input": "CLEMENTI",
+   "expected": "clementi"
+  },
+  {
+   "input": "HOUGANG",
+   "expected": "hougang"
+  },
+  {
+   "input": "JURONG EAST",
+   "expected": "jurongeast"
+  },
+  {
+   "input": "JURONG WEST",
+   "expected": "jurongwest"
+  },
+  {
+   "input": "PASIR RIS",
+   "expected": "pasirris"
+  },
+  {
+   "input": "PIONEER",
+   "expected": "pioneer"
+  },
+  {
+   "input": "PUNGGOL",
+   "expected": "punggol"
+  },
+  {
+   "input": "QUEENSTOWN",
+   "expected": "queenstown"
+  },
+  {
+   "input": "SELETAR",
+   "expected": "seletar"
+  },
+  {
+   "input": "SEMBAWANG",
+   "expected": "sembawang"
+  },
+  {
+   "input": "SENGKANG",
+   "expected": "sengkang"
+  },
+  {
+   "input": "SERANGOON",
+   "expected": "serangoon"
+  },
+  {
+   "input": "KALLANG",
+   "expected": "kallang"
+  },
+  {
+   "input": "LIM CHU KANG",
+   "expected": "limchukang"
+  },
+  {
+   "input": "NORTH-EASTERN ISLANDS",
+   "expected": "northeasternislands"
+  },
+  {
+   "input": "NOVENA",
+   "expected": "novena"
+  },
+  {
+   "input": "SIMPANG",
+   "expected": "simpang"
+  },
+  {
+   "input": "SOUTHERN ISLANDS",
+   "expected": "southernislands"
+  },
+  {
+   "input": "SUNGEI KADUT",
+   "expected": "sungeikadut"
+  },
+  {
+   "input": "TOA PAYOH",
+   "expected": "toapayoh"
+  },
+  {
+   "input": "TUAS",
+   "expected": "tuas"
+  },
+  {
+   "input": "WESTERN ISLANDS",
+   "expected": "westernislands"
+  },
+  {
+   "input": "WESTERN WATER CATCHMENT",
+   "expected": "westernwatercatchment"
+  },
+  {
+   "input": "WOODLANDS",
+   "expected": "woodlands"
+  },
+  {
+   "input": "RIVER VALLEY",
+   "expected": "rivervalley"
+  },
+  {
+   "input": "ROCHOR",
+   "expected": "rochor"
+  },
+  {
+   "input": "SINGAPORE RIVER",
+   "expected": "singaporeriver"
+  },
+  {
+   "input": "STRAITS VIEW",
+   "expected": "straitsview"
+  },
+  {
+   "input": "CHANGI BAY",
+   "expected": "changibay"
+  },
+  {
+   "input": "MARINE PARADE",
+   "expected": "marineparade"
+  },
+  {
+   "input": "DOWNTOWN CORE",
+   "expected": "downtowncore"
+  },
+  {
+   "input": "MARINA EAST",
+   "expected": "marinaeast"
+  },
+  {
+   "input": "MARINA SOUTH",
+   "expected": "marinasouth"
+  },
+  {
+   "input": "MUSEUM",
+   "expected": "museum"
+  },
+  {
+   "input": "NEWTON",
+   "expected": "newton"
+  },
+  {
+   "input": "ORCHARD",
+   "expected": "orchard"
+  },
+  {
+   "input": "OUTRAM",
+   "expected": "outram"
+  },
+  {
+   "input": "TAMPINES",
+   "expected": "tampines"
+  },
+  {
+   "input": "TANGLIN",
+   "expected": "tanglin"
+  },
+  {
+   "input": "TENGAH",
+   "expected": "tengah"
+  },
+  {
+   "input": "MANDAI",
+   "expected": "mandai"
+  },
+  {
+   "input": "BISHAN",
+   "expected": "bishan"
+  },
+  {
+   "input": "ANG MO KIO",
+   "expected": "angmokio"
+  },
+  {
+   "input": "GEYLANG",
+   "expected": "geylang"
+  },
+  {
+   "input": "PAYA LEBAR",
+   "expected": "payalebar"
+  },
+  {
+   "input": "YISHUN",
+   "expected": "yishun"
+  },
+  {
+   "input": "克莱门特",
+   "expected": "克莱门特"
+  },
+  {
+   "input": "克莱门蒂",
+   "expected": "克莱门蒂"
+  },
+  {
+   "input": "克莱蒙蒂",
+   "expected": "克莱蒙蒂"
+  },
+  {
+   "input": "克莱门提",
+   "expected": "克莱门提"
+  },
+  {
+   "input": "波那维斯达",
+   "expected": "波那维斯达"
+  },
+  {
+   "input": "波纳维斯达",
+   "expected": "波纳维斯达"
+  },
+  {
+   "input": "肯特岗",
+   "expected": "肯特岗"
+  },
+  {
+   "input": "肯特岭",
+   "expected": "肯特岭"
+  },
+  {
+   "input": "裕廊东",
+   "expected": "裕廊东"
+  },
+  {
+   "input": "杜佛",
+   "expected": "杜佛"
+  },
+  {
+   "input": "多佛",
+   "expected": "多佛"
+  },
+  {
+   "input": "女皇镇",
+   "expected": "女皇镇"
+  },
+  {
+   "input": "联邦",
+   "expected": "联邦"
+  },
+  {
+   "input": "荷兰村",
+   "expected": "荷兰村"
+  },
+  {
+   "input": "宏茂桥",
+   "expected": "宏茂桥"
+  },
+  {
+   "input": "碧山",
+   "expected": "碧山"
+  },
+  {
+   "input": "实龙岗",
+   "expected": "实龙岗"
+  },
+  {
+   "input": "淡滨尼",
+   "expected": "淡滨尼"
+  },
+  {
+   "input": "巴西立",
+   "expected": "巴西立"
+  },
+  {
+   "input": "勿洛",
+   "expected": "勿洛"
+  },
+  {
+   "input": "义顺",
+   "expected": "义顺"
+  },
+  {
+   "input": "兀兰",
+   "expected": "兀兰"
+  },
+  {
+   "input": "文礼",
+   "expected": "文礼"
+  },
+  {
+   "input": "武吉巴督",
+   "expected": "武吉巴督"
+  },
+  {
+   "input": "红山",
+   "expected": "红山"
+  },
+  {
+   "input": "武吉班让",
+   "expected": "武吉班让"
+  },
+  {
+   "input": "武吉知马",
+   "expected": "武吉知马"
+  },
+  {
+   "input": "中央集水区",
+   "expected": "中央集水区"
+  },
+  {
+   "input": "樟宜",
+   "expected": "樟宜"
+  },
+  {
+   "input": "蔡厝港",
+   "expected": "蔡厝港"
+  },
+  {
+   "input": "金文台",
+   "expected": "金文台"
+  },
+  {
+   "input": "后港",
+   "expected": "后港"
+  },
+  {
+   "input": "裕廊西",
+   "expected": "裕廊西"
+  },
+  {
+   "input": "先驱",
+   "expected": "先驱"
+  },
+  {
+   "input": "榜鹅",
+   "expected": "榜鹅"
+  },
+  {
+   "input": "实里达",
+   "expected": "实里达"
+  },
+  {
+   "input": "三巴旺",
+   "expected": "三巴旺"
+  },
+  {
+   "input": "盛港",
+   "expected": "盛港"
+  },
+  {
+   "input": "加冷",
+   "expected": "加冷"
+  },
+  {
+   "input": "林厝港",
+   "expected": "林厝港"
+  },
+  {
+   "input": "东北群岛",
+   "expected": "东北群岛"
+  },
+  {
+   "input": "诺维娜",
+   "expected": "诺维娜"
+  },
+  {
+   "input": "新邦",
+   "expected": "新邦"
+  },
+  {
+   "input": "南部群岛",
+   "expected": "南部群岛"
+  },
+  {
+   "input": "双溪加株",
+   "expected": "双溪加株"
+  },
+  {
+   "input": "大巴窑",
+   "expected": "大巴窑"
+  },
+  {
+   "input": "大士",
+   "expected": "大士"
+  },
+  {
+   "input": "西部群岛",
+   "expected": "西部群岛"
+  },
+  {
+   "input": "西部集水区",
+   "expected": "西部集水区"
+  },
+  {
+   "input": "里峇峇利",
+   "expected": "里峇峇利"
+  },
+  {
+   "input": "梧槽",
+   "expected": "梧槽"
+  },
+  {
+   "input": "新加坡河",
+   "expected": "新加坡河"
+  },
+  {
+   "input": "海峡景",
+   "expected": "海峡景"
+  },
+  {
+   "input": "樟宜湾",
+   "expected": "樟宜湾"
+  },
+  {
+   "input": "马林百列",
+   "expected": "马林百列"
+  },
+  {
+   "input": "市中心",
+   "expected": "市中心"
+  },
+  {
+   "input": "核心市区",
+   "expected": "核心市区"
+  },
+  {
+   "input": "滨海东",
+   "expected": "滨海东"
+  },
+  {
+   "input": "滨海南",
+   "expected": "滨海南"
+  },
+  {
+   "input": "博物馆规划区",
+   "expected": "博物馆规划区"
+  },
+  {
+   "input": "纽顿",
+   "expected": "纽顿"
+  },
+  {
+   "input": "乌节",
+   "expected": "乌节"
+  },
+  {
+   "input": "欧南",
+   "expected": "欧南"
+  },
+  {
+   "input": "东陵",
+   "expected": "东陵"
+  },
+  {
+   "input": "登加",
+   "expected": "登加"
+  },
+  {
+   "input": "万礼",
+   "expected": "万礼"
+  },
+  {
+   "input": "芽笼",
+   "expected": "芽笼"
+  },
+  {
+   "input": "巴耶利峇",
+   "expected": "巴耶利峇"
+  },
+  {
+   "input": "中部",
+   "expected": "中部"
+  },
+  {
+   "input": "中央区",
+   "expected": "中央区"
+  },
+  {
+   "input": "东部",
+   "expected": "东部"
+  },
+  {
+   "input": "东区",
+   "expected": "东区"
+  },
+  {
+   "input": "北部",
+   "expected": "北部"
+  },
+  {
+   "input": "北区",
+   "expected": "北区"
+  },
+  {
+   "input": "东北部",
+   "expected": "东北部"
+  },
+  {
+   "input": "东北区",
+   "expected": "东北区"
+  },
+  {
+   "input": "西部",
+   "expected": "西部"
+  },
+  {
+   "input": "西区",
+   "expected": "西区"
+  }
+ ]
+}

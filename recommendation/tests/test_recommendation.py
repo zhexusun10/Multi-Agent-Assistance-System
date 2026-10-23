@@ -6,7 +6,7 @@ from recommendation.contracts.request import (
     RecommendationRequest,
 )
 from recommendation.contracts.requirements import Requirements
-from recommendation.contracts.feedback import ViewingEvent
+from recommendation.contracts.feedback import FeedbackSnapshot, BrowsingRecord
 from recommendation.contracts.errors import RecommendationError
 from recommendation.repositories.connections import repositories
 from recommendation.state.store import StateStore
@@ -16,7 +16,10 @@ from recommendation.agent.controller import (
     Proposal,
     LiveController,
 )
-from recommendation.ranking.ranker import pairwise, score
+from recommendation.ranking.ranker import pair_similarity
+from recommendation.ranking.scoring_v2 import browsing_weight
+from recommendation.config import RecommendationConfig
+from .test_scoring_v2 import pool_scores
 from recommendation.ranking.metrics import haversine, numeric_similarity
 from recommendation.terminal.__main__ import feedback_example
 from recommendation.schemas import generate, validate_response
@@ -45,6 +48,13 @@ def req(**changes):
     return RecommendationRequest(**data)
 
 
+def snapshot(response, **changes):
+    """Full previous-round feedback snapshot for ``response`` (simulated orchestrator)."""
+    data = feedback_example(response)
+    data.update(changes)
+    return FeedbackSnapshot.model_validate(data)
+
+
 def next_req(response, **changes):
     return req(request_id="r2", previous_state_id=response.state.state_id, **changes)
 
@@ -52,35 +62,47 @@ def next_req(response, **changes):
 def test_full_flow_and_restart(service):
     first = service.recommend(req())
     assert first.status == "success"
-    assert len(first.recommendations) == 4
+    # Default 10 results, fewer when the pool is smaller (fixture pool: 9 eligible).
+    assert len(first.recommendations) == min(10, first.pool.size) == 9
+    # P5 (fused-v2): a missing behaviour branch contributes 0 and its weight is not
+    # redistributed, so combined = soft_weight x soft (weighted-v1 gave the soft score weight 1).
     assert all(
-        r.scores.implicit_score is None
-        and r.scores.combined_score == r.scores.explicit_score
+        r.scores.behavior_score is None
+        and r.scores.combined_score == r.scores.soft_weight * r.scores.soft_score
         for r in first.recommendations
     )
     validate_response(first)
     generate(check=True)
-    events = [
-        ViewingEvent.model_validate({**e, "conversation_id": "c1"})
-        for e in feedback_example(first)["events"]
-    ]
-    second = service.recommend(next_req(first, feedback=events))
+    feedback = snapshot(first)
+    second = service.recommend(next_req(first, feedback=feedback))
     assert second.status == "success"
-    assert all(r.scores.implicit_weight == 0.2 for r in second.recommendations)
-    assert service.recommend(next_req(first, feedback=events)) == second
+    # P5: the configured behaviour weight (ranking.behavior_weight) replaces weighted-v1's
+    # fixed implicit weight.
+    behavior_weight = RecommendationConfig.default().ranking.behavior_weight
+    assert all(r.scores.behavior_weight == behavior_weight for r in second.recommendations)
+    assert service.recommend(next_req(first, feedback=feedback)) == second
+    # Re-sending the same snapshot (previous_round need not be the head) adds nothing.
     duplicate = service.recommend(
-        req(request_id="r3", previous_state_id=second.state.state_id, feedback=events)
+        req(request_id="r3", previous_state_id=second.state.state_id, feedback=feedback)
     )
-    assert duplicate.state.feedback_version == len(events)
+    profile = service.store.current("c1")["profile"]
+    assert profile["browsing"] == {
+        r.listing_id: {"status": "recorded", "duration_seconds": r.duration_seconds}
+        for r in feedback.previous_round.browsing
+    }
     assert [r.scores for r in duplicate.recommendations] == [
         r.scores for r in second.recommendations
     ]
     reopened = StateStore(service.store.path)
-    assert reopened.current("c1")["events"] == service.store.current("c1")["events"]
+    assert reopened.current("c1") == service.store.current("c1")
     reopened.close()
     trace = service.store.trace("c1", "r3")
     assert trace["steps"][-1]["kind"] == "final_gate" and trace["steps"][-1]["passed"]
-    assert trace["steps"][0]["snapshot"]["rows"]
+    # P4: resolve_entities is the first tool step; build_pool is the step that built the pool.
+    # P6: the step references the pool (pool_version); its rows resolve from pool_cache.
+    build = next(s for s in trace["steps"] if s.get("result", {}).get("tool") == "build_pool")
+    assert build["result"]["data"]["pool"]["pool_version"] == trace["pool_ref"]["pool_version"]
+    assert service.store.resolve_reference("c1", f"{trace['trace_id']}/pool")["rows"]
 
 
 def test_broader_tighter_soft_update(service):
@@ -109,30 +131,48 @@ def test_conflicts_atomicity_and_stale(service):
     first = service.recommend(req())
     assert service.recommend(req(result_limit=2)).error.code == "IDEMPOTENCY_CONFLICT"
     assert service.recommend(req(request_id="late")).error.code == "STALE_REFERENCE"
-    events = feedback_example(first)["events"]
-    events[0]["listing_id"] = "invented"
-    events = [
-        ViewingEvent.model_validate({**e, "conversation_id": "c1"}) for e in events
-    ]
-    failed = service.recommend(next_req(first, feedback=events))
+    data = feedback_example(first)
+    data["previous_round"]["shown_listing_ids"][0] = "invented"
+    data["previous_round"]["browsing"][0]["listing_id"] = "invented"
+    failed = service.recommend(
+        next_req(first, feedback=FeedbackSnapshot.model_validate(data))
+    )
     assert failed.error.code == "INVALID_FEEDBACK"
-    assert service.store.current("c1")["events"] == []
+    assert service.store.current("c1")["request"] == req().model_dump(mode="json")
     assert service.store.current("c1")["state_id"] == first.state.state_id
 
 
+def test_stale_requirements_version_backwards_or_changed_without_newer_version(service):
+    """Both STALE_REQUIREMENTS branches of context.manager.check_state; nothing is committed."""
+    first = service.recommend(req(requirements_version=2))
+    assert first.status == "success"
+    after = lambda request_id, **changes: req(request_id=request_id, previous_state_id=first.state.state_id, **changes)
+    backwards = service.recommend(after("backwards", requirements_version=1))
+    assert backwards.error.code == "STALE_REQUIREMENTS" and "backwards" in backwards.error.message
+    changed = req().requirements.model_dump(mode="json")
+    changed["criteria"][0]["value"] = 2500
+    same = service.recommend(after("same-version", requirements_version=2, requirements=changed))
+    assert same.error.code == "STALE_REQUIREMENTS" and "newer version" in same.error.message
+    assert service.store.current("c1")["state_id"] == first.state.state_id
+    # Unchanged requirements at the same version, and changed ones at a newer version, are accepted.
+    unchanged = service.recommend(after("unchanged", requirements_version=2))
+    assert unchanged.status == "success"
+    newer = service.recommend(req(request_id="newer", previous_state_id=unchanged.state.state_id,
+                                  requirements_version=3, requirements=changed))
+    assert newer.status == "success" and newer.state.run_sequence == 3
+
+
 def test_session_conflict(service):
+    # Contract 2.0 has no per-event sessions: a conflicting observation for the same
+    # request ID is a different body and is rejected by request identity.
     first = service.recommend(req())
-    events = feedback_example(first)["events"][:1]
-    parsed = [
-        ViewingEvent.model_validate({**e, "conversation_id": "c1"}) for e in events
-    ]
-    second = service.recommend(next_req(first, feedback=parsed))
+    feedback = snapshot(first)
+    second = service.recommend(next_req(first, feedback=feedback))
     assert second.status == "success"
-    parsed[0].payload.duration_seconds = 99
-    third = service.recommend(
-        req(request_id="r3", previous_state_id=second.state.state_id, feedback=parsed)
-    )
-    assert third.error.code == "FEEDBACK_CONFLICT"
+    changed = feedback.model_copy(deep=True)
+    changed.previous_round.browsing[0].duration_seconds = 99
+    third = service.recommend(next_req(first, feedback=changed))
+    assert third.error.code == "IDEMPOTENCY_CONFLICT"
 
 
 def test_invalid_proposal_and_outages(service):
@@ -226,28 +266,40 @@ def test_geography(service):
 def test_metrics(service):
     a = service.listing.rows[0]
     b = service.listing.rows[1]
+    similarity = RecommendationConfig.default().ranking.similarity
+    weights = {k: v for k, v in similarity.feature_weights.as_dict().items() if v > 0}
+    spreads = {"price": 1000.0, "bedrooms": 1.0, "floor_area_sqft": 200.0}
     assert haversine(a, a) == 0
-    assert pairwise(a, a)[0] == pytest.approx(1)
-    assert pairwise(a, b)[0] == pytest.approx(pairwise(b, a)[0])
+    # P5 (R1d): a listing is never compared with itself (weighted-v1 returned similarity 1).
+    assert pair_similarity(a, a, weights, spreads, similarity) == (None, None, [])
+    assert pair_similarity(a, b, weights, spreads, similarity)[0] == pytest.approx(
+        pair_similarity(b, a, weights, spreads, similarity)[0])
     assert numeric_similarity(0, 3, 3)[0] == 0
     assert numeric_similarity(0, 4, 3)[0] == 0
     assert numeric_similarity(0, 1, 3)[0] > numeric_similarity(0, 2, 3)[0]
-    missing = a.model_copy(update={"latitude": None})
+    missing = a.model_copy(update={"listing_id": "missing-coordinates", "latitude": None})
     assert haversine(missing, a) is None
-    s, c, ds = pairwise(missing, a)
-    assert s == pytest.approx(0.7) and c == pytest.approx(0.7)
+    # P5: with geography_district_fallback the district codes are compared instead of the
+    # coordinates (coverage stays 1); without it geography is not compared and the coverage
+    # drops by its weight share (weighted-v1: fixed 0.7 for its geography weight 0.30).
+    s, c, ds = pair_similarity(missing, a, weights, spreads, similarity)
+    assert c == pytest.approx(1) and ("geography", 1.0, None, "district_fallback") in ds
+    no_fallback = similarity.model_copy(update={"geography_district_fallback": False})
+    s, c, ds = pair_similarity(missing, a, weights, spreads, no_fallback)
+    assert c == pytest.approx(1 - weights["geography"] / sum(weights.values()))
     with pytest.raises(ValueError):
-        pairwise(a, b, scales={"bedrooms": 0})
+        pair_similarity(a, b, weights, {**spreads, "bedrooms": 0}, similarity)
     with pytest.raises(ValueError):
-        pairwise(a, b, weights={"bedrooms": -1})
-    explicit = score(a, [], [], [])
+        numeric_similarity(0, 1, float("inf"))
+    explicit = pool_scores([a, b]).breakdown(a.listing_id)
     assert explicit.combined_score == 0 and explicit.ordering == "stable_listing_id"
-    zero = score(a, [], [], [(b, 0)])
-    assert zero.implicit_score is None
-    assert (
-        score(a, [], [], [(b, 120)]).implicit_score
-        == score(a, [], [], [(b, 999)]).implicit_score
-    )
+    zero = pool_scores([a, b], browsing=[(b.listing_id, 0)]).breakdown(a.listing_id)
+    assert zero.behavior_score is None
+    # P5: browsing is uncapped (duration_cap_seconds null): more than 120 s still increases the
+    # reference weight (weighted-v1 capped it at 120 s, so 120 s and 999 s scored alike).
+    browsing = RecommendationConfig.default().ranking.browsing
+    assert browsing.duration_cap_seconds is None
+    assert browsing_weight(999, browsing) > browsing_weight(120, browsing)
 
 
 @pytest.mark.parametrize(
@@ -309,11 +361,15 @@ def test_loop_exhaustion(service):
 def test_reference_resolution_and_gate_replay(service):
     first = service.recommend(req())
     pool = service.store.resolve_reference("c1", first.state.candidate_pool_ref)
-    assert len(pool["rows"]) == 12
+    # P3: '<trace>/pool' resolves the pool content from pool_cache (eligible rows only); the 12
+    # source rows are counted in its partition.
+    assert len(pool["rows"]) == first.pool.size and pool["partition"]["source_count"] == 12
     trace = service.store.resolve_reference("c1", first.execution.trace_ref)
-    assert service.store.resolve_reference("c1", trace["steps"][0]["snapshot_ref"])[
-        "rows"
-    ]
+    build = next(s for s in trace["steps"] if s.get("result", {}).get("tool") == "build_pool")  # P4 stage name
+    # P6: snapshot_ref resolves to the compact step record (was: the dispatcher snapshot with rows).
+    assert service.store.resolve_reference("c1", build["snapshot_ref"])[
+        "result"
+    ]["data"]["pool"]["pool_version"] == first.pool.pool_version
     with pytest.raises(RecommendationError):
         service.store.resolve_reference("other", first.execution.trace_ref)
     # A retry is a verified historical replay, even after source changes.
@@ -327,15 +383,13 @@ def test_reference_resolution_and_gate_replay(service):
 
 def test_feedback_cannot_override_budget(service):
     first = service.recommend(req())
-    event = ViewingEvent.model_validate(
-        {**feedback_example(first)["events"][0], "conversation_id": "c1"}
-    )
-    event.payload.duration_seconds = 100000
+    feedback = snapshot(first)
+    feedback.previous_round.browsing[0].duration_seconds = 100000
     requirements = req().requirements.model_copy(deep=True)
     requirements.criteria[0].value = 2000.0
     result = service.recommend(
         next_req(
-            first, feedback=[event], requirements=requirements, requirements_version=2
+            first, feedback=feedback, requirements=requirements, requirements_version=2
         )
     )
     assert result.status == "no_match" and not result.recommendations
@@ -361,11 +415,10 @@ def test_failed_request_identity_and_finite_duration(service):
     bad.previous_state_id = "wrong"
     assert service.recommend(bad).status == "error"
     assert service.recommend(next_req(first)).error.code == "IDEMPOTENCY_CONFLICT"
-    raw = {**feedback_example(first)["events"][0], "conversation_id": "c1"}
+    raw = feedback_example(first)["previous_round"]["browsing"][0]
     for duration in [-1, float("inf"), float("nan")]:
-        raw["payload"]["duration_seconds"] = duration
         with pytest.raises(ValidationError):
-            ViewingEvent.model_validate(raw)
+            BrowsingRecord.model_validate({**raw, "duration_seconds": duration})
 
 
 def test_concurrent_state_updates(tmp_path):

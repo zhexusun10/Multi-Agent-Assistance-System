@@ -1,0 +1,114 @@
+{
+  "contract_version": "1.0",
+  "conversation_id": "baseline",
+  "feedback": [
+    {
+      "conversation_id": "baseline",
+      "event_id": "baseline-event-0",
+      "event_type": "listing_view_duration",
+      "listing_id": "fixture-01",
+      "occurred_at": "2026-10-23T00:00:00Z",
+      "payload": {
+        "duration_seconds": 90.0,
+        "view_session_id": "baseline-view-0"
+      },
+      "recommendation_request_id": "baseline-initial",
+      "source": "sample"
+    },
+    {
+      "conversation_id": "baseline",
+      "event_id": "baseline-event-1",
+      "event_type": "listing_view_duration",
+      "listing_id": "fixture-03",
+      "occurred_at": "2026-10-23T00:00:00Z",
+      "payload": {
+        "duration_seconds": 30.0,
+        "view_session_id": "baseline-view-1"
+      },
+      "recommendation_request_id": "baseline-initial",
+      "source": "sample"
+    },
+    {
+      "conversation_id": "baseline",
+      "event_id": "baseline-event-2",
+      "event_type": "listing_view_duration",
+      "listing_id": "fixture-05",
+      "occurred_at": "2026-10-23T00:00:00Z",
+      "payload": {
+        "duration_seconds": 30.0,
+        "view_session_id": "baseline-view-2"
+      },
+      "recommendation_request_id": "baseline-initial",
+      "source": "sample"
+    },
+    {
+      "conversation_id": "baseline",
+      "event_id": "baseline-event-3",
+      "event_type": "listing_view_duration",
+      "listing_id": "fixture-07",
+      "occurred_at": "2026-10-23T00:00:00Z",
+      "payload": {
+        "duration_seconds": 30.0,
+        "view_session_id": "baseline-view-3"
+      },
+      "recommendation_request_id": "baseline-initial",
+      "source": "sample"
+    }
+  ],
+  "previous_state_id": "3586de16-3d54-40ac-8dfc-b6969d525bd8",
+  "request_id": "baseline-feedback",
+  "requirements": {
+    "criteria": [
+      {
+        "category": null,
+        "criterion_id": "budget",
+        "destination_id": null,
+        "destination_name": null,
+        "distance_type": null,
+        "field": "price",
+        "operator": "lte",
+        "strength": "hard",
+        "transport_mode": null,
+        "unit": "SGD/month",
+        "utility": "threshold",
+        "value": 3000.0,
+        "weight": 1.0
+      },
+      {
+        "category": null,
+        "criterion_id": "bedrooms",
+        "destination_id": null,
+        "destination_name": null,
+        "distance_type": null,
+        "field": "bedrooms",
+        "operator": "gte",
+        "strength": "hard",
+        "transport_mode": null,
+        "unit": null,
+        "utility": "threshold",
+        "value": 2.0,
+        "weight": 1.0
+      },
+      {
+        "category": null,
+        "criterion_id": "district",
+        "destination_id": null,
+        "destination_name": null,
+        "distance_type": null,
+        "field": "district_code",
+        "operator": "in",
+        "strength": "soft",
+        "transport_mode": null,
+        "unit": null,
+        "utility": "threshold",
+        "value": [
+          "D05"
+        ],
+        "weight": 1.0
+      }
+    ],
+    "listing_type": "RENT"
+  },
+  "requirements_version": 1,
+  "result_limit": 4
+}

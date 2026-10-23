@@ -1,5 +1,5 @@
 {
-  "contract_version": "1.0",
+  "contract_version": "2.0",
   "request_id": "sample-initial",
   "conversation_id": "contract-example",
   "requirements_version": 1,
@@ -24,30 +24,38 @@
         "normalization_warnings": []
       },
       "rank": 1,
+      "score_rank": 1,
       "scores": {
-        "explicit_score": 1.0,
-        "implicit_score": null,
-        "combined_score": 1.0,
-        "explicit_weight": 1.0,
-        "implicit_weight": 0.0,
-        "evidence_coverage": 1.0,
+        "soft_score": 1.0,
+        "behavior_score": null,
+        "appointment_score": null,
+        "browsing_score": null,
+        "combined_score": 0.6,
+        "soft_weight": 0.6,
+        "behavior_weight": 0.4,
+        "appointment_weight": 0.6,
+        "browsing_weight": 0.4,
+        "soft_evidence_coverage": 1.0,
+        "comparison_coverage": null,
         "contributions": [
           {
             "feature": "district",
+            "branch": "soft",
             "reference": null,
             "raw_difference": null,
             "scale": null,
             "similarity": 1.0,
             "weight": 1.0,
             "contribution": 1.0,
-            "unknown": false
+            "unknown": false,
+            "method": "threshold"
           }
         ],
         "suppressed_features": [
           "bedrooms",
-          "geography"
+          "price"
         ],
-        "ordering": "explicit"
+        "ordering": "fused"
       },
       "criterion_results": [
         {
@@ -76,7 +84,9 @@
         "district"
       ],
       "trade_offs": [],
-      "unknowns": []
+      "unknowns": [],
+      "selection_reason": "small_pool",
+      "selection_note": "All 9 eligible listings returned (pool not larger than the result limit)"
     },
     {
       "listing": {
@@ -97,30 +107,38 @@
         "normalization_warnings": []
       },
       "rank": 2,
+      "score_rank": 2,
       "scores": {
-        "explicit_score": 1.0,
-        "implicit_score": null,
-        "combined_score": 1.0,
-        "explicit_weight": 1.0,
-        "implicit_weight": 0.0,
-        "evidence_coverage": 1.0,
+        "soft_score": 1.0,
+        "behavior_score": null,
+        "appointment_score": null,
+        "browsing_score": null,
+        "combined_score": 0.6,
+        "soft_weight": 0.6,
+        "behavior_weight": 0.4,
+        "appointment_weight": 0.6,
+        "browsing_weight": 0.4,
+        "soft_evidence_coverage": 1.0,
+        "comparison_coverage": null,
         "contributions": [
           {
             "feature": "district",
+            "branch": "soft",
             "reference": null,
             "raw_difference": null,
             "scale": null,
             "similarity": 1.0,
             "weight": 1.0,
             "contribution": 1.0,
-            "unknown": false
+            "unknown": false,
+            "method": "threshold"
           }
         ],
         "suppressed_features": [
           "bedrooms",
-          "geography"
+          "price"
         ],
-        "ordering": "explicit"
+        "ordering": "fused"
       },
       "criterion_results": [
         {
@@ -149,7 +167,9 @@
         "district"
       ],
       "trade_offs": [],
-      "unknowns": []
+      "unknowns": [],
+      "selection_reason": "small_pool",
+      "selection_note": "All 9 eligible listings returned (pool not larger than the result limit)"
     },
     {
       "listing": {
@@ -170,30 +190,38 @@
         "normalization_warnings": []
       },
       "rank": 3,
+      "score_rank": 3,
       "scores": {
-        "explicit_score": 1.0,
-        "implicit_score": null,
-        "combined_score": 1.0,
-        "explicit_weight": 1.0,
-        "implicit_weight": 0.0,
-        "evidence_coverage": 1.0,
+        "soft_score": 1.0,
+        "behavior_score": null,
+        "appointment_score": null,
+        "browsing_score": null,
+        "combined_score": 0.6,
+        "soft_weight": 0.6,
+        "behavior_weight": 0.4,
+        "appointment_weight": 0.6,
+        "browsing_weight": 0.4,
+        "soft_evidence_coverage": 1.0,
+        "comparison_coverage": null,
         "contributions": [
           {
             "feature": "district",
+            "branch": "soft",
             "reference": null,
             "raw_difference": null,
             "scale": null,
             "similarity": 1.0,
             "weight": 1.0,
             "contribution": 1.0,
-            "unknown": false
+            "unknown": false,
+            "method": "threshold"
           }
         ],
         "suppressed_features": [
           "bedrooms",
-          "geography"
+          "price"
         ],
-        "ordering": "explicit"
+        "ordering": "fused"
       },
       "criterion_results": [
         {
@@ -222,7 +250,9 @@
         "district"
       ],
       "trade_offs": [],
-      "unknowns": []
+      "unknowns": [],
+      "selection_reason": "small_pool",
+      "selection_note": "All 9 eligible listings returned (pool not larger than the result limit)"
     },
     {
       "listing": {
@@ -243,30 +273,38 @@
         "normalization_warnings": []
       },
       "rank": 4,
+      "score_rank": 4,
       "scores": {
-        "explicit_score": 1.0,
-        "implicit_score": null,
-        "combined_score": 1.0,
-        "explicit_weight": 1.0,
-        "implicit_weight": 0.0,
-        "evidence_coverage": 1.0,
+        "soft_score": 1.0,
+        "behavior_score": null,
+        "appointment_score": null,
+        "browsing_score": null,
+        "combined_score": 0.6,
+        "soft_weight": 0.6,
+        "behavior_weight": 0.4,
+        "appointment_weight": 0.6,
+        "browsing_weight": 0.4,
+        "soft_evidence_coverage": 1.0,
+        "comparison_coverage": null,
         "contributions": [
           {
             "feature": "district",
+            "branch": "soft",
             "reference": null,
             "raw_difference": null,
             "scale": null,
             "similarity": 1.0,
             "weight": 1.0,
             "contribution": 1.0,
-            "unknown": false
+            "unknown": false,
+            "method": "threshold"
           }
         ],
         "suppressed_features": [
           "bedrooms",
-          "geography"
+          "price"
         ],
-        "ordering": "explicit"
+        "ordering": "fused"
       },
       "criterion_results": [
         {
@@ -295,12 +333,62 @@
         "district"
       ],
       "trade_offs": [],
-      "unknowns": []
-    }
-  ],
-  "unverified_candidates": [
+      "unknowns": [],
+      "selection_reason": "small_pool",
+      "selection_note": "All 9 eligible listings returned (pool not larger than the result limit)"
+    },
     {
-      "listing_id": "fixture-10",
+      "listing": {
+        "listing_id": "fixture-09",
+        "listing_type": "RENT",
+        "title": "Synthetic rental 9",
+        "price": 2900.0,
+        "bedrooms": 3.0,
+        "floor_area_sqft": 1050.0,
+        "property_type": "condo",
+        "district_code": "D05",
+        "postal_code": "012345",
+        "latitude": 1.318,
+        "longitude": 103.8,
+        "url": "https://example.invalid/listings/9",
+        "observed_at": "2026-10-18T00:00:00Z",
+        "source": "synthetic-fixture",
+        "normalization_warnings": []
+      },
+      "rank": 5,
+      "score_rank": 5,
+      "scores": {
+        "soft_score": 1.0,
+        "behavior_score": null,
+        "appointment_score": null,
+        "browsing_score": null,
+        "combined_score": 0.6,
+        "soft_weight": 0.6,
+        "behavior_weight": 0.4,
+        "appointment_weight": 0.6,
+        "browsing_weight": 0.4,
+        "soft_evidence_coverage": 1.0,
+        "comparison_coverage": null,
+        "contributions": [
+          {
+            "feature": "district",
+            "branch": "soft",
+            "reference": null,
+            "raw_difference": null,
+            "scale": null,
+            "similarity": 1.0,
+            "weight": 1.0,
+            "contribution": 1.0,
+            "unknown": false,
+            "method": "threshold"
+          }
+        ],
+        "suppressed_features": [
+          "bedrooms",
+          "price"
+        ],
+        "ordering": "fused"
+      },
       "criterion_results": [
         {
           "criterion_id": "budget",
@@ -310,8 +398,91 @@
         },
         {
           "criterion_id": "bedrooms",
-          "outcome": "unknown",
-          "reason": "Missing listing attribute",
+          "outcome": "pass",
+          "reason": "Exact criterion comparison",
+          "evidence_refs": []
+        },
+        {
+          "criterion_id": "district",
+          "outcome": "pass",
+          "reason": "Exact criterion comparison",
+          "evidence_refs": []
+        }
+      ],
+      "evidence_refs": [],
+      "strengths": [
+        "budget",
+        "bedrooms",
+        "district"
+      ],
+      "trade_offs": [],
+      "unknowns": [],
+      "selection_reason": "small_pool",
+      "selection_note": "All 9 eligible listings returned (pool not larger than the result limit)"
+    },
+    {
+      "listing": {
+        "listing_id": "fixture-02",
+        "listing_type": "RENT",
+        "title": "Synthetic rental 2",
+        "price": 2200.0,
+        "bedrooms": 2.0,
+        "floor_area_sqft": 700.0,
+        "property_type": "hdb",
+        "district_code": "D21",
+        "postal_code": "012345",
+        "latitude": 1.304,
+        "longitude": 103.8,
+        "url": "https://example.invalid/listings/2",
+        "observed_at": "2026-10-18T00:00:00Z",
+        "source": "synthetic-fixture",
+        "normalization_warnings": []
+      },
+      "rank": 6,
+      "score_rank": 6,
+      "scores": {
+        "soft_score": 0.0,
+        "behavior_score": null,
+        "appointment_score": null,
+        "browsing_score": null,
+        "combined_score": 0.0,
+        "soft_weight": 0.6,
+        "behavior_weight": 0.4,
+        "appointment_weight": 0.6,
+        "browsing_weight": 0.4,
+        "soft_evidence_coverage": 1.0,
+        "comparison_coverage": null,
+        "contributions": [
+          {
+            "feature": "district",
+            "branch": "soft",
+            "reference": null,
+            "raw_difference": null,
+            "scale": null,
+            "similarity": 0.0,
+            "weight": 1.0,
+            "contribution": 0.0,
+            "unknown": false,
+            "method": "threshold"
+          }
+        ],
+        "suppressed_features": [
+          "bedrooms",
+          "price"
+        ],
+        "ordering": "fused"
+      },
+      "criterion_results": [
+        {
+          "criterion_id": "budget",
+          "outcome": "pass",
+          "reason": "Exact criterion comparison",
+          "evidence_refs": []
+        },
+        {
+          "criterion_id": "bedrooms",
+          "outcome": "pass",
+          "reason": "Exact criterion comparison",
           "evidence_refs": []
         },
         {
@@ -320,36 +491,341 @@
           "reason": "Exact criterion comparison",
           "evidence_refs": []
         }
-      ]
+      ],
+      "evidence_refs": [],
+      "strengths": [
+        "budget",
+        "bedrooms"
+      ],
+      "trade_offs": [
+        "district"
+      ],
+      "unknowns": [],
+      "selection_reason": "small_pool",
+      "selection_note": "All 9 eligible listings returned (pool not larger than the result limit)"
+    },
+    {
+      "listing": {
+        "listing_id": "fixture-04",
+        "listing_type": "RENT",
+        "title": "Synthetic rental 4",
+        "price": 2400.0,
+        "bedrooms": 2.0,
+        "floor_area_sqft": 800.0,
+        "property_type": "hdb",
+        "district_code": "D21",
+        "postal_code": "012345",
+        "latitude": 1.308,
+        "longitude": 103.8,
+        "url": "https://example.invalid/listings/4",
+        "observed_at": "2026-10-18T00:00:00Z",
+        "source": "synthetic-fixture",
+        "normalization_warnings": []
+      },
+      "rank": 7,
+      "score_rank": 7,
+      "scores": {
+        "soft_score": 0.0,
+        "behavior_score": null,
+        "appointment_score": null,
+        "browsing_score": null,
+        "combined_score": 0.0,
+        "soft_weight": 0.6,
+        "behavior_weight": 0.4,
+        "appointment_weight": 0.6,
+        "browsing_weight": 0.4,
+        "soft_evidence_coverage": 1.0,
+        "comparison_coverage": null,
+        "contributions": [
+          {
+            "feature": "district",
+            "branch": "soft",
+            "reference": null,
+            "raw_difference": null,
+            "scale": null,
+            "similarity": 0.0,
+            "weight": 1.0,
+            "contribution": 0.0,
+            "unknown": false,
+            "method": "threshold"
+          }
+        ],
+        "suppressed_features": [
+          "bedrooms",
+          "price"
+        ],
+        "ordering": "fused"
+      },
+      "criterion_results": [
+        {
+          "criterion_id": "budget",
+          "outcome": "pass",
+          "reason": "Exact criterion comparison",
+          "evidence_refs": []
+        },
+        {
+          "criterion_id": "bedrooms",
+          "outcome": "pass",
+          "reason": "Exact criterion comparison",
+          "evidence_refs": []
+        },
+        {
+          "criterion_id": "district",
+          "outcome": "fail",
+          "reason": "Exact criterion comparison",
+          "evidence_refs": []
+        }
+      ],
+      "evidence_refs": [],
+      "strengths": [
+        "budget",
+        "bedrooms"
+      ],
+      "trade_offs": [
+        "district"
+      ],
+      "unknowns": [],
+      "selection_reason": "small_pool",
+      "selection_note": "All 9 eligible listings returned (pool not larger than the result limit)"
+    },
+    {
+      "listing": {
+        "listing_id": "fixture-06",
+        "listing_type": "RENT",
+        "title": "Synthetic rental 6",
+        "price": 2600.0,
+        "bedrooms": 3.0,
+        "floor_area_sqft": 900.0,
+        "property_type": "hdb",
+        "district_code": "D21",
+        "postal_code": "012345",
+        "latitude": 1.312,
+        "longitude": 103.8,
+        "url": "https://example.invalid/listings/6",
+        "observed_at": "2026-10-18T00:00:00Z",
+        "source": "synthetic-fixture",
+        "normalization_warnings": []
+      },
+      "rank": 8,
+      "score_rank": 8,
+      "scores": {
+        "soft_score": 0.0,
+        "behavior_score": null,
+        "appointment_score": null,
+        "browsing_score": null,
+        "combined_score": 0.0,
+        "soft_weight": 0.6,
+        "behavior_weight": 0.4,
+        "appointment_weight": 0.6,
+        "browsing_weight": 0.4,
+        "soft_evidence_coverage": 1.0,
+        "comparison_coverage": null,
+        "contributions": [
+          {
+            "feature": "district",
+            "branch": "soft",
+            "reference": null,
+            "raw_difference": null,
+            "scale": null,
+            "similarity": 0.0,
+            "weight": 1.0,
+            "contribution": 0.0,
+            "unknown": false,
+            "method": "threshold"
+          }
+        ],
+        "suppressed_features": [
+          "bedrooms",
+          "price"
+        ],
+        "ordering": "fused"
+      },
+      "criterion_results": [
+        {
+          "criterion_id": "budget",
+          "outcome": "pass",
+          "reason": "Exact criterion comparison",
+          "evidence_refs": []
+        },
+        {
+          "criterion_id": "bedrooms",
+          "outcome": "pass",
+          "reason": "Exact criterion comparison",
+          "evidence_refs": []
+        },
+        {
+          "criterion_id": "district",
+          "outcome": "fail",
+          "reason": "Exact criterion comparison",
+          "evidence_refs": []
+        }
+      ],
+      "evidence_refs": [],
+      "strengths": [
+        "budget",
+        "bedrooms"
+      ],
+      "trade_offs": [
+        "district"
+      ],
+      "unknowns": [],
+      "selection_reason": "small_pool",
+      "selection_note": "All 9 eligible listings returned (pool not larger than the result limit)"
+    },
+    {
+      "listing": {
+        "listing_id": "fixture-08",
+        "listing_type": "RENT",
+        "title": "Synthetic rental 8",
+        "price": 2800.0,
+        "bedrooms": 2.0,
+        "floor_area_sqft": 1000.0,
+        "property_type": "hdb",
+        "district_code": "D21",
+        "postal_code": "012345",
+        "latitude": 1.316,
+        "longitude": 103.8,
+        "url": "https://example.invalid/listings/8",
+        "observed_at": "2026-10-18T00:00:00Z",
+        "source": "synthetic-fixture",
+        "normalization_warnings": []
+      },
+      "rank": 9,
+      "score_rank": 9,
+      "scores": {
+        "soft_score": 0.0,
+        "behavior_score": null,
+        "appointment_score": null,
+        "browsing_score": null,
+        "combined_score": 0.0,
+        "soft_weight": 0.6,
+        "behavior_weight": 0.4,
+        "appointment_weight": 0.6,
+        "browsing_weight": 0.4,
+        "soft_evidence_coverage": 1.0,
+        "comparison_coverage": null,
+        "contributions": [
+          {
+            "feature": "district",
+            "branch": "soft",
+            "reference": null,
+            "raw_difference": null,
+            "scale": null,
+            "similarity": 0.0,
+            "weight": 1.0,
+            "contribution": 0.0,
+            "unknown": false,
+            "method": "threshold"
+          }
+        ],
+        "suppressed_features": [
+          "bedrooms",
+          "price"
+        ],
+        "ordering": "fused"
+      },
+      "criterion_results": [
+        {
+          "criterion_id": "budget",
+          "outcome": "pass",
+          "reason": "Exact criterion comparison",
+          "evidence_refs": []
+        },
+        {
+          "criterion_id": "bedrooms",
+          "outcome": "pass",
+          "reason": "Exact criterion comparison",
+          "evidence_refs": []
+        },
+        {
+          "criterion_id": "district",
+          "outcome": "fail",
+          "reason": "Exact criterion comparison",
+          "evidence_refs": []
+        }
+      ],
+      "evidence_refs": [],
+      "strengths": [
+        "budget",
+        "bedrooms"
+      ],
+      "trade_offs": [
+        "district"
+      ],
+      "unknowns": [],
+      "selection_reason": "small_pool",
+      "selection_note": "All 9 eligible listings returned (pool not larger than the result limit)"
     }
   ],
   "evidence": [],
+  "resolution": [],
+  "pool": {
+    "pool_key": "cf2648381e6cf69eead0bcc496329e6bd9e0f70e7bf56a05dc1b04fa1d806258",
+    "pool_version": "aed08ee26cf45d2aa700102de38b5312d3d379c4ae9846d3427dfd0267b0959f",
+    "data_version": "24ddafa745523a348ebddc96a1e632214c8127f772d46ba69d15dc34497177b9",
+    "cache": "built",
+    "size": 9,
+    "source_count": 12,
+    "excluded_hard_fail": 2,
+    "excluded_hard_unknown": 1,
+    "unknown_reasons": {
+      "bedrooms: Missing listing attribute": 1
+    }
+  },
+  "selection": {
+    "mode": "small_pool",
+    "algorithm_version": "select-v1",
+    "seed": "47e9b106c63029281722764b8b6ca722dfab31609dfb028b72e30b2bf1df6b0d",
+    "result_limit": 10,
+    "leaders": 0,
+    "tie_group": null,
+    "exploration": null,
+    "cold_start": {
+      "evaluated": false,
+      "active": false,
+      "reason": "small_pool",
+      "coverage_c": null,
+      "boundary_group_b": null,
+      "stability_s": null,
+      "thresholds": {
+        "c": 0.8,
+        "b": 5,
+        "s": 0.9
+      },
+      "exit_conditions_met": false,
+      "pool_key": "cf2648381e6cf69eead0bcc496329e6bd9e0f70e7bf56a05dc1b04fa1d806258"
+    }
+  },
   "clarifications": [],
   "relaxation_suggestions": [],
   "warnings": [
     "Sample viewing durations are simulated observations.",
-    "Posting time does not establish current availability."
+    "Posting time does not establish current availability.",
+    "1 listings were excluded because hard-criterion data is unknown (see pool.unknown_reasons); they are not verified matches."
   ],
   "state": {
-    "state_id": "5c440fb9-4dbb-4d07-a210-78caeff73100",
-    "candidate_pool_ref": "166c8fe6-29ce-462f-babb-99fa3ddff5c8/pool",
+    "state_id": "d63431b1-26c9-46e5-a017-6d71c06e161c",
+    "candidate_pool_ref": "f8bc8794-cd5c-49fc-82df-b833f80e0c03/pool",
     "run_sequence": 1,
-    "feedback_version": 0,
     "scope": "all RENT listings",
     "truncated": false,
     "source_count": 12,
-    "prefilter_excluded": 2,
-    "assessed_count": 10
+    "prefilter_excluded": 3,
+    "assessed_count": 9
   },
   "execution": {
-    "trace_id": "166c8fe6-29ce-462f-babb-99fa3ddff5c8",
-    "trace_ref": "sqlite:166c8fe6-29ce-462f-babb-99fa3ddff5c8",
-    "strategy": "complete-pool weighted ranking",
-    "scoring_version": "weighted-v1",
+    "trace_id": "f8bc8794-cd5c-49fc-82df-b833f80e0c03",
+    "trace_ref": "sqlite:f8bc8794-cd5c-49fc-82df-b833f80e0c03",
+    "strategy": "full-pool fused-v2 scoring + select-v1 selection",
+    "scoring_version": "fused-v2:90e724bb160a",
+    "selection_algorithm": "select-v1",
+    "config_version": 1,
+    "config_hash": "e46e754a9c6e6eafd4e2522f7bee4f26de37f956de50d3be6be173549710b2c8",
+    "selection_hash": "90e724bb160ae68524bd5d9b899959716d46f509627096c5696c7ec66d5a18a7",
     "model_identifier": null,
     "model_calls": 0,
     "tool_calls": 4,
-    "duration_ms": 1.5783340204507113,
+    "duration_ms": 42.9401250439696,
     "tokens": null,
     "data_mode": "fixture",
     "controller_mode": "scripted"

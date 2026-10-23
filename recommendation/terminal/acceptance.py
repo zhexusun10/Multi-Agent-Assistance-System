@@ -6,6 +6,7 @@ as live acceptance. No ingestion or database writes are performed.
 
 import argparse
 import json
+import os
 import uuid
 from pydantic import ValidationError
 from pathlib import Path
@@ -13,7 +14,7 @@ from recommendation.contracts.request import (
     RecommendationRequest,
 )
 from recommendation.contracts.requirements import Requirements
-from recommendation.contracts.feedback import ViewingEvent
+from recommendation.contracts.feedback import FeedbackSnapshot
 from ..config import RecommendationConfig
 from ..repositories.connections import ROOT, load_environment, repositories
 from ..agent.controller import LiveController, ScriptedController
@@ -35,6 +36,68 @@ STEPS = (
 )
 
 
+# Selection modes whose result is fully determined by the full-pool score order (no seed involved).
+DETERMINISTIC_MODES = ("ranked", "small_pool", "empty")
+
+
+def scoring_summary(trace):
+    """The rank_candidates scoring summary of a run trace (references, weights, spreads), without timing."""
+    steps = [
+        s["result"] for s in trace["steps"]
+        if s.get("result", {}).get("tool") == "rank_candidates" and s["result"].get("status") == "ok"
+    ]
+    scoring = ((steps[-1].get("data") or {}).get("scoring") or {}) if steps else {}
+    return {k: v for k, v in scoring.items() if k != "duration_ms"}
+
+
+def resent_feedback_differences(first, second, first_scoring=None, second_scoring=None):
+    """Request-independent outputs that differ between two responses to the SAME requirements and
+    feedback snapshot sent under different request IDs (no accumulation, spec sections 3 and 8).
+
+    A new request_id gives new select-v1 seeds (R3), so near-tie and cold-start price exploration
+    samples may legitimately differ. Compared instead: status, the pool, every listing's scores,
+    score_rank and criterion results where it appears in both responses, the selection mode,
+    leaders (count and IDs), tie group, cold-start diagnostics (S uses the request-independent
+    stability seed), the exploration candidates and bin counts, the full ID order for seedless
+    modes (ranked / small_pool / empty), and the rank_candidates scoring summary (references and
+    weights) when traces are given."""
+    diffs = []
+    if first.status != second.status:
+        diffs.append("status")
+    if (first.pool and first.pool.pool_version) != (second.pool and second.pool.pool_version):
+        diffs.append("pool_version")
+    a, b = first.selection, second.selection
+    if (a is None) != (b is None):
+        diffs.append("selection")
+    elif a is not None:
+        for name in ("mode", "result_limit", "leaders", "tie_group", "cold_start"):
+            if getattr(a, name) != getattr(b, name):
+                diffs.append(f"selection.{name}")
+        explored = [None if s.exploration is None else (
+            s.exploration.candidate_count, s.exploration.sample_size,
+            [(x.lower, x.upper, x.count) for x in s.exploration.bins]) for s in (a, b)]
+        if explored[0] != explored[1]:
+            diffs.append("selection.exploration")
+    ids = [[r.listing.listing_id for r in x.recommendations] for x in (first, second)]
+    if len(ids[0]) != len(ids[1]):
+        diffs.append("recommendation count")
+    leaders = a.leaders if a is not None else 0
+    if ids[0][:leaders] != ids[1][:leaders]:
+        diffs.append("leader IDs")
+    if (a is None or a.mode in DETERMINISTIC_MODES) and ids[0] != ids[1]:
+        diffs.append("ID order of a seedless selection")
+    items = {r.listing.listing_id: r for r in second.recommendations}
+    for r in first.recommendations:
+        other = items.get(r.listing.listing_id)
+        if other is not None and (r.scores, r.score_rank, r.criterion_results) != (
+            other.scores, other.score_rank, other.criterion_results
+        ):
+            diffs.append(f"scores of {r.listing.listing_id}")
+    if first_scoring is not None and first_scoring != second_scoring:
+        diffs.append("scoring summary")
+    return diffs
+
+
 def run_acceptance(
     output,
     requirements,
@@ -47,11 +110,13 @@ def run_acceptance(
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
     conversation = str(uuid.uuid4())
+    config = config if config is not None else RecommendationConfig.default()
     report = {
         "started_at": now(),
         "conversation_id": conversation,
         "data_mode": data_mode,
         "controller_mode": controller_mode,
+        "settings": config.identity(),
         "live_modes": data_mode == "database" and controller_mode == "live",
         "steps": {},
         "note": "Automated companion; does not replace the interactive manual walkthrough.",
@@ -113,7 +178,7 @@ def run_acceptance(
             listing, geo, StateStore(state_path), controller, config=config
         )
 
-    def recommend(step, snapshot, feedback=()):
+    def recommend(step, snapshot, feedback=None):
         nonlocal latest, version, accepted_requirements
         if snapshot != accepted_requirements:
             version += 1
@@ -123,7 +188,7 @@ def run_acceptance(
             conversation_id=conversation,
             requirements_version=version,
             requirements=snapshot,
-            feedback=list(feedback),
+            feedback=feedback or FeedbackSnapshot(),
             previous_state_id=latest.state.state_id if latest else None,
         )
         response = service.recommend(request)
@@ -200,24 +265,44 @@ def run_acceptance(
                 reason="No active School destination resolved; criteria were not relaxed",
             )
         if initial and initial.recommendations:
-            events = [
-                ViewingEvent.model_validate({**e, "conversation_id": conversation})
-                for e in feedback_example(initial)["events"]
-            ]
-            feedback_response = recommend("feedback", requirements, events)
+            # Full snapshot of the initial round (simulated orchestrator sample).
+            feedback = FeedbackSnapshot.model_validate(feedback_example(initial))
+            feedback_response = recommend("feedback", requirements, feedback)
             if feedback_response:
-                duplicate = recommend("duplicate_feedback", requirements, events)
-                if duplicate and (
-                    duplicate.state.feedback_version
-                    != feedback_response.state.feedback_version
-                    or [r.scores for r in duplicate.recommendations]
-                    != [r.scores for r in feedback_response.recommendations]
-                ):
-                    record(
-                        "duplicate_feedback",
-                        "failed",
-                        reason="Duplicate feedback changed profile or scores; source changes also require inspection",
+                # Re-sending the SAME snapshot in a new request must not accumulate anything. The new
+                # request_id may resample near-tie / exploration items (select-v1, R3), so only the
+                # request-independent outputs are compared (resent_feedback_differences).
+                duplicate = recommend("duplicate_feedback", requirements, feedback)
+                if duplicate:
+                    first_trace, second_trace = (
+                        service.store.trace(conversation, r.request_id)
+                        for r in (feedback_response, duplicate)
                     )
+                    diffs = resent_feedback_differences(
+                        feedback_response, duplicate,
+                        scoring_summary(first_trace), scoring_summary(second_trace),
+                    )
+                    compared = {
+                        "selection_modes": [r.selection.mode if r.selection else None for r in (feedback_response, duplicate)],
+                        "seeds": [r.selection.seed if r.selection else None for r in (feedback_response, duplicate)],
+                        "differences": diffs,
+                    }
+                    if "pool_version" in diffs:
+                        record(
+                            "duplicate_feedback",
+                            "blocked",
+                            reason="The eligible pool changed between the two requests (source data change); the accumulation check is inconclusive",
+                            compared=compared,
+                        )
+                    elif diffs:
+                        record(
+                            "duplicate_feedback",
+                            "failed",
+                            reason="Re-sent feedback snapshot changed request-independent results (accumulation)",
+                            compared=compared,
+                        )
+                    else:
+                        report["steps"]["duplicate_feedback"]["compared"] = compared
             else:
                 record(
                     "duplicate_feedback",
@@ -332,7 +417,11 @@ def main():
         default=str(Path(__file__).parents[1] / "examples/requirements.json"),
     )
     parser.add_argument("--geography")
-    parser.add_argument("--config")
+    parser.add_argument(
+        "--config",
+        default=os.getenv("RECOMMENDATION_CONFIG"),
+        help="Alternative settings file (YAML or JSON, same schema as recommendation/settings/recommendation.yaml); default: the committed YAML",
+    )
     parser.add_argument(
         "--output",
         default=str(

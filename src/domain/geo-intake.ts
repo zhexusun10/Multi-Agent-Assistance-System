@@ -8,6 +8,8 @@ export const CATEGORY_NAMES:[RegExp,string][]=[[/^(?:超市|supermarket)$/i,'Sup
 const digits:Record<string,number>={'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10,'半':0.5};
 /** A listing is the subject of a proximity relation, never its geographic destination. */
 export function isListingReference(name:string){return /^(?:(?:这套|那套|这|那|该|所租的|我租的|我要租的|想租的)\s*)?(?:房子|房屋|房源|住房|住宅|房间|单间|公寓|房|property|listing|home|house|apartment|room)$/i.test(name.trim());}
+/** A mention naming a rail station explicitly; otherwise URA areas/regions are matched first (shared fixture tests/fixtures/place-mention-rules.json, mirrored by recommendation/geography/normalize.py). */
+export function isExplicitStation(name:string){return /MRT|LRT|地铁站|地铁/i.test(name);}
 export function isGenericMrt(name:string){return /^(?:(?:最近的?|任意的?|任一|一个|一座|附近的)|(?:the|an?|any|nearest)\s+)?(?:MRT(?:\s*(?:station|站))?|地铁站?|捷运站)$/i.test(name.trim());}
 /** Separate destination identity from the relation and radius-update wording. */
 export function cleanLocationName(name:string){
@@ -39,7 +41,7 @@ export function parseLocationIntents(query:string):LocationIntent[]{
     if(!name||isListingReference(name))continue;
     const radius=distance?(digits[distance[1]]??Number(distance[1]))*(/公里|千米|km/i.test(distance[2])?1000:1):undefined;
     const distance_type=/步行|walking/i.test(clause)?'walking':/开车|driving/i.test(clause)?'driving':'straight_line';
-    intents.push(locationIntentSchema.parse({name,quote:clause,...(radius?{radius_m:radius}:{}),strength:!radius||/最好|希望|优先|偏好|prefer|ideally/i.test(clause)?'soft':'hard',distance_type,explicit_station:/MRT|LRT|地铁站|地铁/i.test(name),...(isGenericMrt(name)?{category:'MRTStation'}:{})}));
+    intents.push(locationIntentSchema.parse({name,quote:clause,...(radius?{radius_m:radius}:{}),strength:!radius||/最好|希望|优先|偏好|prefer|ideally/i.test(clause)?'soft':'hard',distance_type,explicit_station:isExplicitStation(name),...(isGenericMrt(name)?{category:'MRTStation'}:{})}));
   }
   return intents;
 }

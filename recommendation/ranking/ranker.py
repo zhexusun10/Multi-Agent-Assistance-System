@@ -1,167 +1,84 @@
-import math
+"""Scalar reference rules of fused-v2 scoring (spec section 7, R1d).
+
+The production path is the vectorised full-pool scorer in ranking/scoring_v2.py. These scalar
+functions state the same rules for ONE soft criterion of one listing, or ONE (candidate,
+reference) pair. scoring_v2 uses ``soft_utility`` (it needs the per-listing evaluate()
+results), and the tests use ``pair_similarity`` as an independent oracle for the numpy
+similarity arrays. Every parameter comes from recommendation/settings/recommendation.yaml.
+"""
+
 from .metrics import haversine, numeric_similarity
-from ..models.score_breakdown import ScoreBreakdown, Contribution
-from ..validation.rules import evaluate
-
-from ..config import ScoringPolicy, DEFAULT_SCALES, DEFAULT_WEIGHTS, DEFAULT_BOUNDS
-
-SCALES = DEFAULT_SCALES
-WEIGHTS = DEFAULT_WEIGHTS
-BOUNDS = DEFAULT_BOUNDS
 
 
-def pairwise(a, b, suppressed=(), scales=None, weights=None):
-    scales = SCALES if scales is None else scales
-    weights = WEIGHTS if weights is None else weights
-    if any(not math.isfinite(v) or v <= 0 for v in scales.values()):
-        raise ValueError("invalid scale")
-    if (
-        any(not math.isfinite(v) or v < 0 for v in weights.values())
-        or not math.isfinite(sum(weights.values()))
-        or sum(weights.values()) <= 0
-    ):
-        raise ValueError("invalid weights")
-    if set(weights) - set(WEIGHTS) or any(
-        k not in scales for k in weights if k != "property_type"
-    ):
-        raise ValueError("unsupported feature or missing scale")
-    active = {k: v for k, v in weights.items() if k not in suppressed and v > 0}
-    total = sum(active.values())
-    if not total:
-        return 0.0, 0.0, []
-    score = coverage = 0.0
+def soft_utility(listing, criterion, result, facts, bounds):
+    """Utility in [0, 1] of one soft criterion for one listing, or None when unknown.
+
+    threshold: pass 1 / fail 0; proximity (distance <= r): 1 / (1 + d / r); minimize /
+    maximize: linear over ranking.soft.numeric_bounds (clamped). ``facts`` are the listing's
+    evidence records (distance criteria read their value from them)."""
+    if result.outcome not in ("pass", "fail"):
+        return None
+    value = getattr(listing, criterion.field, None)
+    if criterion.field == "distance":
+        value = next(
+            (e.value for e in facts
+             if e.listing_id == listing.listing_id and e.criterion_id == criterion.criterion_id),
+            None,
+        )
+    if criterion.utility == "proximity":
+        return 1 / (1 + value / criterion.value)
+    if criterion.utility in ("minimize", "maximize"):
+        lo, hi = bounds[criterion.field]
+        s = max(0.0, min(1.0, (value - lo) / (hi - lo)))
+        return 1 - s if criterion.utility == "minimize" else s
+    return float(result.outcome == "pass")
+
+
+def feature_similarity(feature, a, b, spreads, similarity):
+    """(similarity, raw_difference, method) of one feature; similarity None = not compared.
+
+    Numeric features: max(0, 1 - |a - b| / spread) with the spread fitted on the pool.
+    property_type: exact match. geography: both coordinates -> max(0, 1 - haversine /
+    geographic_scale_m); else district_code equality when geography_district_fallback; else
+    unavailable. A missing attribute on either side is never compared."""
+    if feature == "geography":
+        distance = haversine(a, b)
+        if distance is not None:
+            return max(0.0, 1 - distance / similarity.geographic_scale_m), distance, "haversine"
+        if similarity.geography_district_fallback and a.district_code is not None and b.district_code is not None:
+            return float(a.district_code == b.district_code), None, "district_fallback"
+        return None, None, "unavailable"
+    if feature == "property_type":
+        if a.property_type is None or b.property_type is None:
+            return None, None, "missing"
+        return float(a.property_type == b.property_type), None, "exact"
+    s, diff = numeric_similarity(getattr(a, feature), getattr(b, feature), spreads[feature])
+    return s, diff, (f"numeric_{similarity.numeric_scaling}" if s is not None else "missing")
+
+
+def pair_similarity(a, b, weights, spreads, similarity):
+    """(similarity | None, comparison_coverage | None, details) of candidate ``a`` against
+    reference ``b``.
+
+    ``weights`` are the ACTIVE feature weights (configured weight > 0, not suppressed, not
+    dropped for zero variance). The similarity is renormalised over the compared features;
+    comparison_coverage = compared weight / active weight. The pair is unavailable (None) when
+    nothing is compared or coverage < min_comparison_coverage. Self pairs (a is b) are never
+    compared (R1d)."""
+    if a.listing_id == b.listing_id:
+        return None, None, []
+    active = sum(weights.values())
+    if active <= 0:
+        return None, None, []
+    compared = total = 0.0
     details = []
-    for feature, v in active.items():
-        w = v / total
-        diff = None
-        scale = scales.get(feature)
-        if feature == "geography":
-            diff = haversine(a, b)
-            s = None if diff is None else max(0, 1 - diff / scale)
-        elif feature == "property_type":
-            s = (
-                None
-                if a.property_type is None or b.property_type is None
-                else float(a.property_type == b.property_type)
-            )
-        else:
-            s, diff = numeric_similarity(
-                getattr(a, feature), getattr(b, feature), scale
-            )
-        contribution = w * (s or 0)
-        score += contribution
-        coverage += w if s is not None else 0
-        details.append(
-            Contribution(
-                feature=feature,
-                reference=b.listing_id,
-                raw_difference=diff,
-                scale=scale,
-                similarity=s,
-                weight=w,
-                contribution=contribution,
-                unknown=s is None,
-            )
-        )
-    return min(1, score), min(1, coverage), details
-
-
-def score(listing, criteria, evidence, viewed, policy=None):
-    policy = policy or ScoringPolicy()
-    soft = [c for c in criteria if c.strength == "soft"]
-    explicit = None
-    details = []
-    coverage = 0
-    explicit_coverage = 0
-    if soft:
-        total = sum(c.weight for c in soft)
-        explicit = 0.0
-        results = {r.criterion_id: r for r in evaluate(listing, soft, evidence)}
-        for c in soft:
-            r = results[c.criterion_id]
-            s = None
-            value = getattr(listing, c.field, None)
-            if c.field == "distance":
-                value = next(
-                    (
-                        e.value
-                        for e in evidence
-                        if e.listing_id == listing.listing_id
-                        and e.criterion_id == c.criterion_id
-                    ),
-                    None,
-                )
-            if r.outcome in ("pass", "fail"):
-                s = float(r.outcome == "pass")
-                if c.utility == "proximity":
-                    s = 1 / (1 + value / c.value)
-                elif c.utility in ("minimize", "maximize"):
-                    lo, hi = policy.numeric_bounds[c.field]
-                    s = max(0, min(1, (value - lo) / (hi - lo)))
-                    s = 1 - s if c.utility == "minimize" else s
-            w = c.weight / total
-            contribution = w * (s or 0)
-            explicit += contribution
-            explicit_coverage += w if s is not None else 0
-            details.append(
-                Contribution(
-                    feature=c.criterion_id,
-                    similarity=s,
-                    weight=w,
-                    contribution=contribution,
-                    unknown=s is None,
-                )
-            )
-    # Conservative explicit precedence: any explicit statement disables that inferred feature globally.
-    suppressed = {
-        (
-            "geography"
-            if c.field in ("district_code", "distance", "commute")
-            else c.field
-        )
-        for c in criteria
-    } & set(WEIGHTS)
-    implicit = None
-    weights = [(v, min(120, d)) for v, d in viewed if d > 0]
-    denominator = sum(math.log1p(t) / math.log(121) for _, t in weights)
-    if denominator and any(
-        v > 0 and k not in suppressed for k, v in policy.feature_weights.items()
-    ):
-        implicit = 0.0
-        for v, t in weights:
-            w = math.log1p(t) / math.log(121) / denominator
-            s, c, ds = pairwise(
-                listing, v, suppressed, policy.scales, policy.feature_weights
-            )
-            implicit += w * s
-            coverage += w * c
-            details.extend(
-                d.model_copy(
-                    update={"weight": d.weight * w, "contribution": d.contribution * w}
-                )
-                for d in ds
-            )
-    ew, iw = (
-        (0.8, 0.2)
-        if explicit is not None and implicit is not None
-        else (
-            (1.0, 0.0)
-            if explicit is not None
-            else ((0.0, 1.0) if implicit is not None else (0.0, 0.0))
-        )
-    )
-    return ScoreBreakdown(
-        explicit_score=explicit,
-        implicit_score=implicit,
-        combined_score=min(1, ew * (explicit or 0) + iw * (implicit or 0)),
-        explicit_weight=ew,
-        implicit_weight=iw,
-        evidence_coverage=min(1, ew * explicit_coverage + iw * coverage),
-        contributions=details,
-        suppressed_features=sorted(suppressed),
-        ordering=(
-            "weighted"
-            if ew and iw
-            else ("explicit" if ew else ("behavioral" if iw else "stable_listing_id"))
-        ),
-    )
+    for feature, weight in weights.items():
+        s, diff, method = feature_similarity(feature, a, b, spreads, similarity)
+        details.append((feature, s, diff, method))
+        if s is not None:
+            compared += weight
+            total += weight * s
+    coverage = compared / active
+    if compared <= 0 or coverage < similarity.min_comparison_coverage:
+        return None, coverage, details
+    return total / compared, coverage, details

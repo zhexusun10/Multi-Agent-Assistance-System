@@ -1,85 +1,81 @@
 {
-  "contract_version": "1.0",
+  "contract_version": "2.0",
   "request_id": "clarification",
   "conversation_id": "clarification",
   "requirements_version": 1,
   "status": "needs_clarification",
   "recommendations": [],
-  "unverified_candidates": [
-    {
-      "listing_id": "fixture-01",
-      "criterion_results": [
-        {
-          "criterion_id": "furnished",
-          "outcome": "unsupported",
-          "reason": "No trusted evidence for this requirement",
-          "evidence_refs": []
-        }
-      ]
-    },
-    {
-      "listing_id": "fixture-02",
-      "criterion_results": [
-        {
-          "criterion_id": "furnished",
-          "outcome": "unsupported",
-          "reason": "No trusted evidence for this requirement",
-          "evidence_refs": []
-        }
-      ]
-    },
-    {
-      "listing_id": "fixture-03",
-      "criterion_results": [
-        {
-          "criterion_id": "furnished",
-          "outcome": "unsupported",
-          "reason": "No trusted evidence for this requirement",
-          "evidence_refs": []
-        }
-      ]
-    },
-    {
-      "listing_id": "fixture-04",
-      "criterion_results": [
-        {
-          "criterion_id": "furnished",
-          "outcome": "unsupported",
-          "reason": "No trusted evidence for this requirement",
-          "evidence_refs": []
-        }
-      ]
-    }
-  ],
   "evidence": [],
+  "resolution": [],
+  "pool": {
+    "pool_key": "2e8ef064769767aec3f84cf870b0a9252d41c52cd299cedc6919b5aed67cefc7",
+    "pool_version": "56bbd466f00c8a72cd9fcadb041aed846af022d7e2680f63c68689c089b42daa",
+    "data_version": "24ddafa745523a348ebddc96a1e632214c8127f772d46ba69d15dc34497177b9",
+    "cache": "built",
+    "size": 0,
+    "source_count": 12,
+    "excluded_hard_fail": 0,
+    "excluded_hard_unknown": 12,
+    "unknown_reasons": {
+      "furnishing: No trusted evidence for this requirement": 12
+    }
+  },
+  "selection": {
+    "mode": "empty",
+    "algorithm_version": "select-v1",
+    "seed": "9dea03f5930b1cbb88137761e832bab27567d1473f8eb074c8a82c64adb98b9a",
+    "result_limit": 10,
+    "leaders": 0,
+    "tie_group": null,
+    "exploration": null,
+    "cold_start": {
+      "evaluated": false,
+      "active": false,
+      "reason": "empty_pool",
+      "coverage_c": null,
+      "boundary_group_b": null,
+      "stability_s": null,
+      "thresholds": {
+        "c": 0.8,
+        "b": 5,
+        "s": 0.9
+      },
+      "exit_conditions_met": false,
+      "pool_key": "2e8ef064769767aec3f84cf870b0a9252d41c52cd299cedc6919b5aed67cefc7"
+    }
+  },
   "clarifications": [
-    "Resolve missing or unsupported hard-constraint evidence."
+    "Hard criterion 'furnished' (furnishing) is not supported by the native recommender; revise or remove it."
   ],
   "relaxation_suggestions": [],
   "warnings": [
     "Sample viewing durations are simulated observations.",
-    "Posting time does not establish current availability."
+    "Posting time does not establish current availability.",
+    "12 listings were excluded because hard-criterion data is unknown (see pool.unknown_reasons); they are not verified matches."
   ],
   "state": {
-    "state_id": "18e22d2f-b141-4b8b-9dd8-7aa681c075f5",
-    "candidate_pool_ref": "c90f2dc4-c07e-4557-a410-d660e16e7e15/pool",
+    "state_id": "35881e00-4654-4b9b-956c-52b90b8caa26",
+    "candidate_pool_ref": "3a439e3d-d005-4447-94ab-80e6e9f82060/pool",
     "run_sequence": 1,
-    "feedback_version": 0,
     "scope": "all RENT listings",
     "truncated": false,
     "source_count": 12,
-    "prefilter_excluded": 0,
-    "assessed_count": 12
+    "prefilter_excluded": 12,
+    "assessed_count": 0
   },
   "execution": {
-    "trace_id": "c90f2dc4-c07e-4557-a410-d660e16e7e15",
-    "trace_ref": "sqlite:c90f2dc4-c07e-4557-a410-d660e16e7e15",
-    "strategy": "complete-pool weighted ranking",
-    "scoring_version": "weighted-v1",
+    "trace_id": "3a439e3d-d005-4447-94ab-80e6e9f82060",
+    "trace_ref": "sqlite:3a439e3d-d005-4447-94ab-80e6e9f82060",
+    "strategy": "full-pool fused-v2 scoring + select-v1 selection",
+    "scoring_version": "fused-v2:90e724bb160a",
+    "selection_algorithm": "select-v1",
+    "config_version": 1,
+    "config_hash": "e46e754a9c6e6eafd4e2522f7bee4f26de37f956de50d3be6be173549710b2c8",
+    "selection_hash": "90e724bb160ae68524bd5d9b899959716d46f509627096c5696c7ec66d5a18a7",
     "model_identifier": null,
     "model_calls": 0,
     "tool_calls": 4,
-    "duration_ms": 0.861082982737571,
+    "duration_ms": 2.9322499758563936,
     "tokens": null,
     "data_mode": "fixture",
     "controller_mode": "scripted"

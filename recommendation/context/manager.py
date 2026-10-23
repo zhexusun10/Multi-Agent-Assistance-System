@@ -1,10 +1,20 @@
+"""Run-consistency checks and feedback-snapshot consumption for one request (contract 2.0).
+
+No accumulation: every request carries the orchestrator's COMPLETE feedback snapshot
+(previous-round browsing + all valid appointment signals). Nothing is merged with earlier
+requests; earlier rounds' browsing therefore has no effect. The snapshot itself is scored by
+ranking/scoring_v2.py (references inside the current pool only). Kept here from the old context
+manager: optimistic concurrency (STALE_REFERENCE against the v2 head), requirements version
+checks (STALE_REQUIREMENTS) and run_sequence. Idempotency/replay stay in the service.
+"""
+
 from recommendation.contracts.errors import RecommendationError
-from ..models.listing_summary import ListingSummary
 from ..tracing.trace import digest
-import math
+from ..ranking.scoring_v2 import SCORING_VERSION, browsing_enabled, browsing_weight
 
 
-def prepare(request, previous, store):
+def check_state(request, previous):
+    """STALE_REFERENCE / STALE_REQUIREMENTS against the conversation's v2 head (or none)."""
     if previous:
         if request.previous_state_id != previous["state_id"]:
             raise RecommendationError(
@@ -24,64 +34,84 @@ def prepare(request, previous, store):
             )
     elif request.previous_state_id:
         raise RecommendationError("STALE_REFERENCE", "Unknown state reference")
-    events = list(previous.get("events", [])) if previous else []
-    by_id = {e["event_id"]: e for e in events}
-    by_session = {e["payload"]["view_session_id"]: e for e in events}
-    for event in request.feedback:
-        e = event.model_dump(mode="json")
-        existing = by_id.get(e["event_id"]) or by_session.get(
-            e["payload"]["view_session_id"]
-        )
-        if existing:
-            if existing != e:
-                raise RecommendationError(
-                    "FEEDBACK_CONFLICT",
-                    "Conflicting event ID or completed view session",
-                )
-            continue
-        prior = store.cached(request.conversation_id, event.recommendation_request_id)
-        if not prior or not any(
-            r["listing"]["listing_id"] == event.listing_id
-            for r in prior[1]["recommendations"]
-        ):
+
+
+def check_feedback(request, store, config):
+    """Service-level feedback checks; returns the previous round's committed response (or None)."""
+    counted = set(config.ranking.behavior.counted_appointment_statuses)
+    for signal in request.feedback.appointments:
+        outside = sorted(set(signal.statuses) - counted)
+        if outside:
             raise RecommendationError(
                 "INVALID_FEEDBACK",
-                "Event must refer to a verified listing in an earlier response",
+                f"Appointment statuses {outside} for listing {signal.listing_id} are not counted "
+                f"(ranking.behavior.counted_appointment_statuses: {sorted(counted)})",
             )
-        events.append(e)
-        by_id[e["event_id"]] = e
-        by_session[e["payload"]["view_session_id"]] = e
-    totals = {}
-    records = {}
-    for e in events:
-        prior = store.cached(request.conversation_id, e["recommendation_request_id"])
-        item = next(
-            r["listing"]
-            for r in prior[1]["recommendations"]
-            if r["listing"]["listing_id"] == e["listing_id"]
+    round_ = request.feedback.previous_round
+    if round_ is None:
+        return None
+    # The orchestrator's adopted round need not be the native head, but it must be a committed
+    # v2 run of THIS conversation whose recommendation ID set equals the shown IDs.
+    prior = store.cached(request.conversation_id, round_.request_id)
+    if not prior:
+        raise RecommendationError(
+            "INVALID_FEEDBACK",
+            "previous_round.request_id is not a committed run of this conversation",
         )
-        records[e["listing_id"]] = ListingSummary.model_validate(item)
-        totals[e["listing_id"]] = (
-            totals.get(e["listing_id"], 0) + e["payload"]["duration_seconds"]
+    returned = {item["listing"]["listing_id"] for item in prior[1]["recommendations"]}
+    if returned != set(round_.shown_listing_ids):
+        raise RecommendationError(
+            "INVALID_FEEDBACK",
+            "previous_round.shown_listing_ids must equal the recommendation IDs of that run",
         )
+    return prior[1]
+
+
+def prepare(request, previous, store, config):
+    check_state(request, previous)
+    check_feedback(request, store, config)
+    feedback = request.feedback
+    round_ = feedback.previous_round
+    browsing = {}
+    weights = {}
+    if round_:
+        records = {record.listing_id: record for record in round_.browsing}
+        for listing_id in round_.shown_listing_ids:  # display order, independent of record order
+            record = records[listing_id]
+            browsing[listing_id] = {
+                "status": record.status,
+                "duration_seconds": record.duration_seconds,
+            }
+            if record.status == "recorded" and record.duration_seconds > 0:
+                # Reference weight before the in-pool filter (applied by the scorer, recorded
+                # in the rank_candidates trace step); None when the browsing branch is disabled.
+                weights[listing_id] = (
+                    browsing_weight(record.duration_seconds, config.ranking.browsing)
+                    if browsing_enabled(config)
+                    else None
+                )
+    appointments = sorted(signal.listing_id for signal in feedback.appointments)
     return {
-        "events": events,
-        "viewed": [(records[k], v) for k, v in totals.items()],
+        "appointments": appointments,
         "sequence": previous["sequence"] + 1 if previous else 1,
         "changes": {
             "requirements_changed": not previous
             or digest(request.requirements.model_dump())
             != digest(previous["request"]["requirements"]),
-            "new_events": len(events) - (len(previous["events"]) if previous else 0),
+            "previous_round": round_.request_id if round_ else None,
+            "browsing_records": len(browsing),
+            "appointment_listings": len(appointments),
         },
         "profile": {
-            "source": "sample",
-            "duration_totals": totals,
-            "interest_weights": {
-                k: math.log1p(min(v, 120)) / math.log(121) for k, v in totals.items()
-            },
-            "duration_cap_seconds": 120,
-            "scoring_version": "weighted-v1",
-            "event_refs": [e["event_id"] for e in events],
+            "source": "feedback_snapshot",
+            "previous_round": round_.request_id if round_ else None,
+            "browsing": browsing,
+            "interest_weights": weights,
+            "browsing_transform": config.ranking.browsing.transform,
+            "time_scale_seconds": config.ranking.browsing.time_scale_seconds,
+            "duration_cap_seconds": config.ranking.browsing.duration_cap_seconds,
+            "appointment_listing_ids": appointments,
+            "reference_scope": config.ranking.behavior.reference_scope,
+            "scoring_version": SCORING_VERSION,
         },
     }

@@ -37,7 +37,7 @@ test('user screenshots search successfully, nearest MRT is correct, and the exis
     assert(hard.some((c:any)=>c.field==='place_proximity'&&c.target?.name==='National University of Singapore'&&c.value===3000));
     assert.equal(hard.some((c:any)=>c.target?.category==='MRTStation'&&c.value===3000),hasMrt);
     assert.equal(s.recommendation.state.counts.unverified,expected(hasMrt));assert.equal(s.recommendation.recommendations.length,0);
-    assert.equal(s.recommendation.unverified_candidates.length,5);
+    assert.equal(s.recommendation.unverified_candidates.length,10);
     for(const c of s.recommendation.unverified_candidates){const p=properties.find((p:any)=>String(p.listing_id)===c.listing.listing_id);assert(Number(p.price)<=3000);assert(distance(p,nus)<=3000);if(hasMrt)assert(mrtDistance(p)<=3000);
       const bath=criteria.find((r:any)=>r.value==='private_bathroom');assert.equal(c.criterion_results.find((r:any)=>r.criterion_id===bath.criterion_id).status,'unknown');
       if(hasMrt){const mrt=hard.find((r:any)=>r.target?.category==='MRTStation'),result=c.criterion_results.find((r:any)=>r.criterion_id===mrt.criterion_id);assert.equal(result.status,'pass');assert(Math.abs(result.observed_value-mrtDistance(p))<.01);}
@@ -51,7 +51,7 @@ test('user screenshots search successfully, nearest MRT is correct, and the exis
     await pool.query('UPDATE session_domain_state SET pending=$2 WHERE session_id=$1',[legacy.session_id,JSON.stringify(draft)]);
     const resumed=await run(legacy.session_id,before.simple_query);verify(resumed,true);
     const known=await api('sessions',{}),verified=await run(known.session_id,'我想租新加坡国立大学附近3公里内的房子，预算3000新币每月');
-    assert.equal(verified.pending,null);assert.equal(verified.recommendation.state.counts.eligible,expected(false));assert.equal(verified.recommendation.recommendations.length,5);
+    assert.equal(verified.pending,null);assert.equal(verified.recommendation.state.counts.eligible,expected(false));assert.equal(verified.recommendation.recommendations.length,10);
     await writeFile('data/.runtime/location-subject-ui-fixture.json',JSON.stringify({owner,session_id:first.session_id,legacy_session_id:legacy.session_id,simple_query:before.simple_query,query:before.query}));
   }finally{await writeFile('evaluation/reports/location-subject-live.json',JSON.stringify({rows,oracle:{mrt_exits:exits.length,with_mrt:expected(true),without_mrt:expected(false)}},null,2));await pool.end();await oracle.end();}
 });

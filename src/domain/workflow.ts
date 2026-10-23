@@ -6,7 +6,7 @@ import type { AgentTask } from '../agent-task-store.js';
 import type { Assignment } from '../types.js';
 import { BusinessError, DomainStore,hash,type DomainState,type TaskEnvelope } from '../stores/domain.js';
 import { draftSchema,extractRules,extractRequirements,mergeRequirements,pendingQuestions,repairPendingLocationSubjects,criterion,type RequirementDraft } from './requirements.js';
-import { recommendationRequestSchema,validateResponse,feedbackSchema,type RecommendationRequest,type Feedback } from '../contracts/recommendation-v1.js';
+import { recommendationRequestSchema,validateResponse,feedbackSchema,type RecommendationRequest } from '../contracts/recommendation-v1.js';
 import { buildExplanation,renderSummary,criterionText } from './explanation.js';
 import { ActionService } from './actions.js';
 import { KnowledgeService } from './knowledge.js';
@@ -18,11 +18,13 @@ import {AgentOrchestrator} from '../agents/orchestrator/agent-orchestrator.js';
 import { describeAgentFailure } from './errors.js';
 import {LocationService} from '../adapters/locations.js';
 import {DEFAULT_PROXIMITY_SCALE_M} from './geo-intake.js';
-import {displayedCandidates,resolveListingSelection} from './selection.js';
+import {displayedCandidates,resolveListingSelection,interpretFeedback} from './selection.js';
 import {FollowupService,singaporeDate} from './followup.js';
 import {ManualFollowupService} from './manual-followup.js';
 import {notesFromFollowupQuery} from '../shared/followup-message.js';
 import {ListingPresentationService} from './listing-presentation.js';
+import {loadFeedbackSidecar,coldStartAfterAdoption} from './feedback-sidecar.js';
+import {feedbackSidecarSchema} from '../contracts/recommendation-native.js';
 
 const resultEnvelope=z.object({schema_version:z.literal('1.1'),agent:z.enum(['a','b','c','d']),operation_id:z.string().uuid(),requirements_version:z.number().int(),payload_ref:z.string().uuid(),payload_hash:z.string()}).strict();
 export type Plan={assignments:Assignment[];answer:string};
@@ -124,9 +126,9 @@ export class WorkflowService{
         draft.interpretation_notes=[...(draft.interpretation_notes||[]),resolved.note,intent.radius_m?`距离范围 ${intent.radius_m} 米按${intent.distance_type==='straight_line'?'直线':intent.distance_type}口径处理；在范围内继续优先更近的房源。`:'未指定距离上限，采用“越近越好”的软偏好，不因默认半径排除房源。'];
       }
       if(pending)draft={...draft,clarifications:pendingQuestions(pending,draft),upsert:[...pending.upsert,...draft.upsert],remove_fields:[...pending.remove_fields,...draft.remove_fields],sources:[...pending.sources,...draft.sources]};
-      payload={draft:draftSchema.parse(draft),feedback:this.interpretFeedback(body.latest_query||body.query,body.recommendation,body.source_request_id,env.operation_id)};
+      payload={draft:draftSchema.parse(draft),feedback:interpretFeedback(body.latest_query||body.query,body.recommendation,body.source_request_id,env.operation_id)};
     }else if(agent==='b'){
-      const req=recommendationRequestSchema.parse(body.request);const rec=await this.recommender.recommend(req,ctx);rec.warnings.push(...(body.interpretation_notes||[]).map((message:string)=>({code:'GEO_INTERPRETATION',message})));payload=rec;
+      const req=recommendationRequestSchema.parse(body.request);const sidecar=body.feedback_snapshot?feedbackSidecarSchema.parse(body.feedback_snapshot):null;const rec=await this.recommender.recommend(req,ctx,sidecar);rec.warnings.push(...(body.interpretation_notes||[]).map((message:string)=>({code:'GEO_INTERPRETATION',message})));payload=rec;
     }else if(agent==='c'){
       if(!body.recommendation)throw new BusinessError('NO_RECOMMENDATION','请先检索房源。');
       const rec=body.recommendation;
@@ -151,12 +153,6 @@ export class WorkflowService{
       catch(error){if(error instanceof BusinessError&&['SELECTION_REQUIRED','SELECTION_NOT_IN_RESULT'].includes(error.code))payload={kind:'selection_needed',message:error.message};else throw error;}
     }
     return this.store.transaction(async tx=>{const row=await tx.query('SELECT envelope FROM agent_result_payloads WHERE task_id=$1',[taskId]);if(row.rows[0])return JSON.stringify(row.rows[0].envelope);const ref=await this.store.payload(tx,sessionId,env.operation_id,payload);const output={schema_version:'1.1',agent,operation_id:env.operation_id,requirements_version:env.requirements_version,payload_ref:ref,payload_hash:hash(payload)};await tx.query('INSERT INTO agent_result_payloads(task_id,envelope) VALUES($1,$2) ON CONFLICT DO NOTHING',[taskId,JSON.stringify(output)]);return JSON.stringify(output);});
-  }
-  private interpretFeedback(query:string,rec:any,source:string|null,op:string):Feedback[]{
-    if(!rec||source!==rec.request_id)return [];
-    const m=query.match(/第([一二三四五\d])套.*?(太小|不喜欢|喜欢|面积小)/);if(!m)return [];
-    const map:Record<string,number>={'一':1,'二':2,'三':3,'四':4,'五':5};const candidate=displayedCandidates(rec)[(map[m[1]]??Number(m[1]))-1];if(!candidate)return [];
-    return [feedbackSchema.parse({event_id:`explicit:${op}`,listing_id:candidate.listing.listing_id,occurred_at:new Date().toISOString(),event_type:'explicit_attribute_feedback',payload:{attribute:/小/.test(m[2])?'floor_area_sqft':'listing',sentiment:m[2]==='喜欢'?'positive':'negative',quote:m[0]}})];
   }
   async emitDueReminders(){
     const rows=(await this.store.pool.query("SELECT id,session_id,body FROM workflow_actions WHERE body->>'next_followup_at' IS NOT NULL AND (body->>'next_followup_at')::timestamptz<=now() AND body->>'status'<>'CANCELLED' LIMIT 100")).rows;
@@ -190,12 +186,15 @@ export class WorkflowService{
             const requirements=mergeRequirements(s.requirements,draft);if(hash(requirements)!==hash(s.requirements)){s.requirements_version++;s.requirements=requirements;await tx.query('INSERT INTO requirement_revisions(session_id,version,body,sources) VALUES($1,$2,$3,$4)',[s.session_id,s.requirements_version,JSON.stringify(requirements),JSON.stringify(draft.sources)]);}
             s.pending=null;
             for(const fb of payload.feedback??[]) {const event=feedbackSchema.parse(fb);await tx.query('INSERT INTO listing_feedback(session_id,event_id,body) VALUES($1,$2,$3) ON CONFLICT DO NOTHING',[s.session_id,event.event_id,JSON.stringify(event)]);}
-            const feedback=(await tx.query('SELECT body FROM listing_feedback WHERE session_id=$1 AND consumed_request_id IS NULL',[s.session_id])).rows.map(x=>x.body);
+            const feedback=(await tx.query('SELECT body FROM listing_feedback WHERE session_id=$1 AND consumed_request_id IS NULL ORDER BY event_id',[s.session_id])).rows.map(x=>x.body);
+            // Complete feedback snapshot of the previously ADOPTED round (native contract 2.0),
+            // built once here and persisted; agent B and its retries reuse it verbatim.
+            const feedback_snapshot=await loadFeedbackSidecar(tx,s);
             const requestId=randomUUID(),previous=s.recommendation?.state.state_id;
-            const request=recommendationRequestSchema.parse({contract_version:'1.0',request_id:requestId,conversation_id:s.session_id,requirements_version:s.requirements_version,requirements:s.requirements,feedback,...(previous?{previous_state_id:previous}:{}),result_limit:5});
-            await tx.query('INSERT INTO recommendation_calls(id,session_id,operation_id,request) VALUES($1,$2,$3,$4)',[requestId,s.session_id,env.operation_id,JSON.stringify(request)]);
+            const request=recommendationRequestSchema.parse({contract_version:'1.0',request_id:requestId,conversation_id:s.session_id,requirements_version:s.requirements_version,requirements:s.requirements,feedback,...(previous?{previous_state_id:previous}:{}),result_limit:10});
+            await tx.query('INSERT INTO recommendation_calls(id,session_id,operation_id,request,feedback_snapshot) VALUES($1,$2,$3,$4,$5)',[requestId,s.session_id,env.operation_id,JSON.stringify(request),JSON.stringify(feedback_snapshot)]);
             await tx.query('UPDATE listing_feedback SET consumed_request_id=$2 WHERE session_id=$1 AND consumed_request_id IS NULL',[s.session_id,requestId]);
-            s.latest_request_id=requestId;await next('b',{request,interpretation_notes:draft.interpretation_notes||[]},'recommend');
+            s.latest_request_id=requestId;await next('b',{request,feedback_snapshot,interpretation_notes:draft.interpretation_notes||[]},'recommend');
           }
         }else if(task.agent==='b'){
           const call=(await tx.query('SELECT request FROM recommendation_calls WHERE id=$1 AND operation_id=$2',[s.latest_request_id,env.operation_id])).rows[0];if(!call)throw Error('Recommendation call missing');
@@ -204,7 +203,7 @@ export class WorkflowService{
           await tx.query('UPDATE recommendation_calls SET response=$2 WHERE id=$1',[s.latest_request_id,JSON.stringify(response)]);
           if(response.status==='error')throw new BusinessError(response.error!.code,response.error!.message);
           if(response.status==='needs_clarification'){const questions=response.clarifications.map(x=>x.question);this.store.message(s,'assistant',questions.join('\n'));await this.store.event(tx,s.session_id,{type:'clarification',payload:{questions}},`clarify:${task.id}`);}
-          else{s.recommendation=response;await next('c',{requirements:s.requirements,recommendation:response,query:operation.query},'explain');}
+          else{s.recommendation=response;s.recommendation_cold_start=coldStartAfterAdoption(s.recommendation_cold_start,response);await next('c',{requirements:s.requirements,recommendation:response,query:operation.query},'explain');}
         }else if(task.agent==='c'){
           const source=payload.explanation.source_request_id;const sourceOperation=(await tx.query('SELECT operation_id FROM recommendation_calls WHERE id=$1',[source])).rows[0]?.operation_id;if(source!==s.latest_request_id||sourceOperation!==s.active_operation_id)throw new BusinessError('RESULT_STALE','推荐已变化，此解释已失效。');s.explanation=payload.explanation;this.store.message(s,'assistant',payload.explanation.summary);await this.store.event(tx,s.session_id,{type:'workflow_result',payload:{explanation:payload.explanation,source_request_id:source}},`result:${task.id}`);
           if(isSearch&&operation.intent_plan?.deferred_summary)await next('d',{kind:'summary',requirements:s.requirements,recommendation:s.recommendation},'followup-summary');
@@ -226,3 +225,4 @@ export class WorkflowService{
     });
   }
 }
+

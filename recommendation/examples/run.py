@@ -5,7 +5,7 @@ from pathlib import Path
 from recommendation.contracts.request import (
     RecommendationRequest,
 )
-from recommendation.contracts.feedback import ViewingEvent
+from recommendation.contracts.feedback import FeedbackSnapshot
 from ..repositories.connections import repositories
 from ..state.store import StateStore
 from ..service import RecommendationService
@@ -28,14 +28,10 @@ def run(path):
     first = service.recommend(request)
     validate_response(first)
     assert first.status == "success", first.error
-    events = [
-        ViewingEvent.model_validate({**e, "conversation_id": "sample"})
-        for e in feedback_example(first)["events"]
-    ]
     next_request = request.model_copy(
         update={
             "request_id": "feedback",
-            "feedback": events,
+            "feedback": FeedbackSnapshot.model_validate(feedback_example(first)),
             "previous_state_id": first.state.state_id,
         }
     )

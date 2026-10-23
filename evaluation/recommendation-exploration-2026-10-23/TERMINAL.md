@@ -1,0 +1,202 @@
+# Recommendation terminal: usage guide (contract 2.0)
+
+`python -m recommendation.terminal` is the developer terminal of the native recommendation
+subagent. It talks to the same `RecommendationService` and SQLite state as the HTTP sidecar. It
+plays the orchestrator's role: it stages full requirements and feedback snapshots, submits
+requests and inspects runs. The debugging commands live in `recommendation/terminal/debug.py`;
+`recommendation/terminal/__main__.py` wires them in. Every earlier command still works.
+
+```bash
+# fixture data, deterministic scripted controller (no LLM, no databases)
+.venv/bin/python -m recommendation.terminal --data-mode fixture --controller scripted
+# live databases (read-only) with the scripted controller and a throw-away state file
+.venv/bin/python -m recommendation.terminal --data-mode database --controller scripted --state-path /tmp/rec-state.sqlite
+# live databases + live model (prints progress events)
+.venv/bin/python -m recommendation.terminal --data-mode database --controller live
+```
+
+| Option | Meaning |
+|---|---|
+| `--data-mode database\|fixture` | listing/graph source (default `database`) |
+| `--controller live\|scripted` | LLM tool loop or the deterministic pipeline (default `live`) |
+| `--conversation-id <id>` | resume a conversation (with the same `--state-path`) |
+| `--state-path <file>` | SQLite state (default `RECOMMENDATION_STATE_PATH` or `recommendation/.runtime/state.sqlite`) |
+| `--config <file>` | alternative settings file of the same schema (default: `recommendation/settings/recommendation.yaml`) |
+| `--script <file>` | run the commands of a file (one per line, `#` comments) and echo each one after the prompt; for transcripts |
+| `--brief` | print a response summary instead of the full JSON (the response artifact file still has the full JSON) |
+| `--check-connections` | contact both stores and exit (no model call) |
+
+`help` prints the command list. Staged input (requirements, feedback, a loaded request, session
+settings, the seed override) is never saved on exit. Committed runs, traces and pool-cache entries
+are saved in the state file.
+
+## Commands
+
+### Input and submission
+
+| Command | What it does |
+|---|---|
+| `requirements [@file]` | Replace the full requirements snapshot. The requirements version advances only when the snapshot changes. |
+| `feedback [@file]` | Replace the full feedback snapshot `{previous_round, appointments}`, as the orchestrator does; nothing is merged with earlier input. It is checked against the state first: the previous round must be a committed run of this conversation, its shown IDs must equal that run's recommendations, and every appointment status must be counted. |
+| `feedback-template [file]` | Template for the last response: one browsing record per shown listing (`status: recorded`, `duration_seconds: null` placeholder), plus the appointments of the previous INPUT (never native history). Fill in seconds, or set `status: "missing"` and drop the duration. An unfilled template is rejected. |
+| `feedback-example [file]` | Filled sample: 90 s for rank 1 and 30 s for the rest. |
+| `load-request @file` | Stage a full contract-2.0 request body. It is validated in full, and contract 1.0 bodies are rejected. The terminal stages its requirements, feedback, cold_start and result_limit. The file's `request_id`, `conversation_id`, `previous_state_id` and `requirements_version` are never reused; the terminal manages them and prints them. |
+| `show-input` | The request body `recommend` would send (`request_id` shows as "minted by recommend"; a failed pending request shows its real ID), plus the seed override and session settings. |
+| `validate-input` | Contract 2.0 schema check plus the run-consistency checks (state reference vs head, requirements version, feedback snapshot, result_limit). Nothing is submitted. |
+| `recommend` | Submit the staged request. Each call mints a **new request_id**. The only exception is retrying a failed pending request, which keeps its ID. Any input change (requirements, feedback, load-request, set-config, set-seed) drops the pending request, so the next recommend gets a new ID. |
+| `replay <request-id>` | Re-submit the stored body of a committed request. Prints `REPLAY of <id> (stored response)`, then the stored response (verified by the replay gate) and whether it is unchanged. It never creates a run and never changes the terminal's current response or staged input. Changing settings never alters a replay. |
+| `show-state`, `reset`, `exit` | As before: `reset` starts a new conversation, and stored data is kept. |
+
+### Settings (session only)
+
+| Command | What it does |
+|---|---|
+| `show-config [dotted.key]` | Effective settings, `config_hash`, `selection_hash` and session overrides (or one key or section). |
+| `set-config <dotted.key> <json>` | Session override, validated by the same loader as the YAML file. An invalid key, value, range or weight sum, or a secret-like key, is rejected and the settings stay unchanged. **The settings file is never written.** The override applies to **new requests only**: the service freezes settings per request, and stored runs keep their configuration. To keep weights summing to 1, set a whole section in one go: `set-config ranking {"soft_weight":0.5,"behavior_weight":0.5}`. |
+| `reset-config` | Drop every session override. |
+| `export-config [file.yaml\|file.json]` | Write the effective settings (with a provenance header for YAML). The file loads with `--config` to the same `config_hash`. |
+| `set-seed <value>` / `set-seed off` | Test override of the selection **base seed** (R3; the tie / stage A / stage B streams derive from it). It is recorded in the trace (`seed_override.value`, final_selection `params.seed_override`, `selection_input.seeds.override`). Only the terminal sets it; the service API never does. |
+
+### Inspection
+
+The inspection commands read, in this order:
+
+1. **The step session**, when the last command was `step` / `run-until`. Every line is labelled
+   `INTERMEDIATE (step session: ...; this is not a recommendation)`.
+2. **This terminal's latest run**: the dispatcher of that run is retained in memory (pool rows,
+   criterion results, evidence, full-pool score components, selection), so nothing is
+   re-queried.
+3. **A committed run this terminal did not execute** (after a restart). The pool comes from
+   pool_cache by pool_version, and scores from the stored response items plus the trace preview.
+   `inspect-listing` re-runs the stored request read-only and labels the output
+   **RECOMPUTED**.
+
+| Command | What it shows |
+|---|---|
+| `show-pool [--page N]` | Pool identity (pool_key, pool_version, data_version, cache built/reused, outcome hit/miss), partition counts and unknown reasons. Rows come in score order once scored; page size = `trace.preview_rows`. |
+| `show-resolution` | One line per geographic criterion (RESOLVED / AMBIGUOUS / UNRESOLVED, entity, method, reason, "needs clarification (n candidates)") and the full resolution records with candidates. |
+| `show-scores [--top N]` | Effective weights, suppressed / dropped / active similarity features, and the top N of the full-pool order with soft / behaviour / appointment / browsing / combined scores, coverage and selection reason. |
+| `show-cold-start` | Cold-start diagnostics: evaluated, active, reason, C / B / S, thresholds, exit_conditions_met, plus trial details. |
+| `show-selection` | Selection summary (mode, seed, leaders, tie group, exploration bins) and the selected items with rank, score_rank, reason and note. |
+| `inspect-listing <id>` | One listing: row, criterion results, evidence, score breakdown with contributions, score_rank, and whether and why it was selected. A listing outside the run's pool is read fresh **by ID** and evaluated against the criteria. That output is labelled `recomputed`, because the run never stored data for it. |
+| `show-trace [request-id] [--debug] [--latest]` | The stored slim trace (without an ID: the newest trace of the conversation). With a request ID: that run's own trace (found by `response.execution.trace_id`); a newer trace of the same request (a `replay`) is named, and `--latest` shows it. Replay traces (replay gate only) are labelled. A `debug` block is summarised unless `--debug` is given; for a run traced in summary mode, `--debug` explains how to enable debug rows (`set-config trace.mode "debug"`). Legacy v1 traces are labelled. |
+| `export [dir]` | `request.json`, `response.json`, `trace.json` and `config.json` (the run's frozen settings and hashes) of the latest committed run (`trace.json` is the run's own trace; after a `replay` of it the replay trace is added as `latest-replay-trace.json`). Default directory: `<state dir>/exports/run-<request_id>`. |
+
+### Step mode (`--controller scripted` only)
+
+| Command | What it does |
+|---|---|
+| `step` | Run the next stage of the staged request: resolve_entities -> build_pool -> get_geographic_evidence -> rank_candidates -> final_gate. |
+| `step <stage>` | Run exactly that stage. The dispatcher enforces dependencies, so a stage whose predecessor is not current fails with `STALE_REFERENCE: Call <predecessor> for the current inputs first`. Re-running a stage discards every later stage. |
+| `run-until <stage>` | Run stages in order up to `<stage>`. Accepted names: the tool names, the trace stage names (entity_resolution, pool_build_or_load, geographic_evidence, scoring, cold_start_diagnostics, price_sampling, final_selection, final_gate) and short aliases (resolve, pool, geo, rank, selection, gate). |
+| `step reset` | Discard the step session. |
+
+Rules:
+
+- The step session runs **the request `recommend` will submit** (same request_id, settings and
+  seed override). After `run-until final_gate`, `recommend` returns the selection the session
+  showed, unless the data changed in between.
+- Every stage runs inside a state transaction that is **rolled back**, so pool-cache writes are
+  discarded and nothing is committed. `final_gate` is a dry run. Step output never becomes the
+  terminal's response and is never reported as a successful recommendation; the selection is
+  printed as "candidate selection (intermediate, not a recommendation)".
+- An input change invalidates only the affected stages and prints what was invalidated:
+
+| Change | First invalidated stage |
+|---|---|
+| listing type; set of geographic criteria or their target fields (destination, category, distance type, transport mode); settings `geography.*` / `entity_resolution.*` | resolve_entities |
+| any hard criterion (**a hard-criteria change invalidates the pool**); settings `cache.*` | build_pool |
+| a soft geographic criterion (e.g. its radius) | get_geographic_evidence |
+| feedback, soft non-geographic criteria, weights, result_limit, cold_start, new request_id (seeds), seed override, other settings | rank_candidates |
+
+  Any invalidation also discards a passed final_gate.
+- `recommend` closes the step session.
+- The controller time budget (`controller.timeout_seconds`) applies per step. Tool calls count
+  against `controller.max_tool_calls` for the whole session; use `step reset` if a long session
+  exhausts it.
+
+### Live-mode progress events
+
+`recommend` prints structured progress lines in both controller modes:
+
+```text
+[progress] model: turn 1 start (messages=2)
+[progress] model: turn 1 end 812.4 ms (tool_calls=4)
+[progress] tool: build_pool start
+[progress] tool: build_pool end ok 41.0 ms (pool=306, ranked=0, selected=0, evidence=0)
+[progress] tool: rank_candidates end ok 18.2 ms (pool=306, ranked=306, selected=10, evidence=0)
+[progress] model: turn 2 end 640.0 ms (tool_calls=0, final answer)
+[progress] gate: checking proposal of 10 listing(s)
+[progress] gate: final_gate ok (selected=10, rows_read=10) 180.6 ms
+```
+
+A rejected proposal is reported (`gate: final_gate error INVALID_PROPOSAL: ...`) before the repair
+turn. A response summary follows: status, pool `cache=built (MISS)` / `reused (HIT)`, selection
+mode, seed, items. When the diagnostics meet the exit conditions, the summary also says what an
+orchestrator would send next (`cold_start {exited: true, exited_pool_key}`); stage it with
+`load-request`.
+
+## Typical sessions
+
+```text
+# first recommendation with a fixed seed and a smaller result limit
+requirements @recommendation/examples/requirements.json
+set-config recommendation.default_result_limit 3
+set-seed demo
+recommend
+show-pool
+show-scores --top 5
+show-selection
+inspect-listing fixture-03          # retained data of this run
+inspect-listing fixture-11          # outside the pool: labelled recomputed
+
+# feedback re-rank (orchestrator-style full snapshot)
+feedback-template /tmp/fb.json      # fill duration_seconds, then
+feedback @/tmp/fb.json
+recommend                           # pool cache=reused (HIT), behaviour branch now scored
+
+# config comparison with the fixed seed
+recommend                           # same settings + seed: same selection under a new request_id
+set-config cold_start.enabled false
+recommend                           # only the settings differ
+
+# cache miss, entity ambiguity, replay
+requirements @/tmp/stricter-budget.json   # hard change -> cache=built (MISS)
+recommend
+requirements @/tmp/id-name-conflict.json  # destination_id URA:AREA:CLEMENTI + name "Bedok"
+recommend                                 # needs_clarification
+show-resolution                           # geo: AMBIGUOUS ... 2 candidate(s)
+replay <first request id>                 # REPLAY of <id> (stored response)
+
+# step mode
+step rank_candidates                # STALE_REFERENCE (dependencies enforced)
+run-until build_pool
+set-seed other                      # invalidated: rank_candidates ... (pool kept)
+run-until final_gate                # INTERMEDIATE, dry-run gate
+recommend                           # submits the previewed request
+```
+
+## Known effects and limits
+
+- **Cold start cannot be exited without soft criteria.** C (the mean soft evidence coverage of
+  the top K) is 0 when there are no soft criteria, so `exit_conditions_met` stays false (R9). The
+  terminal help and `show-cold-start` say so.
+- `set-seed` replaces the base seed, so two requests with the same settings and seed draw the
+  same tie / exploration samples. Without it, every new request_id draws a new seed.
+- `inspect-listing` for a listing outside the pool reads that one row by ID and evaluates the
+  current criteria. Its geographic evidence is computed for that row only, and the output is
+  always labelled `recomputed`.
+- Session overrides last for the terminal process (also across `reset`); `export-config` saves
+  them as an experiment file. The production source stays the committed YAML.
+
+## Validation artifacts (P6)
+
+- Automated transcript test: `recommendation/tests/test_terminal_debug.py::test_terminal_transcript_covers_the_p6_flows`
+  (fixture data, scripted controller, temporary state). It covers the first recommendation,
+  feedback re-rank, config comparison with a fixed seed, cache hit/miss, entity ambiguity,
+  single-listing inspection, original-request replay and export. Other tests in the same file
+  cover each command's rules.
+- `p6/terminal_transcript.py` produces both recorded transcripts:
+  - `p6/fixture-terminal-transcript.txt`
+  - `p6/live-terminal-transcript.txt`: live PostgreSQL + Neo4j, read-only, scripted controller
+    (no LLM), temporary state file.
