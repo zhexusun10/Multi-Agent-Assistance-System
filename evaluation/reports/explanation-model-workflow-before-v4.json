@@ -1,0 +1,354 @@
+{
+  "external_messages_sent": 0,
+  "checks": [
+    {
+      "query": "你好，我要租南洋理工大学附近5公里内的房子，预算在2000新币每月，房子附近1公里内最好有MRT或公交站",
+      "operation": {
+        "kind": "search",
+        "status": "completed",
+        "intent_plan": {
+          "kind": "search",
+          "agent": "a",
+          "intent": {
+            "intent": "property_search",
+            "urgency": 1,
+            "channels": {
+              "llm": {
+                "intent": "property_search",
+                "reasoning": "用户明确给出地点、预算和交通条件，属于找房搜索。",
+                "confidence": 0.98,
+                "requested_tasks": [
+                  "search"
+                ]
+              },
+              "pattern": {
+                "intent": "property_search",
+                "confidence": 0.5
+              },
+              "embedding": {
+                "intent": "property_search",
+                "source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                "reasoning": "Chroma cosine nearest template",
+                "confidence": 0.7516838731100749
+              }
+            },
+            "entities": {
+              "date": [],
+              "amount": [
+                "2000新币"
+              ],
+              "listing_id": []
+            },
+            "cache_hit": false,
+            "reasoning": "用户明确给出地点、预算和交通条件，属于找房搜索。",
+            "confidence": 0.886336774622015,
+            "latency_ms": 779.1031000000003,
+            "intent_group": "search",
+            "source_scores": {
+              "llm": 0.98,
+              "pattern": 0.5,
+              "embedding": 0.7516838731100749
+            },
+            "requested_tasks": [
+              "search"
+            ],
+            "embedding_source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            "template_version": "ce9dad379be2e6517d6ed83be4014b4f95604ba5dda89a65229bacfa6acd7985"
+          },
+          "deferred_summary": false
+        }
+      },
+      "answer": "先按必须条件筛选：月租不超过2000新币，且到南洋理工大学的直线距离在5公里内。前四套的资料显示这两项都符合，所以排在前面；后四套的租金记录符合，但离学校的距离还缺少资料，因此只能算待确认，不能确定它们满足全部要求。\n\n在有资料的房源里，排序主要看离学校越近越好：前四套的直线距离分别约为812米、820米、820米和889米，所以按这个顺序排列。租金只用来判断是否在预算内，并不代表越便宜越靠前。后四套没有可比较的距离资料，因此沿用当前顺序，不能据此判断它们谁更合适。\n\n你希望1公里内有MRT或公交站，这一点目前都还不能确认；资料不足不代表附近没有。记录中的租金和当前是否仍可租，也需要向经纪人核实。",
+      "generation": {
+        "mode": "llm_grounded",
+        "version": "2.0",
+        "attempts": 1,
+        "latency_ms": 3737,
+        "example_ids": [
+          "stable-order",
+          "whole-list-distance"
+        ],
+        "repair_notes": [],
+        "semantic_audit": "passed"
+      }
+    },
+    {
+      "query": "给我解释一下为什么推荐这几套房子？",
+      "operation": {
+        "kind": "explain",
+        "status": "completed",
+        "intent_plan": {
+          "kind": "explain",
+          "agent": "c",
+          "intent": {
+            "intent": "recommendation_explanation",
+            "urgency": 1,
+            "channels": {
+              "llm": {
+                "intent": "recommendation_explanation",
+                "reasoning": "用户要求解释已有推荐房源的排序原因，属于解释已有推荐。",
+                "confidence": 0.97,
+                "requested_tasks": [
+                  "explain"
+                ]
+              },
+              "pattern": {
+                "intent": "recommendation_explanation",
+                "confidence": 0.5
+              },
+              "embedding": {
+                "intent": "explanation",
+                "source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                "reasoning": "Chroma cosine nearest template",
+                "confidence": 0.629635833236409
+              }
+            },
+            "entities": {
+              "date": [],
+              "amount": [],
+              "listing_id": []
+            },
+            "cache_hit": false,
+            "reasoning": "用户要求解释已有推荐房源的排序原因，属于解释已有推荐。",
+            "confidence": 0.8549271666472817,
+            "latency_ms": 878.1667000000016,
+            "intent_group": "explanation",
+            "source_scores": {
+              "llm": 0.97,
+              "pattern": 0.5,
+              "embedding": 0.629635833236409
+            },
+            "requested_tasks": [
+              "explain"
+            ],
+            "embedding_source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            "template_version": "ce9dad379be2e6517d6ed83be4014b4f95604ba5dda89a65229bacfa6acd7985"
+          },
+          "deferred_summary": false
+        }
+      },
+      "answer": "这组房子先按必须条件筛：月租不超过2000新币，且到南洋理工大学的直线距离在5000米以内。前四套资料齐全，都符合这两条；后四套租金记录符合，但到学校的距离还查不到，所以只能算待确认，不能确定满足全部要求。\n\n排序上真正有资料可比的只有“离学校越近越好”。前四套的直线距离依次约812米、820米、820米、889米，所以按这个偏好排在前；其中第二、三套距离几乎一样，先后差别很小。租金只是门槛，不是越低越靠前，比如记录月租500新币的那套并没有因此排到第一。\n\n后四套没有距离资料，无法参与这个比较，只是沿用原有顺序，不代表它们更差或更好。另外，附近是否有合适的MRT或公交站，这几套都还不能确认；资料不足不等于没有。\n\n以上租金都是记录价格，现在是否仍可租、价格有没有变，需要向经纪人确认。",
+      "generation": {
+        "mode": "llm_grounded",
+        "version": "2.0",
+        "attempts": 1,
+        "latency_ms": 4483,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "repair_notes": [],
+        "semantic_audit": "passed"
+      }
+    },
+    {
+      "query": "为什么第一套放最前面？",
+      "operation": {
+        "kind": "explain",
+        "status": "completed",
+        "intent_plan": {
+          "kind": "explain",
+          "agent": "c",
+          "intent": {
+            "intent": "recommendation_explanation",
+            "urgency": 1,
+            "channels": {
+              "llm": {
+                "intent": "recommendation_explanation",
+                "reasoning": "用户询问已有推荐排序中第一套为何排最前，属于解释推荐结果。",
+                "confidence": 0.97,
+                "requested_tasks": [
+                  "explain"
+                ]
+              },
+              "pattern": {
+                "intent": "other",
+                "confidence": 0
+              },
+              "embedding": {
+                "intent": "recommendation_explanation",
+                "source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                "reasoning": "Chroma cosine nearest template",
+                "confidence": 0.6003613270525251
+              }
+            },
+            "entities": {
+              "date": [],
+              "amount": [],
+              "listing_id": []
+            },
+            "cache_hit": false,
+            "reasoning": "用户询问已有推荐排序中第一套为何排最前，属于解释推荐结果。",
+            "confidence": 0.7990722654105049,
+            "latency_ms": 973.1714999999967,
+            "intent_group": "explanation",
+            "source_scores": {
+              "llm": 0.97,
+              "pattern": 0,
+              "embedding": 0.6003613270525251
+            },
+            "requested_tasks": [
+              "explain"
+            ],
+            "embedding_source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            "template_version": "ce9dad379be2e6517d6ed83be4014b4f95604ba5dda89a65229bacfa6acd7985"
+          },
+          "deferred_summary": false
+        }
+      },
+      "answer": "第一套 941 Jurong West Street 91 排在最前，是因为在满足月租和学校距离要求的几套里，它离南洋理工大学最近，直线约812米。\n\n不过它和第二、第三套的直线距离只差几米，几乎持平，所以这个“第一”优势很小，不必当成明显更优。它的记录月租是1100新币，比第二套的500新币高，但租金高低不是这次的排序依据。\n\n另外，附近地铁或公交站是否在1公里内还没有资料，不能据此说交通方便；记录的价格和现在是否仍可租也需要向经纪人确认。",
+      "generation": {
+        "mode": "llm_grounded",
+        "version": "2.0",
+        "attempts": 1,
+        "latency_ms": 3838,
+        "example_ids": [
+          "whole-list-distance",
+          "two-listing-comparison"
+        ],
+        "repair_notes": [],
+        "semantic_audit": "passed"
+      }
+    },
+    {
+      "query": "帮我比较前两套，简短说说各自适合我的地方。",
+      "operation": {
+        "kind": "explain",
+        "status": "completed",
+        "intent_plan": {
+          "kind": "explain",
+          "agent": "c",
+          "intent": {
+            "intent": "recommendation_explanation",
+            "urgency": 1,
+            "channels": {
+              "llm": {
+                "intent": "recommendation_explanation",
+                "reasoning": "用户要求比较已有推荐的前两套并说明各自适合之处，属于解释已有推荐，无需重新搜索。",
+                "confidence": 0.95,
+                "requested_tasks": [
+                  "explain"
+                ]
+              },
+              "pattern": {
+                "intent": "recommendation_explanation",
+                "confidence": 0.5
+              },
+              "embedding": {
+                "intent": "recommendation_explanation",
+                "source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                "reasoning": "Chroma cosine nearest template",
+                "confidence": 0.7254360940458258
+              }
+            },
+            "entities": {
+              "date": [],
+              "amount": [],
+              "listing_id": []
+            },
+            "cache_hit": false,
+            "reasoning": "用户要求比较已有推荐的前两套并说明各自适合之处，属于解释已有推荐，无需重新搜索。",
+            "confidence": 0.8600872188091652,
+            "latency_ms": 800.4504000000015,
+            "intent_group": "explanation",
+            "source_scores": {
+              "llm": 0.95,
+              "pattern": 0.5,
+              "embedding": 0.7254360940458258
+            },
+            "requested_tasks": [
+              "explain"
+            ],
+            "embedding_source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            "template_version": "ce9dad379be2e6517d6ed83be4014b4f95604ba5dda89a65229bacfa6acd7985"
+          },
+          "deferred_summary": false
+        }
+      },
+      "answer": "前两套都满足月租不超过2000新币、离南洋理工大学直线5公里以内。941 Jurong West Street 91 记录月租1100新币，离学校直线约812米；906 Jurong West Street 91 记录月租500新币，离学校直线约820米。\n\n两套离学校的直线距离只差几米，实际通勤感受可能差不多。排序时更看重离学校近，所以941 Jurong West Street 91 排在前面；但906 Jurong West Street 91 的月租低600新币，如果更在意省钱，它更合适。\n\n两套附近是否有合适的地铁或公交站，目前还不能确认；记录中的价格和现在是否仍可租，也需要向经纪人核实。",
+      "generation": {
+        "mode": "llm_grounded",
+        "version": "2.0",
+        "attempts": 1,
+        "latency_ms": 3852,
+        "example_ids": [
+          "two-listing-comparison",
+          "whole-list-distance"
+        ],
+        "repair_notes": [],
+        "semantic_audit": "passed"
+      }
+    },
+    {
+      "query": "现在这个顺序，是按租金还是按离学校的距离排的？",
+      "operation": {
+        "kind": "explain",
+        "status": "failed",
+        "intent_plan": {
+          "kind": "explain",
+          "agent": "c",
+          "intent": {
+            "intent": "recommendation_explanation",
+            "urgency": 1,
+            "channels": {
+              "llm": {
+                "intent": "recommendation_explanation",
+                "reasoning": "用户询问当前推荐排序依据，属于解释已有推荐结果。",
+                "confidence": 0.97,
+                "requested_tasks": [
+                  "explain"
+                ]
+              },
+              "pattern": {
+                "intent": "other",
+                "confidence": 0
+              },
+              "embedding": {
+                "intent": "knowledge",
+                "source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                "reasoning": "Chroma cosine nearest template",
+                "confidence": 0.6830479401317718
+              }
+            },
+            "entities": {
+              "date": [],
+              "amount": [],
+              "listing_id": []
+            },
+            "cache_hit": false,
+            "reasoning": "用户询问当前推荐排序依据，属于解释已有推荐结果。",
+            "confidence": 0.6789999999999999,
+            "latency_ms": 1074.5669999999955,
+            "intent_group": "explanation",
+            "source_scores": {
+              "llm": 0.97,
+              "pattern": 0,
+              "embedding": 0.6830479401317718
+            },
+            "requested_tasks": [
+              "explain"
+            ],
+            "embedding_source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            "template_version": "ce9dad379be2e6517d6ed83be4014b4f95604ba5dda89a65229bacfa6acd7985"
+          },
+          "deferred_summary": false
+        }
+      },
+      "answer": "本轮未完成：推荐理由暂时没能整理好，请再试一次。你可以继续查看当前房源。",
+      "generation": {
+        "mode": "llm_grounded",
+        "version": "2.0",
+        "attempts": 1,
+        "latency_ms": 3852,
+        "example_ids": [
+          "two-listing-comparison",
+          "whole-list-distance"
+        ],
+        "repair_notes": [],
+        "semantic_audit": "passed"
+      }
+    }
+  ],
+  "status": "failed",
+  "error": "本轮未完成：推荐理由暂时没能整理好，请再试一次。你可以继续查看当前房源。\n+ actual - expected\n\n+ 'failed'\n- 'completed'\n"
+}

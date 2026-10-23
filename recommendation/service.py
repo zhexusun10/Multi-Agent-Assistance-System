@@ -81,13 +81,15 @@ class RecommendationService:
             "requirements_version": request.requirements_version,
         }
         dispatcher = None
-        feedback = request.feedback
+        behavior = request.behavior_context
         validation = slim.Running(trace, "input_validation", config, inputs={
             "criteria": len(request.requirements.criteria),
             "hard_criteria": sum(c.strength == "hard" for c in request.requirements.criteria),
             "previous_state_id": request.previous_state_id is not None,
-            "previous_round_browsing": len(feedback.previous_round.browsing) if feedback.previous_round else 0,
-            "appointments": len(feedback.appointments),
+            "feedback_events": len(request.feedback),
+            "behavior_context": behavior is not None,
+            "listing_view_durations": len(behavior.listing_view_durations) if behavior else 0,
+            "book_viewing_listings": len(behavior.book_viewing_listings) if behavior else 0,
             "result_limit": request.result_limit,
             "cold_start_exited": request.cold_start.exited,
         })
@@ -143,7 +145,7 @@ class RecommendationService:
                              "previous_state_id": request.previous_state_id},
                     params={"default_result_limit": config.recommendation.default_result_limit,
                             "max_result_limit": config.recommendation.max_result_limit,
-                            "counted_appointment_statuses": list(config.ranking.behavior.counted_appointment_statuses)},
+                            "counted_appointment_signals": list(config.ranking.behavior.counted_appointment_signals)},
                 )
                 ctx["profile"]["scoring_version"] = scoring_v2.scoring_identifier(config)
                 context = {

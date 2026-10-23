@@ -1,14 +1,18 @@
 import {z} from 'zod';
+import {behaviorContextSchema} from './behavior-context.js';
 
-// Strict mirror of the native contract 2.0 (recommendation/contracts, generated JSON Schemas in
-// recommendation/contracts/schemas). Python and this mirror change together; the cross-layer
-// tests parse recommendation/examples/contracts/*.json and tests/fixtures/recommendation-v2/
-// with these schemas. The UI projection (recommendation-v1.ts) is a separate contract.
-export const NATIVE_CONTRACT_VERSION='2.0';
+// Strict mirror of the native recommendation contract (recommendation/contracts, generated JSON
+// Schemas in recommendation/contracts/schemas). Request = the main-branch orchestrator contract 1.0
+// (feedback events + behavior_context) plus the recommendation-owned `cold_start`; response =
+// recommendation-owned contract 2.0. Python and this mirror change together; the cross-layer tests
+// parse recommendation/examples/contracts/*.json and tests/fixtures/recommendation-v2/ with these
+// schemas. The UI projection (recommendation-v1.ts) is a separate contract.
+export const NATIVE_REQUEST_CONTRACT_VERSION='1.0';
+export const NATIVE_CONTRACT_VERSION='2.0'; // response
 export const NATIVE_MAX_RESULTS=10; // == Python MAX_RESULT_LIMIT == recommendation.max_result_limit
-// VIEWING statuses sent as appointment signals; must equal ranking.behavior.counted_appointment_statuses
+// behavior_context.book_viewing_listings signals; must equal ranking.behavior.counted_appointment_signals
 // in recommendation/settings/recommendation.yaml (cross-layer test on both sides). Sorted.
-export const COUNTED_APPOINTMENT_STATUSES=['CONFIRMED','MANUAL_REPLIED','MANUAL_SENT'] as const;
+export const COUNTED_APPOINTMENT_SIGNALS=['viewing_draft_saved'] as const;
 
 const id=z.string().min(1).max(128);
 const unit=z.number().min(0).max(1);
@@ -18,27 +22,17 @@ const UNKNOWN_REASON_KEYS=10; // == Python contracts/summary.UNKNOWN_REASON_KEYS
 
 // ---- request 2.0 -------------------------------------------------------------------------
 export const nativeCriterionSchema=z.object({criterion_id:z.string().min(1),field:z.enum(['price','bedrooms','floor_area_sqft','district_code','property_type','distance','commute','furnishing','availability','lease_months']),operator:z.enum(['eq','in','gte','lte','between']),value:z.union([z.number(),z.string(),z.array(z.number()),z.array(z.string())]),unit:z.string().nullable().optional(),strength:z.enum(['hard','soft']),weight:z.number().positive().optional(),utility:z.enum(['threshold','proximity','minimize','maximize']).optional(),destination_id:z.string().nullable().optional(),destination_name:z.string().nullable().optional(),category:z.string().nullable().optional(),distance_type:z.enum(['straight_line','walking','transit']).nullable().optional(),transport_mode:z.enum(['walk','transit','drive']).nullable().optional()}).strict();
-export const browsingRecordSchema=z.object({listing_id:id,status:z.enum(['recorded','missing']),duration_seconds:z.number().nonnegative().nullable().optional()}).strict()
-  .refine(r=>r.status==='recorded'?typeof r.duration_seconds==='number':r.duration_seconds==null,{message:'recorded browsing requires duration_seconds >= 0; missing browsing must not carry one'});
-export const previousRoundSchema=z.object({request_id:id,shown_listing_ids:z.array(id).min(1).max(NATIVE_MAX_RESULTS),browsing:z.array(browsingRecordSchema)}).strict()
-  .refine(r=>unique(r.shown_listing_ids),{message:'duplicate shown_listing_ids'})
-  .refine(r=>unique(r.browsing.map(b=>b.listing_id)),{message:'duplicate browsing records'})
-  .refine(r=>r.browsing.length===r.shown_listing_ids.length&&r.browsing.every(b=>r.shown_listing_ids.includes(b.listing_id)),{message:'browsing must contain exactly one record per shown listing'});
-export const appointmentSignalSchema=z.object({listing_id:id,statuses:z.array(z.string().min(1).max(64)).min(1),action_ids:z.array(id).min(1)}).strict()
-  .refine(a=>unique(a.statuses)&&unique(a.action_ids),{message:'duplicate appointment statuses or action_ids'});
-export const feedbackSnapshotSchema=z.object({previous_round:previousRoundSchema.nullable().optional(),appointments:z.array(appointmentSignalSchema).optional()}).strict()
-  .refine(f=>unique((f.appointments||[]).map(a=>a.listing_id)),{message:'duplicate appointment listings: send one entry per listing'});
+// Native ViewingEvent (incremental, quality-gated): validated by native, not scored (behavior_context
+// holds the same time cumulatively).
+export const nativeViewingEventSchema=z.object({event_id:z.string().min(1),conversation_id:z.string().min(1),recommendation_request_id:z.string().min(1),listing_id:z.string().min(1),event_type:z.literal('listing_view_duration').optional(),source:z.enum(['sample','web_detail']).optional(),occurred_at:z.string().datetime({offset:true}),payload:z.object({view_session_id:z.string().min(1),duration_seconds:z.number().finite().nonnegative()}).strict()}).strict();
 export const coldStartInputSchema=z.object({exited:z.boolean().optional(),exited_pool_key:id.nullable().optional()}).strict()
   .refine(c=>Boolean(c.exited)===(c.exited_pool_key!=null),{message:'exited_pool_key is required exactly when exited is true'});
-export const nativeRequestSchema=z.object({contract_version:z.literal(NATIVE_CONTRACT_VERSION).optional(),request_id:id,conversation_id:id,requirements_version:z.number().int().min(1),requirements:z.object({listing_type:z.literal('RENT').optional(),criteria:z.array(nativeCriterionSchema)}).strict(),previous_state_id:z.string().nullable().optional(),result_limit:z.number().int().min(1).max(NATIVE_MAX_RESULTS).nullable().optional(),feedback:feedbackSnapshotSchema.optional(),cold_start:coldStartInputSchema.optional()}).strict();
+export const nativeRequestSchema=z.object({contract_version:z.literal(NATIVE_REQUEST_CONTRACT_VERSION).optional(),request_id:id,conversation_id:id,requirements_version:z.number().int().min(1),requirements:z.object({listing_type:z.literal('RENT').optional(),criteria:z.array(nativeCriterionSchema)}).strict(),feedback:z.array(nativeViewingEventSchema).optional(),previous_state_id:z.string().nullable().optional(),result_limit:z.number().int().min(1).max(NATIVE_MAX_RESULTS).nullable().optional(),behavior_context:behaviorContextSchema.nullable().optional(),cold_start:coldStartInputSchema.optional()}).strict()
+  .refine(r=>(r.feedback||[]).every(e=>e.conversation_id===r.conversation_id),{message:'feedback conversation mismatch'})
+  .refine(r=>unique((r.feedback||[]).map(e=>e.event_id)),{message:'duplicate feedback event_id'});
 export type NativeRequest=z.infer<typeof nativeRequestSchema>;
-
-// The orchestrator's per-call feedback sidecar (built once at agent-A apply, persisted in
-// recommendation_calls.feedback_snapshot and agent B's queued body). nativeRequest maps it 1:1.
-export const feedbackSidecarSchema=z.object({previous_round:previousRoundSchema.nullable(),appointments:z.array(appointmentSignalSchema
-  .refine(a=>a.statuses.every(s=>(COUNTED_APPOINTMENT_STATUSES as readonly string[]).includes(s)),{message:'appointment status outside COUNTED_APPOINTMENT_STATUSES'})),cold_start:z.object({exited:z.boolean(),exited_pool_key:id.nullable()}).strict()}).strict();
-export type FeedbackSidecar=z.infer<typeof feedbackSidecarSchema>;
-export const EMPTY_SIDECAR:FeedbackSidecar={previous_round:null,appointments:[],cold_start:{exited:false,exited_pool_key:null}};
+export type ColdStartInput={exited:boolean;exited_pool_key:string|null};
+export const NOT_EXITED:ColdStartInput={exited:false,exited_pool_key:null};
 
 // ---- response 2.0 ------------------------------------------------------------------------
 export const nativeResultSchema=z.object({criterion_id:z.string(),outcome:z.enum(['pass','fail','unknown','unsupported']),reason:z.string(),evidence_refs:z.array(z.string())}).strict();
@@ -74,3 +68,10 @@ export type NativeListing=z.infer<typeof nativeListingSchema>;
 export type NativeScores=z.infer<typeof nativeScoresSchema>;
 export type LegacyNativeScores=z.infer<typeof legacyNativeScoresSchema>;
 export type NativeItem=z.infer<typeof nativeItemSchema>;
+
+/** Readers that predate response 2.0 (e.g. the Explanation Agent) see one view of both score shapes:
+ * stated = soft requirement fit (1.0: explicit), interest = behaviour similarity (1.0: implicit). */
+export type AnyNativeScores=NativeScores|LegacyNativeScores;
+export const statedWeight=(s:AnyNativeScores)=>'soft_weight' in s?s.soft_weight:s.explicit_weight;
+export const interestWeight=(s:AnyNativeScores)=>'behavior_weight' in s?s.behavior_weight:s.implicit_weight;
+export const interestScore=(s:AnyNativeScores)=>'behavior_weight' in s?s.behavior_score:s.implicit_score;

@@ -1,5 +1,5 @@
 {
- "description": "Native contract 2.0 /app/recommend envelope with exactly 10 recommendations (fixture data, scripted controller, soft-only requirements, pool 12). Python: Response model + validate_response, and a fresh run returns the same IDs/scores. TS: nativeResponseSchema + projectNative (ranks 1..10, V1 validateResponse with result_limit 10).",
+ "description": "Native /app/recommend envelope with exactly 10 recommendations (fixture data, scripted controller, soft-only requirements, pool 12; request = main contract 1.0). Python: Response model + validate_response, and a fresh run returns the same IDs/scores. TS: nativeResponseSchema + projectNative (ranks 1..10, V1 validateResponse with result_limit 10).",
  "v1_request": {
   "contract_version": "1.0",
   "request_id": "v2-ten",
@@ -24,7 +24,7 @@
   "result_limit": 10
  },
  "native_body": {
-  "contract_version": "2.0",
+  "contract_version": "1.0",
   "request_id": "v2-ten",
   "conversation_id": "v2-ten",
   "requirements_version": 1,
@@ -44,12 +44,9 @@
     }
    ]
   },
+  "feedback": [],
   "previous_state_id": null,
   "result_limit": 10,
-  "feedback": {
-   "previous_round": null,
-   "appointments": []
-  },
   "cold_start": {
    "exited": false,
    "exited_pool_key": null
@@ -57,7 +54,7 @@
  },
  "envelope": {
   "request": {
-   "contract_version": "2.0",
+   "contract_version": "1.0",
    "request_id": "v2-ten",
    "conversation_id": "v2-ten",
    "requirements_version": 1,
@@ -83,19 +80,17 @@
      }
     ]
    },
+   "feedback": [],
    "previous_state_id": null,
    "result_limit": 10,
-   "feedback": {
-    "previous_round": null,
-    "appointments": []
-   },
+   "behavior_context": null,
    "cold_start": {
     "exited": false,
     "exited_pool_key": null
    }
   },
   "transport_request": {
-   "contract_version": "2.0",
+   "contract_version": "1.0",
    "request_id": "v2-ten",
    "conversation_id": "v2-ten",
    "requirements_version": 1,
@@ -121,12 +116,10 @@
      }
     ]
    },
+   "feedback": [],
    "previous_state_id": null,
    "result_limit": 10,
-   "feedback": {
-    "previous_round": null,
-    "appointments": []
-   },
+   "behavior_context": null,
    "cold_start": {
     "exited": false,
     "exited_pool_key": null
@@ -603,24 +596,24 @@
     },
     {
      "listing": {
-      "listing_id": "fixture-06",
+      "listing_id": "fixture-04",
       "listing_type": "RENT",
-      "title": "Synthetic rental 6",
-      "price": 2600.0,
-      "bedrooms": 3.0,
-      "floor_area_sqft": 900.0,
+      "title": "Synthetic rental 4",
+      "price": 2400.0,
+      "bedrooms": 2.0,
+      "floor_area_sqft": 800.0,
       "property_type": "hdb",
       "district_code": "D21",
       "postal_code": "012345",
-      "latitude": 1.312,
+      "latitude": 1.308,
       "longitude": 103.8,
-      "url": "https://example.invalid/listings/6",
+      "url": "https://example.invalid/listings/4",
       "observed_at": "2026-10-18T00:00:00Z",
       "source": "synthetic-fixture",
       "normalization_warnings": []
      },
      "rank": 8,
-     "score_rank": 9,
+     "score_rank": 8,
      "scores": {
       "soft_score": 0.0,
       "behavior_score": null,
@@ -665,7 +658,7 @@
      ],
      "unknowns": [],
      "selection_reason": "price_exploration_sample",
-     "selection_note": "Cold-start price exploration: drawn from the price bin [2540, 2760) among 6 candidates (score ranks 7-12); score rank 9"
+     "selection_note": "Cold-start price exploration: drawn from the price bin [2320, 2540) among 6 candidates (score ranks 7-12); score rank 8"
     },
     {
      "listing": {
@@ -816,7 +809,7 @@
    "selection": {
     "mode": "cold_start_exploration",
     "algorithm_version": "select-v1",
-    "seed": "2788fedc163d332fad29c5efeea5b11eb10b221e217f6649ef5cc870f34396e2",
+    "seed": "52283dbf95fcef69581724c89dbb7a0aaf7a6ace4ba8020794b47d8a9b2dd2af",
     "result_limit": 10,
     "leaders": 6,
     "tie_group": {
@@ -841,14 +834,14 @@
        "lower": 2320.0,
        "upper": 2540.0,
        "count": 1,
-       "sampled": 0,
+       "sampled": 1,
        "quota": 1
       },
       {
        "lower": 2540.0,
        "upper": 2760.0,
        "count": 1,
-       "sampled": 1,
+       "sampled": 0,
        "quota": 1
       },
       {
@@ -873,7 +866,7 @@
      "reason": "b_above_max; s_below_min",
      "coverage_c": 1.0,
      "boundary_group_b": 6,
-     "stability_s": 0.8750000000000002,
+     "stability_s": 0.8650000000000002,
      "thresholds": {
       "c": 0.8,
       "b": 5,
@@ -887,11 +880,12 @@
    "relaxation_suggestions": [],
    "warnings": [
     "Sample viewing durations are simulated observations.",
+    "Viewing drafts with a saved time are interest signals, not confirmed appointments.",
     "Posting time does not establish current availability."
    ],
    "state": {
-    "state_id": "18669fb1-d8d1-4e75-8488-9947827ead3a",
-    "candidate_pool_ref": "eebc2d86-d4c3-4362-8f3e-99e5865b882e/pool",
+    "state_id": "41d726b6-bb27-4e38-90f3-c44b418e3d7d",
+    "candidate_pool_ref": "49f048eb-ce72-4c38-ba8e-e5e157dcdc3a/pool",
     "run_sequence": 1,
     "scope": "all RENT listings",
     "truncated": false,
@@ -900,18 +894,18 @@
     "assessed_count": 12
    },
    "execution": {
-    "trace_id": "eebc2d86-d4c3-4362-8f3e-99e5865b882e",
-    "trace_ref": "sqlite:eebc2d86-d4c3-4362-8f3e-99e5865b882e",
+    "trace_id": "49f048eb-ce72-4c38-ba8e-e5e157dcdc3a",
+    "trace_ref": "sqlite:49f048eb-ce72-4c38-ba8e-e5e157dcdc3a",
     "strategy": "full-pool fused-v2 scoring + select-v1 selection",
-    "scoring_version": "fused-v2:90e724bb160a",
+    "scoring_version": "fused-v2:cc051e535df4",
     "selection_algorithm": "select-v1",
     "config_version": 1,
-    "config_hash": "e46e754a9c6e6eafd4e2522f7bee4f26de37f956de50d3be6be173549710b2c8",
-    "selection_hash": "90e724bb160ae68524bd5d9b899959716d46f509627096c5696c7ec66d5a18a7",
+    "config_hash": "9a7477ea9224baf775654841f7a3808f539c116b3cde9a9f2a3e2785ea69f41b",
+    "selection_hash": "cc051e535df4be969ac533c865020a622f63651da3be65183b0dc84a1591b93d",
     "model_identifier": null,
     "model_calls": 0,
     "tool_calls": 4,
-    "duration_ms": 44.591000012587756,
+    "duration_ms": 3.8574999198317528,
     "tokens": null,
     "data_mode": "fixture",
     "controller_mode": "scripted"
@@ -1040,18 +1034,18 @@
      "normalization_warnings": []
     },
     {
-     "listing_id": "fixture-06",
+     "listing_id": "fixture-04",
      "listing_type": "RENT",
-     "title": "Synthetic rental 6",
-     "price": 2600.0,
-     "bedrooms": 3.0,
-     "floor_area_sqft": 900.0,
+     "title": "Synthetic rental 4",
+     "price": 2400.0,
+     "bedrooms": 2.0,
+     "floor_area_sqft": 800.0,
      "property_type": "hdb",
      "district_code": "D21",
      "postal_code": "012345",
-     "latitude": 1.312,
+     "latitude": 1.308,
      "longitude": 103.8,
-     "url": "https://example.invalid/listings/6",
+     "url": "https://example.invalid/listings/4",
      "observed_at": "2026-10-18T00:00:00Z",
      "source": "synthetic-fixture",
      "normalization_warnings": []

@@ -14,7 +14,8 @@ from pathlib import Path
 
 import pytest
 
-from recommendation.contracts.feedback import AppointmentSignal, BrowsingRecord, FeedbackSnapshot, PreviousRound
+from recommendation.contracts.behavior import BehaviorContext, BookViewingListing, ListingViewDuration
+from recommendation.contracts.feedback import ViewPayload, ViewingEvent
 from recommendation.contracts.request import ColdStartInput, RecommendationRequest
 from recommendation.contracts.response import Execution, RecommendationResponse, StateReference
 from recommendation.contracts.summary import PoolSummary, ResolutionResult, SelectionSummary
@@ -78,26 +79,28 @@ def _fields(*models):
     return {name for model in models for name in model.model_fields}
 
 
-def test_migration_doc_covers_every_contract_2_field_table_and_sidecar_case():
+def test_migration_doc_covers_every_contract_field_table_and_behavior_case():
     text = (EVALUATION / "MIGRATION.md").read_text(encoding="utf-8")
-    fields = _fields(RecommendationRequest, ColdStartInput, FeedbackSnapshot, PreviousRound, BrowsingRecord, AppointmentSignal,
-                     RecommendationResponse, StateReference, Execution, PoolSummary, SelectionSummary, ResolutionResult,
-                     RecommendationItem, ScoreBreakdown, Contribution)
+    fields = _fields(RecommendationRequest, ColdStartInput, BehaviorContext, ListingViewDuration, BookViewingListing,
+                     ViewingEvent, ViewPayload, RecommendationResponse, StateReference, Execution, PoolSummary,
+                     SelectionSummary, ResolutionResult, RecommendationItem, ScoreBreakdown, Contribution)
     missing = sorted(f for f in fields if f"`{f}`" not in text and not re.search(rf"\b{re.escape(f)}\b", text))
     assert not missing, f"MIGRATION.md does not mention: {missing}"
-    removed = ["unverified_candidates", "feedback_version", "explicit_score", "implicit_score", "evidence_coverage", "ViewingEvent", "weighted-v1"]
-    assert all(name in text for name in removed)
+    removed = ["unverified_candidates", "feedback_version", "explicit_score", "implicit_score", "evidence_coverage",
+               "weighted-v1", "FeedbackSnapshot", "previous_round", "feedback-sidecar.ts"]
+    assert all(name in text for name in removed), [n for n in removed if n not in text]
     tables = set()
     for module in ("recommendation/state/store.py", "recommendation/state/pool_cache.py", "recommendation/app.py"):
         tables |= set(re.findall(r"CREATE TABLE IF NOT EXISTS (\w+)", (ROOT / module).read_text()))
     v2 = {t for t in tables if t.endswith("_v2") or t.startswith("pool_cache") or t == "traces"}
     assert v2 and all(f"`{t}" in text for t in v2), sorted(t for t in v2 if f"`{t}" not in text)
     assert all(legacy in text for legacy in ("request_identities", "conversations", "runs"))
-    cases = json.loads((ROOT / "tests/fixtures/recommendation-v2/sidecar-cases.json").read_text())["cases"]
-    assert len(cases) == 6 and all(k in text for k in ("native contract 2.0 round", "hardGap", "baseline round", "legacy contract-1.0", "empty ranking", "none (first search)"))
-    for topic in ("(evidence_id, criterion_id)", "recommendation/settings/recommendation.yaml", "RECOMMENDATION_CONFIG",
-                  "migrations/004-feedback-snapshot.sql", "recommendation-downstream-patches.json", "compare-recommendation-upstream.py",
-                  "keeps\n  `unverified_candidates`", "INVALID_FEEDBACK", "UNSUPPORTED_VERSION"):
+    for topic in ("Merge with main c7dc536", "behavior_context", "listing_view_durations", "book_viewing_listings",
+                  "viewing_draft_saved", "interest_eligible", "session-cumulative", "not scored",
+                  "007-recommendation-cold-start.sql", "(evidence_id, criterion_id)",
+                  "recommendation/settings/recommendation.yaml", "RECOMMENDATION_CONFIG",
+                  "recommendation-downstream-patches.json", "compare-recommendation-upstream.py",
+                  "unverified_candidates", "INVALID_FEEDBACK", "UNSUPPORTED_VERSION", "config/recommendation-full.json"):
         assert topic in text, topic
 
 

@@ -750,6 +750,94 @@
     "response.native.selection_reasons": {
       "section": "附录：原生接入兼容元数据",
       "origin": "本次新增（原生契约 2.0，可选）"
+    },
+    "request.requirements.criteria[].distance_preference": {
+      "section": "docs/需求提取LLM优先_实现与验收.md（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context.version": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context.as_of": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context.listing_view_durations": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context.listing_view_durations[].listing_id": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context.listing_view_durations[].duration_seconds": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context.listing_view_durations[].view_count": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context.listing_view_durations[].last_viewed_at": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context.listing_view_durations[].source_request_ids": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context.listing_view_durations[].interest_eligible": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context.book_viewing_listings": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context.book_viewing_listings[].listing_id": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context.book_viewing_listings[].action_id": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context.book_viewing_listings[].source_request_id": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context.book_viewing_listings[].requirements_version": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context.book_viewing_listings[].starts_at": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context.book_viewing_listings[].ends_at": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context.book_viewing_listings[].time_zone": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context.book_viewing_listings[].recorded_at": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context.book_viewing_listings[].signal": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
+    },
+    "request.behavior_context.book_viewing_listings[].appointment_confirmed": {
+      "section": "docs/Recommendation_Contract_浏览时长与看房意向.md 1.4 / 二 / 三（main 2026-10-23）",
+      "origin": "新增"
     }
   },
   "open_payload_conventions": {

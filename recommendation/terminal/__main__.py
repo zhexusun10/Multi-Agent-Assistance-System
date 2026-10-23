@@ -2,7 +2,7 @@ import argparse, json, uuid, os
 from pathlib import Path
 from pydantic import ValidationError
 from recommendation.contracts.requirements import Requirements
-from recommendation.contracts.feedback import FeedbackSnapshot
+from recommendation.contracts.behavior import BehaviorContext, request_uuid
 from recommendation.contracts.request import (
     ColdStartInput,
     RecommendationRequest,
@@ -23,30 +23,53 @@ from ..config import RecommendationConfig
 from . import debug
 
 
-def feedback_example(response, appointments=()):
-    """Filled sample snapshot (simulates the orchestrator): browsing for every shown listing of
-    ``response`` (90 s for rank 1, 30 s for the rest) plus the given appointment signals."""
-    ids = [r.listing.listing_id for r in response.recommendations]
+def _now():
+    from datetime import datetime, timezone
+
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def feedback_example(response, previous_input=None, as_of=None):
+    """Filled sample behavior_context (simulates the orchestrator, main contract): the previous
+    INPUT's cumulative listing_view_durations and book_viewing_listings carried over (never native
+    history), plus 90 s (rank 1) / 30 s (others) added for every listing shown in ``response``."""
+    as_of = as_of or _now()
+    previous = previous_input.model_dump(mode="json") if previous_input is not None else None
+    durations = {d["listing_id"]: d for d in (previous or {}).get("listing_view_durations", [])}
+    for i, item in enumerate(response.recommendations):
+        listing_id = item.listing.listing_id
+        seconds = 90 if i == 0 else 30
+        entry = durations.get(listing_id)
+        if entry:
+            entry = {**entry, "duration_seconds": entry["duration_seconds"] + seconds,
+                     "view_count": entry["view_count"] + 1, "last_viewed_at": as_of,
+                     "source_request_ids": sorted(set(entry["source_request_ids"]) | {request_uuid(response.request_id)})}
+        else:
+            entry = {"listing_id": listing_id, "duration_seconds": seconds, "view_count": 1,
+                     "last_viewed_at": as_of, "source_request_ids": [request_uuid(response.request_id)],
+                     "interest_eligible": True}
+        durations[listing_id] = entry
     return {
-        "previous_round": {
-            "request_id": response.request_id,
-            "shown_listing_ids": ids,
-            "browsing": [
-                {"listing_id": listing_id, "status": "recorded", "duration_seconds": 90 if i == 0 else 30}
-                for i, listing_id in enumerate(ids)
-            ],
-        },
-        "appointments": list(appointments),
+        "version": "1.0",
+        "as_of": as_of,
+        "listing_view_durations": [durations[k] for k in sorted(durations)],
+        "book_viewing_listings": list((previous or {}).get("book_viewing_listings", [])),
     }
 
 
-def feedback_template(response, previous_input=None):
-    """Previous-round snapshot template: one browsing record per shown listing with a null
-    duration placeholder (fill in seconds, or set status "missing"), plus the appointments of
-    the previous INPUT (never native history). Loading it unfilled is rejected."""
-    template = feedback_example(response, (previous_input or FeedbackSnapshot()).model_dump(mode="json")["appointments"])
-    for record in template["previous_round"]["browsing"]:
-        record["duration_seconds"] = None
+def feedback_template(response, previous_input=None, as_of=None):
+    """behavior_context template: the previous INPUT's cumulative entries (never native history)
+    plus one entry with a null duration placeholder per newly shown listing; fill in the cumulative
+    seconds and interest_eligible. Loading it unfilled is rejected."""
+    template = feedback_example(response, previous_input, as_of)
+    previous = {d.listing_id: d for d in (previous_input.listing_view_durations if previous_input else [])}
+    shown = {r.listing.listing_id for r in response.recommendations}
+    for entry in template["listing_view_durations"]:
+        if entry["listing_id"] in shown:
+            old = previous.get(entry["listing_id"])
+            entry["duration_seconds"] = None if old is None else old.duration_seconds
+            entry["view_count"] = 1 if old is None else old.view_count
+            entry["interest_eligible"] = False if old is None else old.interest_eligible
     return template
 
 
@@ -158,9 +181,11 @@ class Terminal:
 
         current = self.store.current(self.conversation)
         self.current = current
-        self.feedback = FeedbackSnapshot()
+        self.behavior = None  # staged behavior_context (full snapshot replace)
         self.last_input = (
-            FeedbackSnapshot.model_validate(current["request"]["feedback"]) if current else None
+            BehaviorContext.model_validate(current["request"]["behavior_context"])
+            if current and current["request"].get("behavior_context")
+            else None
         )
         self.pending_request = None
         self.response = None
@@ -193,7 +218,7 @@ class Terminal:
             conversation_id=self.conversation,
             requirements_version=self.version,
             requirements=self.requirements,
-            feedback=self.feedback,
+            behavior_context=self.behavior,
             cold_start=self.cold_start,
             result_limit=self.result_limit,
             previous_state_id=self.current["state_id"] if self.current else None,
@@ -266,19 +291,20 @@ class Terminal:
             self.input_changed()
             return
         if command == "feedback":
-            # Full snapshot replace (orchestrator semantics): nothing is merged with earlier input.
+            # Full behavior_context replace (orchestrator semantics): nothing is merged natively.
             payload = read_payload(arg)
             if not isinstance(payload, dict):
-                raise ValueError("Expected a feedback snapshot object {previous_round, appointments}")
-            snapshot = FeedbackSnapshot.model_validate(payload)
-            staged = self.request().model_copy(update={"feedback": snapshot})
+                raise ValueError(
+                    "Expected a behavior_context object {version, as_of, listing_view_durations, book_viewing_listings}"
+                )
+            snapshot = BehaviorContext.model_validate(payload)
+            staged = self.request().model_copy(update={"behavior_context": snapshot})
             check_feedback(staged, self.store, self.config)  # Validate before replacing staged input.
-            self.feedback = snapshot
-            round_ = snapshot.previous_round
+            self.behavior = snapshot
             print(
-                f"Staged feedback snapshot: previous_round={round_.request_id if round_ else None}, "
-                f"{len(round_.browsing) if round_ else 0} browsing records, "
-                f"{len(snapshot.appointments)} appointment listings; replaces any staged snapshot."
+                f"Staged behavior_context as of {snapshot.as_of.isoformat()}: "
+                f"{len(snapshot.listing_view_durations)} cumulative browsing summaries, "
+                f"{len(snapshot.book_viewing_listings)} viewing-draft listings; replaces any staged snapshot."
             )
             self.input_changed()
             return
@@ -286,7 +312,7 @@ class Terminal:
             if not self.response or not self.response.recommendations:
                 raise ValueError("No verified response available")
             payload = (
-                feedback_example(self.response)
+                feedback_example(self.response, self.last_input)
                 if command == "feedback-example"
                 else feedback_template(self.response, self.last_input)
             )
@@ -358,8 +384,8 @@ class Terminal:
                 self.response = result
                 self.run_dispatcher = self.controller.dispatcher
                 self.current = self.store.current(self.conversation)
-                self.last_input = self.pending_request.feedback
-                self.feedback = FeedbackSnapshot()
+                self.last_input = self.pending_request.behavior_context
+                self.behavior = None
                 self.pending_request = None
             return
         if command == "show-state":
@@ -373,7 +399,9 @@ class Terminal:
                             if self.requirements
                             else None
                         ),
-                        "staged_feedback": self.feedback.model_dump(mode="json"),
+                        "staged_behavior_context": (
+                            self.behavior.model_dump(mode="json") if self.behavior else None
+                        ),
                         "committed_state_id": (
                             self.current["state_id"] if self.current else None
                         ),

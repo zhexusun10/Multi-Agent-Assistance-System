@@ -16,8 +16,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 MANIFEST = ROOT / "contracts/releases/recommendation-upstream-907cfa8.json"
 OUTPUT = ROOT / "contracts/releases/recommendation-downstream-patches.json"
-V2 = "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md)"
-EXAMPLES = ("Regenerated contract-2.0 example (python -m recommendation.examples.generate_contract_examples): feedback snapshot, "
+V2 = "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md)"
+EXAMPLES = ("Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, "
             "result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates")
 TESTS = "Assertions changed one at a time for intended v2 rule changes, intent kept (listed per phase in VALIDATION.md)"
 
@@ -34,13 +34,13 @@ DESCRIPTIONS = {
         "DEFAULT_* dictionaries, ScoringPolicy and RunLimits removed (values live in recommendation/settings/recommendation.yaml)"]),
     "recommendation/context/manager.py": (V2 + ": no feedback accumulation", [
         "Run-consistency checks kept (STALE_REFERENCE against the v2 head, STALE_REQUIREMENTS, run_sequence)",
-        "Feedback snapshot checks: previous_round must be a committed v2 run with the same recommendation ID set; uncounted appointment statuses rejected (INVALID_FEEDBACK)",
-        "Profile records the snapshot and the v2 browsing weights; weighted-v1 duration cap and event merging removed"]),
+        "behavior_context checks: uncounted viewing signals rejected (INVALID_FEEDBACK); feedback events validated, recorded, never scored",
+        "Profile records the behaviour snapshot (cumulative browsing, interest_eligible, viewing drafts) and the v2 browsing weights; weighted-v1 duration cap and event merging removed"]),
     "recommendation/examples/config.json": (V2 + ": settings experiment file", [
         "Rewritten in the v2 settings schema: identical to recommendation.yaml except cold_start.enabled false (not a production source)"]),
     "recommendation/examples/generate_contract_examples.py": (V2 + ": contract examples", [
-        "Feedback-only and preference-update examples use a FeedbackSnapshot built from the preceding response; result_limit 10"]),
-    "recommendation/examples/run.py": (V2 + ": example runner", ["Replays the example flow with a FeedbackSnapshot instead of ViewingEvents"]),
+        "Feedback-only and preference-update examples use a behavior_context built from the preceding response (fixed as_of); result_limit 10"]),
+    "recommendation/examples/run.py": (V2 + ": example runner", ["Replays the example flow with a behavior_context instead of ViewingEvents"]),
     "recommendation/models/candidate.py": (V2 + ": recommendation item", [
         "rank <= MAX_RESULT_LIMIT (display order), new score_rank, selection_reason, selection_note",
         "Unique score_rank; evidence must be exactly the evidence referenced by returned items"]),
@@ -53,7 +53,7 @@ DESCRIPTIONS = {
     "recommendation/ranking/ranker.py": (V2 + ": scoring reference", [
         "Rewritten as the scalar fused-v2 reference (soft_utility, feature_similarity, pair_similarity) reading the settings; weighted-v1 constants removed"]),
     "recommendation/README.md": (V2 + ": documentation", [
-        "Feedback snapshot, pool cache / data_version / final gate, fused-v2 scoring, select-v1 selection and cold start described",
+        "Main behavior_context request, pool cache / data_version / final gate, fused-v2 scoring, select-v1 selection and cold start described",
         "Settings section: single YAML source with confirmed / existing-default / experiment-result labels (provisional = not yet calibrated, pending) and TUNING.md; terminal debugging commands"]),
     "recommendation/repositories/geographic_repository.py": (V2 + ": native geography", [
         "Native catalog (LTA stations + exits, URA areas / regions, OSM places), resolver and Python haversine distances",
@@ -62,19 +62,19 @@ DESCRIPTIONS = {
         "Shared alias-free column list; data_version fingerprint inside the retrieve REPEATABLE READ transaction (retrieve_versioned)",
         "By-id lookup / lookup_versioned with ANY(CAST(:ids AS BIGINT[])) for the final gate"]),
     "recommendation/requirements.txt": (V2 + ": dependencies", ["PyYAML>=6,<7 (settings file) and numpy>=1.26,<3 (full-pool scoring)"]),
-    "recommendation/schemas.py": (V2 + ": schema generation", ["feedback.schema.json generated from FeedbackSnapshot instead of ViewingEvent"]),
+    "recommendation/schemas.py": (V2 + ": schema generation", ["behavior-context.schema.json added (main BehaviorContext); feedback.schema.json stays ViewingEvent"]),
     "recommendation/service.py": (V2 + ": service flow", [
         "Settings frozen per request; config_version / config_hash / selection_hash recorded; scoring_version fused-v2, selection_algorithm select-v1",
-        "Contract 2.0 flow: feedback snapshot checks, pool summary, select-v1 selection, compact run snapshot (format 2, selection_input), no unverified list",
+        "v2 flow: behaviour-input checks, pool summary, select-v1 selection, compact run snapshot (format 2, selection_input), no unverified list; web_detail / viewing-draft warnings",
         "Slim trace stage records (input_validation ... final_gate, response_assembly) with error location; replay via the stored selection_input"]),
     "recommendation/state/store.py": (V2 + ": state database", [
         "v2 tables request_identities_v2 / conversations_v2 / runs_v2 with direct state lookup; legacy 1.0 tables untouched and readable",
         "resolve_reference through tracing/slim.py; '<trace>/pool' from pool_cache; legacy v1 trace note"]),
     "recommendation/terminal/__main__.py": (V2 + ": terminal", [
-        "Contract-2.0 requirements / feedback snapshot flow; recommend always mints a new request_id (except retrying a failed pending one)",
+        "Requirements / behavior_context flow (main contract); recommend always mints a new request_id (except retrying a failed pending one)",
         "Debug commands dispatched to terminal/debug.py; --config; staged cold_start / result_limit; response summary"]),
     "recommendation/terminal/acceptance.py": (V2 + ": acceptance companion", [
-        "Ported to contract 2.0: snapshot feedback, the same snapshot resent under a new request ID (request-independent outputs compared), scoring summary",
+        "Ported to the merged request: behavior_context, the same snapshot resent under a new request ID (request-independent outputs compared), scoring summary",
         "--config defaults to RECOMMENDATION_CONFIG"]),
     "recommendation/tests/test_policy_controller.py": (V2 + ": tests", [TESTS]),
     "recommendation/tests/test_recommendation.py": (V2 + ": tests", [TESTS]),
@@ -87,17 +87,17 @@ DESCRIPTIONS = {
         "final_gate: returned IDs equal the code selection, data_version re-checked (STALE_EVIDENCE), selected rows re-read by ID and hard criteria re-evaluated, selection replays from its input",
         "replay_gate: select-v1 recomputed from the stored selection_input; geographic provenance of returned listings recorded"]),
     "recommendation/contracts/feedback.py": (V2 + ": feedback contract", [
-        "ViewingEvent replaced by FeedbackSnapshot (previous_round with exactly one browsing record per shown listing; one appointment entry per listing)"]),
+        "main's ViewingEvent (source sample | web_detail) kept; documented as validated, not scored (behavior_context holds the same time cumulatively)"]),
     "recommendation/contracts/request.py": (V2 + ": request contract", [
-        "contract_version 2.0 (1.0 rejected), result_limit None -> settings default, max 10, feedback snapshot, cold_start input"]),
+        "Main request contract 1.0 (2.0 bodies rejected) with feedback events and behavior_context; result_limit None -> settings default, max 10; recommendation-owned cold_start input; event conversation and unique IDs checked"]),
     "recommendation/contracts/requirements.py": (V2 + ": requirements contract", [
         "A distance/commute criterion accepts a category alone, or a destination ID and/or a name (ID/name conflict -> ambiguous)"]),
     "recommendation/contracts/response.py": (V2 + ": response contract", [
         "contract_version 2.0, recommendations max 10, unverified_candidates and state.feedback_version removed",
         "resolution / pool / selection summaries; execution config and selection identity; evidence one entry per (evidence_id, criterion_id)"]),
-    "recommendation/contracts/README.md": (V2 + ": documentation", ["Interface description updated to contract 2.0 (feedback snapshot, summaries, no unverified list); links fixed"]),
-    "recommendation/contracts/schemas/feedback.schema.json": (V2 + ": generated schema", ["Regenerated by python -m recommendation.schemas (FeedbackSnapshot)"]),
-    "recommendation/contracts/schemas/request.schema.json": (V2 + ": generated schema", ["Regenerated by python -m recommendation.schemas (request 2.0)"]),
+    "recommendation/contracts/README.md": (V2 + ": documentation", ["Interface description updated (main request + behavior_context + cold_start, response 2.0 summaries, no unverified list); links fixed"]),
+    "recommendation/contracts/schemas/feedback.schema.json": (V2 + ": generated schema", ["Regenerated by python -m recommendation.schemas (ViewingEvent, sample | web_detail)"]),
+    "recommendation/contracts/schemas/request.schema.json": (V2 + ": generated schema", ["Regenerated by python -m recommendation.schemas (main request 1.0 + behavior_context + cold_start, result_limit <= 10)"]),
     "recommendation/contracts/schemas/response.schema.json": (V2 + ": generated schema", ["Regenerated by python -m recommendation.schemas (response 2.0)"]),
 }
 for name in ("clarification", "error", "feedback-only-update", "initial-search", "no-match", "preference-update", "success"):
@@ -129,7 +129,8 @@ def main():
     out = {"upstream_commit": previous["upstream_commit"], "project_base_commit": previous["project_base_commit"],
            "purpose": "Declared local changes to the 907cfa8 port; original upstream fingerprints retained. "
                       "DEF11: recommendation-fit remediation (controller). Recommendation v2: native contract 2.0 "
-                      "(feedback snapshot, pool cache, native geography, fused-v2 full-pool scoring, select-v1 selection, slim trace), "
+                      "(pool cache, native geography, fused-v2 full-pool scoring, select-v1 selection, slim trace), merged with main c7dc536 "
+                      "(request = main contract 1.0 + behavior_context + cold_start; behavior_context scored natively), "
                       "branch feat/recommendation-exploration; see evaluation/recommendation-exploration-2026-10-23/MIGRATION.md. "
                       "Team review and final system signoff remain pending.",
            "files": entries}

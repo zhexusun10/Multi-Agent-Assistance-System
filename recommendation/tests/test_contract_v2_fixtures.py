@@ -1,10 +1,12 @@
-"""Contract 2.0 / P2 validation driven by the shared fixtures in tests/fixtures/recommendation-v2/
-(the TS side reads the same files in tests/recommendation-v2-fixtures.test.ts)."""
+"""Native request/response validation driven by the shared fixtures in tests/fixtures/recommendation-v2/
+(the TS side reads the same files in tests/recommendation-v2-fixtures.test.ts). Request = main contract 1.0
+(feedback events + behavior_context) + cold_start; response = contract 2.0 (merge with main c7dc536)."""
 import json, os, subprocess, sys, textwrap
 from pathlib import Path
 import pytest
 from pydantic import ValidationError
 from recommendation.contracts.request import RecommendationRequest
+from recommendation.contracts.behavior import BehaviorContext, request_uuid
 from recommendation.repositories.connections import repositories
 from recommendation.service import RecommendationService
 from recommendation.state.store import StateStore
@@ -22,7 +24,7 @@ def load(name):
     return json.loads((FIXTURES / name).read_text())
 
 
-CONTRACT, FLOW, SIDECARS = load("contract-cases.json"), load("flow.json"), load("sidecar-cases.json")
+CONTRACT, FLOW = load("contract-cases.json"), load("flow.json")
 REQUIREMENTS = CONTRACT["setup_requirements"]
 
 
@@ -45,7 +47,7 @@ def post(body):
 
 
 def initial(conversation, request_id):
-    return {"contract_version": "2.0", "request_id": request_id, "conversation_id": conversation,
+    return {"contract_version": "1.0", "request_id": request_id, "conversation_id": conversation,
             "requirements_version": 1, "requirements": REQUIREMENTS}
 
 
@@ -67,19 +69,24 @@ def test_contract_cases_schema(case):
         assert case["error"] in str(raised.value), str(raised.value)
 
 
-def test_unversioned_body_is_read_as_current_contract_but_explicit_1_0_is_rejected():
+def test_unversioned_body_is_read_as_main_contract_but_2_0_request_is_rejected():
     body = next(c["body"] for c in CONTRACT["cases"] if c["name"] == "contract-version-omitted")
     assert "contract_version" not in body
-    assert RecommendationRequest.model_validate(body).contract_version == "2.0"
+    assert RecommendationRequest.model_validate(body).contract_version == "1.0"
     with pytest.raises(ValidationError, match="UNSUPPORTED_VERSION"):
-        RecommendationRequest.model_validate({**body, "contract_version": "1.0"})
+        RecommendationRequest.model_validate({**body, "contract_version": "2.0"})
+
+
+def scoreable_browsing(context):
+    return sorted(v["listing_id"] for v in (context or {}).get("listing_view_durations", [])
+                  if v["interest_eligible"] and v["duration_seconds"] > 0)
 
 
 @pytest.mark.parametrize("case", [c for c in CONTRACT["cases"] if c["valid"]], ids=lambda c: c["name"])
 def test_contract_cases_at_service_level(app_env, case):
-    """Every schema-valid case after round v2-r1: success (0 s, missing, empty/deduplicated
-    appointments, result_limit 10/None) or the declared service error (counted statuses, wrong
-    round, other conversation's round, shown set mismatch)."""
+    """Every schema-valid case after round v2-r1: success (cumulative browsing, 0 s, not interest_eligible,
+    empty behaviour, viewing drafts, out-of-pool references, feedback events, result_limit 10/None, cold
+    start) or the declared service error."""
     assert post(initial("v2-fixture", "v2-r1"))["response"]["status"] == "success"
     assert post(initial("v2-other", "v2-other-r1"))["response"]["status"] == "success"
     response = post(case["body"])["response"]
@@ -90,46 +97,46 @@ def test_contract_cases_at_service_level(app_env, case):
     assert response["status"] == "success", response.get("error")
     assert len(response["recommendations"]) == min(10, response["pool"]["size"]) == 9
     profile = current(app_env, "v2-fixture")["profile"]
-    round_ = case["body"]["feedback"]["previous_round"]
-    positive = sorted(r["listing_id"] for r in (round_ or {}).get("browsing", [])
-                      if r["status"] == "recorded" and r["duration_seconds"] > 0)
-    # 0-second and missing records contribute nothing; only positive durations become weights.
-    assert sorted(profile["interest_weights"]) == positive
-    assert profile["appointment_listing_ids"] == sorted(a["listing_id"] for a in case["body"]["feedback"]["appointments"])
-    if not positive:
-        # P5: 0-second / missing browsing still contributes nothing (no browsing branch), but
-        # in-pool appointments now feed the appointment branch (was: the whole behaviour score
-        # stayed None because appointments did not contribute before fused-v2).
+    context = case["body"].get("behavior_context")
+    # Only interest_eligible, positive cumulative durations become browsing weights.
+    assert sorted(profile["interest_weights"]) == scoreable_browsing(context)
+    assert profile["appointment_listing_ids"] == sorted(d["listing_id"] for d in (context or {}).get("book_viewing_listings", []))
+    # Feedback events are validated, never scored (no double counting with behavior_context).
+    assert profile["feedback_events"] == {"count": len(case["body"].get("feedback", [])),
+                                          "sources": sorted({e["source"] for e in case["body"].get("feedback", [])}),
+                                          "scored": False}
+    pool = {item["listing"]["listing_id"] for item in response["recommendations"]}
+    if not set(scoreable_browsing(context)) & pool:
         assert all(item["scores"]["browsing_score"] is None for item in response["recommendations"])
-        appointments = {a["listing_id"] for a in case["body"]["feedback"]["appointments"]}
-        for item in response["recommendations"]:
-            others = appointments - {item["listing"]["listing_id"]}  # self pairs excluded (R1d)
-            assert (item["scores"]["behavior_score"] is None) == (not others)
+    drafts = {d["listing_id"] for d in (context or {}).get("book_viewing_listings", [])} & pool
+    for item in response["recommendations"]:
+        others = drafts - {item["listing"]["listing_id"]}  # self pairs excluded (R1d)
+        assert (item["scores"]["appointment_score"] is None) == (not others)
 
 
 def test_three_rounds_no_loss_no_accumulation_appointments_only_via_input(app_env):
-    """Flow fixture: round 2 keeps every browsing record of round 1 (no loss); round 3 sends an
-    all-missing snapshot of round 2 and no appointments, and is scored with no behaviour input at
-    all (no accumulation of round-1 browsing, no native appointment lookup)."""
+    """Flow fixture: round 2 scores the cumulative behaviour summary and a saved draft; round 3 sends
+    summaries with the interest gate closed and no draft and is scored exactly like round 1 (no native
+    accumulation, no native appointment lookup)."""
     responses = []
     for round_ in FLOW["rounds"]:
         envelope = post(round_["native_body"])
         response, expect = envelope["response"], round_["expect"]
         assert response["status"] == expect["status"], response.get("error")
-        ids = [item["listing"]["listing_id"] for item in response["recommendations"]]
-        if "shown_listing_ids" in expect:
-            assert ids == expect["shown_listing_ids"]
         # app.py rewrites previous_state_id to the native v2 head (the TS sends its own copy).
         head = responses[-1]["state"]["state_id"] if responses else None
         assert envelope["request"]["previous_state_id"] == head
         assert envelope["transport_request"]["previous_state_id"] == round_["native_body"]["previous_state_id"]
+        canonical = lambda c: BehaviorContext.model_validate(c).model_dump(mode="json") if c else None
+        assert canonical(envelope["transport_request"].get("behavior_context")) == canonical(round_["native_body"].get("behavior_context"))
         state = current(app_env, FLOW["conversation_id"])
         profile = state["profile"]
         assert sorted(profile["interest_weights"]) == sorted(expect["browsing_weighted"])
         assert profile["appointment_listing_ids"] == expect["appointment_listing_ids"]
-        sent = round_["native_body"]["feedback"]["previous_round"]
-        assert profile["browsing"] == ({r["listing_id"]: {"status": r["status"], "duration_seconds": r.get("duration_seconds")}
-                                        for r in sent["browsing"]} if sent else {})
+        sent = round_["native_body"].get("behavior_context")
+        assert profile["browsing"] == ({v["listing_id"]: {"duration_seconds": v["duration_seconds"], "view_count": v["view_count"],
+                                                          "interest_eligible": v["interest_eligible"]}
+                                        for v in sent["listing_view_durations"]} if sent else {})
         assert state["sequence"] == len(responses) + 1
         responses.append(response)
     second, third = responses[1], responses[2]
@@ -137,27 +144,15 @@ def test_three_rounds_no_loss_no_accumulation_appointments_only_via_input(app_en
     assert all(item["scores"]["behavior_score"] is None for item in third["recommendations"])
     assert [i["scores"]["combined_score"] for i in third["recommendations"]] == [
         i["scores"]["combined_score"] for i in responses[0]["recommendations"]]
-    # Same request, same input: stored response; same request, different input: rejected.
+    # Same request, same input: stored response; same request, different input (incl. behaviour): rejected.
     assert post(FLOW["rounds"][2]["native_body"])["response"] == third
-    changed = {**FLOW["rounds"][2]["native_body"], "result_limit": 5}
     from fastapi import HTTPException
 
-    with pytest.raises(HTTPException) as conflict:
-        post(changed)
-    assert conflict.value.status_code == 409 and "IDEMPOTENCY_CONFLICT" in conflict.value.detail
-
-
-@pytest.mark.parametrize("case", SIDECARS["cases"], ids=lambda c: c["name"])
-def test_orchestrator_sidecar_cases_never_invalid_feedback(app_env, case):
-    """Native adopted, hardGap, baseline, legacy, empty and no-previous rounds: the sidecar the TS
-    builds (expected) is accepted after round v2-r1."""
-    assert post(initial("v2-fixture", "v2-r1"))["response"]["status"] == "success"
-    sidecar = case["expected"]
-    body = {**initial("v2-fixture", f"v2-sidecar-{case['name']}"), "result_limit": 10,
-            "feedback": {"previous_round": sidecar["previous_round"], "appointments": sidecar["appointments"]},
-            "cold_start": sidecar["cold_start"]}
-    response = post(body)["response"]
-    assert response["status"] == "success", response.get("error")
+    for changed in ({**FLOW["rounds"][2]["native_body"], "result_limit": 5},
+                    {**FLOW["rounds"][2]["native_body"], "behavior_context": FLOW["rounds"][1]["native_body"]["behavior_context"]}):
+        with pytest.raises(HTTPException) as conflict:
+            post(changed)
+        assert conflict.value.status_code == 409 and "IDEMPOTENCY_CONFLICT" in conflict.value.detail
 
 
 def test_exactly_ten_results_when_pool_is_larger(app_env):
@@ -224,7 +219,7 @@ SERVICE_SCRIPT = textwrap.dedent("""
     for n in range(1, 4):
         body = {"request_id": f"{conversation}-r{n}", "conversation_id": conversation, "requirements_version": 1,
                 "requirements": requirements, "previous_state_id": previous.state.state_id if previous else None,
-                "feedback": feedback_example(previous) if previous else {}}
+                "behavior_context": feedback_example(previous) if previous else None}
         previous = service.recommend(RecommendationRequest.model_validate(body))
         assert previous.status == "success", previous.error
     service.close()
@@ -254,7 +249,7 @@ def test_multiple_processes_terminal_and_service_share_db_without_cross_talk(tmp
         out, err = process.communicate(timeout=240)
         assert process.returncode == 0, err
     assert processes[2].returncode == 0, terminal_err
-    assert "Staged feedback snapshot: previous_round=" in terminal_out
+    assert "Staged behavior_context as of" in terminal_out
     store = StateStore(path)
     try:
         expected = {"mp-service-1": 3, "mp-service-2": 3, "mp-terminal": 2}
@@ -267,10 +262,11 @@ def test_multiple_processes_terminal_and_service_share_db_without_cross_talk(tmp
             for index, (request_id, _state, _seq, response, snapshot) in enumerate(rows):
                 response, snapshot = json.loads(response), json.loads(snapshot)
                 assert response["conversation_id"] == snapshot["request"]["conversation_id"] == conversation
-                round_ = snapshot["request"]["feedback"]["previous_round"]
-                assert (round_ is None) == (index == 0)
-                if round_:
-                    assert round_["request_id"] == rows[index - 1][0]  # previous round of the SAME chain
+                context = snapshot["request"].get("behavior_context")
+                assert (context is None) == (index == 0)
+                if context:  # built from the previous response of the SAME chain
+                    sources = {s for v in context["listing_view_durations"] for s in v["source_request_ids"]}
+                    assert sources == {request_uuid(rows[index - 1][0])}
         total = store.db.execute("SELECT COUNT(*) FROM runs_v2").fetchone()[0]
         assert total == sum(expected.values())
         states = [r[0] for r in store.db.execute("SELECT state_id FROM runs_v2")]

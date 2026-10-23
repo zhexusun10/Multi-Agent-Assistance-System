@@ -14,7 +14,7 @@ from recommendation.contracts.request import (
     RecommendationRequest,
 )
 from recommendation.contracts.requirements import Requirements
-from recommendation.contracts.feedback import FeedbackSnapshot
+from recommendation.contracts.behavior import BehaviorContext
 from ..config import RecommendationConfig
 from ..repositories.connections import ROOT, load_environment, repositories
 from ..agent.controller import LiveController, ScriptedController
@@ -52,7 +52,7 @@ def scoring_summary(trace):
 
 def resent_feedback_differences(first, second, first_scoring=None, second_scoring=None):
     """Request-independent outputs that differ between two responses to the SAME requirements and
-    feedback snapshot sent under different request IDs (no accumulation, spec sections 3 and 8).
+    behavior_context snapshot sent under different request IDs (no accumulation, spec sections 3 and 8).
 
     A new request_id gives new select-v1 seeds (R3), so near-tie and cold-start price exploration
     samples may legitimately differ. Compared instead: status, the pool, every listing's scores,
@@ -188,7 +188,7 @@ def run_acceptance(
             conversation_id=conversation,
             requirements_version=version,
             requirements=snapshot,
-            feedback=feedback or FeedbackSnapshot(),
+            behavior_context=feedback,
             previous_state_id=latest.state.state_id if latest else None,
         )
         response = service.recommend(request)
@@ -266,7 +266,7 @@ def run_acceptance(
             )
         if initial and initial.recommendations:
             # Full snapshot of the initial round (simulated orchestrator sample).
-            feedback = FeedbackSnapshot.model_validate(feedback_example(initial))
+            feedback = BehaviorContext.model_validate(feedback_example(initial))
             feedback_response = recommend("feedback", requirements, feedback)
             if feedback_response:
                 # Re-sending the SAME snapshot in a new request must not accumulate anything. The new
@@ -298,7 +298,7 @@ def run_acceptance(
                         record(
                             "duplicate_feedback",
                             "failed",
-                            reason="Re-sent feedback snapshot changed request-independent results (accumulation)",
+                            reason="Re-sent behavior_context changed request-independent results (accumulation)",
                             compared=compared,
                         )
                     else:

@@ -1,6 +1,8 @@
 # Recommendation Contract V1 可执行联调模型
 
-> 当前默认提供方已切换为江山原生模块（原生契约 2.0）。本文原有字段表描述应用内部兼容模型 / 显式 baseline（V1，传输版本仍为 1.0，保留 `unverified_candidates`）；不能将它作为原生 `/recommend` 规范。原生权威定义是 `recommendation/contracts/*.py`、`recommendation/models/*.py` 和 `recommendation/contracts/schemas/*.json`，TS 镜像为 `src/contracts/recommendation-native.ts`。双向映射与缺口见 [原生接入说明](../../docs/Recommendation_Agent_原生接入说明.md)，原生 1.0 → 2.0 的逐字段变化见 [MIGRATION.md](../../evaluation/recommendation-exploration-2026-10-23/MIGRATION.md)。`recommendation-upstream-907cfa8.json` 保存原生文件来源及迁移后指纹（不修改）；本分支对清单内文件的每一处修改都登记在 `recommendation-downstream-patches.json`（目标文件、清单原指纹、修改后 LF 字节指纹、问题与变更说明），`scripts/import-recommendation-upstream.py --check` 同时核对两者。`scripts/compare-recommendation-upstream.py` 已退役，只作为 907cfa8 基线的历史证据（默认拒绝运行，`evaluation/reports/native-upstream-parity.json` 保留不重新生成）。
+2026-10-23新增行为上下文交接：完整字段与新增标记见[浏览时长与Book Viewing Listing契约](../../docs/Recommendation_Contract_浏览时长与看房意向.md)。`recommendation-app-request-1.0.schema.json`对应应用原生入口`/app/recommend`（含behavior_context）；原始`/recommend`保持原契约。2026-10-23 与推荐 v2 合并后，`behavior_context` 由原生端评分：`listing_view_durations`（会话累计、`interest_eligible` 才计入）作浏览参考，`book_viewing_listings`（`viewing_draft_saved`）作看房意向参考；`feedback` 事件只校验不计分。原生 `/recommend` 与 `/app/recommend` 现接受同一请求（含 `behavior_context` 与 `cold_start`）。
+
+> 当前默认提供方已切换为江山原生模块（请求沿用 main 契约 1.0 + `behavior_context` + `cold_start`，响应为原生契约 2.0）。本文原有字段表描述应用内部兼容模型 / 显式 baseline（V1，传输版本仍为 1.0，保留 `unverified_candidates`）；不能将它作为原生 `/recommend` 规范。原生权威定义是 `recommendation/contracts/*.py`、`recommendation/models/*.py` 和 `recommendation/contracts/schemas/*.json`，TS 镜像为 `src/contracts/recommendation-native.ts`。双向映射与缺口见 [原生接入说明](../../docs/Recommendation_Agent_原生接入说明.md)，原生 1.0 → 2.0 的逐字段变化见 [MIGRATION.md](../../evaluation/recommendation-exploration-2026-10-23/MIGRATION.md)。`recommendation-upstream-907cfa8.json` 保存原生文件来源及迁移后指纹（不修改）；本分支对清单内文件的每一处修改都登记在 `recommendation-downstream-patches.json`（目标文件、清单原指纹、修改后 LF 字节指纹、问题与变更说明），`scripts/import-recommendation-upstream.py --check` 同时核对两者。`scripts/compare-recommendation-upstream.py` 已退役，只作为 907cfa8 基线的历史证据（默认拒绝运行，`evaluation/reports/native-upstream-parity.json` 保留不重新生成）。
 
 本目录把 Recommendation Agent Contract V1 的说明落实为可执行的本项目联调 profile，传输版本保持 `1.0`。它不是已经由四人共同冻结的新协议。主来源为 `D:\Real Estate Agent\design\sources\recommendation_agent_contract_v1.md`。
 
@@ -36,3 +38,6 @@
 远程 `/recommend` 当前假设同一可信本机/开发环境，未实现跨组织认证。队友接入时需共同确认 source_ref / candidate_pool_ref 的跨服务解析方式、保留期、失效规则、行为贡献及评分版本。当前前端证据解析器完整支持本项目生成的 data_api 引用；不能将远程任意字符串自动当成本地 UUID。
 
 当前基线返回的 `state_id=baseline:<request_id>` 是可回传状态标识，完整已评估候选 ID 集保存在 candidate_pool_ref，但基线每次仍重新核查当前数据集（full模式为21,431条完整快照），不承诺算法级候选复用。显式需求权重大于行为推断；基线对反馈只去重、保存和传输，不宣称已实现行为兴趣画像。
+# 真实浏览反馈扩展（2026-10-21）
+
+`recommendation-web-feedback-extension.json` 在原生迁移清单之上记录5个契约/来源元数据文件的扩展前后指纹，以及保持不变的排名、验证与工具核心指纹。`web_detail` 表示浏览采集账本确认的完成区间；`sample` 保留演示兼容。真实数据不会冒充样例，评分算法不变。使用 `scripts/import-recommendation-upstream.py --check` 同时校验原版迁移与扩展。

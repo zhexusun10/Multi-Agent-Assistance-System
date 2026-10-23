@@ -59,7 +59,8 @@ USERINFO_VALUE = re.compile(r"^[^\s@/:]+:[^\s@]*@\S+$")
 # Statuses that may be counted as appointment signals (spec section 1 / R1b; the R7 TS valid
 # set). The excluded orchestrator statuses (DRAFT, PENDING_REVIEW, APPROVED, CANCELLED, FAILED)
 # and unknown strings are rejected.
-COUNTABLE_APPOINTMENT_STATUSES = ("CONFIRMED", "MANUAL_REPLIED", "MANUAL_SENT")
+# behavior_context.book_viewing_listings[].signal values (main contract, 2026-10-23).
+COUNTABLE_APPOINTMENT_SIGNALS = ("viewing_draft_saved",)
 
 
 class SettingsError(ValueError):
@@ -80,7 +81,7 @@ NonNegative = Annotated[float, Field(ge=0)]
 Positive = Annotated[float, Field(gt=0)]
 Count = Annotated[int, Field(ge=1)]
 Bounds = tuple[NonNegative, NonNegative]
-Status = Annotated[str, Field(pattern=r"^[A-Z][A-Z_]*$")]
+Signal = Annotated[str, Field(pattern=r"^[a-z][a-z_]*$")]
 
 
 class RecommendationLimits(Section):
@@ -106,14 +107,15 @@ class BehaviorScoring(Section):
     browsing_weight: Unit
     missing_branch_contribution: Unit
     redistribute_missing_branch_weight: bool
-    counted_appointment_statuses: Annotated[tuple[Status, ...], Field(min_length=1)]
+    counted_appointment_signals: Annotated[tuple[Signal, ...], Field(min_length=1)]
+    browsing_requires_interest_eligible: bool
     reference_scope: Literal["in_pool"]
 
-    @field_validator("counted_appointment_statuses")
+    @field_validator("counted_appointment_signals")
     @classmethod
-    def canonical_statuses(cls, statuses):
+    def canonical_signals(cls, signals):
         # A set, stored sorted: the YAML order never changes config_hash / selection_hash.
-        return tuple(sorted(statuses))
+        return tuple(sorted(signals))
 
 
 class BrowsingScoring(Section):
@@ -311,14 +313,14 @@ class RecommendationSettings(Section):
             errors.append("ranking.behavior.missing_branch_contribution must be 0.0 in this version")
         if behavior.redistribute_missing_branch_weight:
             errors.append("ranking.behavior.redistribute_missing_branch_weight must be false in this version")
-        statuses = behavior.counted_appointment_statuses
-        if len(set(statuses)) != len(statuses):
-            errors.append("ranking.behavior.counted_appointment_statuses must not contain duplicates")
-        uncountable = sorted(set(statuses) - set(COUNTABLE_APPOINTMENT_STATUSES))
+        signals = behavior.counted_appointment_signals
+        if len(set(signals)) != len(signals):
+            errors.append("ranking.behavior.counted_appointment_signals must not contain duplicates")
+        uncountable = sorted(set(signals) - set(COUNTABLE_APPOINTMENT_SIGNALS))
         if uncountable:
             errors.append(
-                f"ranking.behavior.counted_appointment_statuses contains uncountable status(es) {uncountable} "
-                f"(allowed: {list(COUNTABLE_APPOINTMENT_STATUSES)})"
+                f"ranking.behavior.counted_appointment_signals contains uncountable signal(s) {uncountable} "
+                f"(allowed: {list(COUNTABLE_APPOINTMENT_SIGNALS)})"
             )
         weights = ranking.similarity.feature_weights.as_dict()
         if all(v is not None for v in weights.values()) and not _sums_to_one(sum(weights.values())):
@@ -414,6 +416,14 @@ class RecommendationSettings(Section):
     def _read(cls, path):
         source = str(path)
         data = read_settings_file(path)
+        if isinstance(data, dict) and set(data) == {"extends", "overrides"}:
+            # Overlay file: only the named keys differ from the committed YAML, which stays the
+            # single parameter source (e.g. config/recommendation-full.json: wall-clock budget).
+            if data["extends"] != "committed" or not isinstance(data["overrides"], dict):
+                raise SettingsError(source, ['overlay files need {"extends": "committed", "overrides": {...}}'])
+            base = read_settings_file(SETTINGS_PATH)
+            merge_overrides(base, data["overrides"])
+            data = base
         if isinstance(data, dict) and os.getenv(ENV_TRACE_MODE):
             data = {**data, "trace": {**(data.get("trace") or {}), "mode": os.getenv(ENV_TRACE_MODE)}}
         return cls.from_data(data, source)

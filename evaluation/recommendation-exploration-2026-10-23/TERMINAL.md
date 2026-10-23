@@ -2,7 +2,7 @@
 
 `python -m recommendation.terminal` is the developer terminal of the native recommendation
 subagent. It talks to the same `RecommendationService` and SQLite state as the HTTP sidecar. It
-plays the orchestrator's role: it stages full requirements and feedback snapshots, submits
+plays the orchestrator's role: it stages full requirements and `behavior_context` snapshots (main contract), submits
 requests and inspects runs. The debugging commands live in `recommendation/terminal/debug.py`;
 `recommendation/terminal/__main__.py` wires them in. Every earlier command still works.
 
@@ -37,12 +37,12 @@ are saved in the state file.
 | Command | What it does |
 |---|---|
 | `requirements [@file]` | Replace the full requirements snapshot. The requirements version advances only when the snapshot changes. |
-| `feedback [@file]` | Replace the full feedback snapshot `{previous_round, appointments}`, as the orchestrator does; nothing is merged with earlier input. It is checked against the state first: the previous round must be a committed run of this conversation, its shown IDs must equal that run's recommendations, and every appointment status must be counted. |
-| `feedback-template [file]` | Template for the last response: one browsing record per shown listing (`status: recorded`, `duration_seconds: null` placeholder), plus the appointments of the previous INPUT (never native history). Fill in seconds, or set `status: "missing"` and drop the duration. An unfilled template is rejected. |
-| `feedback-example [file]` | Filled sample: 90 s for rank 1 and 30 s for the rest. |
-| `load-request @file` | Stage a full contract-2.0 request body. It is validated in full, and contract 1.0 bodies are rejected. The terminal stages its requirements, feedback, cold_start and result_limit. The file's `request_id`, `conversation_id`, `previous_state_id` and `requirements_version` are never reused; the terminal manages them and prints them. |
+| `feedback [@file]` | Replace the full `behavior_context` `{version, as_of, listing_view_durations, book_viewing_listings}`, as the orchestrator does (merge with main c7dc536); nothing is merged with earlier input natively. It is validated first (one summary per listing, timezone-aware times, counted viewing signal). |
+| `feedback-template [file]` | behavior_context template for the last response: the previous INPUT's cumulative summaries and viewing drafts (never native history) plus, for each newly shown listing, a summary with a `duration_seconds: null` placeholder. Fill in the cumulative seconds and `interest_eligible`. An unfilled template is rejected. |
+| `feedback-example [file]` | Filled sample: the previous INPUT's summaries plus 90 s (rank 1) / 30 s (others) added for the shown listings, `interest_eligible: true`. |
+| `load-request @file` | Stage a full request body (main contract 1.0 + `cold_start`). It is validated in full, and 2.0 request bodies are rejected. The terminal stages its requirements, behavior_context, cold_start and result_limit (feedback events are validated, not staged). The file's `request_id`, `conversation_id`, `previous_state_id` and `requirements_version` are never reused; the terminal manages them and prints them. |
 | `show-input` | The request body `recommend` would send (`request_id` shows as "minted by recommend"; a failed pending request shows its real ID), plus the seed override and session settings. |
-| `validate-input` | Contract 2.0 schema check plus the run-consistency checks (state reference vs head, requirements version, feedback snapshot, result_limit). Nothing is submitted. |
+| `validate-input` | Request schema check plus the run-consistency checks (state reference vs head, requirements version, behavior_context, result_limit). Nothing is submitted. |
 | `recommend` | Submit the staged request. Each call mints a **new request_id**. The only exception is retrying a failed pending request, which keeps its ID. Any input change (requirements, feedback, load-request, set-config, set-seed) drops the pending request, so the next recommend gets a new ID. |
 | `replay <request-id>` | Re-submit the stored body of a committed request. Prints `REPLAY of <id> (stored response)`, then the stored response (verified by the replay gate) and whether it is unchanged. It never creates a run and never changes the terminal's current response or staged input. Changing settings never alters a replay. |
 | `show-state`, `reset`, `exit` | As before: `reset` starts a new conversation, and stored data is kept. |

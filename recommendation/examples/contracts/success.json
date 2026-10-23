@@ -775,7 +775,7 @@
   "selection": {
     "mode": "small_pool",
     "algorithm_version": "select-v1",
-    "seed": "47e9b106c63029281722764b8b6ca722dfab31609dfb028b72e30b2bf1df6b0d",
+    "seed": "10f70a8b9bc1e7f4f08a9c7d20c2946455f8d5589c1d210b985653f644a108b1",
     "result_limit": 10,
     "leaders": 0,
     "tie_group": null,
@@ -800,12 +800,13 @@
   "relaxation_suggestions": [],
   "warnings": [
     "Sample viewing durations are simulated observations.",
+    "Viewing drafts with a saved time are interest signals, not confirmed appointments.",
     "Posting time does not establish current availability.",
     "1 listings were excluded because hard-criterion data is unknown (see pool.unknown_reasons); they are not verified matches."
   ],
   "state": {
-    "state_id": "d63431b1-26c9-46e5-a017-6d71c06e161c",
-    "candidate_pool_ref": "f8bc8794-cd5c-49fc-82df-b833f80e0c03/pool",
+    "state_id": "d249104b-9431-4679-8072-781407683041",
+    "candidate_pool_ref": "48b0bf19-0f7e-4e67-bf9b-6b541b6aa89c/pool",
     "run_sequence": 1,
     "scope": "all RENT listings",
     "truncated": false,
@@ -814,18 +815,18 @@
     "assessed_count": 9
   },
   "execution": {
-    "trace_id": "f8bc8794-cd5c-49fc-82df-b833f80e0c03",
-    "trace_ref": "sqlite:f8bc8794-cd5c-49fc-82df-b833f80e0c03",
+    "trace_id": "48b0bf19-0f7e-4e67-bf9b-6b541b6aa89c",
+    "trace_ref": "sqlite:48b0bf19-0f7e-4e67-bf9b-6b541b6aa89c",
     "strategy": "full-pool fused-v2 scoring + select-v1 selection",
-    "scoring_version": "fused-v2:90e724bb160a",
+    "scoring_version": "fused-v2:cc051e535df4",
     "selection_algorithm": "select-v1",
     "config_version": 1,
-    "config_hash": "e46e754a9c6e6eafd4e2522f7bee4f26de37f956de50d3be6be173549710b2c8",
-    "selection_hash": "90e724bb160ae68524bd5d9b899959716d46f509627096c5696c7ec66d5a18a7",
+    "config_hash": "9a7477ea9224baf775654841f7a3808f539c116b3cde9a9f2a3e2785ea69f41b",
+    "selection_hash": "cc051e535df4be969ac533c865020a622f63651da3be65183b0dc84a1591b93d",
     "model_identifier": null,
     "model_calls": 0,
     "tool_calls": 4,
-    "duration_ms": 42.9401250439696,
+    "duration_ms": 35.41845898143947,
     "tokens": null,
     "data_mode": "fixture",
     "controller_mode": "scripted"

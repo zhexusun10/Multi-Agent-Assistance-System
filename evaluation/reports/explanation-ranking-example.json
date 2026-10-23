@@ -1,0 +1,43 @@
+{
+  "search": "我要租南洋理工大学附近5公里内的房子，月租不超过2000新币，符合条件后优先推荐离学校更近的房子。",
+  "question": "为什么这样推荐？请解释学校距离如何影响排序，以及前两套有什么区别。",
+  "external_messages_sent": 0,
+  "results": [
+    {
+      "title": "941 Jurong West Street 91",
+      "rent": 1100,
+      "distance_m": 811.64
+    },
+    {
+      "title": "906 Jurong West Street 91",
+      "rent": 500,
+      "distance_m": 820.31
+    },
+    {
+      "title": "906 Jurong West Street 91",
+      "rent": 1500,
+      "distance_m": 820.31
+    },
+    {
+      "title": "907 Jurong West Street 91",
+      "rent": 1000,
+      "distance_m": 889.42
+    }
+  ],
+  "answer": "您的要求：\n• 月租不超过2,000新币，必须满足。\n• 到南洋理工大学的直线距离不超过5公里，必须满足；在这个范围内希望越近越好。\n\n这些房源符合的部分：\n• 预算：已有租金记录都在2,000新币以内，记录月租大致在500至1,500新币之间。\n• 学校距离：前四套有距离资料，到南洋理工大学的直线距离约812至889米，都在5公里内；其余四套还缺这项距离资料。\n\n还需要了解的部分：City Square Residences、Hillcrest Road、Sherwood Towers、Sennett Estate这四套到南洋理工大学的距离资料，因此暂时无法判断它们是否在5公里内、离学校有多近。\n\n为什么这样排序：有距离资料的四套按到南洋理工大学的直线距离由近到远排列，所以941 Jurong West Street 91排在最前；缺距离资料的四套沿用原有顺序，不能据此判断它们更近或更远。\n前两套的区别：941 Jurong West Street 91直线约812米、记录月租1,100新币；906 Jurong West Street 91直线约820米、记录月租500新币。前者略近约8米，后者每月便宜600新币，实际走多远、通勤差别还需了解路线。\n\n注意：还不能确认这几套房源全部符合您的要求；记录的价格和现在是否仍可租，需要联系经纪人确认。",
+  "generation": {
+    "mode": "llm_grounded",
+    "version": "2.0",
+    "attempts": 1,
+    "latency_ms": 5564,
+    "example_ids": [
+      "mixed-confirmed-pending",
+      "close-distance-comparison"
+    ],
+    "repair_notes": [],
+    "semantic_audit": "passed"
+  },
+  "verified_actual_distance_sort": true,
+  "no_recommendation_rerun": true,
+  "status": "passed"
+}

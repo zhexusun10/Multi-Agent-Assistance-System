@@ -20,6 +20,19 @@ from recommendation.state import pool_cache as pool_cache_module
 from recommendation.terminal import debug
 from recommendation.terminal.__main__ import Terminal
 from recommendation.tools.registry import PIPELINE
+from recommendation.contracts.behavior import BehaviorContext
+from recommendation.tests.behavior_inputs import behavior
+
+
+def fill_behavior(snapshot, reference):
+    """Fill a feedback-template: 150 cumulative seconds (interest_eligible) for ``reference``, 0 s for
+    the other shown listings (no completed segment would reach main's ledger; 0 keeps the record)."""
+    for record in snapshot["listing_view_durations"]:
+        if record["listing_id"] == reference:
+            record.update(duration_seconds=150, interest_eligible=True)
+        elif record["duration_seconds"] is None:
+            record.update(duration_seconds=0)
+
 
 EXAMPLES = Path(__file__).parents[1] / "examples"
 CONV = "p6-terminal"
@@ -137,16 +150,16 @@ def test_terminal_transcript_covers_the_p6_flows(tmp_path, capsys):
         selection = payload(run("show-selection"))
         assert [i["listing_id"] for i in selection["items"]] == ids(first) and selection["seed_override"] is True
 
-        # 3. Feedback re-rank: template (one browsing record per shown ID), filled, staged, re-run.
+        # 3. Feedback re-rank: behavior_context template (one summary per shown ID, null duration
+        # placeholder), filled (cumulative seconds + interest_eligible), staged, re-run.
         template = tmp_path / "feedback.json"
         run(f"feedback-template {template}")
         snapshot = json.loads(template.read_text())
-        assert [b["listing_id"] for b in snapshot["previous_round"]["browsing"]] == ids(first)
-        assert all(b["duration_seconds"] is None for b in snapshot["previous_round"]["browsing"])
-        for n, record in enumerate(snapshot["previous_round"]["browsing"]):
-            record["duration_seconds"] = 150 if n == 0 else 0
+        assert sorted(v["listing_id"] for v in snapshot["listing_view_durations"]) == sorted(ids(first))
+        assert all(v["duration_seconds"] is None for v in snapshot["listing_view_durations"])
+        fill_behavior(snapshot, ids(first)[0])
         template.write_text(json.dumps(snapshot))
-        assert "Staged feedback snapshot" in run(f"feedback @{template}")
+        assert "Staged behavior_context as of" in run(f"feedback @{template}")
         out = run("recommend")
         rerank = t.response
         assert rerank.status == "success" and rerank.request_id != first.request_id
@@ -180,8 +193,7 @@ def test_terminal_transcript_covers_the_p6_flows(tmp_path, capsys):
         weights_feedback = tmp_path / "weights-feedback.json"
         run(f"feedback-template {weights_feedback}")
         snapshot = json.loads(weights_feedback.read_text())
-        for n, record in enumerate(snapshot["previous_round"]["browsing"]):
-            record["duration_seconds"] = 150 if n == 0 else 0
+        fill_behavior(snapshot, ids(t.response)[0])
         weights_feedback.write_text(json.dumps(snapshot))
         runs = {}
         for name, weights in (("0.6/0.4", '{"soft_weight":0.6,"behavior_weight":0.4}'),
@@ -359,14 +371,11 @@ def test_load_request_show_input_and_validate_input(tmp_path, capsys):
         run("recommend")
         first = t.response
         shown = ids(first)
-        body = {"contract_version": "2.0", "request_id": first.request_id, "conversation_id": "elsewhere",
+        context = behavior([(i, 30) for i in shown], [shown[0]], request_id=first.request_id, raw=True)
+        body = {"contract_version": "1.0", "request_id": first.request_id, "conversation_id": "elsewhere",
                 "requirements_version": 1, "requirements": {"listing_type": "RENT", "criteria": base_criteria()},
                 "result_limit": 4, "cold_start": {"exited": True, "exited_pool_key": first.pool.pool_key},
-                "feedback": {"previous_round": {"request_id": first.request_id, "shown_listing_ids": shown,
-                                                "browsing": [{"listing_id": i, "status": "recorded",
-                                                              "duration_seconds": 30} for i in shown]},
-                             "appointments": [{"listing_id": shown[0], "statuses": ["CONFIRMED"],
-                                               "action_ids": ["a-1"]}]}}
+                "behavior_context": context}
         path = tmp_path / "request.json"
         path.write_text(json.dumps(body))
         run(f"load-request @{path}")
@@ -374,15 +383,14 @@ def test_load_request_show_input_and_validate_input(tmp_path, capsys):
         assert staged["request_id"] == "<new request_id minted by recommend>"
         assert staged["conversation_id"] == CONV and staged["previous_state_id"] == first.state.state_id
         assert staged["result_limit"] == 4 and staged["cold_start"] == body["cold_start"]
-        assert staged["feedback"] == body["feedback"]
+        assert staged["behavior_context"] == BehaviorContext.model_validate(body["behavior_context"]).model_dump(mode="json")
         assert "Input valid" in run("validate-input")
         run("recommend")
         assert t.response.status == "success" and len(t.response.recommendations) == 4
         assert t.store.cached(CONV, t.response.request_id)[2]["request"]["cold_start"]["exited"] is True
-        # Contract 1.0 bodies and invalid snapshots are rejected; staged input is kept.
-        for bad in ({**body, "contract_version": "1.0"},
-                    {**body, "feedback": {**body["feedback"], "previous_round": {
-                        **body["feedback"]["previous_round"], "browsing": []}}}):
+        # Contract 2.0 request bodies and invalid snapshots are rejected; staged input is kept.
+        duplicate = {**context, "listing_view_durations": context["listing_view_durations"] * 2}
+        for bad in ({**body, "contract_version": "2.0"}, {**body, "behavior_context": duplicate}):
             path.write_text(json.dumps(bad))
             with pytest.raises(ValueError):
                 t.command(f"load-request @{path}")

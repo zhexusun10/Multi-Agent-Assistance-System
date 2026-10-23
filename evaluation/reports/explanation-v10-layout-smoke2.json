@@ -1,0 +1,213 @@
+{
+  "tag": "v10-layout-smoke2",
+  "split": "all",
+  "checked_at": "2026-10-22T05:30:46.117Z",
+  "model": "openai:deepseek-flash",
+  "hashes": {
+    "src/agents/explanation/contracts.ts": "7ce40639d4c706272d854840a98aa1f894612653336049ba49bd5b2febcbe20b",
+    "src/agents/explanation/evidence.ts": "88ca9aa2e9afe036ed33bbb8524c4561b56bbaf0d2ff23b741c2de72594ed3cd",
+    "src/agents/explanation/prompt.ts": "dd772fe8149ee5032e623b8073d6c6dba669cb396e0b93c1af62c4af959fcf40",
+    "src/agents/explanation/few-shot.ts": "0530d26b9ac672a43e6dec7fcdb7e6368454f55c00975c961ecdbba6ebc1a51b",
+    "src/agents/explanation/validation.ts": "7173817c70746a019aec300d2609698ebb99e009ec17279a99e5c999c5762fd0",
+    "src/agents/explanation/generator.ts": "3bea4dcc1a909416986329ec9b2e0a43353e3718aaca8f5e4ecd3f8e6ba7f772",
+    "skills/evidence-based-explanation/SKILL.md": "f82b18cac632bcd58761ff340cf96d517e075f14e41701f94866d3514c8129cc",
+    "evaluation/explanation-cases.ts": "0f8f054b1c63e4c4e3d46f6e3dfc48a11323b841f4355d01cf96612e802039ff"
+  },
+  "external_block": null,
+  "planned_cases": 4,
+  "unattempted": [],
+  "metrics": {
+    "cases": 4,
+    "passed": 4,
+    "grounded": 4,
+    "ranking_correct": 4,
+    "covers_question": 4,
+    "natural": 4,
+    "concise": 4,
+    "exceptions": 0,
+    "repaired": 1,
+    "average_characters": 365
+  },
+  "by_scenario": {
+    "distance": {
+      "cases": 1,
+      "passed": 1,
+      "grounded": 1,
+      "ranking_correct": 1,
+      "covers_question": 1,
+      "natural": 1,
+      "concise": 1,
+      "exceptions": 0,
+      "repaired": 0,
+      "average_characters": 378
+    },
+    "jurong_layout": {
+      "cases": 1,
+      "passed": 1,
+      "grounded": 1,
+      "ranking_correct": 1,
+      "covers_question": 1,
+      "natural": 1,
+      "concise": 1,
+      "exceptions": 0,
+      "repaired": 0,
+      "average_characters": 355
+    },
+    "mixed_groups": {
+      "cases": 1,
+      "passed": 1,
+      "grounded": 1,
+      "ranking_correct": 1,
+      "covers_question": 1,
+      "natural": 1,
+      "concise": 1,
+      "exceptions": 0,
+      "repaired": 0,
+      "average_characters": 444
+    },
+    "unscored": {
+      "cases": 1,
+      "passed": 1,
+      "grounded": 1,
+      "ranking_correct": 1,
+      "covers_question": 1,
+      "natural": 1,
+      "concise": 1,
+      "exceptions": 0,
+      "repaired": 1,
+      "average_characters": 283
+    }
+  },
+  "results": [
+    {
+      "id": "distance-dev-1",
+      "scenario": "distance",
+      "split": "development",
+      "query": "为什么推荐这几套房子？",
+      "gold": "硬条件预算3000、NTU直线5公里。唯一有资料的排序偏好是靠近NTU；MRT或公交1公里仍未知不能说满足。不要把预算当价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "分项列出硬条件（预算3000、NTU直线5公里）与软偏好（越近越好、公交1公里），两套均通过硬条件；公交距离明确标为未知而非满足；排序按NTU直线距离（850m先于1600m），并明确说明租金低不是排序原因，未把预算当价格排序；价格与可租状态提示需确认。内容准确、无虚构，中文篇幅在限内。"
+      },
+      "answer": "您的要求：\n• 月租不超过3,000新币，必须满足。\n• 到南洋理工大学直线距离不超过5,000米，必须满足，并且越近越好。\n• 最好在MRT或公交站1,000米内。\n\n这些房源符合的部分：\n• 预算：记录月租分别为1,900和1,600新币，都在3,000新币以内。\n• 学校距离：到南洋理工大学的直线距离分别约850米和1,600米，都在5,000米范围内。\n\n还需要了解的部分：\n• 两套房源到最近MRT或公交站的直线距离，目前资料不足，还不能确认是否在1,000米内。\n\n为什么这样排序：预算和学校范围用于筛选，两套都通过；排序时按到南洋理工大学的直线距离由近到远，所以约850米的那套排在约1,600米的前面。租金较低并不是它排在后面的原因。\n\n注意：还不能确认这两套房源都符合您对交通的全部期望；记录的价格和现在是否仍可租，需要联系经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "mixed-confirmed-pending"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 3856
+      },
+      "characters": 378,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 5734
+    },
+    {
+      "id": "jurong_layout-dev-1",
+      "scenario": "jurong_layout",
+      "split": "development",
+      "query": "为什么推荐这几套房子？",
+      "gold": "用户要求预算2500、一间卧室一个卫生间、裕廊东5公里内，最好MRT或公交1公里内。记录月租1600至1900及1间卧室符合。卫生间数量、裕廊东距离和交通距离均未知；不能误称独卫，不能说没有卫生间或未满足。逐项列要求、符合部分、缺资料，再以一句顺序只供浏览和注意说明还不能确认全部符合；不反复强调价格不决定排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "逐项列出预算、卧室、卫生间、裕廊东距离与交通偏好，符合项与未知项区分清楚，未误称独卫或未满足；排序说明仅一句且未反复强调价格不决定排序；无内部字段与生硬词。"
+      },
+      "answer": "您的要求：\n• 月租不超过2,500新币。\n• 1间卧室、1个卫生间。\n• 裕廊东5公里内（直线距离），并希望离裕廊东更近。\n• 最好在1公里内有MRT或公交站（直线距离）。\n\n这些房源符合的部分：\n• 预算：记录月租在1,600至1,900新币之间，都在上限内。\n• 卧室：记录均为1间，符合您的要求。\n\n还需要了解的部分：\n• 卫生间数量：这两套都还没有资料确认是否为1个。\n• 到裕廊东的距离：还不能确认是否在5公里内，也无法比较哪套更近。\n• 附近交通：还不能确认1公里内是否有MRT或公交站。\n\n为什么这样排序：目前资料还不足以按您的偏好判断哪套更合适，前后顺序仅供浏览；租金较低的那套并不因此排在前面。\n\n注意：还不能确认这两套房源全部符合您的要求；记录的价格和现在是否仍可租，需要联系经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "bathroom-count-not-privacy",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 3755
+      },
+      "characters": 355,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 5215
+    },
+    {
+      "id": "mixed_groups-dev-1",
+      "scenario": "mixed_groups",
+      "split": "development",
+      "query": "为什么推荐这几套房子？",
+      "gold": "同一列表含符合预算学校范围的已确认项，以及学校距离未知而待确认的选项。前者唯一实际排序因素是更靠近学校，后者没有评分、原顺序展示；MRT/公交1公里全都未知。解释要概括，不能说所有房源都满足硬条件，也不能说待确认组已按距离排好。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "分项列出预算/学校距离/公交需求及符合情况，明确未知项（部分学校距离、全部公交距离），排序说明正确：有距离组按距离由近到远，缺资料组沿用原顺序且未参与比较，并提示不能确认全部满足硬条件、价格与可租状态需确认。无虚构事实。"
+      },
+      "answer": "您的要求：\n• 月租不超过3,000新币，必须满足。\n• 到南洋理工大学的直线距离不超过5,000米，必须满足，并且希望越近越好。\n• 最好在1,000米直线范围内有MRT或公交站。\n\n这些房源符合的部分：\n• 预算：记录月租在1,600至1,900新币之间，都在3,000新币以内。\n• 学校距离：有距离资料的房源到南洋理工大学直线约850至1,600米，都在5,000米范围内。\n\n还需要了解的部分：\n• 有几套房源到南洋理工大学的距离还没有资料，暂时无法判断是否在5,000米内。\n• 所有房源附近的MRT或公交站距离都还没有资料，不能确认是否在1,000米内。\n\n为什么这样排序：有距离资料的房源按到南洋理工大学的直线距离由近到远排列，所以约850米的那套在最前，约1,600米的几套随后；距离相同的保持原有次序。缺距离资料的房源没有参与比较，沿用原顺序展示，不能据此判断它们更合适。\n\n注意：还不能确认这几套房源全部符合您的要求。记录的价格和现在是否仍可租，需要联系经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "mixed-confirmed-pending",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 4304
+      },
+      "characters": 444,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 5859
+    },
+    {
+      "id": "unscored-dev-1",
+      "scenario": "unscored",
+      "split": "development",
+      "query": "为什么推荐这几套房子？",
+      "gold": "独卫必须但未知，这组没有评分，只沿用返回顺序，不能说按近远或价格排好、不能说全部条件满足。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "分项列出预算、距离、独卫三项需求及符合情况；独卫标为未知而非未满足；明确说明无评分、顺序仅供浏览，未声称按近远或价格排序；提示价格未确认、可租状态未知。事实与房源数据一致（1900/1600新币，850/1600米）。"
+      },
+      "answer": "您的要求：\n• 月租不超过3,000新币，必须满足。\n• 距南洋理工大学直线距离不超过5公里，必须满足。\n• 独立卫浴（专用、不与他人共用），必须满足。\n\n这些房源符合的部分：\n• 预算：记录月租1,600至1,900新币，都在上限内。\n• 学校距离：直线约850至1,600米，都在5公里内。\n\n还需要了解的部分：\n• 独立卫浴：这两套是否配有专用、不与他人共用的卫生间，目前资料不足，还不能确认。\n\n为什么这样排序：目前资料还不足以判断哪套更合适，前后顺序仅供浏览。\n\n注意：还不能确认这两套房源全部符合您的要求；记录的价格和现在是否仍可租，需要联系经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 2,
+        "example_ids": [
+          "unknown-hard-condition",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [
+          "SEMANTIC_AUDIT: [{\"code\":\"style\",\"detail\":\"“目前没有可用于比较的偏好信息”属于生硬工程措辞，且与事实包“资料还不足以根据用户偏好判断”略有偏差；应改为自然表述，如“目前资料还不足以判断哪套更合适，前后顺序仅供浏览”。\"}]"
+        ],
+        "latency_ms": 6272
+      },
+      "characters": 283,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 7685
+    }
+  ]
+}

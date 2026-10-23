@@ -1,0 +1,8 @@
+{
+  "extends": "committed",
+  "overrides": {
+    "controller": {
+      "timeout_seconds": 300
+    }
+  }
+}

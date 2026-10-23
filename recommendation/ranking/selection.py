@@ -21,7 +21,7 @@ Cold-start diagnostics (evaluated only when cold_start.enabled and |pool| > resu
   layer renormalised. The components are reweighted (PoolScores.combine), never rescored. Ties in
   a trial are broken by a per-trial random key, so the listing-ID order can never fake
   stability. RNG: numpy Generator(PCG64) seeded from the R3 stability seed (pool_version,
-  requirements, feedback, selection_hash; NOT request_id), so S is reproducible for identical
+  requirements, behavior_context, selection_hash; NOT request_id), so S is reproducible for identical
   inputs.
 - exit_conditions_met = C >= c_min and B <= b_max and S >= s_min; false whenever the diagnostics
   were not evaluated or S is None (R9).
@@ -129,10 +129,10 @@ def stream(seed_hex):
     return random.Random(int(seed_hex[:16], 16))
 
 
-def stability_seed(settings, pool_version, requirements, feedback):
+def stability_seed(settings, pool_version, requirements, behavior_context):
     """R3 stability seed: no request_id, so identical inputs give the identical S."""
     return _sha(settings.selection.seed_namespace, "stability", pool_version,
-                digest(requirements.model_dump(mode="json")), digest(feedback.model_dump(mode="json")),
+                digest(requirements.model_dump(mode="json")), digest(behavior_context.model_dump(mode="json") if behavior_context is not None else None),
                 settings.selection_hash)
 
 
@@ -230,7 +230,7 @@ def evaluate_cold_start(scored, request, settings, pool_key, pool_version, k, ti
         c = 0.0
         reasons.append("no_soft_requirements")
     b = tie_size
-    seed = stability_seed(settings, pool_version, request.requirements, request.feedback)
+    seed = stability_seed(settings, pool_version, request.requirements, request.behavior_context)
     s = top_k_stability(scored, k, cold.stability.trials, cold.stability.weight_perturbation_fraction,
                         stability_generator(seed))
     met = exit_conditions(c, b, s, thresholds)

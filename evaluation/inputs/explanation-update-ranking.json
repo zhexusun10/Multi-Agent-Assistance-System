@@ -1,0 +1,2150 @@
+{
+  "query": "地址离nus越近越好，然后1个房间",
+  "requirements": {
+    "criteria": [
+      {
+        "unit": "count",
+        "field": "bedrooms",
+        "value": 1,
+        "operator": "eq",
+        "strength": "hard",
+        "criterion_id": "minimum-bedrooms"
+      },
+      {
+        "unit": "SGD/month",
+        "field": "price",
+        "value": 5000,
+        "operator": "lte",
+        "strength": "hard",
+        "criterion_id": "monthly-rent"
+      },
+      {
+        "unit": "m",
+        "field": "place_proximity",
+        "value": 1000,
+        "target": {
+          "name": "National University of Singapore",
+          "place_id": "OSM:way:54519165"
+        },
+        "weight": 1,
+        "operator": "lte",
+        "strength": "soft",
+        "criterion_id": "place_proximity:OSM:way:54519165-preference",
+        "distance_type": "straight_line",
+        "distance_preference": "nearer"
+      },
+      {
+        "unit": "m",
+        "field": "place_proximity",
+        "value": 800,
+        "target": {
+          "name": "超市",
+          "category": "Supermarket"
+        },
+        "weight": 1,
+        "operator": "lte",
+        "strength": "soft",
+        "criterion_id": "place_proximity:Supermarket-preference",
+        "distance_type": "straight_line",
+        "distance_preference": "bounded"
+      },
+      {
+        "field": "district",
+        "value": "D05",
+        "operator": "eq",
+        "strength": "hard",
+        "criterion_id": "preferred-district"
+      }
+    ],
+    "listing_type": "RENT"
+  },
+  "recommendation": {
+    "error": null,
+    "state": {
+      "counts": {
+        "assessed": 21431,
+        "eligible": 71,
+        "excluded": 21354,
+        "unverified": 6
+      },
+      "coverage": {
+        "truncated": false,
+        "dataset_scope": "2026-10-09",
+        "dataset_version": "2026-10-09",
+        "retrieval_scope": "all RENT listings",
+        "complete_within_dataset": true
+      },
+      "state_id": "native:8a3212dd-1f70-4c60-9b84-f4f951c6a72f",
+      "candidate_pool_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0"
+    },
+    "native": {
+      "scores": {
+        "500238705": {
+          "ordering": "explicit",
+          "contributions": [
+            {
+              "scale": null,
+              "weight": 0.5,
+              "feature": "place_proximity:OSM:way:54519165-preference",
+              "unknown": false,
+              "reference": null,
+              "similarity": 0.29675268875454947,
+              "contribution": 0.14837634437727473,
+              "raw_difference": null
+            },
+            {
+              "scale": null,
+              "weight": 0.5,
+              "feature": "place_proximity:Supermarket-preference",
+              "unknown": false,
+              "reference": null,
+              "similarity": 0.8507832523316778,
+              "contribution": 0.4253916261658389,
+              "raw_difference": null
+            }
+          ],
+          "combined_score": 0.5737679705431137,
+          "explicit_score": 0.5737679705431137,
+          "implicit_score": null,
+          "explicit_weight": 1,
+          "implicit_weight": 0,
+          "evidence_coverage": 1,
+          "suppressed_features": [
+            "bedrooms",
+            "geography"
+          ]
+        },
+        "500264398": {
+          "ordering": "explicit",
+          "contributions": [
+            {
+              "scale": null,
+              "weight": 0.5,
+              "feature": "place_proximity:OSM:way:54519165-preference",
+              "unknown": false,
+              "reference": null,
+              "similarity": 0.353075724815715,
+              "contribution": 0.1765378624078575,
+              "raw_difference": null
+            },
+            {
+              "scale": null,
+              "weight": 0.5,
+              "feature": "place_proximity:Supermarket-preference",
+              "unknown": false,
+              "reference": null,
+              "similarity": 0.7242702976750923,
+              "contribution": 0.36213514883754616,
+              "raw_difference": null
+            }
+          ],
+          "combined_score": 0.5386730112454037,
+          "explicit_score": 0.5386730112454037,
+          "implicit_score": null,
+          "explicit_weight": 1,
+          "implicit_weight": 0,
+          "evidence_coverage": 1,
+          "suppressed_features": [
+            "bedrooms",
+            "geography"
+          ]
+        },
+        "500276652": {
+          "ordering": "explicit",
+          "contributions": [
+            {
+              "scale": null,
+              "weight": 0.5,
+              "feature": "place_proximity:OSM:way:54519165-preference",
+              "unknown": false,
+              "reference": null,
+              "similarity": 0.29675268875454947,
+              "contribution": 0.14837634437727473,
+              "raw_difference": null
+            },
+            {
+              "scale": null,
+              "weight": 0.5,
+              "feature": "place_proximity:Supermarket-preference",
+              "unknown": false,
+              "reference": null,
+              "similarity": 0.8507832523316778,
+              "contribution": 0.4253916261658389,
+              "raw_difference": null
+            }
+          ],
+          "combined_score": 0.5737679705431137,
+          "explicit_score": 0.5737679705431137,
+          "implicit_score": null,
+          "explicit_weight": 1,
+          "implicit_weight": 0,
+          "evidence_coverage": 1,
+          "suppressed_features": [
+            "bedrooms",
+            "geography"
+          ]
+        },
+        "500285985": {
+          "ordering": "explicit",
+          "contributions": [
+            {
+              "scale": null,
+              "weight": 0.5,
+              "feature": "place_proximity:OSM:way:54519165-preference",
+              "unknown": false,
+              "reference": null,
+              "similarity": 0.28431288617356293,
+              "contribution": 0.14215644308678146,
+              "raw_difference": null
+            },
+            {
+              "scale": null,
+              "weight": 0.5,
+              "feature": "place_proximity:Supermarket-preference",
+              "unknown": false,
+              "reference": null,
+              "similarity": 0.929918980808797,
+              "contribution": 0.4649594904043985,
+              "raw_difference": null
+            }
+          ],
+          "combined_score": 0.60711593349118,
+          "explicit_score": 0.60711593349118,
+          "implicit_score": null,
+          "explicit_weight": 1,
+          "implicit_weight": 0,
+          "evidence_coverage": 1,
+          "suppressed_features": [
+            "bedrooms",
+            "geography"
+          ]
+        }
+      },
+      "status": "success",
+      "ranking": [
+        "500285985",
+        "500238705",
+        "500276652",
+        "500264398"
+      ],
+      "provider": "jiangshan-native",
+      "state_id": "8a3212dd-1f70-4c60-9b84-f4f951c6a72f",
+      "exchange_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+      "upstream_commit": "907cfa8",
+      "criterion_results": {
+        "20283326": [
+          {
+            "reason": "Missing listing attribute",
+            "outcome": "unknown",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_refs": []
+          },
+          {
+            "reason": "missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity",
+            "outcome": "unknown",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "evidence_refs": [
+              "72d8a2a1dea40ba701dba3d25ca35284f4879f79cfac5445c6a616d4201c9b96"
+            ]
+          },
+          {
+            "reason": "missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity",
+            "outcome": "unknown",
+            "criterion_id": "place_proximity:Supermarket-preference",
+            "evidence_refs": [
+              "b70d6efe1a351d2872a4708dc0f4386b5e767a6cb785356ecb5221a98663fce0"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "preferred-district",
+            "evidence_refs": []
+          }
+        ],
+        "24039352": [
+          {
+            "reason": "Missing listing attribute",
+            "outcome": "unknown",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_refs": []
+          },
+          {
+            "reason": "missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity",
+            "outcome": "unknown",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "evidence_refs": [
+              "2554e6f260d6efe5272f6def12789ccb46c3d5d93ca831c1b580eb09a0f9de33"
+            ]
+          },
+          {
+            "reason": "missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity",
+            "outcome": "unknown",
+            "criterion_id": "place_proximity:Supermarket-preference",
+            "evidence_refs": [
+              "7d06104158196ee20ffc9e01dbe00fbd3af00653434979adb814ef480bce1b3f"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "preferred-district",
+            "evidence_refs": []
+          }
+        ],
+        "500186462": [
+          {
+            "reason": "Missing listing attribute",
+            "outcome": "unknown",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_refs": []
+          },
+          {
+            "reason": "missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity",
+            "outcome": "unknown",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "evidence_refs": [
+              "ba05cd37b403307a3bc74454536acc52cf9743c3926779d3c0ccaae38a817eb7"
+            ]
+          },
+          {
+            "reason": "missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity",
+            "outcome": "unknown",
+            "criterion_id": "place_proximity:Supermarket-preference",
+            "evidence_refs": [
+              "1687d24ac397baba62f9841886ad09808cdc27600bab8cf2d9bcc458d8075cce"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "preferred-district",
+            "evidence_refs": []
+          }
+        ],
+        "500238705": [
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "fail",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "evidence_refs": [
+              "3f324b184cf01ba0c37583bd229889122b64cb214c9fa5396d6f73ac47bbf6e4"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "place_proximity:Supermarket-preference",
+            "evidence_refs": [
+              "5d47d1cc5abad4a607c463051c3651f135f5098d1172682eef6aa1a823a26cea"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "preferred-district",
+            "evidence_refs": []
+          }
+        ],
+        "500264398": [
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "fail",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "evidence_refs": [
+              "be72d69b9b7f122e180900c18cfb0ccaf505198fc2e8dfc4bcf892874b11305a"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "place_proximity:Supermarket-preference",
+            "evidence_refs": [
+              "d67e5616e2e28e200ca6443d46fb0a50825ff537554904e1388ddf893f709bd9"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "preferred-district",
+            "evidence_refs": []
+          }
+        ],
+        "500276652": [
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "fail",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "evidence_refs": [
+              "e4cf574780761e504cdac2fab313be73c9e007f868a7964b482f329a136d24a6"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "place_proximity:Supermarket-preference",
+            "evidence_refs": [
+              "b7abe481d4bec36069a39be89e4ab5d2951a1adfdb81f29dec149301fc2d7f8a"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "preferred-district",
+            "evidence_refs": []
+          }
+        ],
+        "500278815": [
+          {
+            "reason": "Missing listing attribute",
+            "outcome": "unknown",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "fail",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "evidence_refs": [
+              "1b64cb08f2c9d699770562f079ac94a904d9d839932915c411b136bf71c953d7"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "place_proximity:Supermarket-preference",
+            "evidence_refs": [
+              "01706f28827a2e511e291291b2d5b8c1ae22bf7be79ff5522dcd47e40a79c9ad"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "preferred-district",
+            "evidence_refs": []
+          }
+        ],
+        "500285985": [
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "fail",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "evidence_refs": [
+              "e59e1ddc16a5629e8212f9bb3ef17d5f6443ef74e2821c20d256e0ef2ba81772"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "place_proximity:Supermarket-preference",
+            "evidence_refs": [
+              "8eb444e2f9c6e89f2dc37b2116e3d42dda4c5daea9b1e8379a6fd0d97cfdea00"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "preferred-district",
+            "evidence_refs": []
+          }
+        ]
+      },
+      "unscored_listing_ids": [
+        "20283326",
+        "24039352",
+        "500186462",
+        "500278815"
+      ],
+      "unsupported_criterion_ids": []
+    },
+    "status": "success",
+    "evidence": [
+      {
+        "unit": "count",
+        "value": 1,
+        "field_path": "bedrooms",
+        "listing_id": "500285985",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500285985:minimum-bedrooms",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "SGD/month",
+        "value": 1400,
+        "field_path": "price",
+        "listing_id": "500285985",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500285985:monthly-rent",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "m",
+        "value": 2517.2517625160876,
+        "target": {
+          "name": "National University of Singapore",
+          "place_id": "OSM:way:54519165"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "500285985",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500285985:place_proximity:OSM:way:54519165-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:29.212228+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "coordinate_haversine"
+      },
+      {
+        "unit": "m",
+        "value": 60.29,
+        "target": {
+          "name": "超市",
+          "category": "Supermarket"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "500285985",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500285985:place_proximity:Supermarket-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:29.484063+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "neo4j.NEAR_PLACE"
+      },
+      {
+        "value": "D05",
+        "field_path": "district",
+        "listing_id": "500285985",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500285985:preferred-district",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "count",
+        "value": 1,
+        "field_path": "bedrooms",
+        "listing_id": "500238705",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500238705:minimum-bedrooms",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "SGD/month",
+        "value": 3100,
+        "field_path": "price",
+        "listing_id": "500238705",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500238705:monthly-rent",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "m",
+        "value": 2369.809399864011,
+        "target": {
+          "name": "National University of Singapore",
+          "place_id": "OSM:way:54519165"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "500238705",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500238705:place_proximity:OSM:way:54519165-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:29.212228+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "coordinate_haversine"
+      },
+      {
+        "unit": "m",
+        "value": 140.31,
+        "target": {
+          "name": "超市",
+          "category": "Supermarket"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "500238705",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500238705:place_proximity:Supermarket-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:29.431489+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "neo4j.NEAR_PLACE"
+      },
+      {
+        "value": "D05",
+        "field_path": "district",
+        "listing_id": "500238705",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500238705:preferred-district",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "count",
+        "value": 1,
+        "field_path": "bedrooms",
+        "listing_id": "500276652",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500276652:minimum-bedrooms",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "SGD/month",
+        "value": 3090,
+        "field_path": "price",
+        "listing_id": "500276652",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500276652:monthly-rent",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "m",
+        "value": 2369.809399864011,
+        "target": {
+          "name": "National University of Singapore",
+          "place_id": "OSM:way:54519165"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "500276652",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500276652:place_proximity:OSM:way:54519165-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:29.212228+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "coordinate_haversine"
+      },
+      {
+        "unit": "m",
+        "value": 140.31,
+        "target": {
+          "name": "超市",
+          "category": "Supermarket"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "500276652",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500276652:place_proximity:Supermarket-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:29.453765+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "neo4j.NEAR_PLACE"
+      },
+      {
+        "value": "D05",
+        "field_path": "district",
+        "listing_id": "500276652",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500276652:preferred-district",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "count",
+        "value": 1,
+        "field_path": "bedrooms",
+        "listing_id": "500264398",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500264398:minimum-bedrooms",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "SGD/month",
+        "value": 3280,
+        "field_path": "price",
+        "listing_id": "500264398",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500264398:monthly-rent",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "m",
+        "value": 1832.253620726664,
+        "target": {
+          "name": "National University of Singapore",
+          "place_id": "OSM:way:54519165"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "500264398",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500264398:place_proximity:OSM:way:54519165-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:29.212228+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "coordinate_haversine"
+      },
+      {
+        "unit": "m",
+        "value": 304.56,
+        "target": {
+          "name": "超市",
+          "category": "Supermarket"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "500264398",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500264398:place_proximity:Supermarket-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:29.443493+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "neo4j.NEAR_PLACE"
+      },
+      {
+        "value": "D05",
+        "field_path": "district",
+        "listing_id": "500264398",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500264398:preferred-district",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "count",
+        "value": null,
+        "field_path": "bedrooms",
+        "listing_id": "20283326",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:20283326:minimum-bedrooms",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "SGD/month",
+        "value": 3200,
+        "field_path": "price",
+        "listing_id": "20283326",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:20283326:monthly-rent",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "m",
+        "value": null,
+        "target": {
+          "name": "National University of Singapore",
+          "place_id": "OSM:way:54519165"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "20283326",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:20283326:place_proximity:OSM:way:54519165-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:29.210101+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "unavailable"
+      },
+      {
+        "unit": "m",
+        "value": null,
+        "target": {
+          "name": "超市",
+          "category": "Supermarket"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "20283326",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:20283326:place_proximity:Supermarket-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:29.370490+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "unavailable"
+      },
+      {
+        "value": "D05",
+        "field_path": "district",
+        "listing_id": "20283326",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:20283326:preferred-district",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "count",
+        "value": null,
+        "field_path": "bedrooms",
+        "listing_id": "24039352",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:24039352:minimum-bedrooms",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "SGD/month",
+        "value": 3764,
+        "field_path": "price",
+        "listing_id": "24039352",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:24039352:monthly-rent",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "m",
+        "value": null,
+        "target": {
+          "name": "National University of Singapore",
+          "place_id": "OSM:way:54519165"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "24039352",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:24039352:place_proximity:OSM:way:54519165-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:29.211229+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "unavailable"
+      },
+      {
+        "unit": "m",
+        "value": null,
+        "target": {
+          "name": "超市",
+          "category": "Supermarket"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "24039352",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:24039352:place_proximity:Supermarket-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:29.387001+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "unavailable"
+      },
+      {
+        "value": "D05",
+        "field_path": "district",
+        "listing_id": "24039352",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:24039352:preferred-district",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "count",
+        "value": null,
+        "field_path": "bedrooms",
+        "listing_id": "500186462",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500186462:minimum-bedrooms",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "SGD/month",
+        "value": 2800,
+        "field_path": "price",
+        "listing_id": "500186462",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500186462:monthly-rent",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "m",
+        "value": null,
+        "target": {
+          "name": "National University of Singapore",
+          "place_id": "OSM:way:54519165"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "500186462",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500186462:place_proximity:OSM:way:54519165-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:29.211229+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "unavailable"
+      },
+      {
+        "unit": "m",
+        "value": null,
+        "target": {
+          "name": "超市",
+          "category": "Supermarket"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "500186462",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500186462:place_proximity:Supermarket-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:29.422489+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "unavailable"
+      },
+      {
+        "value": "D05",
+        "field_path": "district",
+        "listing_id": "500186462",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500186462:preferred-district",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "count",
+        "value": null,
+        "field_path": "bedrooms",
+        "listing_id": "500278815",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500278815:minimum-bedrooms",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "SGD/month",
+        "value": 2500,
+        "field_path": "price",
+        "listing_id": "500278815",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500278815:monthly-rent",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "m",
+        "value": 2561.1046820987153,
+        "target": {
+          "name": "National University of Singapore",
+          "place_id": "OSM:way:54519165"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "500278815",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500278815:place_proximity:OSM:way:54519165-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:29.212228+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "coordinate_haversine"
+      },
+      {
+        "unit": "m",
+        "value": 56.55,
+        "target": {
+          "name": "超市",
+          "category": "Supermarket"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "500278815",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500278815:place_proximity:Supermarket-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:29.463770+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "neo4j.NEAR_PLACE"
+      },
+      {
+        "value": "D05",
+        "field_path": "district",
+        "listing_id": "500278815",
+        "source_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+        "evidence_id": "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500278815:preferred-district",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-22T12:33:42.141Z",
+        "dataset_version": "2026-10-09"
+      }
+    ],
+    "warnings": [
+      {
+        "code": "JIANGSHAN_NATIVE",
+        "message": "使用江山原生推荐模块；保留其最多4套、完整候选池、评分和原始排名。"
+      },
+      {
+        "code": "NATIVE_NOTICE",
+        "message": "Sample viewing durations are simulated observations."
+      },
+      {
+        "code": "NATIVE_NOTICE",
+        "message": "Posting time does not establish current availability."
+      },
+      {
+        "code": "GEO_INTERPRETATION",
+        "message": "“NUS”已匹配到地点目录 National University of Singapore；默认采用直线距离，未验证实际路线。"
+      },
+      {
+        "code": "GEO_INTERPRETATION",
+        "message": "未指定距离上限，采用“越近越好”的软偏好，不因默认半径排除房源。"
+      }
+    ],
+    "execution": {
+      "timing": {
+        "total_ms": 20561.99999999808
+      },
+      "strategy": "complete-pool weighted ranking",
+      "trace_ref": "1c2eae90-8fad-4315-8f25-a61fd5c3ddd0",
+      "tool_calls": [
+        {
+          "count": 4,
+          "provider": "jiangshan-native",
+          "model_calls": 4,
+          "native_trace_ref": "sqlite:7c3c7071-c3fd-4328-b9c2-1d9b052dbfa1"
+        }
+      ],
+      "score_semantics": "native_explicit_implicit_weighted_fit_not_probability",
+      "scoring_version": "weighted-v1"
+    },
+    "request_id": "da3596dc-f934-4287-a6e4-8d99f208aa0e",
+    "clarifications": [],
+    "conversation_id": "dc11de6c-3a64-4d05-8127-6deb134dc996",
+    "recommendations": [
+      {
+        "rank": 1,
+        "score": 0.60711593349118,
+        "listing": {
+          "price": 1400,
+          "title": "441B Clementi Avenue 3",
+          "bedrooms": 1,
+          "district": "D05",
+          "listing_id": "500285985",
+          "price_unit": "SGD/month",
+          "source_url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-441b-clementi-avenue-3-500285985",
+          "property_type": "hdb flat",
+          "floor_area_sqft": 1001,
+          "availability_status": "unknown"
+        },
+        "score_breakdown": [
+          {
+            "origin": "stated_preference",
+            "weight": 1,
+            "utility": 0.60711593349118,
+            "contribution": 0.60711593349118,
+            "criterion_id": "native:explicit",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500285985:minimum-bedrooms",
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500285985:monthly-rent",
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500285985:place_proximity:OSM:way:54519165-preference",
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500285985:place_proximity:Supermarket-preference",
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500285985:preferred-district"
+            ],
+            "normalized_weight": 1
+          }
+        ],
+        "criterion_results": [
+          {
+            "unit": "count",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500285985:minimum-bedrooms"
+            ],
+            "observed_value": 1
+          },
+          {
+            "unit": "SGD/month",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500285985:monthly-rent"
+            ],
+            "observed_value": 1400
+          },
+          {
+            "unit": "m",
+            "reason": "Exact criterion comparison",
+            "status": "fail",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500285985:place_proximity:OSM:way:54519165-preference"
+            ],
+            "observed_value": 2517.2517625160876
+          },
+          {
+            "unit": "m",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "place_proximity:Supermarket-preference",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500285985:place_proximity:Supermarket-preference"
+            ],
+            "observed_value": 60.29
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "preferred-district",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500285985:preferred-district"
+            ],
+            "observed_value": "D05"
+          }
+        ],
+        "explanation_evidence": {
+          "unknowns": [],
+          "strengths": [
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500285985:minimum-bedrooms"
+              ],
+              "criterion_ids": [
+                "minimum-bedrooms"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500285985:monthly-rent"
+              ],
+              "criterion_ids": [
+                "monthly-rent"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500285985:place_proximity:Supermarket-preference"
+              ],
+              "criterion_ids": [
+                "place_proximity:Supermarket-preference"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500285985:preferred-district"
+              ],
+              "criterion_ids": [
+                "preferred-district"
+              ]
+            }
+          ],
+          "compromises": [
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500285985:place_proximity:OSM:way:54519165-preference"
+              ],
+              "criterion_ids": [
+                "place_proximity:OSM:way:54519165-preference"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "rank": 2,
+        "score": 0.5737679705431137,
+        "listing": {
+          "price": 3100,
+          "title": "449 Clementi Avenue 3",
+          "bedrooms": 1,
+          "district": "D05",
+          "listing_id": "500238705",
+          "price_unit": "SGD/month",
+          "source_url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-449-clementi-avenue-3-500238705",
+          "property_type": "hdb flat",
+          "floor_area_sqft": 350,
+          "availability_status": "unknown"
+        },
+        "score_breakdown": [
+          {
+            "origin": "stated_preference",
+            "weight": 1,
+            "utility": 0.5737679705431137,
+            "contribution": 0.5737679705431137,
+            "criterion_id": "native:explicit",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500238705:minimum-bedrooms",
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500238705:monthly-rent",
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500238705:place_proximity:OSM:way:54519165-preference",
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500238705:place_proximity:Supermarket-preference",
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500238705:preferred-district"
+            ],
+            "normalized_weight": 1
+          }
+        ],
+        "criterion_results": [
+          {
+            "unit": "count",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500238705:minimum-bedrooms"
+            ],
+            "observed_value": 1
+          },
+          {
+            "unit": "SGD/month",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500238705:monthly-rent"
+            ],
+            "observed_value": 3100
+          },
+          {
+            "unit": "m",
+            "reason": "Exact criterion comparison",
+            "status": "fail",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500238705:place_proximity:OSM:way:54519165-preference"
+            ],
+            "observed_value": 2369.809399864011
+          },
+          {
+            "unit": "m",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "place_proximity:Supermarket-preference",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500238705:place_proximity:Supermarket-preference"
+            ],
+            "observed_value": 140.31
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "preferred-district",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500238705:preferred-district"
+            ],
+            "observed_value": "D05"
+          }
+        ],
+        "explanation_evidence": {
+          "unknowns": [],
+          "strengths": [
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500238705:minimum-bedrooms"
+              ],
+              "criterion_ids": [
+                "minimum-bedrooms"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500238705:monthly-rent"
+              ],
+              "criterion_ids": [
+                "monthly-rent"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500238705:place_proximity:Supermarket-preference"
+              ],
+              "criterion_ids": [
+                "place_proximity:Supermarket-preference"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500238705:preferred-district"
+              ],
+              "criterion_ids": [
+                "preferred-district"
+              ]
+            }
+          ],
+          "compromises": [
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500238705:place_proximity:OSM:way:54519165-preference"
+              ],
+              "criterion_ids": [
+                "place_proximity:OSM:way:54519165-preference"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "rank": 3,
+        "score": 0.5737679705431137,
+        "listing": {
+          "price": 3090,
+          "title": "449 Clementi Avenue 3",
+          "bedrooms": 1,
+          "district": "D05",
+          "listing_id": "500276652",
+          "price_unit": "SGD/month",
+          "source_url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-449-clementi-avenue-3-500276652",
+          "property_type": "hdb flat",
+          "floor_area_sqft": 350,
+          "availability_status": "unknown"
+        },
+        "score_breakdown": [
+          {
+            "origin": "stated_preference",
+            "weight": 1,
+            "utility": 0.5737679705431137,
+            "contribution": 0.5737679705431137,
+            "criterion_id": "native:explicit",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500276652:minimum-bedrooms",
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500276652:monthly-rent",
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500276652:place_proximity:OSM:way:54519165-preference",
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500276652:place_proximity:Supermarket-preference",
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500276652:preferred-district"
+            ],
+            "normalized_weight": 1
+          }
+        ],
+        "criterion_results": [
+          {
+            "unit": "count",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500276652:minimum-bedrooms"
+            ],
+            "observed_value": 1
+          },
+          {
+            "unit": "SGD/month",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500276652:monthly-rent"
+            ],
+            "observed_value": 3090
+          },
+          {
+            "unit": "m",
+            "reason": "Exact criterion comparison",
+            "status": "fail",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500276652:place_proximity:OSM:way:54519165-preference"
+            ],
+            "observed_value": 2369.809399864011
+          },
+          {
+            "unit": "m",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "place_proximity:Supermarket-preference",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500276652:place_proximity:Supermarket-preference"
+            ],
+            "observed_value": 140.31
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "preferred-district",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500276652:preferred-district"
+            ],
+            "observed_value": "D05"
+          }
+        ],
+        "explanation_evidence": {
+          "unknowns": [],
+          "strengths": [
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500276652:minimum-bedrooms"
+              ],
+              "criterion_ids": [
+                "minimum-bedrooms"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500276652:monthly-rent"
+              ],
+              "criterion_ids": [
+                "monthly-rent"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500276652:place_proximity:Supermarket-preference"
+              ],
+              "criterion_ids": [
+                "place_proximity:Supermarket-preference"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500276652:preferred-district"
+              ],
+              "criterion_ids": [
+                "preferred-district"
+              ]
+            }
+          ],
+          "compromises": [
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500276652:place_proximity:OSM:way:54519165-preference"
+              ],
+              "criterion_ids": [
+                "place_proximity:OSM:way:54519165-preference"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "rank": 4,
+        "score": 0.5386730112454037,
+        "listing": {
+          "price": 3280,
+          "title": "728 Clementi West Street 2",
+          "bedrooms": 1,
+          "district": "D05",
+          "listing_id": "500264398",
+          "price_unit": "SGD/month",
+          "source_url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-728-clementi-west-street-2-500264398",
+          "property_type": "hdb flat",
+          "floor_area_sqft": 721,
+          "availability_status": "unknown"
+        },
+        "score_breakdown": [
+          {
+            "origin": "stated_preference",
+            "weight": 1,
+            "utility": 0.5386730112454037,
+            "contribution": 0.5386730112454037,
+            "criterion_id": "native:explicit",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500264398:minimum-bedrooms",
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500264398:monthly-rent",
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500264398:place_proximity:OSM:way:54519165-preference",
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500264398:place_proximity:Supermarket-preference",
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500264398:preferred-district"
+            ],
+            "normalized_weight": 1
+          }
+        ],
+        "criterion_results": [
+          {
+            "unit": "count",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500264398:minimum-bedrooms"
+            ],
+            "observed_value": 1
+          },
+          {
+            "unit": "SGD/month",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500264398:monthly-rent"
+            ],
+            "observed_value": 3280
+          },
+          {
+            "unit": "m",
+            "reason": "Exact criterion comparison",
+            "status": "fail",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500264398:place_proximity:OSM:way:54519165-preference"
+            ],
+            "observed_value": 1832.253620726664
+          },
+          {
+            "unit": "m",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "place_proximity:Supermarket-preference",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500264398:place_proximity:Supermarket-preference"
+            ],
+            "observed_value": 304.56
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "preferred-district",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500264398:preferred-district"
+            ],
+            "observed_value": "D05"
+          }
+        ],
+        "explanation_evidence": {
+          "unknowns": [],
+          "strengths": [
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500264398:minimum-bedrooms"
+              ],
+              "criterion_ids": [
+                "minimum-bedrooms"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500264398:monthly-rent"
+              ],
+              "criterion_ids": [
+                "monthly-rent"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500264398:place_proximity:Supermarket-preference"
+              ],
+              "criterion_ids": [
+                "place_proximity:Supermarket-preference"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500264398:preferred-district"
+              ],
+              "criterion_ids": [
+                "preferred-district"
+              ]
+            }
+          ],
+          "compromises": [
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500264398:place_proximity:OSM:way:54519165-preference"
+              ],
+              "criterion_ids": [
+                "place_proximity:OSM:way:54519165-preference"
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "contract_version": "1.0",
+    "requirements_version": 3,
+    "unverified_candidates": [
+      {
+        "rank": 1,
+        "score": 0,
+        "listing": {
+          "price": 3200,
+          "title": "NEWest",
+          "bedrooms": null,
+          "district": "D05",
+          "listing_id": "20283326",
+          "price_unit": "SGD/month",
+          "source_url": "https://www.propertyguru.com.sg/listing/for-rent-newest-20283326",
+          "property_type": "apartment",
+          "floor_area_sqft": 463,
+          "availability_status": "unknown"
+        },
+        "score_breakdown": [],
+        "criterion_results": [
+          {
+            "unit": "count",
+            "reason": "原生证据未知：Missing listing attribute",
+            "status": "unknown",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:20283326:minimum-bedrooms"
+            ],
+            "observed_value": null
+          },
+          {
+            "unit": "SGD/month",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:20283326:monthly-rent"
+            ],
+            "observed_value": 3200
+          },
+          {
+            "unit": "m",
+            "reason": "原生证据未知：missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity",
+            "status": "unknown",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:20283326:place_proximity:OSM:way:54519165-preference"
+            ],
+            "observed_value": null
+          },
+          {
+            "unit": "m",
+            "reason": "原生证据未知：missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity",
+            "status": "unknown",
+            "criterion_id": "place_proximity:Supermarket-preference",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:20283326:place_proximity:Supermarket-preference"
+            ],
+            "observed_value": null
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "preferred-district",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:20283326:preferred-district"
+            ],
+            "observed_value": "D05"
+          }
+        ],
+        "explanation_evidence": {
+          "unknowns": [
+            {
+              "field": "bedrooms",
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:20283326:minimum-bedrooms"
+              ]
+            },
+            {
+              "field": "place_proximity",
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:20283326:place_proximity:OSM:way:54519165-preference"
+              ]
+            },
+            {
+              "field": "place_proximity",
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:20283326:place_proximity:Supermarket-preference"
+              ]
+            }
+          ],
+          "strengths": [
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:20283326:monthly-rent"
+              ],
+              "criterion_ids": [
+                "monthly-rent"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:20283326:preferred-district"
+              ],
+              "criterion_ids": [
+                "preferred-district"
+              ]
+            }
+          ],
+          "compromises": []
+        }
+      },
+      {
+        "rank": 2,
+        "score": 0,
+        "listing": {
+          "price": 3764,
+          "title": "Lyf One-North Singapore",
+          "bedrooms": null,
+          "district": "D05",
+          "listing_id": "24039352",
+          "price_unit": "SGD/month",
+          "source_url": "https://www.propertyguru.com.sg/listing/for-rent-lyf-one-north-singapore-24039352",
+          "property_type": "apartment",
+          "floor_area_sqft": 129,
+          "availability_status": "unknown"
+        },
+        "score_breakdown": [],
+        "criterion_results": [
+          {
+            "unit": "count",
+            "reason": "原生证据未知：Missing listing attribute",
+            "status": "unknown",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:24039352:minimum-bedrooms"
+            ],
+            "observed_value": null
+          },
+          {
+            "unit": "SGD/month",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:24039352:monthly-rent"
+            ],
+            "observed_value": 3764
+          },
+          {
+            "unit": "m",
+            "reason": "原生证据未知：missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity",
+            "status": "unknown",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:24039352:place_proximity:OSM:way:54519165-preference"
+            ],
+            "observed_value": null
+          },
+          {
+            "unit": "m",
+            "reason": "原生证据未知：missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity",
+            "status": "unknown",
+            "criterion_id": "place_proximity:Supermarket-preference",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:24039352:place_proximity:Supermarket-preference"
+            ],
+            "observed_value": null
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "preferred-district",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:24039352:preferred-district"
+            ],
+            "observed_value": "D05"
+          }
+        ],
+        "explanation_evidence": {
+          "unknowns": [
+            {
+              "field": "bedrooms",
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:24039352:minimum-bedrooms"
+              ]
+            },
+            {
+              "field": "place_proximity",
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:24039352:place_proximity:OSM:way:54519165-preference"
+              ]
+            },
+            {
+              "field": "place_proximity",
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:24039352:place_proximity:Supermarket-preference"
+              ]
+            }
+          ],
+          "strengths": [
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:24039352:monthly-rent"
+              ],
+              "criterion_ids": [
+                "monthly-rent"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:24039352:preferred-district"
+              ],
+              "criterion_ids": [
+                "preferred-district"
+              ]
+            }
+          ],
+          "compromises": []
+        }
+      },
+      {
+        "rank": 3,
+        "score": 0,
+        "listing": {
+          "price": 2800,
+          "title": "lyf one-north Singapore 80 Nepal Park, Singapore 139409",
+          "bedrooms": null,
+          "district": "D05",
+          "listing_id": "500186462",
+          "price_unit": "SGD/month",
+          "source_url": "https://www.propertyguru.com.sg/listing/for-rent-lyf-one-north-singapore-80-nepal-park-singapore-139409-500186462",
+          "property_type": "apartment",
+          "floor_area_sqft": 120,
+          "availability_status": "unknown"
+        },
+        "score_breakdown": [],
+        "criterion_results": [
+          {
+            "unit": "count",
+            "reason": "原生证据未知：Missing listing attribute",
+            "status": "unknown",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500186462:minimum-bedrooms"
+            ],
+            "observed_value": null
+          },
+          {
+            "unit": "SGD/month",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500186462:monthly-rent"
+            ],
+            "observed_value": 2800
+          },
+          {
+            "unit": "m",
+            "reason": "原生证据未知：missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity",
+            "status": "unknown",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500186462:place_proximity:OSM:way:54519165-preference"
+            ],
+            "observed_value": null
+          },
+          {
+            "unit": "m",
+            "reason": "原生证据未知：missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity",
+            "status": "unknown",
+            "criterion_id": "place_proximity:Supermarket-preference",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500186462:place_proximity:Supermarket-preference"
+            ],
+            "observed_value": null
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "preferred-district",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500186462:preferred-district"
+            ],
+            "observed_value": "D05"
+          }
+        ],
+        "explanation_evidence": {
+          "unknowns": [
+            {
+              "field": "bedrooms",
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500186462:minimum-bedrooms"
+              ]
+            },
+            {
+              "field": "place_proximity",
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500186462:place_proximity:OSM:way:54519165-preference"
+              ]
+            },
+            {
+              "field": "place_proximity",
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500186462:place_proximity:Supermarket-preference"
+              ]
+            }
+          ],
+          "strengths": [
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500186462:monthly-rent"
+              ],
+              "criterion_ids": [
+                "monthly-rent"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500186462:preferred-district"
+              ],
+              "criterion_ids": [
+                "preferred-district"
+              ]
+            }
+          ],
+          "compromises": []
+        }
+      },
+      {
+        "rank": 4,
+        "score": 0,
+        "listing": {
+          "price": 2500,
+          "title": "345 Clementi Avenue 5",
+          "bedrooms": null,
+          "district": "D05",
+          "listing_id": "500278815",
+          "price_unit": "SGD/month",
+          "source_url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-345-clementi-avenue-5-500278815",
+          "property_type": "hdb flat",
+          "floor_area_sqft": 360,
+          "availability_status": "unknown"
+        },
+        "score_breakdown": [],
+        "criterion_results": [
+          {
+            "unit": "count",
+            "reason": "原生证据未知：Missing listing attribute",
+            "status": "unknown",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500278815:minimum-bedrooms"
+            ],
+            "observed_value": null
+          },
+          {
+            "unit": "SGD/month",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500278815:monthly-rent"
+            ],
+            "observed_value": 2500
+          },
+          {
+            "unit": "m",
+            "reason": "Exact criterion comparison",
+            "status": "fail",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500278815:place_proximity:OSM:way:54519165-preference"
+            ],
+            "observed_value": 2561.1046820987153
+          },
+          {
+            "unit": "m",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "place_proximity:Supermarket-preference",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500278815:place_proximity:Supermarket-preference"
+            ],
+            "observed_value": 56.55
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "preferred-district",
+            "evidence_ids": [
+              "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500278815:preferred-district"
+            ],
+            "observed_value": "D05"
+          }
+        ],
+        "explanation_evidence": {
+          "unknowns": [
+            {
+              "field": "bedrooms",
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500278815:minimum-bedrooms"
+              ]
+            }
+          ],
+          "strengths": [
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500278815:monthly-rent"
+              ],
+              "criterion_ids": [
+                "monthly-rent"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500278815:place_proximity:Supermarket-preference"
+              ],
+              "criterion_ids": [
+                "place_proximity:Supermarket-preference"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500278815:preferred-district"
+              ],
+              "criterion_ids": [
+                "preferred-district"
+              ]
+            }
+          ],
+          "compromises": [
+            {
+              "evidence_ids": [
+                "native:da3596dc-f934-4287-a6e4-8d99f208aa0e:500278815:place_proximity:OSM:way:54519165-preference"
+              ],
+              "criterion_ids": [
+                "place_proximity:OSM:way:54519165-preference"
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "relaxation_suggestions": []
+  }
+}

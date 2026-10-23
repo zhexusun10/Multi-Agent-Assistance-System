@@ -1,0 +1,60 @@
+{
+  "started_at": "2026-10-21T10:53:39.150158+00:00",
+  "checks": [
+    "Two real timed detail views, foreground lease, background pause, offline completion, unchanged list and no unsolicited query",
+    "User request preserves requirements and matches independent full-SQL behavioral ranking",
+    "Budget correction reuses persistent interest and never violates the new hard cap",
+    "390px mobile details and return navigation have no horizontal overflow"
+  ],
+  "external_messages_sent": 0,
+  "baseline": {
+    "request": "3bf82903-c175-463d-a1ed-7ab53b21ab0f",
+    "eligible": 161,
+    "top4": [
+      "12885293",
+      "18074957",
+      "18689152",
+      "18885948"
+    ]
+  },
+  "observations": {
+    "segments": 4,
+    "listings": 2,
+    "active_duration_ms": 76422,
+    "policy": {
+      "minimum_listing_ms": 15000,
+      "minimum_listings": 2,
+      "minimum_total_ms": 60000,
+      "lease_ms": 25000
+    },
+    "update_mode": "on_user_recommendation_request",
+    "ranking_applied": false
+  },
+  "personalized": {
+    "events": 4,
+    "seconds_by_listing": {
+      "12885293": 43.02,
+      "18074957": 33.402
+    },
+    "eligible": 161,
+    "top4": [
+      "12885293",
+      "18074957",
+      "500251234",
+      "500265058"
+    ],
+    "scoring": "independent SQL and property/area similarity oracle"
+  },
+  "status": "passed",
+  "finished_at": "2026-10-21T10:55:50.205685+00:00",
+  "budget_update": {
+    "budget": 4500,
+    "eligible": 129,
+    "prices": [
+      4000,
+      4500,
+      3900,
+      4300
+    ]
+  }
+}

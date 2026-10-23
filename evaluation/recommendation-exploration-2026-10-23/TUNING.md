@@ -58,7 +58,8 @@ replays its stored response. Re-run the analyses after any change to scoring or 
 | `ranking.behavior.browsing_weight` | `0.4` | confirmed | plan formula |
 | `ranking.behavior.missing_branch_contribution` | `0.0` | confirmed | plan: a missing branch contributes 0 |
 | `ranking.behavior.redistribute_missing_branch_weight` | `false` | confirmed | plan: branch weights never redistributed |
-| `ranking.behavior.counted_appointment_statuses` | `["MANUAL_SENT", "MANUAL_REPLIED", "CONFIRMED"]` | confirmed | R1b; equals the TS constant (cross-layer test) |
+| `ranking.behavior.counted_appointment_signals` | `["viewing_draft_saved"]` | confirmed | Main contract (merge with main c7dc536): `behavior_context.book_viewing_listings` = saved timed VIEWING drafts; equals the TS constant and main's schema literal (cross-layer test). Replaces the earlier `counted_appointment_statuses` (MANUAL_SENT / MANUAL_REPLIED / CONFIRMED). |
+| `ranking.behavior.browsing_requires_interest_eligible` | `true` | confirmed | Main contract: only `listing_view_durations` with `interest_eligible=true` (main's 15 s / 2 listings / 60 s gate) are scoreable browsing facts. |
 | `ranking.behavior.reference_scope` | `"in_pool"` | confirmed | decision 3 |
 | `ranking.browsing.transform` | `"log1p"` | confirmed | plan: logarithmic growth, no cap |
 | `ranking.browsing.duration_cap_seconds` | `null` | confirmed | null = explicitly uncapped |

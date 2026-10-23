@@ -29,18 +29,18 @@ def test_terminal_staging_retry_resume(tmp_path, capsys):
     first = t.response
     t.command(f"feedback-example {tmp_path}/feedback.json")
     t.command(f"feedback @{tmp_path}/feedback.json")
-    assert t.feedback.previous_round.request_id == first.request_id
-    # Staged only: the committed request carried no feedback.
-    assert t.store.current("terminal")["request"]["feedback"]["previous_round"] is None
-    t.command("recommend")
-    committed = t.store.current("terminal")["request"]["feedback"]["previous_round"]
     shown = [r.listing.listing_id for r in first.recommendations]
-    assert committed["shown_listing_ids"] == shown and t.feedback.previous_round is None
+    assert sorted(v.listing_id for v in t.behavior.listing_view_durations) == sorted(shown)
+    # Staged only: the committed request carried no behavior_context.
+    assert t.store.current("terminal")["request"]["behavior_context"] is None
+    t.command("recommend")
+    committed = t.store.current("terminal")["request"]["behavior_context"]
+    assert sorted(v["listing_id"] for v in committed["listing_view_durations"]) == sorted(shown) and t.behavior is None
     bad = tmp_path / "bad.json"
     bad.write_text("{")
     with pytest.raises(ValueError):
         t.command(f"requirements @{bad}")
-    assert t.store.current("terminal")["request"]["feedback"]["previous_round"] == committed
+    assert t.store.current("terminal")["request"]["behavior_context"] == committed
     state = t.current["state_id"]
     t.service.close()
     resumed = Terminal(args)
@@ -165,11 +165,13 @@ def test_neo4j_schema_mapping_and_missing_edges():
     "payload",
     [
         [], {"events": None}, {"events": [42]}, {"events": "wrong"},
-        # contract 2.0 snapshot shapes that must be rejected before staging
-        {"previous_round": {"request_id": "x", "shown_listing_ids": ["a"], "browsing": []}},
-        {"previous_round": None, "appointments": [{"listing_id": "a", "statuses": [], "action_ids": ["1"]}]},
-        {"previous_round": {"request_id": "unknown-round", "shown_listing_ids": ["a"],
-                            "browsing": [{"listing_id": "a", "status": "recorded", "duration_seconds": 1}]}},
+        # the retired feedback-snapshot shape and malformed behavior_context shapes are rejected before staging
+        {"previous_round": None, "appointments": []},
+        {"version": "1.0", "as_of": "2026-10-23T08:00:00", "listing_view_durations": [], "book_viewing_listings": []},
+        {"version": "1.0", "as_of": "2026-10-23T08:00:00Z", "listing_view_durations": [
+            {"listing_id": "a", "duration_seconds": -1, "view_count": 1, "last_viewed_at": "2026-10-23T08:00:00Z",
+             "source_request_ids": ["a028cc35-820d-43f6-92ef-7875ccff67e0"], "interest_eligible": True}],
+         "book_viewing_listings": []},
     ],
 )
 def test_terminal_rejects_malformed_event_shapes(tmp_path, payload):
@@ -185,6 +187,6 @@ def test_terminal_rejects_malformed_event_shapes(tmp_path, payload):
         path.write_text(json.dumps(payload))
         with pytest.raises(ValueError):
             terminal.command(f"feedback @{path}")
-        assert terminal.feedback.previous_round is None and terminal.current is None
+        assert terminal.behavior is None and terminal.current is None
     finally:
         terminal.store.close()

@@ -1,59 +1,59 @@
 {
   "$defs": {
-    "AppointmentSignal": {
+    "BehaviorContext": {
       "additionalProperties": false,
-      "description": "One entry per listing: every non-draft VIEWING action status and action ID for it.",
       "properties": {
-        "action_ids": {
-          "items": {
-            "maxLength": 128,
-            "minLength": 1,
-            "type": "string"
-          },
-          "minItems": 1,
-          "title": "Action Ids",
-          "type": "array"
-        },
-        "listing_id": {
-          "maxLength": 128,
-          "minLength": 1,
-          "title": "Listing Id",
+        "as_of": {
+          "format": "date-time",
+          "title": "As Of",
           "type": "string"
         },
-        "statuses": {
+        "book_viewing_listings": {
           "items": {
-            "maxLength": 64,
-            "minLength": 1,
-            "type": "string"
+            "$ref": "#/$defs/BookViewingListing"
           },
-          "minItems": 1,
-          "title": "Statuses",
+          "title": "Book Viewing Listings",
           "type": "array"
+        },
+        "listing_view_durations": {
+          "items": {
+            "$ref": "#/$defs/ListingViewDuration"
+          },
+          "title": "Listing View Durations",
+          "type": "array"
+        },
+        "version": {
+          "const": "1.0",
+          "title": "Version",
+          "type": "string"
         }
       },
       "required": [
-        "listing_id",
-        "statuses",
-        "action_ids"
+        "version",
+        "as_of",
+        "listing_view_durations",
+        "book_viewing_listings"
       ],
-      "title": "AppointmentSignal",
+      "title": "BehaviorContext",
       "type": "object"
     },
-    "BrowsingRecord": {
+    "BookViewingListing": {
       "additionalProperties": false,
       "properties": {
-        "duration_seconds": {
-          "anyOf": [
-            {
-              "minimum": 0,
-              "type": "number"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Duration Seconds"
+        "action_id": {
+          "format": "uuid",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "appointment_confirmed": {
+          "const": false,
+          "title": "Appointment Confirmed",
+          "type": "boolean"
+        },
+        "ends_at": {
+          "format": "date-time",
+          "title": "Ends At",
+          "type": "string"
         },
         "listing_id": {
           "maxLength": 128,
@@ -61,20 +61,50 @@
           "title": "Listing Id",
           "type": "string"
         },
-        "status": {
-          "enum": [
-            "recorded",
-            "missing"
-          ],
-          "title": "Status",
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "requirements_version": {
+          "minimum": 0,
+          "title": "Requirements Version",
+          "type": "integer"
+        },
+        "signal": {
+          "const": "viewing_draft_saved",
+          "title": "Signal",
+          "type": "string"
+        },
+        "source_request_id": {
+          "format": "uuid",
+          "title": "Source Request Id",
+          "type": "string"
+        },
+        "starts_at": {
+          "format": "date-time",
+          "title": "Starts At",
+          "type": "string"
+        },
+        "time_zone": {
+          "const": "Asia/Singapore",
+          "title": "Time Zone",
           "type": "string"
         }
       },
       "required": [
         "listing_id",
-        "status"
+        "action_id",
+        "source_request_id",
+        "requirements_version",
+        "starts_at",
+        "ends_at",
+        "time_zone",
+        "recorded_at",
+        "signal",
+        "appointment_confirmed"
       ],
-      "title": "BrowsingRecord",
+      "title": "BookViewingListing",
       "type": "object"
     },
     "ColdStartInput": {
@@ -280,65 +310,53 @@
       "title": "Criterion",
       "type": "object"
     },
-    "FeedbackSnapshot": {
+    "ListingViewDuration": {
       "additionalProperties": false,
       "properties": {
-        "appointments": {
-          "items": {
-            "$ref": "#/$defs/AppointmentSignal"
-          },
-          "title": "Appointments",
-          "type": "array"
+        "duration_seconds": {
+          "minimum": 0,
+          "title": "Duration Seconds",
+          "type": "number"
         },
-        "previous_round": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/PreviousRound"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
-        }
-      },
-      "title": "FeedbackSnapshot",
-      "type": "object"
-    },
-    "PreviousRound": {
-      "additionalProperties": false,
-      "properties": {
-        "browsing": {
-          "items": {
-            "$ref": "#/$defs/BrowsingRecord"
-          },
-          "title": "Browsing",
-          "type": "array"
+        "interest_eligible": {
+          "title": "Interest Eligible",
+          "type": "boolean"
         },
-        "request_id": {
-          "maxLength": 128,
-          "minLength": 1,
-          "title": "Request Id",
+        "last_viewed_at": {
+          "format": "date-time",
+          "title": "Last Viewed At",
           "type": "string"
         },
-        "shown_listing_ids": {
+        "listing_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Listing Id",
+          "type": "string"
+        },
+        "source_request_ids": {
           "items": {
-            "maxLength": 128,
-            "minLength": 1,
+            "format": "uuid",
             "type": "string"
           },
-          "maxItems": 10,
           "minItems": 1,
-          "title": "Shown Listing Ids",
+          "title": "Source Request Ids",
           "type": "array"
+        },
+        "view_count": {
+          "minimum": 1,
+          "title": "View Count",
+          "type": "integer"
         }
       },
       "required": [
-        "request_id",
-        "shown_listing_ids",
-        "browsing"
+        "listing_id",
+        "duration_seconds",
+        "view_count",
+        "last_viewed_at",
+        "source_request_ids",
+        "interest_eligible"
       ],
-      "title": "PreviousRound",
+      "title": "ListingViewDuration",
       "type": "object"
     },
     "Requirements": {
@@ -363,16 +381,107 @@
       ],
       "title": "Requirements",
       "type": "object"
+    },
+    "ViewPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "duration_seconds": {
+          "minimum": 0,
+          "title": "Duration Seconds",
+          "type": "number"
+        },
+        "view_session_id": {
+          "minLength": 1,
+          "title": "View Session Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "view_session_id",
+        "duration_seconds"
+      ],
+      "title": "ViewPayload",
+      "type": "object"
+    },
+    "ViewingEvent": {
+      "additionalProperties": false,
+      "description": "Incremental, quality-gated duration event (main contract). Validated, not scored:\nbehavior_context.listing_view_durations already holds the same time cumulatively.",
+      "properties": {
+        "conversation_id": {
+          "minLength": 1,
+          "title": "Conversation Id",
+          "type": "string"
+        },
+        "event_id": {
+          "minLength": 1,
+          "title": "Event Id",
+          "type": "string"
+        },
+        "event_type": {
+          "const": "listing_view_duration",
+          "default": "listing_view_duration",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "listing_id": {
+          "minLength": 1,
+          "title": "Listing Id",
+          "type": "string"
+        },
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/ViewPayload"
+        },
+        "recommendation_request_id": {
+          "minLength": 1,
+          "title": "Recommendation Request Id",
+          "type": "string"
+        },
+        "source": {
+          "default": "sample",
+          "enum": [
+            "sample",
+            "web_detail"
+          ],
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "conversation_id",
+        "recommendation_request_id",
+        "listing_id",
+        "occurred_at",
+        "payload"
+      ],
+      "title": "ViewingEvent",
+      "type": "object"
     }
   },
   "additionalProperties": false,
   "properties": {
+    "behavior_context": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/BehaviorContext"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
     "cold_start": {
       "$ref": "#/$defs/ColdStartInput"
     },
     "contract_version": {
-      "const": "2.0",
-      "default": "2.0",
+      "const": "1.0",
+      "default": "1.0",
       "title": "Contract Version",
       "type": "string"
     },
@@ -383,7 +492,11 @@
       "type": "string"
     },
     "feedback": {
-      "$ref": "#/$defs/FeedbackSnapshot"
+      "items": {
+        "$ref": "#/$defs/ViewingEvent"
+      },
+      "title": "Feedback",
+      "type": "array"
     },
     "previous_state_id": {
       "anyOf": [

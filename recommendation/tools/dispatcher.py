@@ -229,7 +229,7 @@ class Dispatcher:
                     self.request.requirements.criteria,
                     self.results,
                     grouped,
-                    self.request.feedback,
+                    self.request.behavior_context,
                     self.config,
                 )
                 self.ranked = self.scored.ranked

@@ -9,6 +9,20 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+EXTENSION = ROOT / 'contracts/releases/recommendation-web-feedback-extension.json'
+
+
+def matches_port(target, expected_hash):
+    if not target.is_file():
+        return False
+    actual = hashlib.sha256(target.read_bytes()).hexdigest()
+    if actual == expected_hash:
+        return True
+    if EXTENSION.is_file():
+        overlay = json.loads(EXTENSION.read_text(encoding='utf-8'))
+        relative = target.relative_to(ROOT).as_posix()
+        return any(e['target'] == relative and e['base_ported_sha256'] == expected_hash and e['extended_sha256'] == actual for e in overlay['files'])
+    return False
 REPLACEMENTS = [
     ("dev.sharedContract.recommendationSubagentContract", "recommendation.contracts"),
     ("dev.recommendationSubagent", "recommendation"),
@@ -63,14 +77,16 @@ def main():
         for entry in manifest['files']:
             target=ROOT/entry['target']
             expected=patches.get(entry['target'],{}).get('patched_sha256',entry['ported_sha256'])
-            if not target.is_file() or hashlib.sha256(target.read_bytes()).hexdigest()!=expected:
+            if not matches_port(target, expected):
                 raise ValueError(f"Upstream port fingerprint changed: {target}")
-        print(json.dumps({'mode':'manifest-check','files':len(manifest['files']),'business_logic_changes':len(patches),'declared_downstream_patches':sorted(patches)}))
+        print(json.dumps({'mode':'manifest-check','files':len(manifest['files']),'business_logic_changes':len(patches),'declared_downstream_patches':sorted(patches),'contract_source_extension':EXTENSION.is_file()}))
         return
     if not args.reference:
         parser.error('--reference is required for import or original-source comparison')
     if patches and not args.check:
         raise ValueError("Declared downstream patches must be rebased before reimporting upstream")
+    if EXTENSION.is_file() and not args.check:
+        parser.error('Real-browser contract extension exists; refusing to overwrite it with the original import. Use --check to compare.')
     reference = Path(args.reference)
     records = []
     for source, destination in [
@@ -89,7 +105,7 @@ def main():
                 patch=patches.get(target.relative_to(ROOT).as_posix())
                 if patch and patch['base_ported_sha256']!=expected_hash:
                     raise ValueError(f"Reference differs from declared patch base: {target}")
-                if not target.is_file() or hashlib.sha256(target.read_bytes()).hexdigest() != (patch['patched_sha256'] if patch else expected_hash):
+                if not matches_port(target, patch['patched_sha256'] if patch else expected_hash):
                     raise ValueError(f"Unapproved upstream modification: {target}")
             else:
                 target.parent.mkdir(parents=True, exist_ok=True)

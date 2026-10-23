@@ -1,0 +1,43 @@
+{
+  "extension": "real-browser-feedback-v1",
+  "base_upstream": "907cfa839d2665b3702450eb40acd4c96fe9296c",
+  "purpose": "Accept authenticated completed web_detail intervals and label their source accurately. Ranking formulas, weights, constraints, feature suppression and eligibility remain unchanged.",
+  "files": [
+    {
+      "target": "recommendation/context/manager.py",
+      "base_ported_sha256": "0151d9ea01045a81e1ab97e00f9deda0b412982dff48d669f147876afd475953",
+      "extended_sha256": "7518a6704f13dc96760f1517471567a08932a6596956d52c288a5348ca123381"
+    },
+    {
+      "target": "recommendation/service.py",
+      "base_ported_sha256": "33fa52ebd3c41f3f8f33b883f0b4f10d70392610999173c571351711bdd41122",
+      "extended_sha256": "6644d6540aa5e11382489baaacbf09885d882166cf6b70397dc33605bd4dfd96"
+    },
+    {
+      "target": "recommendation/contracts/feedback.py",
+      "base_ported_sha256": "cdc47f196eea553c0a00121f1630a7a46747b263e9746a7c4b7e8fe6f1f93df3",
+      "extended_sha256": "b6417598c248e1206f241108288cf4612bd084cc0d3460132521a5e9e6e94027"
+    },
+    {
+      "target": "recommendation/contracts/schemas/feedback.schema.json",
+      "base_ported_sha256": "c3ef20a566d11ae5029589c740a31d3d39aea185950a15d8af9954412ee1fb08",
+      "extended_sha256": "441baf346ef78416e68dbe5489b401ce2da674d7273afb271e3eb65ebbf7d707"
+    },
+    {
+      "target": "recommendation/contracts/schemas/request.schema.json",
+      "base_ported_sha256": "6b17d14c209d8fe8f62e8937e4394c6611a24a1be51b965ab04ef9f0b9345036",
+      "extended_sha256": "9efd246f87f97e5061631200e25f76e8ec7f740560c9500ddb82cb0b03eed1c7"
+    }
+  ],
+  "protected_kernels": {
+    "recommendation/config.py": "3c972d05b50d3216829260d8362a56ed42e5e4046538d7276786093f04a4384b",
+    "recommendation/ranking/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "recommendation/ranking/metrics.py": "9127babd34dd22792f0b6628923be43a2bc1f3cdd8e1f98c3027784d5f2d4353",
+    "recommendation/ranking/ranker.py": "7f8466d27a35f91e8e31677d73985a2013b1c06f6f38f48a3f2af0e5c844a605",
+    "recommendation/tools/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "recommendation/tools/dispatcher.py": "f5284475f19de65fa2e1d470f2f7645c17403c433415592860d368363fc69af8",
+    "recommendation/validation/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "recommendation/validation/gate.py": "d8a4ee4d1a0e20c8d1a64e8547329bf684844530e1625ae89895a6022302b2ad",
+    "recommendation/validation/rules.py": "9af4bbe090b51bf3cd65dc11e32c22073ae4c7207ce30e75af1746ad29bd71f4"
+  }
+}

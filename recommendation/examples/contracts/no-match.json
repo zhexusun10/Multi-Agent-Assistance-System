@@ -21,7 +21,7 @@
   "selection": {
     "mode": "empty",
     "algorithm_version": "select-v1",
-    "seed": "dd2c2efa7ffe81a57d4e0242db7194feec20e2e476371895dbea6a8be504e283",
+    "seed": "89455618675be0de356fc573c74fc86508aa637ef76585b48e4eeb10ed384d43",
     "result_limit": 10,
     "leaders": 0,
     "tie_group": null,
@@ -48,11 +48,12 @@
   ],
   "warnings": [
     "Sample viewing durations are simulated observations.",
+    "Viewing drafts with a saved time are interest signals, not confirmed appointments.",
     "Posting time does not establish current availability."
   ],
   "state": {
-    "state_id": "bd8d066d-981f-42d1-bc6c-af87d0a037a2",
-    "candidate_pool_ref": "d93218eb-14f2-4277-bc42-9fa22bb416ad/pool",
+    "state_id": "f58b0dcf-cacb-4be7-95ad-2f17d85a814e",
+    "candidate_pool_ref": "aa805181-eee8-4b29-9d27-6a5c2fabe926/pool",
     "run_sequence": 1,
     "scope": "all RENT listings",
     "truncated": false,
@@ -61,18 +62,18 @@
     "assessed_count": 0
   },
   "execution": {
-    "trace_id": "d93218eb-14f2-4277-bc42-9fa22bb416ad",
-    "trace_ref": "sqlite:d93218eb-14f2-4277-bc42-9fa22bb416ad",
+    "trace_id": "aa805181-eee8-4b29-9d27-6a5c2fabe926",
+    "trace_ref": "sqlite:aa805181-eee8-4b29-9d27-6a5c2fabe926",
     "strategy": "full-pool fused-v2 scoring + select-v1 selection",
-    "scoring_version": "fused-v2:90e724bb160a",
+    "scoring_version": "fused-v2:cc051e535df4",
     "selection_algorithm": "select-v1",
     "config_version": 1,
-    "config_hash": "e46e754a9c6e6eafd4e2522f7bee4f26de37f956de50d3be6be173549710b2c8",
-    "selection_hash": "90e724bb160ae68524bd5d9b899959716d46f509627096c5696c7ec66d5a18a7",
+    "config_hash": "9a7477ea9224baf775654841f7a3808f539c116b3cde9a9f2a3e2785ea69f41b",
+    "selection_hash": "cc051e535df4be969ac533c865020a622f63651da3be65183b0dc84a1591b93d",
     "model_identifier": null,
     "model_calls": 0,
     "tool_calls": 4,
-    "duration_ms": 1.7752499552443624,
+    "duration_ms": 1.7716250149533153,
     "tokens": null,
     "data_mode": "fixture",
     "controller_mode": "scripted"

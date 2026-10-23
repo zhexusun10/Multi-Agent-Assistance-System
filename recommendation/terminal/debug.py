@@ -56,11 +56,12 @@ INTERMEDIATE = "INTERMEDIATE (step session: state writes rolled back, nothing co
 HELP = """Commands (staged input is sent by `recommend`; nothing staged is saved on exit):
   check-connections                      contact the configured stores (no model call)
   requirements [@file]                   replace the full requirements snapshot
-  feedback [@file]                       replace the full feedback snapshot (orchestrator semantics, no merge)
-  feedback-example [file]                filled sample snapshot for the last response
-  feedback-template [file]               previous-round template: one browsing record per shown ID
-                                         (duration null placeholder) + the previous INPUT's appointments
-  load-request @file                     stage a full contract-2.0 request (requirements, feedback,
+  feedback [@file]                       replace the full behavior_context (main contract; no native merge)
+  feedback-example [file]                filled sample behavior_context: previous INPUT's cumulative
+                                         entries + 90 s / 30 s added for the last response's listings
+  feedback-template [file]               behavior_context template: previous INPUT's entries + a null
+                                         duration placeholder per newly shown listing
+  load-request @file                     stage a full request (requirements, behavior_context,
                                          cold_start, result_limit); IDs/version/state stay terminal-managed
   show-input | validate-input            staged request body | schema + run-consistency checks (no run)
   recommend                              submit: always a NEW request_id, except retrying a failed pending one
@@ -574,7 +575,7 @@ def validate_input(t, arg):
     from ..context.manager import check_state, check_feedback
 
     request = t.pending_request or t.request()
-    RecommendationRequest.model_validate(request.model_dump())  # contract 2.0 schema
+    RecommendationRequest.model_validate(request.model_dump())  # request contract 1.0 (+ behavior_context, cold_start)
     try:
         effective_request(request, t.config)
         check_state(request, t.store.current(t.conversation))
@@ -582,8 +583,8 @@ def validate_input(t, arg):
     except RecommendationError as e:
         print(f"Input invalid: {e.detail.code}: {e.detail.message}")
         return False
-    print("Input valid: contract 2.0 schema and run-consistency checks (state reference, requirements version, "
-          "feedback snapshot, result_limit) pass; nothing was submitted.")
+    print("Input valid: request schema and run-consistency checks (state reference, requirements version, "
+          "behavior_context, result_limit) pass; nothing was submitted.")
     return True
 
 
@@ -593,22 +594,26 @@ def load_request(t, arg):
     from recommendation.contracts.requirements import Requirements
 
     payload = read_payload(arg)
-    loaded = RecommendationRequest.model_validate(payload)  # full contract 2.0 body (1.0 rejected)
+    loaded = RecommendationRequest.model_validate(payload)  # full request body (main contract 1.0)
     requirements = Requirements.model_validate(loaded.requirements.model_dump())
     version = t.version + (1 if requirements != t.requirements else 0)
     staged = RecommendationRequest(
         request_id=str(uuid.uuid4()), conversation_id=t.conversation, requirements_version=max(version, 1),
-        requirements=requirements, feedback=loaded.feedback, cold_start=loaded.cold_start,
+        requirements=requirements, behavior_context=loaded.behavior_context, cold_start=loaded.cold_start,
         result_limit=loaded.result_limit, previous_state_id=t.current["state_id"] if t.current else None)
     check_feedback(staged, t.store, t.config)
     t.requirements, t.version = requirements, max(version, 1)
-    t.feedback, t.cold_start, t.result_limit = loaded.feedback, loaded.cold_start, loaded.result_limit
+    t.behavior, t.cold_start, t.result_limit = loaded.behavior_context, loaded.cold_start, loaded.result_limit
     t.input_changed()
     managed = {k: getattr(loaded, k) for k in ("request_id", "conversation_id", "previous_state_id",
                                                "requirements_version")}
-    print(f"Loaded request staged: requirements v{t.version}, feedback "
-          f"{'with' if loaded.feedback.previous_round else 'without'} previous round, "
-          f"{len(loaded.feedback.appointments)} appointment listings, cold_start {loaded.cold_start.model_dump()}, "
+    behavior = loaded.behavior_context
+    print(f"Loaded request staged: requirements v{t.version}, behavior_context "
+          f"{'as of ' + behavior.as_of.isoformat() if behavior else 'absent'} "
+          f"({len(behavior.listing_view_durations) if behavior else 0} browsing summaries, "
+          f"{len(behavior.book_viewing_listings) if behavior else 0} viewing-draft listings), "
+          f"{len(loaded.feedback)} feedback events not staged (validated-only, not scored), "
+          f"cold_start {loaded.cold_start.model_dump()}, "
           f"result_limit {loaded.result_limit}. Terminal-managed (file values not reused): {json.dumps(managed)}; "
           "recommend mints a new request_id.")
 

@@ -8,6 +8,73 @@ fused-v2 scoring, select-v1 selection, up to 10 results). The authoritative defi
 (`recommendation/contracts/schemas/*.json`, checked by `python -m recommendation.schemas --check`) and the strict
 TS mirror (`src/contracts/recommendation-native.ts`). Shared fixtures live in `tests/fixtures/recommendation-v2/`.
 
+## 0. Merge with main c7dc536 (2026-10-23) — supersedes the request side of sections 1–5
+
+main added its own orchestrator→recommendation handoff ([docs/Recommendation_Contract_浏览时长与看房意向.md](../../docs/Recommendation_Contract_浏览时长与看房意向.md)).
+Decisions (user, 2026-10-23): the **request follows main's contract and md**; the recommendation keeps **10 results**,
+its **response contract 2.0** and its **`cold_start`** request field managed by the orchestrator. Sections 1–5 below
+describe the branch's pre-merge request design (`FeedbackSnapshot` / `previous_round`); where they conflict, this
+section wins.
+
+### 0.1 Request (native `/recommend` and app `/app/recommend` accept the same body)
+
+| Field | Meaning after the merge |
+|---|---|
+| `contract_version` | `"1.0"` (main's request version; default). A `"2.0"` request body is rejected with `UNSUPPORTED_VERSION` (HTTP 422). The **response** is still `"2.0"`. |
+| `request_id`, `conversation_id`, `requirements_version`, `requirements`, `previous_state_id` | unchanged (app: `requirements_version` + 1, `native:` prefix stripped, `/app/recommend` rewrites `previous_state_id` to the native v2 head; legacy heads start a fresh chain). |
+| `result_limit` | 1–10, `null` = `recommendation.default_result_limit` (10). The app adapter clamps to 10 (main clamped to 4) and the workflow asks for 10. |
+| `feedback` | main's list of `ViewingEvent` (`event_id`, `conversation_id`, `recommendation_request_id`, `listing_id`, `event_type` `listing_view_duration`, `source` `sample`/`web_detail`, `occurred_at`, `payload` = `ViewPayload` {`view_session_id`, `duration_seconds`}). **Validated, not scored** (conversation match, unique `event_id`): the md says the cumulative `behavior_context` already holds the same time, so adding the events would double count. Recorded in the profile as `feedback_events`. |
+| `behavior_context` | main's `BehaviorContext` {`version` "1.0", `as_of`, `listing_view_durations`, `book_viewing_listings`}, one summary per listing. **Scored natively** (section 0.2). Part of the request identity: a changed snapshot under the same request ID is a 409 / `IDEMPOTENCY_CONFLICT`. |
+| `cold_start` | `ColdStartInput` {`exited`, `exited_pool_key`} — recommendation-owned extension. The orchestrator stores it in `session_domain_state.recommendation_cold_start` (migration `migrations/007-recommendation-cold-start.sql`) and updates it only when an adopted native response has `selection.cold_start.evaluated && exit_conditions_met`. |
+
+`ListingViewDuration` = {`listing_id`, `duration_seconds` (session-cumulative, ≥ 0), `view_count`, `last_viewed_at`,
+`source_request_ids` (UUIDs), `interest_eligible`}. `BookViewingListing` = {`listing_id`, `action_id`, `source_request_id`,
+`requirements_version`, `starts_at`, `ends_at` (≤ 4 h), `time_zone` Asia/Singapore, `recorded_at`, `signal`
+`viewing_draft_saved`, `appointment_confirmed` false}. The app sends numeric listing IDs; the native models accept any
+native listing ID (1–128 chars) so fixture data mode works — a superset of every app body.
+
+### 0.2 Scoring inputs (fused-v2 unchanged otherwise)
+
+- **Browsing references** = `listing_view_durations` entries with `interest_eligible = true`
+  (`ranking.behavior.browsing_requires_interest_eligible: true`, main's 15 s / 2 listings / 60 s gate) and
+  `duration_seconds > 0`, inside the current pool. Weight `log1p(t / time_scale_seconds)`, uncapped. The time is
+  **session-cumulative** (main's contract has no per-round split), so the plan's "previous round only" rule is replaced
+  by main's semantics (user decision). Not-eligible and 0-second summaries are counted in the trace, not used.
+- **Appointment references** = `book_viewing_listings` (saved timed viewing drafts) with a counted signal
+  (`ranking.behavior.counted_appointment_signals: [viewing_draft_saved]`, replacing `counted_appointment_statuses`
+  MANUAL_SENT/MANUAL_REPLIED/CONFIRMED). One entry per listing (duplicates are rejected by the contract), in pool only.
+  It is a saved interest, not a confirmed appointment (`appointment_confirmed` is always false).
+- Self pairs stay excluded; out-of-pool references are ignored and counted; missing branches contribute 0.
+- The stability seed digests `behavior_context` (not `request_id`).
+
+### 0.3 Removed / replaced by the merge
+
+| Removed | Replacement |
+|---|---|
+| `FeedbackSnapshot`, `PreviousRound` (`previous_round`), `BrowsingRecord`, `AppointmentSignal` request models | main's `feedback` events + `behavior_context` (`recommendation/contracts/feedback.py`, `recommendation/contracts/behavior.py`; `recommendation/app_contract.py` re-exports) |
+| `src/domain/feedback-sidecar.ts`, `tests/feedback-sidecar-postgres.test.ts`, `tests/fixtures/recommendation-v2/sidecar-cases.json` | main's `src/domain/behavior-context.ts` (`collectBehaviorContext`) and `src/domain/cold-start.ts` (`coldStartAfterAdoption`) |
+| `migrations/004-feedback-snapshot.sql` (number collided with main's `004-browser-interest.sql`) | main's 004–006; `007-recommendation-cold-start.sql` adds only `session_domain_state.recommendation_cold_start` |
+| `counted_appointment_statuses` setting | `counted_appointment_signals`, `browsing_requires_interest_eligible` |
+| main's `ApplicationRecommendationRequest.native_request()` stripping `behavior_context` | behavior_context is part of the native request; `native_request()` keeps it |
+| main's `app_transport_requests` table | the branch's `app_transport_requests_v2` (same role; also covers `behavior_context`) |
+
+### 0.4 Other merge adaptations
+
+- `config/recommendation-full.json` (main: `limits.timeout_seconds` 300) is now an **overlay** of the committed YAML:
+  `{"extends": "committed", "overrides": {"controller": {"timeout_seconds": 300}}}` — still a single parameter
+  source; `.env.example` keeps `RECOMMENDATION_CONFIG=config/recommendation-full.json` and the 450 s HTTP wait.
+- `recommendation/app_controller.py` (main's output protocol) keeps the single-JSON normalisation and audit, but its
+  contract text and run state now refer to the code-made selection (`selected_ids`, `current_selected_ids`;
+  `app-recommendation-output-v2`), not to "four tools" or a ranked prefix.
+- Main's readers of the old score names (`src/domain/behavior.ts`, `src/agents/explanation/evidence.ts`,
+  `frontend/native-ranking.js`) read `behavior_score` / `soft_weight` with a fallback to archived `implicit_*` /
+  `explicit_*` (`statedWeight`, `interestWeight`, `interestScore` in `src/contracts/recommendation-native.ts`).
+- `contracts/releases/recommendation-app-request-1.0.schema.json` was regenerated from the merged model (adds
+  `cold_start`, `result_limit` ≤ 10, native listing IDs). main's `recommendation-web-feedback-extension.json` is kept;
+  its protected kernels now change only through declared downstream patches (tests/test_browser_interest_contract.py).
+- The shared fixtures (`tests/fixtures/recommendation-v2/*.json`) were regenerated in the main request shape by
+  `evaluation/recommendation-exploration-2026-10-23/merge/gen_fixtures.py`.
+
 ## 1. Summary of breaking changes
 
 | Area | 1.0 | 2.0 |
@@ -98,7 +165,7 @@ between requests, so an older round's browsing has no effect.
   different body → rejected; `STALE_REFERENCE`, `STALE_REQUIREMENTS` and `run_sequence` as before.
 - Save, shortlist and attribute feedback are ignored in this version.
 
-## 5. Sidecar construction (orchestrator, `src/domain/feedback-sidecar.ts`)
+## 5. Sidecar construction (orchestrator, `src/domain/feedback-sidecar.ts`) — retired by the merge (section 0)
 
 The app builds the snapshot ("sidecar") once, inside the agent-A apply transaction, stores it in
 `recommendation_calls.feedback_snapshot` and in agent B's queued body, and never rebuilds it on retry, so a retried
@@ -188,6 +255,6 @@ The app now sends 2.0 bodies, and a pre-2.0 native service rejects them (and the
 
 1. Restart the native service (8092) on this tree. This needs the user's OK; the P7 smoke ran a separate instance on
    port 8192 instead.
-2. Restart the app (8010). `DomainStore.setup` applies `migrations/004-feedback-snapshot.sql` (`feedback_snapshot`,
-   `recommendation_cold_start`, indexes).
+2. Restart the app (8010). `DomainStore.setup` applies main's `migrations/004`–`006` and
+   `migrations/007-recommendation-cold-start.sql` (`session_domain_state.recommendation_cold_start`; section 0).
 3. Keep `data/.runtime/recommendation/state.sqlite`. Legacy rows stay readable; new requests start v2 chains.

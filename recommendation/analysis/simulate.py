@@ -18,9 +18,10 @@ SIMULATED behaviour, never real users: each session has a rule-based user with a
 preference (target price, property type, districts) drawn from the pool with a fixed seed. For
 every shown listing the user "browses" for a duration that grows with the listing's match to the
 hidden preference (log-normal noise; about 10 % of records missing, as an orchestrator gap) and
-books a viewing (MANUAL_SENT, later CONFIRMED: a status upgrade) when the match is high. The
-orchestrator side is emulated per R7: previous_round = the last response's shown IDs with one
-browsing record each, appointments = every booked listing so far (one entry per listing), and the
+saves a timed viewing draft (later re-saved: same listing, no extra signal) when the match is high.
+The orchestrator side is emulated per the main contract: behavior_context.listing_view_durations =
+session-cumulative seconds per listing (interest_eligible by the emulated main gate),
+book_viewing_listings = every listing with a saved draft (one entry per listing), and the
 cold-start exit is recorded only after a response with evaluated and exit_conditions_met.
 Durations depend only on (session, round, listing), so identical selections get identical
 feedback in every mode. Reported exposure / coverage / match figures describe this simulator,
@@ -45,6 +46,7 @@ import time
 from pathlib import Path
 
 import numpy as np
+from recommendation.contracts.behavior import request_uuid, simulated_interest_eligibility
 
 from recommendation.contracts.request import RecommendationRequest
 from ..agent.controller import ScriptedController
@@ -67,7 +69,6 @@ SEED = 20261023
 MISSING_SHARE = 0.10
 BOOK_MATCH = 0.75
 BOOK_PROBABILITY = 0.5
-CONFIRM_PROBABILITY = 0.5
 
 
 def _unit_hash(*parts):
@@ -118,8 +119,6 @@ class SimulatedUser:
     def book(self, round_no, row):
         return self.match(row) >= BOOK_MATCH and _unit_hash(self.session, round_no, row.listing_id, "book") < BOOK_PROBABILITY
 
-    def confirm(self, round_no, listing_id):
-        return _unit_hash(self.session, round_no, listing_id, "confirm") < CONFIRM_PROBABILITY
 
 
 class Session:
@@ -129,37 +128,53 @@ class Session:
         self.scenario, self.soft_name, self.index, self.user, self.mode = scenario, soft_name, index, user, mode
         self.conversation = f"sim-{scenario}-{soft_name}-{index}"
         self.previous = None  # (request_id, response)
-        self.appointments = {}  # listing_id -> {"statuses": [...], "action_ids": [...]}
+        self.views = {}  # listing_id -> {"seconds", "views", "requests", "last"}
+        self.drafts = {}  # listing_id -> saved viewing draft summary
         self.cold_start = {"exited": False, "exited_pool_key": None}
 
+    def as_of(self, round_no):
+        return f"2026-10-23T{8 + round_no:02d}:00:00Z"
+
     def body(self, round_no):
-        feedback = {"previous_round": None, "appointments": []}
         if self.previous is not None:
             request_id, response = self.previous
-            shown = [i.listing.listing_id for i in response.recommendations]
-            if shown:
-                rows = {i.listing.listing_id: i.listing for i in response.recommendations}
-                feedback["previous_round"] = {"request_id": request_id, "shown_listing_ids": shown,
-                                              "browsing": [self.user.browse(round_no - 1, rows[i]) for i in shown]}
-        feedback["appointments"] = [{"listing_id": k, "statuses": sorted(v["statuses"]), "action_ids": sorted(v["action_ids"])}
-                                    for k, v in sorted(self.appointments.items())]
+            rows = {i.listing.listing_id: i.listing for i in response.recommendations}
+            for listing_id, row in rows.items():
+                record = self.user.browse(round_no - 1, row)
+                if record["status"] != "recorded" or not record["duration_seconds"] > 0:
+                    continue  # no completed segment: nothing reaches the behaviour ledger
+                entry = self.views.setdefault(listing_id, {"seconds": 0.0, "views": 0, "requests": set(), "last": None})
+                entry["seconds"] += record["duration_seconds"]
+                entry["views"] += 1
+                entry["requests"].add(request_uuid(request_id))
+                entry["last"] = self.as_of(round_no - 1)
+        eligible = simulated_interest_eligibility({k: v["seconds"] for k, v in self.views.items()})
+        behavior = {
+            "version": "1.0", "as_of": self.as_of(round_no),
+            "listing_view_durations": [
+                {"listing_id": k, "duration_seconds": round(v["seconds"], 3), "view_count": v["views"],
+                 "last_viewed_at": v["last"], "source_request_ids": sorted(v["requests"]), "interest_eligible": eligible[k]}
+                for k, v in sorted(self.views.items())],
+            "book_viewing_listings": [self.drafts[k] for k in sorted(self.drafts)],
+        }
         return {"request_id": f"{self.conversation}-r{round_no}", "conversation_id": self.conversation,
                 "requirements_version": 1,
                 "previous_state_id": self.previous[1].state.state_id if self.previous else None,
                 "requirements": {"listing_type": "RENT", "criteria": HARD_SCENARIOS[self.scenario] + SOFT_SETS[self.soft_name]},
-                "result_limit": 10, "feedback": feedback, "cold_start": dict(self.cold_start)}
+                "result_limit": 10, "behavior_context": behavior, "cold_start": dict(self.cold_start)}
 
     def adopt(self, round_no, request_id, response):
-        """Orchestrator after adopting a response: bookings, status upgrades, cold-start exit (R7)."""
+        """Orchestrator after adopting a response: saved viewing drafts, cold-start exit."""
         self.previous = (request_id, response)
         for item in response.recommendations:
             listing_id = item.listing.listing_id
-            if listing_id in self.appointments:
-                entry = self.appointments[listing_id]
-                if "CONFIRMED" not in entry["statuses"] and self.user.confirm(round_no, listing_id):
-                    entry["statuses"].append("CONFIRMED")  # status upgrade, same listing
-            elif self.user.book(round_no, item.listing):
-                self.appointments[listing_id] = {"statuses": ["MANUAL_SENT"], "action_ids": [f"view-{listing_id}"]}
+            if listing_id not in self.drafts and self.user.book(round_no, item.listing):
+                self.drafts[listing_id] = {
+                    "listing_id": listing_id, "action_id": request_uuid(f"{self.conversation}-view-{listing_id}"),
+                    "source_request_id": request_uuid(request_id), "requirements_version": 1,
+                    "starts_at": "2026-10-30T06:00:00Z", "ends_at": "2026-10-30T07:00:00Z",
+                    "time_zone": "Asia/Singapore", "recorded_at": self.as_of(round_no),
+                    "signal": "viewing_draft_saved", "appointment_confirmed": False}
         cold = response.selection.cold_start if response.selection else None
         if cold is not None and cold.evaluated and cold.exit_conditions_met:
             self.cold_start = {"exited": True, "exited_pool_key": response.pool.pool_key}

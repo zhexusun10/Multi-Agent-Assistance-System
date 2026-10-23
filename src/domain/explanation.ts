@@ -12,7 +12,7 @@ export function nativeScoreText(score:NativeScores|LegacyNativeScores|undefined,
   const parts=[`原生融合匹配分 ${score.combined_score.toFixed(4)}（不是成交概率）`];
   if('soft_score' in score){
     if(score.soft_score!==null)parts.push(`软需求匹配 ${score.soft_score.toFixed(4)} × ${score.soft_weight}`);
-    if(score.behavior_score!==null)parts.push(`行为相似度 ${score.behavior_score.toFixed(4)} × ${score.behavior_weight}`+[score.appointment_score===null?'':`看房预约相似 ${score.appointment_score.toFixed(4)}`,score.browsing_score===null?'':`上一轮浏览相似 ${score.browsing_score.toFixed(4)}`].filter(Boolean).map(x=>`（${x}）`).join(''));
+    if(score.behavior_score!==null)parts.push(`行为相似度 ${score.behavior_score.toFixed(4)} × ${score.behavior_weight}`+[score.appointment_score===null?'':`看房意向相似 ${score.appointment_score.toFixed(4)}`,score.browsing_score===null?'':`累计浏览相似 ${score.browsing_score.toFixed(4)}`].filter(Boolean).map(x=>`（${x}）`).join(''));
     parts.push(`软需求证据覆盖 ${score.soft_evidence_coverage.toFixed(4)}`);
   }else{
     if(score.explicit_score!==null)parts.push(`显式偏好 ${score.explicit_score.toFixed(4)} × ${score.explicit_weight}`);
@@ -23,10 +23,10 @@ export function nativeScoreText(score:NativeScores|LegacyNativeScores|undefined,
   return parts.join('；')+'。'+selectionText(selection);
 }
 export const labels:Record<string,string>={price:'月租',bedrooms:'卧室',bathrooms:'卫浴',floor_area_sqft:'室内面积',land_area_sqft:'土地面积',district:'邮区',property_type:'房型',place_proximity:'地点距离',mrt_distance_m:'平台标注 MRT 距离',mrt_walking_mins:'平台标注步行分钟',furnishing:'家具',rental_scope:'整租/单间',lease_months:'租期',commute_time:'通勤时间',current_availability:'当前可租',move_in_date:'入住日',amenities:'室内设施'};
-export function criterionText(c:Criterion){if(c.field==='amenities')return `${amenityLabels[String(c.value)]||c.value}${c.strength==='hard'?'，必须满足':'，软偏好'}`;if(c.field==='place_proximity'&&c.strength==='soft')return `更靠近 ${c.target?.name||c.target?.category||c.target?.place_id}（越近越好，软偏好；不设硬半径）`;const op={eq:'等于',in:'属于',gte:'至少',lte:'不超过',between:'介于'}[c.operator];const value=Array.isArray(c.value)?c.value.join(' — '):valueLabels[String(c.value)]||c.value;const target=c.target?[c.target.name||c.target.category||c.target.place_id,c.distance_type==='straight_line'?'直线距离':c.distance_type,c.transport_mode==='unspecified'?'交通方式未指定':c.transport_mode==='transit'?'公共交通':c.transport_mode].filter(Boolean).join('；'):null;return `${labels[c.field]||c.field}${op} ${value}${c.unit?' '+c.unit:''}${target?'（'+target+'）':''}${c.strength==='soft'?`，偏好权重 ${c.weight}`:'，必须满足'}`;}
+export function criterionText(c:Criterion){if(c.field==='amenities')return `${amenityLabels[String(c.value)]||c.value}${c.strength==='hard'?'，必须满足':'，软偏好'}`;if(c.field==='place_proximity'&&c.strength==='soft'&&c.distance_preference!=='bounded')return `更靠近 ${c.target?.name||c.target?.category||c.target?.place_id}（越近越好，软偏好；不设硬半径）`;const op={eq:'等于',in:'属于',gte:'至少',lte:'不超过',between:'介于'}[c.operator];const value=Array.isArray(c.value)?c.value.join(' — '):valueLabels[String(c.value)]||c.value;const target=c.target?[c.target.name||c.target.category||c.target.place_id,c.distance_type==='straight_line'?'直线距离':c.distance_type,c.transport_mode==='unspecified'?'交通方式未指定':c.transport_mode==='transit'?'公共交通':c.transport_mode].filter(Boolean).join('；'):null;return `${labels[c.field]||c.field}${op} ${value}${c.unit?' '+c.unit:''}${target?'（'+target+'）':''}${c.strength==='soft'?`，偏好权重 ${c.weight}`:'，必须满足'}`;}
 export function explainCandidate(item:Candidate,requirements:Requirements){
   return {listing_id:item.listing.listing_id,rank:item.rank,title:item.listing.title,
-    facts:[item.listing.price===null?'月租未知':`快照月租 SGD ${item.listing.price}/月`,item.listing.bedrooms===null?'卧室数量未知':`${item.listing.bedrooms} 间卧室`,item.listing.district||'邮区未知'],
+    facts:[item.listing.price===null?'月租未知':`记录月租 SGD ${item.listing.price}/月`,item.listing.bedrooms===null||item.listing.bedrooms<=0?'卧室数量未知':`${item.listing.bedrooms} 间卧室`,item.listing.district||'邮区未知'],
     claims:item.criterion_results.map(r=>{const c=requirements.criteria.find(c=>c.criterion_id===r.criterion_id)!;const observed=r.observed_value===null?'未知':typeof r.observed_value==='number'?(Number.isInteger(r.observed_value)?r.observed_value:r.observed_value.toFixed(2)):String(r.observed_value);return {criterion_id:r.criterion_id,evidence_ids:r.evidence_ids,status:r.status,text:`${criterionText(c)}：${r.status==='unknown'?'待核实':c.field==='place_proximity'&&c.strength==='soft'?'已计入就近排序':r.status==='pass'?'通过':'未满足'}；记录值 ${observed}${r.unit?' '+r.unit:''}${r.reason?'；'+r.reason:''}${c.field==='place_proximity'?'，按已收录地点/区域的直线距离，未验证实际步行路线':''}`,budget_margin:c.field==='price'&&c.operator==='lte'&&typeof r.observed_value==='number'?Number(c.value)-r.observed_value:null};}),
     score:item.score,score_meaning:'明确软偏好匹配分，不是成交概率',unknowns:['当前可租状态未核实',...item.criterion_results.filter(r=>r.status==='unknown').map(r=>labels[requirements.criteria.find(c=>c.criterion_id===r.criterion_id)!.field]||r.criterion_id)],
   };
@@ -35,26 +35,8 @@ export function buildExplanation(req:Requirements,rec:RecommendationResponse,dat
   const describe=(c:Candidate)=>({...explainCandidate(c,req),...(rec.native?{native_scores:rec.native.scores[c.listing.listing_id]??null,score_meaning:nativeScoreText(rec.native.scores[c.listing.listing_id],rec.native.unscored_listing_ids.includes(c.listing.listing_id),rec.native.selection_reasons?.[c.listing.listing_id])}:{})});
   const verified=rec.recommendations.map(describe),unverified=rec.unverified_candidates.map(describe);
   const counts=rec.state.counts;
-  let summary=rec.status==='needs_clarification'?rec.clarifications.map(x=>x.question).join('；'):verified.length?`在 ${dataset} 已评估的 ${counts.assessed??'未知数量'} 套候选中，${counts.eligible??'未知数量'} 套通过全部硬条件，下面按推荐方原排名展示 ${verified.length} 套。`:unverified.length?`已找到待核实候选：本次评估中有 ${counts.unverified??unverified.length} 套因部分硬条件缺少证据而需要确认，下面展示 ${unverified.length} 套。尚未标为全部条件满足，也未自动放宽你的要求。`:`本次已评估范围内没有可展示的匹配房源。未自动放宽需求，也不表示全市场没有合适房源。`;
-  const interpretations=rec.warnings.filter(w=>w.code==='GEO_INTERPRETATION').map(w=>w.message);if(interpretations.length)summary=interpretations.join('\n')+'\n\n'+summary;
-  if(unverified.length)summary+='\n可以从待核实候选点击“我想看这套”或“核实并咨询”，生成逐项核实和看房询问草稿；这不会将未知条件改成已满足。';
-  if((verified.length||unverified.length)&&/为什么|解释|理由|比较|对比|分数|得分|compare|why|explain/i.test(question)){
-    const map:Record<string,number>={'一':1,'二':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10};
-    const ordinals=[...question.matchAll(/第\s*([一二三四五六七八九十\d]+)/g)].map(m=>map[m[1]]??Number(m[1]));
-    const comparing=/比较|对比|compare/i.test(question);
-    const display=[...verified,...unverified].map((c,i)=>({...c,rank:i+1}));
-    const candidates=[...rec.recommendations,...rec.unverified_candidates];
-    const selected=(ordinals.length?display.filter(c=>ordinals.includes(c.rank)):display.slice(0,comparing?2:1));
-    if(!selected.length)summary+='\n当前列表没有指定序号的房源，请按右侧当前列表选择。';
-    else{
-      const lines=selected.flatMap(c=>{
-        const raw=candidates.find(x=>x.listing.listing_id===c.listing_id)!;
-        return [`第 ${c.rank} 套 ${c.title}（${c.listing_id}）${rec.unverified_candidates.includes(raw)?'是待核实候选，不代表全部硬条件已通过':''}：${c.facts.join('；')}。`,...c.claims.map(x=>`${x.text} [证据 ${x.evidence_ids.join(', ')}]`),...(rec.native?[nativeScoreText(rec.native.scores[c.listing_id],rec.native.unscored_listing_ids.includes(c.listing_id),rec.native.selection_reasons?.[c.listing_id])]:raw.score_breakdown.length?[`软偏好匹配分 ${c.score.toFixed(4)}；`+raw.score_breakdown.map(x=>`${x.criterion_id} 权重 ${x.weight}、贡献 ${x.contribution.toFixed(4)}`).join('；')]:['本轮没有软偏好评分项，保持推荐方返回的顺序。']),`待核实：${c.unknowns.join('、')}。`];
-      });
-      if(comparing&&selected.length>=2){const a=candidates.find(c=>c.listing.listing_id===selected[0].listing_id)!,b=candidates.find(c=>c.listing.listing_id===selected[1].listing_id)!;if(a.listing.price!==null&&b.listing.price!==null){const delta=b.listing.price-a.listing.price;lines.push(`月租差异：第 ${selected[1].rank} 套比第 ${selected[0].rank} 套${delta>=0?'高':'低'} SGD ${Math.abs(delta)}/月。`);}}
-      summary+='\n\n'+lines.join('\n');
-    }
-  }
+  // Structured evidence/document record only. The Explanation Agent writes chat prose.
+  const summary=rec.status==='needs_clarification'?rec.clarifications.map(x=>x.question).join('；'):verified.length?'这些房源的已有资料符合本次必须要求；现在是否仍可租需要确认。':unverified.length?'这些房源仍有必须要求尚不能确认，可以进一步向经纪人了解。':'本次条件下没有可展示的匹配房源，可以讨论要调整哪项要求。';
   return {summary,question,dataset,source_request_id:rec.request_id,requirements_version:rec.requirements_version,verified,unverified,
     warnings:rec.warnings.map(w=>w.message),coverage:rec.state.coverage,counts,relaxation_suggestions:rec.relaxation_suggestions,
     snapshot_notice:`数据来源：${dataset}。历史快照不证明今天仍可租。直线距离、平台标注与真实路线分别处理。`,

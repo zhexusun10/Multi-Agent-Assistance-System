@@ -24,6 +24,7 @@ from collections import Counter
 from pathlib import Path
 
 import numpy as np
+from recommendation.contracts.behavior import request_uuid, simulated_interest_eligibility
 
 from ..config import RecommendationConfig
 from ..geography.distance import haversine_matrix
@@ -51,21 +52,36 @@ FIELDS = ("price", "bedrooms", "floor_area_sqft", "property_type", "district_cod
 
 # --- synthetic behaviour references --------------------------------------------------------
 def synthetic_feedback(scored, rng, shown=10, appointments=3):
-    """Previous round = ``shown`` listings drawn from the top 30 of the score order with
-    recorded durations (log-normal around 30 s, one zero), plus ``appointments`` drawn from the
-    top 100. Real pool listings, SYNTHETIC behaviour."""
+    """behavior_context (main contract) with ``shown`` listings drawn from the top 30 of the score
+    order with cumulative durations (log-normal around 30 s, one zero; interest_eligible per the
+    emulated orchestrator gate), plus ``appointments`` saved viewing drafts drawn from the top
+    100. Real pool listings, SYNTHETIC behaviour."""
     head = scored.ranked[:30]
     if len(head) < 2:
         return None
     picks = list(rng.choice(head, size=min(shown, len(head)), replace=False))
     durations = np.exp(rng.normal(math.log(30), 1.0, size=len(picks)))
     durations[-1] = 0.0
-    browsing = [{"listing_id": i, "status": "recorded", "duration_seconds": float(round(t, 1))}
-                for i, t in zip(picks, durations)]
+    seconds = {str(i): float(round(t, 1)) for i, t in zip(picks, durations)}
+    eligible = simulated_interest_eligibility(seconds)
+    request = request_uuid("synthetic-round")
+    views = [{"listing_id": k, "duration_seconds": v, "view_count": 1, "last_viewed_at": SYNTHETIC_AS_OF,
+              "source_request_ids": [request], "interest_eligible": eligible[k]}
+             for k, v in sorted(seconds.items()) if v > 0]
     pool = scored.ranked[:100]
-    booked = list(rng.choice(pool, size=min(appointments, len(pool)), replace=False))
-    return {"previous_round": {"request_id": "synthetic-round", "shown_listing_ids": picks, "browsing": browsing},
-            "appointments": [{"listing_id": i, "statuses": ["MANUAL_SENT"], "action_ids": [f"a-{i}"]} for i in booked]}
+    booked = sorted(str(i) for i in rng.choice(pool, size=min(appointments, len(pool)), replace=False))
+    return {"version": "1.0", "as_of": SYNTHETIC_AS_OF, "listing_view_durations": views,
+            "book_viewing_listings": [synthetic_viewing_draft(i, request) for i in booked]}
+
+
+SYNTHETIC_AS_OF = "2026-10-23T08:00:00Z"
+
+
+def synthetic_viewing_draft(listing_id, request):
+    return {"listing_id": listing_id, "action_id": request_uuid(f"view-{listing_id}"), "source_request_id": request,
+            "requirements_version": 1, "starts_at": "2026-10-24T06:00:00Z", "ends_at": "2026-10-24T07:00:00Z",
+            "time_zone": "Asia/Singapore", "recorded_at": SYNTHETIC_AS_OF, "signal": "viewing_draft_saved",
+            "appointment_confirmed": False}
 
 
 # --- 1. data profile ---------------------------------------------------------------------------

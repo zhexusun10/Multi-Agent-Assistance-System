@@ -11,11 +11,11 @@ export function resolveListingSelection(rec:RecommendationResponse|null|undefine
  const pool=/待核实(?:候选|列表|房源)?/.test(query)?rec?.unverified_candidates||[]:/已核验|已验证/.test(query)?rec?.recommendations||[]:candidates;
  const n=ordinal?(map[ordinal[1]]??Number(ordinal[1]||ordinal[2])):pool.length===1?1:0;
  const item=Number.isInteger(n)&&n>0?pool[n-1]:null;
- if(!item)throw new BusinessError('SELECTION_REQUIRED','请点击房源卡片的“我想看这套”，或说“我要看第1套”，也可以提供房源 ID。');return item;
+ if(!item)throw new BusinessError('SELECTION_REQUIRED','请点击房源卡片的“联系经纪人”，或说“我要看第1套”，也可以提供房源 ID。');return item;
 }
 
 // Explicit NL feedback on a displayed listing: ordinals 1-10 (Chinese 一..十 or 1-2 digits), i.e.
-// up to the 10 results of native contract 2.0; out-of-range ordinals (第11套) are ignored.
+// up to the 10 results of the native recommendation; out-of-range ordinals (第11套) are ignored.
 const ORDINALS:Record<string,number>={'一':1,'二':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10};
 export function interpretFeedback(query:string,rec:any,source:string|null,op:string):Feedback[]{
   if(!rec||source!==rec.request_id)return [];

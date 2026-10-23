@@ -3,6 +3,23 @@
 Items that are unverified, interim or waiting for a later phase. Each one is closed (with the
 command and result) in VALIDATION.md of the phase that resolves it.
 
+## Merge with main c7dc536 (2026-10-23)
+
+- **Not run** (need the full app stack on this tree): main's browser/behaviour live scripts
+  (`scripts/test_browser_interest_ui.py`, `scripts/test_session_behavior_ui.py`, …), `tests/browser-interest-live.test.ts`,
+  `tests/native-recommendation-live.test.ts` (adapted to main's semantics: a sample duration is a validated, unscored
+  event) and the other env-gated live tests. 8010/8091/8092 were not restarted.
+- **Not applied to the app database**: migrations 004–007 run at the next graph-service start (`DomainStore.setup`).
+- **Known effect**: browsing is session-cumulative (main contract) instead of previous-round only; a listing shown in
+  several rounds carries all its time. Only `interest_eligible` summaries count, so browsing contributes nothing until
+  main's gate (2 listings ≥ 15 s, 60 s total) opens.
+- **Known effect**: viewing intent = saved timed VIEWING draft (`viewing_draft_saved`), not a sent/confirmed request;
+  MANUAL_SENT/MANUAL_REPLIED/CONFIRMED statuses are no longer an input.
+- **Calibration**: `CALIBRATION.md` / `PERFORMANCE.md` and `p7/*.json` were produced with the pre-merge request shape;
+  the simulator (`recommendation/analysis/simulate.py`) now emulates main's orchestrator but was not re-run.
+- **Historical scripts** written for the pre-merge request shape and not updated: `p5/live_selection.py`,
+  `p6/terminal_transcript.py`, `p7/live_smoke.py`, `p7/live_oracle_check.ts` (their recorded outputs stay as evidence).
+
 ## Final state (P7)
 
 Status of everything that is not a plain pass at delivery. VALIDATION.md "P7 part 2" has the commands and outcomes.

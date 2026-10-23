@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "Every card is compact, has no thumbnail or evidence inspector, shows its actual measured distance and one pending line; rent and monthly unit have equal font size",
+    "Numbered navigation jumps directly to the selected card, tracks manual scrolling, and restores position and selection after returning from detail",
+    "Detail unifies all known fields beside uncropped photos, hides missing bedroom/area values, balances panel heights, and keeps the gallery and silent real reading collection functional without reranking",
+    "390px mobile list navigation and detail layout have no horizontal overflow"
+  ],
+  "external_messages_sent": 0,
+  "status": "passed",
+  "browser_errors": [],
+  "listing_count": 8,
+  "first_distance_m": 811.64
+}

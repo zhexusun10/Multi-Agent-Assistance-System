@@ -1,13 +1,14 @@
 import type {Criterion,RecommendationRequest,RecommendationResponse,Candidate,Evidence} from '../contracts/recommendation-v1.js';
 import {validateResponse} from '../contracts/recommendation-v1.js';
-import {nativeResponseSchema,nativeListingSchema,nativeRequestSchema,feedbackSidecarSchema,EMPTY_SIDECAR,NATIVE_MAX_RESULTS,type FeedbackSidecar,type NativeResponse,type NativeListing,type NativeScores} from '../contracts/recommendation-native.js';
+import {nativeResponseSchema,nativeListingSchema,nativeRequestSchema,coldStartInputSchema,NOT_EXITED,NATIVE_MAX_RESULTS,type ColdStartInput,type NativeResponse,type NativeListing,type NativeScores} from '../contracts/recommendation-native.js';
 import type {ToolContext} from '../tools/executor.js';
 
 const fields:Record<string,string>={price:'price',bedrooms:'bedrooms',floor_area_sqft:'floor_area_sqft',district:'district_code',property_type:'property_type',place_proximity:'distance',commute_time:'commute',furnishing:'furnishing',current_availability:'availability',lease_months:'lease_months'};
-// Pure: the 2.0 body is a function of the persisted V1 request and the persisted feedback sidecar
-// only, so transport retries and projectNative rebuild the identical body (native idempotency).
-export function nativeRequest(req:RecommendationRequest,sidecar:FeedbackSidecar=EMPTY_SIDECAR){
-  const fb=feedbackSidecarSchema.parse(sidecar);
+// Pure: the native body is a function of the persisted V1 request (with its behavior_context) and the
+// persisted cold-start state only, so transport retries and projectNative rebuild the identical body
+// (native idempotency).
+export function nativeRequest(req:RecommendationRequest,coldStart:ColdStartInput=NOT_EXITED){
+  const cold=coldStartInputSchema.parse(coldStart);
   const unsupported:Criterion[]=[],criteria:Record<string,unknown>[]=[];
   for(const c of req.requirements.criteria){
     const field=fields[c.field];
@@ -27,19 +28,22 @@ export function nativeRequest(req:RecommendationRequest,sidecar:FeedbackSidecar=
     }
     criteria.push(criterion);
   }
-  // Contract 2.0 carries the orchestrator's COMPLETE feedback snapshot (previous-round browsing
-  // + appointment signals) from the sidecar; the V1 event array is not forwarded. Sample browsing
-  // reaches native through the sidecar; saves and explicit feedback are retained, not converted.
+  // Main contract: real completed intervals are admitted by the behavior ledger and forwarded as
+  // feedback events (validated, not re-scored natively); behavior_context carries the cumulative
+  // browsing summary and saved viewing drafts that native scores. Saves and image clicks are not
+  // invented durations. cold_start is the recommendation-owned extension.
+  const supported=(f:RecommendationRequest['feedback'][number])=>f.event_type==='active_view'&&['sample','web_detail'].includes(String(f.payload.source));
+  const feedback=req.feedback.filter(supported).map(f=>({event_id:f.event_id,conversation_id:req.conversation_id,recommendation_request_id:f.payload.recommendation_request_id,listing_id:f.listing_id,event_type:'listing_view_duration' as const,source:f.payload.source as 'sample'|'web_detail',occurred_at:f.occurred_at,payload:{view_session_id:f.payload.view_session_id as string,duration_seconds:Number(f.payload.active_duration_ms)/1000}}));
   const previous=req.previous_state_id?.startsWith('native:')?req.previous_state_id.slice(7):null;
-  const request={contract_version:'2.0' as const,request_id:req.request_id,conversation_id:req.conversation_id,requirements_version:req.requirements_version+1,requirements:{listing_type:'RENT' as const,criteria},previous_state_id:previous,result_limit:Math.min(NATIVE_MAX_RESULTS,req.result_limit),feedback:{previous_round:fb.previous_round,appointments:fb.appointments},cold_start:fb.cold_start};
+  const request={contract_version:'1.0' as const,request_id:req.request_id,conversation_id:req.conversation_id,requirements_version:req.requirements_version+1,requirements:{listing_type:'RENT' as const,criteria},feedback,...(req.behavior_context?{behavior_context:req.behavior_context}:{}),previous_state_id:previous,result_limit:Math.min(NATIVE_MAX_RESULTS,req.result_limit),cold_start:{exited:Boolean(cold.exited),exited_pool_key:cold.exited_pool_key??null}};
   nativeRequestSchema.parse(request);
-  return {request,unsupported,ignored_feedback:req.feedback.filter(f=>!(f.event_type==='active_view'&&f.payload.source==='sample')).map(f=>f.event_id)};
+  return {request,unsupported,ignored_feedback:req.feedback.filter(f=>!supported(f)).map(f=>f.event_id)};
 }
 
 type Counts={assessed:number;eligible:number;unverified:number;excluded:number};
 export type NativeEnvelope={request?:Record<string,unknown>;transport_request?:Record<string,unknown>;response:NativeResponse;presentation:{listings:NativeListing[];counts:Counts|null}};
-export async function projectNative(req:RecommendationRequest,ctx:ToolContext,envelope:unknown,save:(ctx:ToolContext,body:unknown)=>Promise<string>,sidecar:FeedbackSidecar=EMPTY_SIDECAR):Promise<RecommendationResponse>{
-  const input=nativeRequest(req,sidecar),raw=envelope as NativeEnvelope,native=nativeResponseSchema.parse(raw.response);
+export async function projectNative(req:RecommendationRequest,ctx:ToolContext,envelope:unknown,save:(ctx:ToolContext,body:unknown)=>Promise<string>,coldStart:ColdStartInput=NOT_EXITED):Promise<RecommendationResponse>{
+  const input=nativeRequest(req,coldStart),raw=envelope as NativeEnvelope,native=nativeResponseSchema.parse(raw.response);
   if(native.request_id!==req.request_id||native.conversation_id!==req.conversation_id||native.requirements_version!==input.request.requirements_version)throw Error('Native response identity mismatch');
   const proofs=raw.presentation.listings.map(x=>nativeListingSchema.parse(x));
   const byId=new Map(proofs.map(x=>[x.listing_id,x]));
@@ -51,7 +55,7 @@ export async function projectNative(req:RecommendationRequest,ctx:ToolContext,en
   }
   // Archive the lossless native exchange once. A/C/D receive a small UI contract,
   // not megabytes of hidden pool records or a rewritten native score.
-  const archive=await save(ctx,{provider:'jiangshan-native',upstream:'907cfa8',contract:'2.0',request:raw.request??input.request,transport_request:raw.transport_request??input.request,response:raw.response,presentation:raw.presentation,unsupported_criteria:input.unsupported,ignored_feedback:input.ignored_feedback,feedback_sidecar:sidecar});
+  const archive=await save(ctx,{provider:'jiangshan-native',upstream:'907cfa8',contract:'2.0',request:raw.request??input.request,transport_request:raw.transport_request??input.request,response:raw.response,presentation:raw.presentation,unsupported_criteria:input.unsupported,ignored_feedback:input.ignored_feedback,cold_start:input.request.cold_start});
   const evidence:Evidence[]=[],scores:Record<string,NativeScores>={},nativeResults:Record<string,unknown>={};
   const hardGap=input.unsupported.some(c=>c.strength==='hard');
   // Native 2.0 returns only verified recommendations (no unverified_candidates).
@@ -94,7 +98,7 @@ export async function projectNative(req:RecommendationRequest,ctx:ToolContext,en
     clarifications:unverified.length?[]:native.clarifications.map(question=>({criterion_ids:[],question})),relaxation_suggestions:[],
     warnings:[{code:'JIANGSHAN_NATIVE',message:`使用江山原生推荐模块（契约 2.0）；对完整探索池评分，按其选择策略返回最多${NATIVE_MAX_RESULTS}套，保留评分、选择原因和原生展示顺序。`},...native.warnings.map(message=>({code:'NATIVE_NOTICE',message})),...(input.unsupported.length?[{code:'NATIVE_CONTRACT_GAP',message:`以下要求已保留，但原生契约没有对应字段，展示时保持待核实：${input.unsupported.map(c=>c.field).join('、')}。没有使用旧基线补排。`}]:[]),
       // Native resolves LTA stations (nearest recorded exit), URA areas/regions (0 inside, edge distance outside) and OSM places itself (P4), so no geography-gap warning.
-      ...(input.ignored_feedback.length?[{code:'NATIVE_FEEDBACK_UNSUPPORTED',message:'收藏和显式评价已留存；原生行为模型只使用上一轮浏览快照和看房预约信号，本轮未将其他反馈转换成行为信号。'}]:[])],
+      ...(input.ignored_feedback.length?[{code:'NATIVE_FEEDBACK_UNSUPPORTED',message:'收藏和显式评价已留存；原生行为模型只使用 behavior_context 的会话累计浏览摘要和已保存的看房意向；收藏和显式评价不会转换成浏览秒数或看房信号。'}]:[])],
     state:{state_id:`native:${native.state.state_id||req.request_id}`,candidate_pool_ref:archive,coverage:{dataset_version:ctx.dataset,dataset_scope:ctx.dataset,retrieval_scope:native.state.scope,complete_within_dataset:native.status!=='error'&&!native.state.truncated,truncated:native.state.truncated},counts:counts||{assessed:null,eligible:null,unverified:null,excluded:null}},
     execution:{strategy:native.execution.strategy,trace_ref:archive,tool_calls:[{provider:'jiangshan-native',count:native.execution.tool_calls,model_calls:native.execution.model_calls,native_trace_ref:native.execution.trace_ref}],timing:{total_ms:native.execution.duration_ms},scoring_version:native.execution.scoring_version,score_semantics:'native_soft_behavior_weighted_fit_not_probability'},error:native.error,
     native:{provider:'jiangshan-native',upstream_commit:'907cfa8',exchange_ref:archive,status:native.status,state_id:native.state.state_id,ranking:native.recommendations.map(x=>x.listing.listing_id),scores,criterion_results:nativeResults,unsupported_criterion_ids:input.unsupported.map(c=>c.criterion_id),unscored_listing_ids:[],
@@ -103,8 +107,8 @@ export async function projectNative(req:RecommendationRequest,ctx:ToolContext,en
   return validateResponse(response,req);
 }
 
-export async function callNative(req:RecommendationRequest,ctx:ToolContext,url:string,save:(ctx:ToolContext,body:unknown)=>Promise<string>,sidecar:FeedbackSidecar=EMPTY_SIDECAR){
-  const input=nativeRequest(req,sidecar);
+export async function callNative(req:RecommendationRequest,ctx:ToolContext,url:string,save:(ctx:ToolContext,body:unknown)=>Promise<string>,coldStart:ColdStartInput=NOT_EXITED){
+  const input=nativeRequest(req,coldStart);
   const token=process.env.RECOMMENDATION_SERVICE_TOKEN;if(!token)throw Error('RECOMMENDATION_SERVICE_TOKEN is required');
   const timeout=Number(process.env.RECOMMENDATION_HTTP_TIMEOUT_MS||150000);
   // Retry transport/queue failures with EXACTLY the same body and request ID.
@@ -115,6 +119,6 @@ export async function callNative(req:RecommendationRequest,ctx:ToolContext,url:s
       if(!r.ok){if(attempt===0&&[502,503,504].includes(r.status)){await new Promise(done=>setTimeout(done,1000));continue;}throw Error(`NATIVE_RECOMMENDATION_HTTP_${r.status}`);}
       const buffer=await r.arrayBuffer();if(buffer.byteLength>64*1024*1024)throw Error('Native response exceeds 64 MiB');raw=JSON.parse(Buffer.from(buffer).toString('utf8'));
     }catch(error){if(attempt===0&&!(error instanceof Error&&/HTTP_|64 MiB/.test(error.message)))continue;throw error;}
-    return projectNative(req,ctx,raw,save,sidecar);
+    return projectNative(req,ctx,raw,save,coldStart);
   }
 }

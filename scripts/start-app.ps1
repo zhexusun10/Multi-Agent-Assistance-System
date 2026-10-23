@@ -95,7 +95,7 @@ try {
         Save-Processes
         Wait-Ready 'http://127.0.0.1:8092/health'
     }
-    $processes+=Start-Helper 'graph' (Get-Command node).Source @('--env-file=.env','dist/server.js')
+    $processes+=Start-Helper 'graph' (Get-Command node).Source @('scripts/with-project-env.mjs','dist/server.js')
     Save-Processes
     Wait-Ready 'http://127.0.0.1:3001/health'
     $processes+=Start-Helper 'web' $python @('-m','uvicorn','api.main:app','--host','127.0.0.1','--port',$appPort)

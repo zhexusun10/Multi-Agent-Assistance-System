@@ -1,0 +1,218 @@
+{
+  "external_messages_sent": 0,
+  "checks": [
+    {
+      "query": "给我解释一下为什么推荐这几套房子？",
+      "operation": {
+        "kind": "explain",
+        "status": "completed",
+        "intent_plan": {
+          "kind": "explain",
+          "agent": "c",
+          "intent": {
+            "intent": "recommendation_explanation",
+            "urgency": 1,
+            "channels": {
+              "llm": {
+                "intent": "recommendation_explanation",
+                "reasoning": "用户要求解释已有推荐房源的排序和推荐理由，属于解释已有推荐。",
+                "confidence": 0.97,
+                "requested_tasks": [
+                  "explain"
+                ]
+              },
+              "pattern": {
+                "intent": "recommendation_explanation",
+                "confidence": 0.5
+              },
+              "embedding": {
+                "intent": "explanation",
+                "source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                "reasoning": "Chroma cosine nearest template",
+                "confidence": 0.629635833236409
+              }
+            },
+            "entities": {
+              "date": [],
+              "amount": [],
+              "listing_id": []
+            },
+            "cache_hit": false,
+            "reasoning": "用户要求解释已有推荐房源的排序和推荐理由，属于解释已有推荐。",
+            "confidence": 0.8549271666472817,
+            "latency_ms": 881.4087000000009,
+            "intent_group": "explanation",
+            "source_scores": {
+              "llm": 0.97,
+              "pattern": 0.5,
+              "embedding": 0.629635833236409
+            },
+            "requested_tasks": [
+              "explain"
+            ],
+            "embedding_source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            "template_version": "ce9dad379be2e6517d6ed83be4014b4f95604ba5dda89a65229bacfa6acd7985"
+          },
+          "deferred_summary": false
+        }
+      },
+      "answer": "有完整资料的几套，月租记录都在2000新币以内，离南洋理工大学的直线距离也在5公里内，因此入选。它们之间只按“越靠近学校越好”这个软偏好来排，租金只是门槛，不是排序依据：排第一的那套记录约812米，比后面几套的约820米和约889米略近，所以靠前；其中两套距离记录相同，先后只是固定次序，不能据此说谁更合适。直线距离也不代表实际通勤时间。\n\n另外几套的租金记录符合预算，但离学校的距离还查不到，所以还不能确定它们符合全部要求，只是待确认选项，排在后面不代表更差。\n\n附近是否有合适的MRT或公交站都还不能确认；记录里的租金和现在是否仍可租，也需要向经纪人核实。",
+      "generation": {
+        "mode": "llm_grounded",
+        "version": "2.0",
+        "attempts": 3,
+        "latency_ms": 12965,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "repair_notes": [
+          "SEMANTIC_AUDIT: [{\"code\":\"ranking\",\"detail\":\"排序解释称“主要按离学校的直线距离排序，越近越靠前”，但事实包中前四套距离分别为812、820、820、889米，第2、3套距离相同（820米），排序:method明确说明相同匹配程度时保持固定次序、不能据此说谁更优。输出未说明第2、3套距离相同、次序为固定保持，暗示距离严格决定顺序，属排序归因不准确。\"},{\"code\":\"coverage\",\"detail\":\"第2、3套直线距离相同，输出未提示二者在距离上无差别，读者会误以为第2套比第3套更近。\"}]",
+          "SEMANTIC_AUDIT: [{\"code\":\"ranking\",\"detail\":\"排序解释不准确：ranking:method 说明已评分房源之间唯一实际生效的排序偏好是“更靠近南洋理工大学”的软偏好，且相同匹配程度时保持固定次序。第1套812米、第2套820米、第3套820米、第4套889米，第2、3套距离相同，但第1套与第2套距离并不相同（812 vs 820），输出称“其中两套的距离记录相同”虽指第2、3套尚可，但整体把排序说成按直线距离，未说明第1套仅因812米略近而排前，且未指出这是软偏好而非硬性距离排序，容易让读者误以为距离是硬排序依据。\"},{\"code\":\"coverage\",\"detail\":\"第1段称“前四套已确认月租在2000新币以内、离南洋理工大学的直线距离在5公里内，所以入选”，但未提醒这些记录不能证明现在仍可租；虽然第3段提到需向经纪人核实，但开头“已确认……所以入选”的表述偏强，且未说明直线距离不能推断通勤时间。\"},{\"code\":\"style\",\"detail\":\"“后四套”“前四套”属于按分组报数式表述，且“排在后面不代表更差”虽正确，但整体仍以分组方式概括，未逐一点明待确认选项资料不足即可，可更简洁自然。\"}]"
+        ],
+        "semantic_audit": "passed"
+      }
+    },
+    {
+      "query": "为什么第一套放最前面？",
+      "operation": {
+        "kind": "explain",
+        "status": "completed",
+        "intent_plan": {
+          "kind": "explain",
+          "agent": "c",
+          "intent": {
+            "intent": "recommendation_explanation",
+            "urgency": 1,
+            "channels": {
+              "llm": {
+                "intent": "recommendation_explanation",
+                "reasoning": "用户询问已有推荐排序中第一套为何排最前，属于解释已有推荐。",
+                "confidence": 0.97,
+                "requested_tasks": [
+                  "explain"
+                ]
+              },
+              "pattern": {
+                "intent": "other",
+                "confidence": 0
+              },
+              "embedding": {
+                "intent": "recommendation_explanation",
+                "source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                "reasoning": "Chroma cosine nearest template",
+                "confidence": 0.6003613270525251
+              }
+            },
+            "entities": {
+              "date": [],
+              "amount": [],
+              "listing_id": []
+            },
+            "cache_hit": false,
+            "reasoning": "用户询问已有推荐排序中第一套为何排最前，属于解释已有推荐。",
+            "confidence": 0.7990722654105049,
+            "latency_ms": 1017.4701999999997,
+            "intent_group": "explanation",
+            "source_scores": {
+              "llm": 0.97,
+              "pattern": 0,
+              "embedding": 0.6003613270525251
+            },
+            "requested_tasks": [
+              "explain"
+            ],
+            "embedding_source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            "template_version": "ce9dad379be2e6517d6ed83be4014b4f95604ba5dda89a65229bacfa6acd7985"
+          },
+          "deferred_summary": false
+        }
+      },
+      "answer": "941 Jurong West Street 91 排在最前，是因为在已确认满足租金和学校距离要求的几套里，它离南洋理工大学最近，直线约812米。排序看的是离学校远近，不是租金高低；它的记录月租是1100新币，但租金更低并不会让房源自动靠前。\n\n后面几套里，有的离学校稍远，有的还缺少学校距离资料，所以还不能确定它们是否满足全部要求，只能先按现有顺序列出，不能据此判断谁更合适。附近是否有地铁或公交站也还没确认；记录的价格和现在是否可租，都需要向经纪人核实。",
+      "generation": {
+        "mode": "llm_grounded",
+        "version": "2.0",
+        "attempts": 1,
+        "latency_ms": 3467,
+        "example_ids": [
+          "whole-list-distance",
+          "two-listing-comparison"
+        ],
+        "repair_notes": [],
+        "semantic_audit": "passed"
+      }
+    },
+    {
+      "query": "帮我比较前两套，简短说说各自适合我的地方。",
+      "operation": {
+        "kind": "explain",
+        "status": "failed",
+        "intent_plan": {
+          "kind": "explain",
+          "agent": "c",
+          "intent": {
+            "intent": "recommendation_explanation",
+            "urgency": 1,
+            "channels": {
+              "llm": {
+                "intent": "recommendation_explanation",
+                "reasoning": "用户要求比较已有推荐的前两套并说明各自适合之处，属于解释已有推荐，无需重新搜索。",
+                "confidence": 0.95,
+                "requested_tasks": [
+                  "explain"
+                ]
+              },
+              "pattern": {
+                "intent": "recommendation_explanation",
+                "confidence": 0.5
+              },
+              "embedding": {
+                "intent": "recommendation_explanation",
+                "source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                "reasoning": "Chroma cosine nearest template",
+                "confidence": 0.7254360940458258
+              }
+            },
+            "entities": {
+              "date": [],
+              "amount": [],
+              "listing_id": []
+            },
+            "cache_hit": false,
+            "reasoning": "用户要求比较已有推荐的前两套并说明各自适合之处，属于解释已有推荐，无需重新搜索。",
+            "confidence": 0.8600872188091652,
+            "latency_ms": 1566.8161999999975,
+            "intent_group": "explanation",
+            "source_scores": {
+              "llm": 0.95,
+              "pattern": 0.5,
+              "embedding": 0.7254360940458258
+            },
+            "requested_tasks": [
+              "explain"
+            ],
+            "embedding_source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            "template_version": "ce9dad379be2e6517d6ed83be4014b4f95604ba5dda89a65229bacfa6acd7985"
+          },
+          "deferred_summary": false
+        }
+      },
+      "answer": "本轮未完成：推荐理由暂时没能整理好，请再试一次。你可以继续查看当前房源。",
+      "generation": {
+        "mode": "llm_grounded",
+        "version": "2.0",
+        "attempts": 1,
+        "latency_ms": 3467,
+        "example_ids": [
+          "whole-list-distance",
+          "two-listing-comparison"
+        ],
+        "repair_notes": [],
+        "semantic_audit": "passed"
+      }
+    }
+  ],
+  "reused_full_data_search": true,
+  "status": "failed",
+  "error": "本轮未完成：推荐理由暂时没能整理好，请再试一次。你可以继续查看当前房源。\n+ actual - expected\n\n+ 'failed'\n- 'completed'\n"
+}

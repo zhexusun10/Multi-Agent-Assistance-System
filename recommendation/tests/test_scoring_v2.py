@@ -10,7 +10,7 @@ import pytest
 
 from recommendation.agent.controller import ScriptedController
 from recommendation.config import RecommendationConfig
-from recommendation.contracts.feedback import FeedbackSnapshot
+from recommendation.tests.behavior_inputs import behavior
 from recommendation.contracts.request import RecommendationRequest
 from recommendation.contracts.requirements import Criterion
 from recommendation.models.listing_summary import ListingSummary
@@ -28,21 +28,10 @@ REQUIREMENTS = json.loads((PACKAGE / "examples/requirements.json").read_text())
 
 
 # --- helpers (also used by test_settings / test_policy_controller / test_recommendation) -----
-def feedback(browsing=(), appointments=(), request_id="previous-round"):
-    """FeedbackSnapshot: browsing = [(listing_id, seconds | None (missing))], appointments =
-    [(listing_id, statuses)]."""
-    data = {"appointments": [
-        {"listing_id": i, "statuses": list(statuses), "action_ids": [f"action-{i}-{k}" for k in range(len(statuses))]}
-        for i, statuses in appointments
-    ]}
-    if browsing:
-        data["previous_round"] = {
-            "request_id": request_id,
-            "shown_listing_ids": [i for i, _ in browsing],
-            "browsing": [{"listing_id": i, "status": "recorded", "duration_seconds": t} if t is not None
-                         else {"listing_id": i, "status": "missing"} for i, t in browsing],
-        }
-    return FeedbackSnapshot.model_validate(data)
+def feedback(browsing=(), appointments=(), request_id="previous-round", eligible=True):
+    """behavior_context: browsing = [(listing_id, cumulative seconds | None (no segment))],
+    appointments = [(listing_id, anything)] saved viewing drafts (one per listing)."""
+    return behavior(browsing, appointments, request_id, eligible)
 
 
 def pool_scores(rows, criteria=(), browsing=(), appointments=(), config=None, evidence=None):
@@ -117,7 +106,7 @@ def test_whole_pool_is_scored_and_ordered_by_combined_then_id(tmp_path):
         shown = [i.listing.listing_id for i in first.recommendations]
         second = service.recommend(request(
             "w2", "whole", previous_state_id=first.state.state_id,
-            feedback=feedback([(i, 30.0) for i in shown], [("fixture-03", ["MANUAL_SENT"])], request_id="w1")))
+            behavior_context=feedback([(i, 30.0) for i in shown], [("fixture-03", ["MANUAL_SENT"])], request_id="w1")))
         assert second.status == "success"
         step = rank_step(service, "whole", "w2")
         scoring = step["result"]["data"]["scoring"]
@@ -201,9 +190,10 @@ def test_numpy_arrays_match_the_scalar_reference():
 
 
 # --- behaviour inputs ----------------------------------------------------------------------------
-def test_earlier_round_browsing_has_no_effect(tmp_path):
-    """Round 3 refers back to round 1 with the same snapshot in two conversations whose round-2
-    snapshots differ: round 3 is scored identically (only the request's snapshot counts)."""
+def test_only_the_request_behavior_context_counts(tmp_path):
+    """Main contract: behavior_context is the orchestrator's cumulative snapshot as of as_of.
+    Two conversations whose round-2 snapshots differ but whose round-3 snapshots are equal are
+    scored identically in round 3: nothing is accumulated natively."""
     service = make_service(tmp_path)
     try:
         third = {}
@@ -213,17 +203,17 @@ def test_earlier_round_browsing_has_no_effect(tmp_path):
             shown = [i.listing.listing_id for i in first.recommendations]
             r2 = service.recommend(request(
                 f"{conversation}-2", conversation, previous_state_id=first.state.state_id,
-                feedback=feedback([(i, round2_seconds if k % 2 else 1.0) for k, i in enumerate(shown)],
+                behavior_context=feedback([(i, round2_seconds if k % 2 else 1.0) for k, i in enumerate(shown)],
                                   request_id=f"{conversation}-1")))
             r3 = service.recommend(request(
                 f"{conversation}-3", conversation, previous_state_id=r2.state.state_id,
-                feedback=feedback([(i, 20.0 if k < 2 else None) for k, i in enumerate(shown)],
-                                  request_id=f"{conversation}-1")))
+                behavior_context=feedback([(i, 20.0 if k < 2 else None) for k, i in enumerate(shown)],
+                                  request_id="shared-history")))
             assert r2.status == r3.status == "success"
             second[conversation] = [(i.listing.listing_id, i.scores.model_dump()) for i in r2.recommendations]
             third[conversation] = [(i.listing.listing_id, i.scores.model_dump()) for i in r3.recommendations]
-        assert second["early-a"] != second["early-b"]  # round-2 browsing mattered in round 2
-        assert third["early-a"] == third["early-b"]  # and has no effect on round 3
+        assert second["early-a"] != second["early-b"]  # round-2 snapshot mattered in round 2
+        assert third["early-a"] == third["early-b"]  # only round 3's own snapshot counts in round 3
     finally:
         service.close()
 
@@ -263,28 +253,41 @@ def test_single_reference_normalisation_cancels_absolute_duration():
     assert two_short.breakdown("fixture-02").browsing_score != two_long.breakdown("fixture-02").browsing_score
 
 
-def test_appointment_status_upgrade_adds_nothing(tmp_path):
+def test_resaved_viewing_draft_adds_nothing(tmp_path):
+    """Main contract: one book_viewing_listings entry per listing (latest active saved draft).
+    Re-saving with another action/time for the same listing changes no score; a second entry for
+    the same listing is rejected by the contract."""
+    from recommendation.tests.behavior_inputs import viewing_draft
+    from recommendation.contracts.behavior import BehaviorContext
+
     rows = fixture_rows()[:9]
-    variants = [["MANUAL_SENT"], ["CONFIRMED", "MANUAL_SENT"], ["MANUAL_REPLIED", "MANUAL_SENT"],
-                ["CONFIRMED", "MANUAL_REPLIED", "MANUAL_SENT"]]
+    variants = []
+    for k, (action, recorded) in enumerate([("first", "2026-10-23T07:00:00Z"), ("resaved", "2026-10-23T07:30:00Z")]):
+        data = behavior(raw=True)
+        data["book_viewing_listings"] = [viewing_draft("fixture-04", action=action, recorded_at=recorded)]
+        variants.append(BehaviorContext.model_validate(data))
     dumps = []
-    for statuses in variants:
-        scores = pool_scores(rows, criteria(SOFT_DISTRICT), appointments=[("fixture-04", statuses)])
+    for context in variants:
+        scores = score_pool(rows, criteria(SOFT_DISTRICT), {r.listing_id: evaluate(r, criteria(SOFT_DISTRICT), []) for r in rows},
+                            {}, context, RecommendationConfig.default())
         assert scores.references["appointment"]["ids"] == ["fixture-04"]
         dumps.append([scores.breakdown(i).model_dump() for i in scores.ids])
-    assert all(d == dumps[0] for d in dumps)
-    # Service level: the orchestrator's one entry per listing with every status.
+    assert dumps[0] == dumps[1]
+    duplicate = behavior(raw=True)
+    duplicate["book_viewing_listings"] = [viewing_draft("fixture-04", "a"), viewing_draft("fixture-04", "b")]
+    with pytest.raises(ValueError, match="duplicate listing summary"):
+        BehaviorContext.model_validate(duplicate)
     service = make_service(tmp_path)
     try:
         results = []
-        for k, statuses in enumerate(variants):
-            conversation = f"upgrade-{k}"
+        for k, context in enumerate(variants):
+            conversation = f"resave-{k}"
             first = service.recommend(request(f"{conversation}-1", conversation))
             second = service.recommend(request(f"{conversation}-2", conversation, previous_state_id=first.state.state_id,
-                                               feedback=feedback(appointments=[("fixture-04", statuses)])))
+                                               behavior_context=context))
             assert second.status == "success"
             results.append([(i.listing.listing_id, i.scores.model_dump()) for i in second.recommendations])
-        assert all(r == results[0] for r in results)
+        assert results[0] == results[1]
         assert any(s["appointment_score"] is not None for _, s in results[0])
     finally:
         service.close()
@@ -314,11 +317,17 @@ def test_missing_attributes_are_not_compared_and_weights_renormalise():
     assert b12.behavior_score is None and b12.comparison_coverage is None
     assert all(c.method.endswith("pair_unavailable") and c.weight == 0 for c in b12.contributions if c.branch == "appointment")
     assert gated.breakdown("fixture-01").behavior_score is not None
-    # Missing and zero-second browsing records are not references; they are counted.
-    counted = pool_scores(rows, browsing=[("fixture-01", None), ("fixture-03", 0.0), ("fixture-05", 12.0)])
+    # Not interest_eligible and zero-second browsing summaries are not references; they are
+    # counted (main contract: interest_eligible gates scoreable browsing).
+    views = feedback([("fixture-01", 40.0), ("fixture-03", 0.0), ("fixture-05", 12.0)], eligible={"fixture-01": False})
+    counted = score_pool(rows, [], {r.listing_id: [] for r in rows}, {}, views, RecommendationConfig.default())
     summary = counted.summary(10)["references"]["browsing"]
     assert counted.references["browsing"]["ids"] == ["fixture-05"]
-    assert (summary["missing"], summary["zero_seconds"], summary["used_count"]) == (["fixture-01"], ["fixture-03"], 1)
+    assert (summary["not_interest_eligible"], summary["zero_seconds"], summary["used_count"]) == (["fixture-01"], ["fixture-03"], 1)
+    # With the gate switched off, the same summary is scoreable.
+    open_gate = settings(**{"ranking.behavior.browsing_requires_interest_eligible": False})
+    ungated = score_pool(rows, [], {r.listing_id: [] for r in rows}, {}, views, open_gate)
+    assert ungated.references["browsing"]["ids"] == ["fixture-01", "fixture-05"]
 
 
 def test_zero_variance_feature_is_dropped_without_division_by_zero():
@@ -406,7 +415,7 @@ def test_out_of_pool_references_are_ignored_and_counted(tmp_path):
     try:
         first = service.recommend(request("out-1", "outside"))
         second = service.recommend(request("out-2", "outside", previous_state_id=first.state.state_id,
-                                           feedback=feedback(appointments=[("fixture-11", ["CONFIRMED"])])))
+                                           behavior_context=feedback(appointments=[("fixture-11", ["CONFIRMED"])])))
         assert second.status == "success"
         assert all(i.scores.behavior_score is None for i in second.recommendations)
         appointment = rank_step(service, "outside", "out-2")["result"]["data"]["scoring"]["references"]["appointment"]
@@ -433,7 +442,7 @@ def test_weights_and_scales_are_visible_in_the_trace(tmp_path):
         first = service.recommend(request("t1", "trace"))
         shown = [i.listing.listing_id for i in first.recommendations]
         second = service.recommend(request("t2", "trace", previous_state_id=first.state.state_id,
-                                           feedback=feedback([(i, 45.0) for i in shown],
+                                           behavior_context=feedback([(i, 45.0) for i in shown],
                                                              [("fixture-05", ["MANUAL_SENT"])], request_id="t1")))
         assert second.status == "success"
         trace = service.store.trace("trace", "t2")

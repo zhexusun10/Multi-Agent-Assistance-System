@@ -1,0 +1,406 @@
+{
+  "query": "那我修改要求，我要租裕廊东附近5公里内的房子，预算在2500新币每月，房子附近1公里内最好有MRT或公交站，",
+  "base": {
+    "criteria": [
+      {
+        "unit": "count",
+        "field": "bathrooms",
+        "value": 1,
+        "operator": "eq",
+        "strength": "hard",
+        "criterion_id": "bathrooms"
+      },
+      {
+        "unit": "count",
+        "field": "bedrooms",
+        "value": 1,
+        "operator": "eq",
+        "strength": "hard",
+        "criterion_id": "minimum-bedrooms"
+      },
+      {
+        "unit": "SGD/month",
+        "field": "price",
+        "value": 2500,
+        "operator": "lte",
+        "strength": "hard",
+        "criterion_id": "monthly-rent"
+      },
+      {
+        "unit": "m",
+        "field": "place_proximity",
+        "value": 1000,
+        "target": {
+          "name": "最近的MRT或公交站",
+          "category": "PublicTransport"
+        },
+        "weight": 1,
+        "operator": "lte",
+        "strength": "soft",
+        "criterion_id": "place_proximity:PublicTransport-preference",
+        "distance_type": "straight_line",
+        "distance_preference": "bounded"
+      },
+      {
+        "unit": "m",
+        "field": "place_proximity",
+        "value": 5000,
+        "target": {
+          "name": "JURONG EAST",
+          "place_id": "URA:AREA:JURONG_EAST"
+        },
+        "operator": "lte",
+        "strength": "hard",
+        "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+        "distance_type": "straight_line",
+        "distance_preference": "bounded"
+      },
+      {
+        "unit": "m",
+        "field": "place_proximity",
+        "value": 1000,
+        "target": {
+          "name": "JURONG EAST",
+          "place_id": "URA:AREA:JURONG_EAST"
+        },
+        "weight": 1,
+        "operator": "lte",
+        "strength": "soft",
+        "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+        "distance_type": "straight_line",
+        "distance_preference": "nearer"
+      }
+    ],
+    "listing_type": "RENT"
+  },
+  "trace": [
+    {
+      "name": "submit_requirement_intake_v2",
+      "output": {
+        "schema_version": "2.0",
+        "supported": true,
+        "upsert": [
+          {
+            "field": "price",
+            "operator": "lte",
+            "value": 2500,
+            "unit": "SGD/month",
+            "strength": "hard",
+            "weight": null,
+            "target_name": null,
+            "transport_mode": null,
+            "quote": "预算在2500新币每月"
+          }
+        ],
+        "locations": [
+          {
+            "name": "裕廊东",
+            "categories": [],
+            "relation": "any_of",
+            "operator": "lte",
+            "value": 5,
+            "unit": "km",
+            "strength": "hard",
+            "weight": null,
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": true,
+            "quote": "裕廊东附近5公里内的房子"
+          },
+          {
+            "name": null,
+            "categories": [
+              "MRTStation",
+              "BusStop"
+            ],
+            "relation": "any_of",
+            "operator": "lte",
+            "value": 1,
+            "unit": "km",
+            "strength": "soft",
+            "weight": null,
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false,
+            "quote": "房子附近1公里内最好有MRT或公交站"
+          }
+        ],
+        "removals": [],
+        "clarifications": [],
+        "coverage": [
+          {
+            "quote": "那我修改要求，我要租裕廊东附近5公里内的房子",
+            "disposition": "extracted"
+          },
+          {
+            "quote": "预算在2500新币每月",
+            "disposition": "extracted"
+          },
+          {
+            "quote": "房子附近1公里内最好有MRT或公交站",
+            "disposition": "extracted"
+          }
+        ]
+      }
+    },
+    {
+      "name": "audit_requirement_intake",
+      "output": {
+        "valid": false,
+        "issues": [
+          {
+            "quote": "裕廊东附近5公里内的房子",
+            "reason": "旧需求中已有“JURONG EAST 5公里内”的hard条件（place_proximity:URA:AREA:JURONG_EAST），本轮用户只是重述同一条件，提案将其作为新增location可以，但旧需求中还存在一条无用户原话支持的“JURONG EAST 1公里内 nearer”soft偏好（place_proximity:URA:AREA:JURONG_EAST-preference），用户从未说过要更靠近裕廊东，提案未处理该无根据条件，也未说明保留依据。"
+          },
+          {
+            "quote": "房子附近1公里内最好有MRT或公交站",
+            "reason": "旧需求中该条件为soft且target为“最近的MRT或公交站”，提案改为categories=[MRTStation,BusStop]的any_of软偏好，语义等价，可接受；但需注意旧需求中该条已存在，提案未声明是替换/保留，若按upsert新增可能与旧criterion_id重复，应明确为对同一条件的更新而非新增。"
+          }
+        ]
+      }
+    },
+    {
+      "name": "submit_requirement_intake_v2",
+      "output": {
+        "schema_version": "2.0",
+        "supported": true,
+        "upsert": [
+          {
+            "field": "price",
+            "operator": "lte",
+            "value": 2500,
+            "unit": "SGD/month",
+            "strength": "hard",
+            "weight": null,
+            "target_name": null,
+            "transport_mode": null,
+            "quote": "预算在2500新币每月"
+          }
+        ],
+        "locations": [
+          {
+            "name": "裕廊东",
+            "categories": [],
+            "relation": "any_of",
+            "operator": "lte",
+            "value": 5,
+            "unit": "km",
+            "strength": "hard",
+            "weight": null,
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": true,
+            "quote": "裕廊东附近5公里内的房子"
+          },
+          {
+            "name": null,
+            "categories": [
+              "MRTStation",
+              "BusStop"
+            ],
+            "relation": "any_of",
+            "operator": "lte",
+            "value": 1,
+            "unit": "km",
+            "strength": "soft",
+            "weight": null,
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false,
+            "quote": "房子附近1公里内最好有MRT或公交站"
+          }
+        ],
+        "removals": [
+          {
+            "field": "place_proximity",
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+            "quote": "那我修改要求，我要租裕廊东附近5公里内的房子"
+          }
+        ],
+        "clarifications": [],
+        "coverage": [
+          {
+            "quote": "那我修改要求，我要租裕廊东附近5公里内的房子",
+            "disposition": "extracted"
+          },
+          {
+            "quote": "预算在2500新币每月",
+            "disposition": "extracted"
+          },
+          {
+            "quote": "房子附近1公里内最好有MRT或公交站",
+            "disposition": "extracted"
+          }
+        ]
+      }
+    },
+    {
+      "name": "audit_requirement_intake",
+      "output": {
+        "valid": false,
+        "issues": [
+          {
+            "quote": "那我修改要求，我要租裕廊东附近5公里内的房子",
+            "reason": "用户本轮只把裕廊东距离改为5公里，并未要求删除旧的“裕廊东1公里内更近”软偏好；proposal 的 removals 删除了 place_proximity:URA:AREA:JURONG_EAST-preference，属于对未明确修改对象的删除，违反“变更仅作用于明确修改对象，未改旧条件保留”。"
+          },
+          {
+            "quote": "房子附近1公里内最好有MRT或公交站",
+            "reason": "该软偏好与旧需求中 place_proximity:PublicTransport-preference（1公里内最近MRT或公交站，soft）等价，proposal 未将其作为保留/等价表达体现，且未说明旧条件保留，存在遗漏旧软偏好之嫌。"
+          }
+        ]
+      }
+    },
+    {
+      "name": "submit_requirement_intake_v2",
+      "output": {
+        "schema_version": "2.0",
+        "supported": true,
+        "upsert": [
+          {
+            "field": "price",
+            "operator": "lte",
+            "value": 2500,
+            "unit": "SGD/month",
+            "strength": "hard",
+            "weight": null,
+            "target_name": null,
+            "transport_mode": null,
+            "quote": "预算在2500新币每月"
+          }
+        ],
+        "locations": [
+          {
+            "name": "裕廊东",
+            "categories": [],
+            "relation": "any_of",
+            "operator": "lte",
+            "value": 5,
+            "unit": "km",
+            "strength": "hard",
+            "weight": null,
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": true,
+            "quote": "我要租裕廊东附近5公里内的房子"
+          },
+          {
+            "name": null,
+            "categories": [
+              "MRTStation",
+              "BusStop"
+            ],
+            "relation": "any_of",
+            "operator": "lte",
+            "value": 1,
+            "unit": "km",
+            "strength": "soft",
+            "weight": null,
+            "distance_type": "straight_line",
+            "explicit_station": false,
+            "prefer_closer": false,
+            "quote": "房子附近1公里内最好有MRT或公交站"
+          }
+        ],
+        "removals": [],
+        "clarifications": [],
+        "coverage": [
+          {
+            "quote": "那我修改要求，我要租裕廊东附近5公里内的房子",
+            "disposition": "extracted"
+          },
+          {
+            "quote": "预算在2500新币每月",
+            "disposition": "extracted"
+          },
+          {
+            "quote": "房子附近1公里内最好有MRT或公交站",
+            "disposition": "extracted"
+          }
+        ]
+      }
+    },
+    {
+      "name": "audit_requirement_intake",
+      "output": {
+        "valid": true,
+        "issues": []
+      }
+    }
+  ],
+  "draft": {
+    "upsert": [
+      {
+        "criterion_id": "monthly-rent",
+        "field": "price",
+        "operator": "lte",
+        "value": 2500,
+        "unit": "SGD/month",
+        "strength": "hard"
+      }
+    ],
+    "remove_fields": [],
+    "clarifications": [],
+    "sources": [
+      {
+        "field": "price",
+        "quote": "预算在2500新币每月"
+      }
+    ],
+    "supported": true,
+    "location_intents": [
+      {
+        "name": "裕廊东",
+        "quote": "我要租裕廊东附近5公里内的房子",
+        "radius_m": 5000,
+        "operator": "lte",
+        "strength": "hard",
+        "distance_type": "straight_line",
+        "explicit_station": false,
+        "prefer_closer": true
+      },
+      {
+        "name": "最近的MRT或公交站",
+        "quote": "房子附近1公里内最好有MRT或公交站",
+        "radius_m": 1000,
+        "operator": "lte",
+        "weight": 1,
+        "strength": "soft",
+        "distance_type": "straight_line",
+        "explicit_station": false,
+        "prefer_closer": false,
+        "category": "PublicTransport"
+      }
+    ],
+    "interpretation_notes": [],
+    "remove_criterion_ids": [],
+    "extraction": {
+      "version": "2.0",
+      "mode": "model",
+      "attempts": 3,
+      "example_ids": [
+        "university-geo",
+        "near-no-radius"
+      ],
+      "coverage": [
+        {
+          "quote": "那我修改要求，我要租裕廊东附近5公里内的房子",
+          "disposition": "extracted"
+        },
+        {
+          "quote": "预算在2500新币每月",
+          "disposition": "extracted"
+        },
+        {
+          "quote": "房子附近1公里内最好有MRT或公交站",
+          "disposition": "extracted"
+        }
+      ],
+      "semantic_audit": "passed",
+      "repair_notes": [
+        "\"SEMANTIC_AUDIT: [{\\\"quote\\\":\\\"裕廊东附近5公里内的房子\\\",\\\"reason\\\":\\\"旧需求中已有“JURONG EAST 5公里内”的hard条件（place_proximity:URA:AREA:JURONG_EAST），本轮用户只是重述同一条件，提案将其作为新增location可以，但旧需求中还存在一条无用户原话支持的“JURONG EAST 1公里内 nearer”soft偏好（place_proximity:URA:AREA:JURONG_EAST-preference），用户从未说过要更靠近裕廊东，提案未处理该无根据条件，也未说明保留依据。\\\"},{\\\"quote\\\":\\\"房子附近1公里内最好有MRT或公交站\\\",\\\"reason\\\":\\\"旧需求中该条件为soft且target为“最近的MRT或公交站”，提案改为categories=[MRTStation,BusStop]的any_of软偏好，语义等价，可接受；但需注意旧需求中该条已存在，提案未声明是替换/保留，若按upsert新增可能与旧criterion_id重复，应明确为对同一条件的更新而非新增。\\\"}]\"",
+        "\"SEMANTIC_AUDIT: [{\\\"quote\\\":\\\"那我修改要求，我要租裕廊东附近5公里内的房子\\\",\\\"reason\\\":\\\"用户本轮只把裕廊东距离改为5公里，并未要求删除旧的“裕廊东1公里内更近”软偏好；proposal 的 removals 删除了 place_proximity:URA:AREA:JURONG_EAST-preference，属于对未明确修改对象的删除，违反“变更仅作用于明确修改对象，未改旧条件保留”。\\\"},{\\\"quote\\\":\\\"房子附近1公里内最好有MRT或公交站\\\",\\\"reason\\\":\\\"该软偏好与旧需求中 place_proximity:PublicTransport-preference（1公里内最近MRT或公交站，soft）等价，proposal 未将其作为保留/等价表达体现，且未说明旧条件保留，存在遗漏旧软偏好之嫌。\\\"}]\""
+      ]
+    }
+  },
+  "duration_ms": 10265
+}

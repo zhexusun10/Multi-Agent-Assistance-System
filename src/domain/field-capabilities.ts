@@ -1,6 +1,6 @@
 import type {Criterion} from '../contracts/recommendation-v1.js';
 
-export const amenityLabels:Record<string,string>={private_bathroom:'独立卫浴（专用，不与他人共用）',master_room:'主卧房型',common_room:'普通房房型',swimming_pool:'游泳池',pet_policy:'允许养宠物',cooking_allowed:'允许做饭',air_conditioning:'空调',no_live_in_landlord:'不与房东同住'};
+export const amenityLabels:Record<string,string>={private_bathroom:'独立卫浴（专用，不与他人共用）',master_room:'主卧房型',common_room:'普通房房型',swimming_pool:'游泳池',gym:'健身房',balcony:'阳台',parking:'停车位',elevator:'电梯',wifi:'网络',washer:'洗衣机',refrigerator:'冰箱',security:'保安',pet_policy:'允许养宠物',cooking_allowed:'允许做饭',air_conditioning:'空调',no_live_in_landlord:'不与房东同住'};
 export const valueLabels:Record<string,string>={fully_furnished:'家具齐全',partially_furnished:'部分家具',unfurnished:'无家具',whole_unit:'整租',room:'单间'};
 export function unknownReason(c:Criterion):string{
  switch(c.field){

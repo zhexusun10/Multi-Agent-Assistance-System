@@ -122,7 +122,7 @@ def test_soft_or_feedback_change_reuses_and_hard_change_rebuilds(tmp_path):
         # Feedback change -> reused.
         feedback = feedback_example(second)
         third = service.recommend(body([BUDGET, BEDROOMS, soft], "p3-3", version=2, previous=second.state.state_id,
-                                       feedback=feedback))
+                                       behavior_context=feedback))
         assert third.pool.cache == "reused" and third.pool.pool_version == first.pool.pool_version
         # Hard change -> new pool_key, rebuilt.
         tighter = dict(BUDGET, value=2500)

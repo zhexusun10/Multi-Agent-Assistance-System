@@ -1,5 +1,5 @@
 {
-  "contract_version": "2.0",
+  "contract_version": "1.0",
   "request_id": "sample-feedback",
   "conversation_id": "contract-example",
   "requirements_version": 1,
@@ -55,71 +55,105 @@
       }
     ]
   },
-  "previous_state_id": "d63431b1-26c9-46e5-a017-6d71c06e161c",
+  "feedback": [],
+  "previous_state_id": "d249104b-9431-4679-8072-781407683041",
   "result_limit": null,
-  "feedback": {
-    "previous_round": {
-      "request_id": "sample-initial",
-      "shown_listing_ids": [
-        "fixture-01",
-        "fixture-03",
-        "fixture-05",
-        "fixture-07",
-        "fixture-09",
-        "fixture-02",
-        "fixture-04",
-        "fixture-06",
-        "fixture-08"
-      ],
-      "browsing": [
-        {
-          "listing_id": "fixture-01",
-          "status": "recorded",
-          "duration_seconds": 90.0
-        },
-        {
-          "listing_id": "fixture-03",
-          "status": "recorded",
-          "duration_seconds": 30.0
-        },
-        {
-          "listing_id": "fixture-05",
-          "status": "recorded",
-          "duration_seconds": 30.0
-        },
-        {
-          "listing_id": "fixture-07",
-          "status": "recorded",
-          "duration_seconds": 30.0
-        },
-        {
-          "listing_id": "fixture-09",
-          "status": "recorded",
-          "duration_seconds": 30.0
-        },
-        {
-          "listing_id": "fixture-02",
-          "status": "recorded",
-          "duration_seconds": 30.0
-        },
-        {
-          "listing_id": "fixture-04",
-          "status": "recorded",
-          "duration_seconds": 30.0
-        },
-        {
-          "listing_id": "fixture-06",
-          "status": "recorded",
-          "duration_seconds": 30.0
-        },
-        {
-          "listing_id": "fixture-08",
-          "status": "recorded",
-          "duration_seconds": 30.0
-        }
-      ]
-    },
-    "appointments": []
+  "behavior_context": {
+    "version": "1.0",
+    "as_of": "2026-10-23T08:00:00Z",
+    "listing_view_durations": [
+      {
+        "listing_id": "fixture-01",
+        "duration_seconds": 90.0,
+        "view_count": 1,
+        "last_viewed_at": "2026-10-23T08:00:00Z",
+        "source_request_ids": [
+          "a422d17e-0d3d-5e96-bdf3-ac2fb2b0865f"
+        ],
+        "interest_eligible": true
+      },
+      {
+        "listing_id": "fixture-02",
+        "duration_seconds": 30.0,
+        "view_count": 1,
+        "last_viewed_at": "2026-10-23T08:00:00Z",
+        "source_request_ids": [
+          "a422d17e-0d3d-5e96-bdf3-ac2fb2b0865f"
+        ],
+        "interest_eligible": true
+      },
+      {
+        "listing_id": "fixture-03",
+        "duration_seconds": 30.0,
+        "view_count": 1,
+        "last_viewed_at": "2026-10-23T08:00:00Z",
+        "source_request_ids": [
+          "a422d17e-0d3d-5e96-bdf3-ac2fb2b0865f"
+        ],
+        "interest_eligible": true
+      },
+      {
+        "listing_id": "fixture-04",
+        "duration_seconds": 30.0,
+        "view_count": 1,
+        "last_viewed_at": "2026-10-23T08:00:00Z",
+        "source_request_ids": [
+          "a422d17e-0d3d-5e96-bdf3-ac2fb2b0865f"
+        ],
+        "interest_eligible": true
+      },
+      {
+        "listing_id": "fixture-05",
+        "duration_seconds": 30.0,
+        "view_count": 1,
+        "last_viewed_at": "2026-10-23T08:00:00Z",
+        "source_request_ids": [
+          "a422d17e-0d3d-5e96-bdf3-ac2fb2b0865f"
+        ],
+        "interest_eligible": true
+      },
+      {
+        "listing_id": "fixture-06",
+        "duration_seconds": 30.0,
+        "view_count": 1,
+        "last_viewed_at": "2026-10-23T08:00:00Z",
+        "source_request_ids": [
+          "a422d17e-0d3d-5e96-bdf3-ac2fb2b0865f"
+        ],
+        "interest_eligible": true
+      },
+      {
+        "listing_id": "fixture-07",
+        "duration_seconds": 30.0,
+        "view_count": 1,
+        "last_viewed_at": "2026-10-23T08:00:00Z",
+        "source_request_ids": [
+          "a422d17e-0d3d-5e96-bdf3-ac2fb2b0865f"
+        ],
+        "interest_eligible": true
+      },
+      {
+        "listing_id": "fixture-08",
+        "duration_seconds": 30.0,
+        "view_count": 1,
+        "last_viewed_at": "2026-10-23T08:00:00Z",
+        "source_request_ids": [
+          "a422d17e-0d3d-5e96-bdf3-ac2fb2b0865f"
+        ],
+        "interest_eligible": true
+      },
+      {
+        "listing_id": "fixture-09",
+        "duration_seconds": 30.0,
+        "view_count": 1,
+        "last_viewed_at": "2026-10-23T08:00:00Z",
+        "source_request_ids": [
+          "a422d17e-0d3d-5e96-bdf3-ac2fb2b0865f"
+        ],
+        "interest_eligible": true
+      }
+    ],
+    "book_viewing_listings": []
   },
   "cold_start": {
     "exited": false,

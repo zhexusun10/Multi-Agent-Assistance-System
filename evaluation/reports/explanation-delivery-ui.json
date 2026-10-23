@@ -1,0 +1,83 @@
+{
+  "cases": [
+    {
+      "mode": "normal",
+      "query_posts": 1,
+      "state_reads": 10,
+      "time_to_display_s": 8.7,
+      "completion_to_display_s": 0.43,
+      "answer": "您的要求：\n• 月租不超过2,500新币。\n• 1间卧室、1个卫生间。\n• 裕廊东5公里内，并希望离裕廊东更近。\n• 最好在1公里内有MRT或公交站（直线距离）。\n\n这些房源符合的部分：\n• 预算：记录月租在850至1,700新币之间，都在上限内。\n• 卧室：记录均为1间，符合要求。\n\n还需要了解的部分：\n• 卫生间数量：这几套房源都还缺资料，不能确认是否为1个。\n• 到裕廊东的直线距离：都还不能确认是否在5公里内，也无法比较谁更近。\n• 附近MRT或公交站：都还不能确认是否在1公里内。\n\n为什么这样排序：目前资料还不足以按您的偏好判断哪套更合适，前后顺序仅供浏览，不代表第一套最好。\n\n注意：还不能确认这几套房源全部符合您的要求；记录的价格和现在是否仍可租，需要联系经纪人确认。",
+      "generation": {
+        "mode": "llm_grounded",
+        "version": "2.0",
+        "attempts": 1,
+        "latency_ms": 5522,
+        "example_ids": [
+          "bathroom-count-not-privacy",
+          "whole-list-distance"
+        ],
+        "repair_notes": [],
+        "semantic_audit": "passed"
+      },
+      "transient_failures": 0
+    },
+    {
+      "mode": "lost-completion",
+      "query_posts": 1,
+      "state_reads": 8,
+      "time_to_display_s": 6.17,
+      "completion_to_display_s": 0.13,
+      "answer": "您的要求：\n• 月租不超过2,500新币。\n• 1间卧室、1个卫生间。\n• 裕廊东5公里内，并希望离裕廊东更近。\n• 最好在1公里内有MRT或公交站（直线距离）。\n\n这些房源符合的部分：\n• 预算：记录月租在850至1,700新币之间，都在上限内。\n• 卧室：记录均为1间，符合要求。\n\n还需要了解的部分：\n• 卫生间数量：这几套房源都还缺资料，不能确认是否为1个。\n• 到裕廊东的直线距离：都还不能确认是否在5公里内，也无法比较谁更近。\n• 附近MRT或公交站：都还不能确认是否在1公里内。\n\n为什么这样排序：这几套房源还有必须条件缺资料，目前还不能据此判断哪套更合适，前后顺序仅供浏览。\n\n注意：还不能确认这几套房源全部符合您的要求；记录的价格和现在是否仍可租，需要联系经纪人确认。",
+      "generation": {
+        "mode": "llm_grounded",
+        "version": "2.0",
+        "attempts": 1,
+        "latency_ms": 4063,
+        "example_ids": [
+          "bathroom-count-not-privacy",
+          "whole-list-distance"
+        ],
+        "repair_notes": [],
+        "semantic_audit": "passed"
+      },
+      "transient_failures": 0
+    },
+    {
+      "mode": "transient-state-failure",
+      "query_posts": 1,
+      "state_reads": 10,
+      "time_to_display_s": 7.86,
+      "completion_to_display_s": 1.18,
+      "answer": "您的要求：\n• 月租不超过2,500新币。\n• 1间卧室、1个卫生间。\n• 裕廊东5公里内，并希望离裕廊东更近。\n• 最好在1公里内有MRT或公交站（直线距离）。\n\n这些房源符合的部分：\n• 预算：记录月租在850至1,700新币之间，都在上限内。\n• 卧室：记录均为1间，符合要求。\n\n还需要了解的部分：\n• 卫生间数量：这几套房源都还缺资料，不能确认是否为1个。\n• 到裕廊东的直线距离：都还不能确认是否在5公里内，也无法比较谁更近。\n• 附近MRT或公交站：都还不能确认是否在1公里内。\n\n为什么这样排序：这几套房源还有必须条件缺资料，目前还不能据此判断哪套更合适，前后顺序仅供浏览。\n\n注意：还不能确认这几套房源全部符合您的要求；记录的价格和现在是否仍可租，需要联系经纪人确认。",
+      "generation": {
+        "mode": "llm_grounded",
+        "version": "2.0",
+        "attempts": 1,
+        "latency_ms": 4599,
+        "example_ids": [
+          "bathroom-count-not-privacy",
+          "whole-list-distance"
+        ],
+        "repair_notes": [],
+        "semantic_audit": "passed"
+      },
+      "transient_failures": 1
+    }
+  ],
+  "external_messages_sent": 0,
+  "source_hashes": {
+    "frontend/app.js": "2ec6de3d17e7047ea77a444cce2c7584bf9d4f0585fedc335afccba88cbccb6c",
+    "frontend/session-sync.js": "39958c24657744e1ec26e58d56f6d2e1665763a8b3c8966104704ec27c237c15",
+    "api/main.py": "ff2d7d75da90c302c506900772c21d8d2bb03e9f4ec90e53e3419778d8d03708",
+    "src/stores/domain.ts": "64020ff6d868196eeac7fd203de8523bbbdb4ed6f468f223d9796d1957e853b5"
+  },
+  "scroll_debug": {
+    "top": 15889,
+    "height": 16683,
+    "client": 630,
+    "answer_top": 0.03125,
+    "answer_bottom": 760.046875
+  },
+  "status": "passed",
+  "browser_errors": []
+}

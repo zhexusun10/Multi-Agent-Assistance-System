@@ -1,0 +1,9 @@
+{
+  "external_messages_sent": 0,
+  "checks": [
+    "desktop: explicit 1000m transport union and 700m park preference remain visible; clean layout and no horizontal overflow",
+    "mobile: explicit 1000m transport union and 700m park preference remain visible; clean layout and no horizontal overflow"
+  ],
+  "status": "passed",
+  "browser_errors": []
+}

@@ -1,0 +1,245 @@
+{
+  "tag": "v15-layout-smoke",
+  "split": "all",
+  "checked_at": "2026-10-22T06:02:49.165Z",
+  "model": "openai:deepseek-flash",
+  "hashes": {
+    "src/agents/explanation/contracts.ts": "aad9f68b4fcaef678693968c4291ea3b469b72a3c35605bd5f0ff8185d80c227",
+    "src/agents/explanation/evidence.ts": "2df7945be2bb54f7e19e208994b255cabf12f005ddf34babb6bf8e4e61b34aa8",
+    "src/agents/explanation/prompt.ts": "ce12d51b9ec8b01ab5b84c094598c4d916a7201c542d8981aac67c39b5380ac8",
+    "src/agents/explanation/few-shot.ts": "0747dfd904523556d513cab9221e5846213c32e85320797744570f99e5f5bb28",
+    "src/agents/explanation/validation.ts": "9330f7d40ab957be65c11faa1a2c986e2856b0afcaa547ddd81002ca791c6c9c",
+    "src/agents/explanation/generator.ts": "8dfcccf8f8a81444bc3dc9a24ac94ddf7dd041b14205c1f88dd11d08a806651a",
+    "skills/evidence-based-explanation/SKILL.md": "f82b18cac632bcd58761ff340cf96d517e075f14e41701f94866d3514c8129cc",
+    "evaluation/explanation-cases.ts": "69306d510c7ab71f1f751a755a0f4a8268b25258ae4b2ab64f3a43e6b401a1b3",
+    "evaluation/evaluate-explanation.ts": "788986a0746fcb4bf5cf6f4a97137dfa370cbad2f1ad0e6cbce80bd97caf57de"
+  },
+  "judge_repairs": [],
+  "external_block": null,
+  "planned_cases": 5,
+  "unattempted": [],
+  "metrics": {
+    "cases": 5,
+    "passed": 5,
+    "grounded": 5,
+    "ranking_correct": 5,
+    "covers_question": 5,
+    "natural": 5,
+    "concise": 5,
+    "exceptions": 0,
+    "repaired": 0,
+    "average_characters": 495.2
+  },
+  "by_scenario": {
+    "behavior": {
+      "cases": 1,
+      "passed": 1,
+      "grounded": 1,
+      "ranking_correct": 1,
+      "covers_question": 1,
+      "natural": 1,
+      "concise": 1,
+      "exceptions": 0,
+      "repaired": 0,
+      "average_characters": 314
+    },
+    "mixed_groups": {
+      "cases": 2,
+      "passed": 2,
+      "grounded": 2,
+      "ranking_correct": 2,
+      "covers_question": 2,
+      "natural": 2,
+      "concise": 2,
+      "exceptions": 0,
+      "repaired": 0,
+      "average_characters": 392
+    },
+    "multiple": {
+      "cases": 1,
+      "passed": 1,
+      "grounded": 1,
+      "ranking_correct": 1,
+      "covers_question": 1,
+      "natural": 1,
+      "concise": 1,
+      "exceptions": 0,
+      "repaired": 0,
+      "average_characters": 1068
+    },
+    "numeric_titles": {
+      "cases": 1,
+      "passed": 1,
+      "grounded": 1,
+      "ranking_correct": 1,
+      "covers_question": 1,
+      "natural": 1,
+      "concise": 1,
+      "exceptions": 0,
+      "repaired": 0,
+      "average_characters": 310
+    }
+  },
+  "results": [
+    {
+      "id": "behavior-dev-3",
+      "scenario": "behavior",
+      "split": "development",
+      "query": "为什么第一套放在前面？",
+      "gold": "仅预算硬条件，无明确软偏好，实际排序来自已有浏览记录相似的房型和面积；不能说用户明确要求这些或说按地点距离。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明仅预算为硬条件、无明确软偏好，排序依据此前浏览记录的房型和面积线索，并明确否认用户明确要求房型/面积，也未提地点距离；同时说明价格与当前可租性需确认。分项列出预算与两套符合情况，再给排序理由，结构清晰、无内部字段。"
+      },
+      "answer": "您的要求：\n• 月租不超过 3,000 新币/月，必须满足。\n\n这些房源符合的部分：\n• Willow Residence 记录月租 1,900 新币，室内面积 700 平方英尺。\n• Garden Court 记录月租 1,600 新币，室内面积 500 平方英尺。\n两套的记录租金都在您的预算内。\n\n为什么这样排序：这次您没有明确提出其他偏好，排序参考了此前浏览记录中的房型和面积线索。整体来看，Willow Residence 更贴近这些浏览兴趣，所以排在前面；这不代表您已经明确要求某种房型或面积。Garden Court 月租更低，但租金高低本身不是排序依据。\n\n注意：记录的价格和现在是否仍可租，需要联系经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "behavior-ranking",
+          "two-listing-comparison"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 3128
+      },
+      "characters": 314,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4643
+    },
+    {
+      "id": "mixed_groups-dev-2",
+      "scenario": "mixed_groups",
+      "split": "development",
+      "query": "说人话讲讲它们怎么选、怎么排的，不用报分。",
+      "gold": "同一列表含符合预算学校范围的已确认项，以及学校距离未知而待确认的选项。前者唯一实际排序因素是更靠近学校，后者没有评分、原顺序展示；MRT/公交1公里全都未知。解释要概括，不能说所有房源都满足硬条件，也不能说待确认组已按距离排好。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答分项列出预算、学校距离、公交三项需求及符合情况，明确Pending Court学校距离未知、公交1公里全部未知，未声称全部满足硬条件；排序说明正确：有距离资料者按学校距离由近到远（941在前，三套Garden Court并列），Pending组因缺资料沿用原顺序而非已按距离排好；并提示价格记录与当前可租需确认。语言通俗、指代清楚，无内部字段或分数，篇幅适中。"
+      },
+      "answer": "您的要求：\n• 月租不超过3,000新币，必须满足。\n• 到南洋理工大学的直线距离不超过5公里，必须满足；在这个范围内越近越好。\n• 最好在1公里内有MRT或公交站。\n\n这些房源符合的部分：\n• 预算：记录月租在1,600至1,900新币之间，都在您的上限内。\n• 学校距离：941 Jurong West Street 91记录约850米，Garden Court 1、2、3各约1,600米，都在5公里内。\n\n还需要了解的部分：\n• Pending Court 1至4到南洋理工大学的距离还没有资料，暂时不能确认是否在5公里内。\n• 这几套房源附近1公里内有没有MRT或公交站，目前都还不清楚。\n\n为什么这样排序：有距离资料的几套按离学校的直线距离由近到远排，所以941 Jurong West Street 91在前，三套Garden Court并列其后；Pending Court 1至4缺距离资料，暂时不能比较远近，沿用原来的顺序。\n\n注意：还不能确认这几套房源全部符合您的要求；记录的价格和现在是否仍可租，需要联系经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "mixed-confirmed-pending",
+          "bathroom-count-not-privacy"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 4875
+      },
+      "characters": 469,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 6655
+    },
+    {
+      "id": "mixed_groups-dev-5",
+      "scenario": "mixed_groups",
+      "split": "development",
+      "query": "这几套是越便宜排得越前吗？",
+      "gold": "同一列表含符合预算学校范围的已确认项，以及学校距离未知而待确认的选项。前者唯一实际排序因素是更靠近学校，后者没有评分、原顺序展示；MRT/公交1公里全都未知。解释要概括，不能说所有房源都满足硬条件，也不能说待确认组已按距离排好。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明不是按价格排序：预算为硬门槛，已确认组按离NTU直线距离排序（941约850米在前，Garden Court约1600米在后），并指出待确认组距离未知、按原顺序展示，未声称其已按距离排好。也说明不能确认全部满足要求、MRT/公交未知、价格与可租状态需确认，未虚构事实。表述自然、简洁。"
+      },
+      "answer": "不是。月租不超过3000新币是必须满足的门槛，用来先筛掉超预算的房子；在预算内的房源之间，实际用于排序的是离南洋理工大学的直线距离，越近越靠前，所以租金低并不等于排得前。\n\n比如排在第一的941 Jurong West Street 91记录月租1900新币，比后面几套1600新币的还贵一些，但它到南洋理工大学的直线距离约850米，比Garden Court 那几套的约1600米更近，因此排在前面。\n\n另外几套还缺到南洋理工大学的距离资料，暂时无法比较远近，就按原有顺序展示，不能据此说它们更差或更好。\n\n注意：还不能确认这几套房源全部符合您的要求，附近MRT或公交的情况也还没有资料；记录的价格和现在是否仍可租需要联系确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "mixed-confirmed-pending",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 4560
+      },
+      "characters": 315,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 6163
+    },
+    {
+      "id": "multiple-dev-6",
+      "scenario": "multiple",
+      "split": "development",
+      "query": "Why were these homes selected and ordered this way?",
+      "gold": "预算与学校直线5公里先筛选，排序同时考虑更靠近学校及租金1800以内，不能说唯一按距离或价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "Grounded: prices/distance match listings; availability flagged unknown. Ranking: explains both hard filters (budget, 5km straight-line) and combined soft preferences (closer, ≤1800), explicitly says not distance-only. Covers question with per-requirement breakdown and order rationale. Natural, clear labels. Concise within limits."
+      },
+      "answer": "Your requirements:\n• Rent no more than S$3,000 per month (must meet).\n• Within 5km of Nanyang Technological University by straight-line distance (must meet), and preferably closer.\n• Ideally rent at or below S$1,800 per month.\n\nWhat fits:\n• Both homes are within the S$3,000 budget and the 5km limit.\n• Garden Court is recorded at S$1,600 per month and 1,600m from the university, so it also meets the preferred S$1,800 rent level.\n• Willow Residence is recorded at S$1,900 per month and 850m from the university; it is closer but above the preferred rent level.\n\nWhy this order: the two preferences are weighed together. Garden Court is cheaper and meets the preferred rent level but is farther; Willow Residence is closer but costs S$100 more than the preferred level. The combined result places Garden Court first, so the order is not based on distance alone, and neither home is ahead on every preference.\n\nNote: recorded prices and availability do not confirm that either home is currently available; please check the current rent and availability with the agent.",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "multiple-preferences-english",
+          "english-explanation"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 3561
+      },
+      "characters": 1068,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 5187
+    },
+    {
+      "id": "numeric_titles-dev-4",
+      "scenario": "numeric_titles",
+      "split": "development",
+      "query": "前两套帮我比一下，重点讲跟我要求有什么关系。",
+      "gold": "预算和学校范围先筛选，唯一实际排序因素是更靠近学校。第一套941 Jurong West Street 91，第二套906 Jurong West Street 91；941、906可作为楼号简称，不是虚构数值。MRT/公交1公里尚未知，不能说满足，不能把预算当价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "两套均通过预算与5公里硬条件，距离850m/1600m与数据一致；排序仅依据更近学校，941在前，未把租金当排序理由；交通1公里未知明确说明，价格与可租状态需确认。分项对比需求符合情况，自然简洁。"
+      },
+      "answer": "这两套都满足您的必须条件：月租都在3,000新币以内，到南洋理工大学的直线距离都在5公里内。941 Jurong West Street 91 记录月租1,900新币，直线约850米；906 Jurong West Street 91 记录月租1,600新币，直线约1,600米。\n\n差别主要在取舍：941 离学校近约750米，但每月贵300新币；906 更便宜，离学校更远。\n\n排序上，您希望离学校越近越好，所以更近的941排在前面；租金高低本身不是排序原因。\n\n还需要了解的部分：两套附近1公里内是否有MRT或公交站，目前都缺资料，不能据此判断交通是否方便。\n\n注意：记录的价格和现在是否仍可租，需要联系经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "two-listing-comparison",
+          "bathroom-count-not-privacy"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 3797
+      },
+      "characters": 310,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 5298
+    }
+  ]
+}

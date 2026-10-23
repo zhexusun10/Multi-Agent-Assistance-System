@@ -1,13 +1,12 @@
 {
- "description": "Three consecutive native contract-2.0 rounds in one conversation (fixture data mode, scripted controller). Python drives them through recommendation.app.execute (/app/recommend path, which rewrites previous_state_id to the native v2 head); TS checks nativeRequest(v1_request, sidecar) == native_body field by field.",
- "conversation_id": "v2-fixture",
+ "description": "Three orchestrator rounds (main contract): round 2 sends the session-cumulative behavior_context (two interest_eligible summaries, one not eligible, one saved viewing draft) and a web_detail event (validated, not scored); round 3 sends summaries with the gate closed and the draft withdrawn, so it is scored like round 1 (nothing accumulated natively). TS: nativeRequest(v1_request, cold_start) == native_body after fixture-NN -> 910000NN.",
+ "conversation_id": "v2-flow",
  "rounds": [
   {
    "name": "initial",
    "v1_request": {
     "contract_version": "1.0",
-    "request_id": "v2-r1",
-    "conversation_id": "v2-fixture",
+    "conversation_id": "v2-flow",
     "requirements_version": 0,
     "requirements": {
      "listing_type": "RENT",
@@ -40,21 +39,18 @@
       }
      ]
     },
-    "feedback": [],
-    "result_limit": 10
+    "result_limit": 10,
+    "request_id": "v2-flow-r1",
+    "feedback": []
    },
-   "sidecar": {
-    "previous_round": null,
-    "appointments": [],
-    "cold_start": {
-     "exited": false,
-     "exited_pool_key": null
-    }
+   "cold_start": {
+    "exited": false,
+    "exited_pool_key": null
    },
    "native_body": {
-    "contract_version": "2.0",
-    "request_id": "v2-r1",
-    "conversation_id": "v2-fixture",
+    "contract_version": "1.0",
+    "request_id": "v2-flow-r1",
+    "conversation_id": "v2-flow",
     "requirements_version": 1,
     "requirements": {
      "listing_type": "RENT",
@@ -91,12 +87,9 @@
       }
      ]
     },
+    "feedback": [],
     "previous_state_id": null,
     "result_limit": 10,
-    "feedback": {
-     "previous_round": null,
-     "appointments": []
-    },
     "cold_start": {
      "exited": false,
      "exited_pool_key": null
@@ -104,27 +97,15 @@
    },
    "expect": {
     "status": "success",
-    "shown_listing_ids": [
-     "fixture-01",
-     "fixture-03",
-     "fixture-05",
-     "fixture-07",
-     "fixture-09",
-     "fixture-02",
-     "fixture-04",
-     "fixture-06",
-     "fixture-08"
-    ],
     "browsing_weighted": [],
     "appointment_listing_ids": []
    }
   },
   {
-   "name": "complete-previous-round",
+   "name": "cumulative-browsing-and-draft",
    "v1_request": {
     "contract_version": "1.0",
-    "request_id": "v2-r2",
-    "conversation_id": "v2-fixture",
+    "conversation_id": "v2-flow",
     "requirements_version": 0,
     "requirements": {
      "listing_type": "RENT",
@@ -157,94 +138,82 @@
       }
      ]
     },
-    "feedback": [],
     "result_limit": 10,
-    "previous_state_id": "native:fixture-state-r1"
-   },
-   "sidecar": {
-    "previous_round": {
-     "request_id": "v2-r1",
-     "shown_listing_ids": [
-      "fixture-01",
-      "fixture-03",
-      "fixture-05",
-      "fixture-07",
-      "fixture-09",
-      "fixture-02",
-      "fixture-04",
-      "fixture-06",
-      "fixture-08"
-     ],
-     "browsing": [
+    "request_id": "v2-flow-r2",
+    "feedback": [
+     {
+      "event_id": "web-r1-1",
+      "listing_id": "fixture-01",
+      "occurred_at": "2026-10-23T08:00:00.000Z",
+      "event_type": "active_view",
+      "payload": {
+       "source": "web_detail",
+       "recommendation_request_id": "6d662941-4a58-572b-993e-441917864b7d",
+       "view_session_id": "view-web-r1-1",
+       "active_duration_ms": 90000
+      }
+     }
+    ],
+    "behavior_context": {
+     "version": "1.0",
+     "as_of": "2026-10-23T08:00:00.000Z",
+     "listing_view_durations": [
       {
        "listing_id": "fixture-01",
-       "status": "recorded",
-       "duration_seconds": 90
-      },
-      {
-       "listing_id": "fixture-03",
-       "status": "recorded",
-       "duration_seconds": 0
-      },
-      {
-       "listing_id": "fixture-05",
-       "status": "missing",
-       "duration_seconds": null
+       "duration_seconds": 90,
+       "view_count": 1,
+       "last_viewed_at": "2026-10-23T08:00:00.000Z",
+       "source_request_ids": [
+        "6d662941-4a58-572b-993e-441917864b7d"
+       ],
+       "interest_eligible": true
       },
       {
        "listing_id": "fixture-07",
-       "status": "recorded",
-       "duration_seconds": 30
+       "duration_seconds": 30,
+       "view_count": 1,
+       "last_viewed_at": "2026-10-23T08:00:00.000Z",
+       "source_request_ids": [
+        "6d662941-4a58-572b-993e-441917864b7d"
+       ],
+       "interest_eligible": true
       },
       {
        "listing_id": "fixture-09",
-       "status": "recorded",
-       "duration_seconds": 30
-      },
+       "duration_seconds": 12,
+       "view_count": 1,
+       "last_viewed_at": "2026-10-23T08:00:00.000Z",
+       "source_request_ids": [
+        "6d662941-4a58-572b-993e-441917864b7d"
+       ],
+       "interest_eligible": false
+      }
+     ],
+     "book_viewing_listings": [
       {
-       "listing_id": "fixture-02",
-       "status": "recorded",
-       "duration_seconds": 30
-      },
-      {
-       "listing_id": "fixture-04",
-       "status": "recorded",
-       "duration_seconds": 30
-      },
-      {
-       "listing_id": "fixture-06",
-       "status": "recorded",
-       "duration_seconds": 30
-      },
-      {
-       "listing_id": "fixture-08",
-       "status": "recorded",
-       "duration_seconds": 30
+       "listing_id": "fixture-03",
+       "action_id": "03fe9801-a284-5324-95e8-482d9b8924e6",
+       "source_request_id": "6d662941-4a58-572b-993e-441917864b7d",
+       "requirements_version": 0,
+       "starts_at": "2026-10-24T06:00:00.000Z",
+       "ends_at": "2026-10-24T07:00:00.000Z",
+       "time_zone": "Asia/Singapore",
+       "recorded_at": "2026-10-23T08:00:00.000Z",
+       "signal": "viewing_draft_saved",
+       "appointment_confirmed": false
       }
      ]
     },
-    "appointments": [
-     {
-      "listing_id": "fixture-07",
-      "statuses": [
-       "CONFIRMED",
-       "MANUAL_SENT"
-      ],
-      "action_ids": [
-       "act-1",
-       "act-2"
-      ]
-     }
-    ],
-    "cold_start": {
-     "exited": false,
-     "exited_pool_key": null
-    }
+    "previous_state_id": "native:1fc7afab-fbc3-4f62-b774-4bf25c843763"
+   },
+   "cold_start": {
+    "exited": false,
+    "exited_pool_key": null
    },
    "native_body": {
-    "contract_version": "2.0",
-    "request_id": "v2-r2",
-    "conversation_id": "v2-fixture",
+    "contract_version": "1.0",
+    "request_id": "v2-flow-r2",
+    "conversation_id": "v2-flow",
     "requirements_version": 1,
     "requirements": {
      "listing_type": "RENT",
@@ -281,84 +250,73 @@
       }
      ]
     },
-    "previous_state_id": "fixture-state-r1",
-    "result_limit": 10,
-    "feedback": {
-     "previous_round": {
-      "request_id": "v2-r1",
-      "shown_listing_ids": [
-       "fixture-01",
-       "fixture-03",
-       "fixture-05",
-       "fixture-07",
-       "fixture-09",
-       "fixture-02",
-       "fixture-04",
-       "fixture-06",
-       "fixture-08"
-      ],
-      "browsing": [
-       {
-        "listing_id": "fixture-01",
-        "status": "recorded",
-        "duration_seconds": 90
-       },
-       {
-        "listing_id": "fixture-03",
-        "status": "recorded",
-        "duration_seconds": 0
-       },
-       {
-        "listing_id": "fixture-05",
-        "status": "missing",
-        "duration_seconds": null
-       },
-       {
-        "listing_id": "fixture-07",
-        "status": "recorded",
-        "duration_seconds": 30
-       },
-       {
-        "listing_id": "fixture-09",
-        "status": "recorded",
-        "duration_seconds": 30
-       },
-       {
-        "listing_id": "fixture-02",
-        "status": "recorded",
-        "duration_seconds": 30
-       },
-       {
-        "listing_id": "fixture-04",
-        "status": "recorded",
-        "duration_seconds": 30
-       },
-       {
-        "listing_id": "fixture-06",
-        "status": "recorded",
-        "duration_seconds": 30
-       },
-       {
-        "listing_id": "fixture-08",
-        "status": "recorded",
-        "duration_seconds": 30
-       }
-      ]
-     },
-     "appointments": [
+    "feedback": [
+     {
+      "event_id": "web-r1-1",
+      "conversation_id": "v2-flow",
+      "recommendation_request_id": "6d662941-4a58-572b-993e-441917864b7d",
+      "listing_id": "fixture-01",
+      "event_type": "listing_view_duration",
+      "source": "web_detail",
+      "occurred_at": "2026-10-23T08:00:00.000Z",
+      "payload": {
+       "view_session_id": "view-web-r1-1",
+       "duration_seconds": 90
+      }
+     }
+    ],
+    "behavior_context": {
+     "version": "1.0",
+     "as_of": "2026-10-23T08:00:00.000Z",
+     "listing_view_durations": [
+      {
+       "listing_id": "fixture-01",
+       "duration_seconds": 90,
+       "view_count": 1,
+       "last_viewed_at": "2026-10-23T08:00:00.000Z",
+       "source_request_ids": [
+        "6d662941-4a58-572b-993e-441917864b7d"
+       ],
+       "interest_eligible": true
+      },
       {
        "listing_id": "fixture-07",
-       "statuses": [
-        "CONFIRMED",
-        "MANUAL_SENT"
+       "duration_seconds": 30,
+       "view_count": 1,
+       "last_viewed_at": "2026-10-23T08:00:00.000Z",
+       "source_request_ids": [
+        "6d662941-4a58-572b-993e-441917864b7d"
        ],
-       "action_ids": [
-        "act-1",
-        "act-2"
-       ]
+       "interest_eligible": true
+      },
+      {
+       "listing_id": "fixture-09",
+       "duration_seconds": 12,
+       "view_count": 1,
+       "last_viewed_at": "2026-10-23T08:00:00.000Z",
+       "source_request_ids": [
+        "6d662941-4a58-572b-993e-441917864b7d"
+       ],
+       "interest_eligible": false
+      }
+     ],
+     "book_viewing_listings": [
+      {
+       "listing_id": "fixture-03",
+       "action_id": "03fe9801-a284-5324-95e8-482d9b8924e6",
+       "source_request_id": "6d662941-4a58-572b-993e-441917864b7d",
+       "requirements_version": 0,
+       "starts_at": "2026-10-24T06:00:00.000Z",
+       "ends_at": "2026-10-24T07:00:00.000Z",
+       "time_zone": "Asia/Singapore",
+       "recorded_at": "2026-10-23T08:00:00.000Z",
+       "signal": "viewing_draft_saved",
+       "appointment_confirmed": false
       }
      ]
     },
+    "previous_state_id": "1fc7afab-fbc3-4f62-b774-4bf25c843763",
+    "result_limit": 10,
     "cold_start": {
      "exited": false,
      "exited_pool_key": null
@@ -366,37 +324,20 @@
    },
    "expect": {
     "status": "success",
-    "shown_listing_ids": [
-     "fixture-05",
-     "fixture-09",
-     "fixture-03",
-     "fixture-01",
-     "fixture-07",
-     "fixture-06",
-     "fixture-08",
-     "fixture-04",
-     "fixture-02"
-    ],
     "browsing_weighted": [
      "fixture-01",
-     "fixture-07",
-     "fixture-09",
-     "fixture-02",
-     "fixture-04",
-     "fixture-06",
-     "fixture-08"
+     "fixture-07"
     ],
     "appointment_listing_ids": [
-     "fixture-07"
+     "fixture-03"
     ]
    }
   },
   {
-   "name": "third-round-no-accumulation",
+   "name": "gate-closed-draft-withdrawn",
    "v1_request": {
     "contract_version": "1.0",
-    "request_id": "v2-r3",
-    "conversation_id": "v2-fixture",
+    "conversation_id": "v2-flow",
     "requirements_version": 0,
     "requirements": {
      "listing_type": "RENT",
@@ -429,82 +370,47 @@
       }
      ]
     },
-    "feedback": [],
     "result_limit": 10,
-    "previous_state_id": "native:fixture-state-r2"
-   },
-   "sidecar": {
-    "previous_round": {
-     "request_id": "v2-r2",
-     "shown_listing_ids": [
-      "fixture-05",
-      "fixture-09",
-      "fixture-03",
-      "fixture-01",
-      "fixture-07",
-      "fixture-06",
-      "fixture-08",
-      "fixture-04",
-      "fixture-02"
-     ],
-     "browsing": [
-      {
-       "listing_id": "fixture-05",
-       "status": "missing",
-       "duration_seconds": null
-      },
-      {
-       "listing_id": "fixture-09",
-       "status": "missing",
-       "duration_seconds": null
-      },
-      {
-       "listing_id": "fixture-03",
-       "status": "missing",
-       "duration_seconds": null
-      },
+    "request_id": "v2-flow-r3",
+    "feedback": [],
+    "behavior_context": {
+     "version": "1.0",
+     "as_of": "2026-10-23T08:00:00.000Z",
+     "listing_view_durations": [
       {
        "listing_id": "fixture-01",
-       "status": "missing",
-       "duration_seconds": null
+       "duration_seconds": 95,
+       "view_count": 2,
+       "last_viewed_at": "2026-10-23T08:00:00.000Z",
+       "source_request_ids": [
+        "6d662941-4a58-572b-993e-441917864b7d",
+        "a543388d-274b-5284-95d1-adb254927336"
+       ],
+       "interest_eligible": false
       },
       {
        "listing_id": "fixture-07",
-       "status": "missing",
-       "duration_seconds": null
-      },
-      {
-       "listing_id": "fixture-06",
-       "status": "missing",
-       "duration_seconds": null
-      },
-      {
-       "listing_id": "fixture-08",
-       "status": "missing",
-       "duration_seconds": null
-      },
-      {
-       "listing_id": "fixture-04",
-       "status": "missing",
-       "duration_seconds": null
-      },
-      {
-       "listing_id": "fixture-02",
-       "status": "missing",
-       "duration_seconds": null
+       "duration_seconds": 30,
+       "view_count": 1,
+       "last_viewed_at": "2026-10-23T08:00:00.000Z",
+       "source_request_ids": [
+        "6d662941-4a58-572b-993e-441917864b7d"
+       ],
+       "interest_eligible": false
       }
-     ]
+     ],
+     "book_viewing_listings": []
     },
-    "appointments": [],
-    "cold_start": {
-     "exited": false,
-     "exited_pool_key": null
-    }
+    "previous_state_id": "native:e1341dc7-e189-4dc6-957c-707272f3fe3c"
+   },
+   "cold_start": {
+    "exited": false,
+    "exited_pool_key": null
    },
    "native_body": {
-    "contract_version": "2.0",
-    "request_id": "v2-r3",
-    "conversation_id": "v2-fixture",
+    "contract_version": "1.0",
+    "request_id": "v2-flow-r3",
+    "conversation_id": "v2-flow",
     "requirements_version": 1,
     "requirements": {
      "listing_type": "RENT",
@@ -541,72 +447,37 @@
       }
      ]
     },
-    "previous_state_id": "fixture-state-r2",
-    "result_limit": 10,
-    "feedback": {
-     "previous_round": {
-      "request_id": "v2-r2",
-      "shown_listing_ids": [
-       "fixture-05",
-       "fixture-09",
-       "fixture-03",
-       "fixture-01",
-       "fixture-07",
-       "fixture-06",
-       "fixture-08",
-       "fixture-04",
-       "fixture-02"
-      ],
-      "browsing": [
-       {
-        "listing_id": "fixture-05",
-        "status": "missing",
-        "duration_seconds": null
-       },
-       {
-        "listing_id": "fixture-09",
-        "status": "missing",
-        "duration_seconds": null
-       },
-       {
-        "listing_id": "fixture-03",
-        "status": "missing",
-        "duration_seconds": null
-       },
-       {
-        "listing_id": "fixture-01",
-        "status": "missing",
-        "duration_seconds": null
-       },
-       {
-        "listing_id": "fixture-07",
-        "status": "missing",
-        "duration_seconds": null
-       },
-       {
-        "listing_id": "fixture-06",
-        "status": "missing",
-        "duration_seconds": null
-       },
-       {
-        "listing_id": "fixture-08",
-        "status": "missing",
-        "duration_seconds": null
-       },
-       {
-        "listing_id": "fixture-04",
-        "status": "missing",
-        "duration_seconds": null
-       },
-       {
-        "listing_id": "fixture-02",
-        "status": "missing",
-        "duration_seconds": null
-       }
-      ]
-     },
-     "appointments": []
+    "feedback": [],
+    "behavior_context": {
+     "version": "1.0",
+     "as_of": "2026-10-23T08:00:00.000Z",
+     "listing_view_durations": [
+      {
+       "listing_id": "fixture-01",
+       "duration_seconds": 95,
+       "view_count": 2,
+       "last_viewed_at": "2026-10-23T08:00:00.000Z",
+       "source_request_ids": [
+        "6d662941-4a58-572b-993e-441917864b7d",
+        "a543388d-274b-5284-95d1-adb254927336"
+       ],
+       "interest_eligible": false
+      },
+      {
+       "listing_id": "fixture-07",
+       "duration_seconds": 30,
+       "view_count": 1,
+       "last_viewed_at": "2026-10-23T08:00:00.000Z",
+       "source_request_ids": [
+        "6d662941-4a58-572b-993e-441917864b7d"
+       ],
+       "interest_eligible": false
+      }
+     ],
+     "book_viewing_listings": []
     },
+    "previous_state_id": "e1341dc7-e189-4dc6-957c-707272f3fe3c",
+    "result_limit": 10,
     "cold_start": {
      "exited": false,
      "exited_pool_key": null

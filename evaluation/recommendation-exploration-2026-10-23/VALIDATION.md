@@ -1508,3 +1508,37 @@ New failures introduced by the P7 review round: none.
 | 9 Trace + terminal debugging | P6 | pass | slim trace tests, terminal transcripts (TERMINAL.md); live trace sizes in the P7 smoke |
 | 10 Analysis, regression, delivery | P7 | **partial** | CALIBRATION / TUNING / PERFORMANCE (part 1); MIGRATION, docs, OPEN_ITEMS, patch registration + upstream `--check`, live smoke (part 2). Ten settings are not calibrated (`provisional`: feature weights incl. price = decision 2, browsing time scale, perturbation fraction, cache bounds) pending real feedback / a user decision (OPEN_ITEMS) |
 | Live app-stack journeys (8010: native-recommendation-live, business/advanced/intake/full-data/location-subject live tests, browser scripts) | P2–P7 | **not_done** | need 8010 / 8092 restarted on this tree (user OK); the native side of these oracles ran against 8192 instead (OPEN_ITEMS "Final state (P7)") |
+
+## Merge with main c7dc536 (2026-10-23)
+
+Decisions applied (user): request = main's contract and md (`contract_version` 1.0, `feedback` events,
+`behavior_context`); kept from the recommendation: 10 results, response contract 2.0, orchestrator-managed
+`cold_start`. Details: MIGRATION.md section 0.
+
+| Item | Proof | Outcome |
+|---|---|---|
+| 22 conflicted files resolved; no conflict markers | `git grep -n '^<<<<<<< '` empty; `git diff --check` | pass |
+| Migration numbering collision (ours 004 vs main 004–006) | ours dropped; `migrations/007-recommendation-cold-start.sql` registered after main's 004–006 in `DomainStore.setup` | pass (not applied to the app DB) |
+| Request = main shape + `cold_start`, result_limit ≤ 10; 2.0 request bodies rejected | `test_contract_v2_fixtures.py::test_contract_cases_schema` (28 cases, also parsed by the TS mirror in `tests/recommendation-v2-fixtures.test.ts`), `test_unversioned_body_is_read_as_main_contract_but_2_0_request_is_rejected`, `tests/test_native_transport.py` | pass |
+| behavior_context scored: cumulative browsing (interest_eligible, > 0 s, in pool), viewing drafts (one per listing, in pool); feedback events validated, not scored | `test_contract_cases_at_service_level` (12 valid cases), `test_scoring_v2.py::test_missing_attributes_are_not_compared_and_weights_renormalise`, `::test_resaved_viewing_draft_adds_nothing`, `::test_only_the_request_behavior_context_counts`, `tests/test_browser_interest_contract.py` | pass |
+| Three rounds: no native accumulation, appointments only via input, same request/different behaviour → 409 | `test_three_rounds_no_loss_no_accumulation_appointments_only_via_input`, `tests/test_behavior_context_transport.py` | pass |
+| TS: nativeRequest = main mapping (sample / web_detail events, behavior_context forwarded) + Math.min(10) + cold_start; pure; projection 2.0 | `tests/native-recommendation.test.ts`, `tests/recommendation-v2-fixtures.test.ts` (flow, ten-results, contract cases) | pass |
+| main readers of old score names (behavior.ts, explanation evidence, native-ranking.js) | `npm run typecheck`; `tests/explanation-*.test.ts` in `npm test` | pass |
+| main's app output protocol on the new tool registry | `tests/test_recommendation_output_protocol.py` (13) | pass |
+| config/recommendation-full.json as overlay (300 s only) | `tests/test_recommendation_runtime_budget.py` | pass |
+| V1 exports + field index (main had not indexed behavior_context / distance_preference) | `node --import tsx scripts/validate-recommendation-examples.ts` (209 properties documented) | pass |
+| Upstream provenance | `scripts/import-recommendation-upstream.py --check`: 71 files, 39 declared patches (re-registered after the last manifest edit) | pass |
+
+Gates after the merge: `pytest recommendation/tests tests -q` 496 passed; `python -m recommendation.schemas --check`
+exit 0; `npm run -s typecheck` and `npm run -s typecheck:recommendation` exit 0; `npm test` 287 passed, 0 failed,
+22 skipped (env-gated live tests). Not run: env-gated live/browser tests (need the app stack on this tree; see
+OPEN_ITEMS.md "Merge with main c7dc536").
+
+Assertions changed on purpose (intended rule changes of the merge, intent kept): previous-round-only browsing →
+session-cumulative (`test_earlier_round_browsing_has_no_effect` → `test_only_the_request_behavior_context_counts`);
+appointment status upgrade → re-saved viewing draft (`test_appointment_status_upgrade_adds_nothing` →
+`test_resaved_viewing_draft_adds_nothing`); main's `test_real_feedback_is_persistent_deduplicated_and_identified`
+(feedback events scored and accumulated natively) → `test_real_feedback_is_validated_labelled_and_behavior_context_is_scored`;
+main's byte-preserved kernels → kernels change only through declared patches; main's behavior-transport test: native
+`/recommend` now accepts behavior_context (was 422) and the native request keeps it (was stripped); main's
+output-protocol tests use the v2 pipeline tools and an empty hard budget (native now resolves URA areas).

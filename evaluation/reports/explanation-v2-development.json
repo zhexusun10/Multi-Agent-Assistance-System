@@ -1,0 +1,2562 @@
+{
+  "tag": "v2-development",
+  "split": "development",
+  "checked_at": "2026-10-21T13:46:20.006Z",
+  "model": "openai:deepseek-flash",
+  "hashes": {
+    "src/agents/explanation/contracts.ts": "8c441b66f77e70528b758aa4a89b6ba32bf9040c3284126a83dbd19f9abdedb0",
+    "src/agents/explanation/evidence.ts": "76d99abf31ac7c7e864160607507f67874cf3ef9efe3956c38a36b0c88ddf668",
+    "src/agents/explanation/prompt.ts": "3b1b3fd9e9f0e468ca629d08d833691e894c64754bf884608ef20f50f13c65bc",
+    "src/agents/explanation/few-shot.ts": "33bf0d8ea1942de2aa836a0aa3bfe3a8923c935df90617c679243cd0cd00c33e",
+    "src/agents/explanation/validation.ts": "6bc845996cc1121ecb76c6332669a00a076b5e67cd94939e75a115ab50de8508",
+    "src/agents/explanation/generator.ts": "27659ce21adb2ec540a8296700b79a525d80fa43b5e3c391725e82ee183b7f56",
+    "skills/evidence-based-explanation/SKILL.md": "73ff80ee888d45be8bcc783b65d096377c9a02fb747dd8ae209ab4993aae20e8",
+    "evaluation/explanation-cases.ts": "02af7a649b1a0af736645b9933ada5af57ab21af5d6acd4d55cadd2222ca6a40"
+  },
+  "metrics": {
+    "cases": 72,
+    "passed": 68,
+    "grounded": 68,
+    "ranking_correct": 68,
+    "covers_question": 68,
+    "natural": 68,
+    "concise": 68,
+    "exceptions": 4,
+    "repaired": 2,
+    "average_characters": 214.69444444444446
+  },
+  "by_scenario": {
+    "area": {
+      "cases": 6,
+      "passed": 5,
+      "grounded": 5,
+      "ranking_correct": 5,
+      "covers_question": 5,
+      "natural": 5,
+      "concise": 5,
+      "exceptions": 1,
+      "repaired": 0,
+      "average_characters": 190.5
+    },
+    "behavior": {
+      "cases": 6,
+      "passed": 6,
+      "grounded": 6,
+      "ranking_correct": 6,
+      "covers_question": 6,
+      "natural": 6,
+      "concise": 6,
+      "exceptions": 0,
+      "repaired": 0,
+      "average_characters": 196.33333333333334
+    },
+    "distance": {
+      "cases": 6,
+      "passed": 6,
+      "grounded": 6,
+      "ranking_correct": 6,
+      "covers_question": 6,
+      "natural": 6,
+      "concise": 6,
+      "exceptions": 0,
+      "repaired": 0,
+      "average_characters": 243.16666666666666
+    },
+    "empty": {
+      "cases": 6,
+      "passed": 6,
+      "grounded": 6,
+      "ranking_correct": 6,
+      "covers_question": 6,
+      "natural": 6,
+      "concise": 6,
+      "exceptions": 0,
+      "repaired": 0,
+      "average_characters": 94.16666666666667
+    },
+    "hard_unknown": {
+      "cases": 6,
+      "passed": 5,
+      "grounded": 5,
+      "ranking_correct": 5,
+      "covers_question": 5,
+      "natural": 5,
+      "concise": 5,
+      "exceptions": 1,
+      "repaired": 0,
+      "average_characters": 251.66666666666666
+    },
+    "hybrid": {
+      "cases": 6,
+      "passed": 5,
+      "grounded": 5,
+      "ranking_correct": 5,
+      "covers_question": 5,
+      "natural": 5,
+      "concise": 5,
+      "exceptions": 1,
+      "repaired": 0,
+      "average_characters": 214.5
+    },
+    "multiple": {
+      "cases": 6,
+      "passed": 6,
+      "grounded": 6,
+      "ranking_correct": 6,
+      "covers_question": 6,
+      "natural": 6,
+      "concise": 6,
+      "exceptions": 0,
+      "repaired": 0,
+      "average_characters": 257.8333333333333
+    },
+    "price": {
+      "cases": 6,
+      "passed": 6,
+      "grounded": 6,
+      "ranking_correct": 6,
+      "covers_question": 6,
+      "natural": 6,
+      "concise": 6,
+      "exceptions": 0,
+      "repaired": 1,
+      "average_characters": 249
+    },
+    "stable": {
+      "cases": 6,
+      "passed": 6,
+      "grounded": 6,
+      "ranking_correct": 6,
+      "covers_question": 6,
+      "natural": 6,
+      "concise": 6,
+      "exceptions": 0,
+      "repaired": 0,
+      "average_characters": 197.33333333333334
+    },
+    "tie": {
+      "cases": 6,
+      "passed": 6,
+      "grounded": 6,
+      "ranking_correct": 6,
+      "covers_question": 6,
+      "natural": 6,
+      "concise": 6,
+      "exceptions": 0,
+      "repaired": 0,
+      "average_characters": 220.5
+    },
+    "unknown_soft": {
+      "cases": 6,
+      "passed": 6,
+      "grounded": 6,
+      "ranking_correct": 6,
+      "covers_question": 6,
+      "natural": 6,
+      "concise": 6,
+      "exceptions": 0,
+      "repaired": 1,
+      "average_characters": 244.16666666666666
+    },
+    "unscored": {
+      "cases": 6,
+      "passed": 5,
+      "grounded": 5,
+      "ranking_correct": 5,
+      "covers_question": 5,
+      "natural": 5,
+      "concise": 5,
+      "exceptions": 1,
+      "repaired": 0,
+      "average_characters": 217.16666666666666
+    }
+  },
+  "results": [
+    {
+      "id": "area-dev-1",
+      "scenario": "area",
+      "split": "development",
+      "query": "为什么推荐这几套房子？",
+      "gold": "预算先筛选，排序偏好是至少600平方英尺，第一套700符合、第二套500未达偏好，不能说第二套不满足硬条件；没有距离排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均通过月租硬条件，排序依据为600平方英尺面积偏好：Willow 700达标排前，Garden 500未达偏好排后，未误称其不满足硬条件，也未引入距离排序。解释清楚、自然、简洁，并诚实提示可租状态与价格需确认。"
+      },
+      "answer": "这两套都先通过了必须条件：月租不超过3000新币。在这个前提下，你希望室内面积尽量达到600平方英尺，所以排序主要看面积。\n\nWillow Residence记录约700平方英尺，达到这个面积偏好，因此排在前面；Garden Court约500平方英尺，没达到，所以排在后面。\n\nGarden Court记录月租1600新币，比Willow Residence的1900新币低，但价格只是筛选门槛，不是这次排序的依据。\n\n两套现在是否仍可租、价格是否有变动，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2590
+      },
+      "characters": 239,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3783
+    },
+    {
+      "id": "area-dev-2",
+      "scenario": "area",
+      "split": "development",
+      "query": "说人话讲讲它们怎么选、怎么排的，不用报分。",
+      "gold": "预算先筛选，排序偏好是至少600平方英尺，第一套700符合、第二套500未达偏好，不能说第二套不满足硬条件；没有距离排序。",
+      "passed": false,
+      "error": "EXPLANATION_GENERATION_FAILED: GROUNDING: numeric claim not supported by cited facts",
+      "diagnostic": {
+        "last_output": {
+          "version": "2.0",
+          "focus_listing_ids": [
+            "83000001",
+            "83000002"
+          ],
+          "paragraphs": [
+            {
+              "text": "这两套都是先过了必须条件：月租不超过3000新币。在这个前提下，你希望室内面积尽量到600平方英尺，所以排序主要看这一点。",
+              "support_refs": [
+                "condition:83000001:rent",
+                "condition:83000002:rent",
+                "ranking:method"
+              ]
+            },
+            {
+              "text": "Willow Residence记录约700平方英尺，达到这个面积偏好，排在前面；Garden Court约500平方英尺，没达到，所以排在后面。Garden Court月租1600新币，比Willow的1900新币低，但价格只是筛选门槛，不是这次排序的依据。",
+              "support_refs": [
+                "area:83000001",
+                "condition:83000001:large",
+                "area:83000002",
+                "condition:83000002:large",
+                "compare:1:2",
+                "ranking:method"
+              ]
+            },
+            {
+              "text": "两套记录的价格和现在是否还能租，都需要联系经纪人确认。",
+              "support_refs": [
+                "availability:current"
+              ]
+            }
+          ]
+        },
+        "repair_notes": [
+          "GROUNDING: numeric claim not supported by cited facts",
+          "GROUNDING: numeric claim not supported by cited facts"
+        ]
+      },
+      "latency_ms": 5132
+    },
+    {
+      "id": "area-dev-3",
+      "scenario": "area",
+      "split": "development",
+      "query": "为什么第一套放在前面？",
+      "gold": "预算先筛选，排序偏好是至少600平方英尺，第一套700符合、第二套500未达偏好，不能说第二套不满足硬条件；没有距离排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均通过3000新币硬性预算筛选，排序差异来自600平方英尺软偏好：第一套700达标、第二套500未达，且未误称第二套不满足硬条件，也未引入距离排序。内容聚焦“为什么第一套在前”，自然简洁，无内部字段或分数。"
+      },
+      "answer": "两套都先通过了月租不超过3000新币的必须条件。真正拉开顺序的是你希望室内面积尽量达到600平方英尺：Willow Residence 记录约700平方英尺，达到了这个偏好；Garden Court 约500平方英尺，没有达到。\n\nGarden Court 的记录月租是1600新币，比 Willow Residence 的1900新币低，但价格低本身不是这次排在前面的理由。两套现在的实际价格和是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "two-listing-comparison"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2393
+      },
+      "characters": 214,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3455
+    },
+    {
+      "id": "area-dev-4",
+      "scenario": "area",
+      "split": "development",
+      "query": "前两套帮我比一下，重点讲跟我要求有什么关系。",
+      "gold": "预算先筛选，排序偏好是至少600平方英尺，第一套700符合、第二套500未达偏好，不能说第二套不满足硬条件；没有距离排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确区分硬条件（预算）与软偏好（面积），说明第一套700达标、第二套500未达偏好而非硬条件不满足，排序原因正确且未混淆租金或距离；两套比较完整，语言自然简洁，并诚实提示价格与可租状态需确认。"
+      },
+      "answer": "两套都满足月租不超过3000新币这个必须条件。差别在于你希望室内面积尽量达到600平方英尺：Willow Residence 记录约700平方英尺，达到了；Garden Court 约500平方英尺，没达到。\n\n排序正是按这个面积偏好来的，所以 Willow Residence 在前。Garden Court 记录月租1600新币，比 Willow Residence 的1900新币低300新币，但租金低本身不是它排后的原因。\n\n两套记录的价格和当前是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "two-listing-comparison",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2497
+      },
+      "characters": 243,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3846
+    },
+    {
+      "id": "area-dev-5",
+      "scenario": "area",
+      "split": "development",
+      "query": "这几套是越便宜排得越前吗？",
+      "gold": "预算先筛选，排序偏好是至少600平方英尺，第一套700符合、第二套500未达偏好，不能说第二套不满足硬条件；没有距离排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明预算仅作硬性筛选、排序依据是600平方英尺软偏好，未把第二套说成不满足硬条件，也未提距离排序；事实与房源一致，语言自然简洁。"
+      },
+      "answer": "不是。预算只是先用来筛掉超支的房子，符合之后并不按租金从低到高排。\n\n这次真正参与排序的是“室内面积尽量不少于600平方英尺”这个偏好：Willow Residence 记录约700平方英尺，达到偏好；Garden Court 记录约500平方英尺，没达到，所以排在后面。\n\nGarden Court 的记录月租确实比 Willow Residence 低300新币，但价格差异本身不是排序依据。两套的当前租金和是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2603
+      },
+      "characters": 222,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3927
+    },
+    {
+      "id": "area-dev-6",
+      "scenario": "area",
+      "split": "development",
+      "query": "Why were these homes selected and ordered this way?",
+      "gold": "预算先筛选，排序偏好是至少600平方英尺，第一套700符合、第二套500未达偏好，不能说第二套不满足硬条件；没有距离排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "正确说明预算为硬筛选、面积600为排序偏好，第一套700达标排前、第二套500未达偏好排后，未误称第二套不满足硬条件，也未提距离排序。回答覆盖筛选与排序原因，语言自然简洁。末尾“价格需确认”略多余但不算虚构。"
+      },
+      "answer": "这两套都先通过了必须条件：月租不超过3000新币。排序时真正起作用的是你希望室内面积尽量达到600平方英尺这一偏好。\n\nWillow Residence记录约700平方英尺，达到这个面积偏好，所以排在前面；Garden Court记录约500平方英尺，没达到，因此排在后面。\n\nGarden Court的记录月租比Willow Residence低300新币，但租金高低本身不是这次的排序依据。\n\n两套记录的价格和当前是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "english-explanation",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2535
+      },
+      "characters": 225,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3921
+    },
+    {
+      "id": "behavior-dev-1",
+      "scenario": "behavior",
+      "split": "development",
+      "query": "为什么推荐这几套房子？",
+      "gold": "仅预算硬条件，无明确软偏好，实际排序来自已有浏览记录相似的房型和面积；不能说用户明确要求这些或说按地点距离。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均通过3000新币硬性预算条件，排序依据为浏览记录中相似房型和面积，并明确这不是用户提出的要求，也未声称按地点距离排序。覆盖了整体推荐原因，诚实提示价格与可租状态需确认。语言自然简洁，无内部字段或分数。"
+      },
+      "answer": "这两套都先通过了月租不超过3000新币的必须条件，记录月租分别是1900和1600新币。\n\n排序时参考的是你以往浏览中相似的房型和面积，只作为兴趣线索，并不是你明确提出的要求；所以租金更低的那套没有因此排到前面。\n\n两套的面积分别是700和500平方英尺，第二套是两居室。记录的价格和现在是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2384
+      },
+      "characters": 160,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3855
+    },
+    {
+      "id": "behavior-dev-2",
+      "scenario": "behavior",
+      "split": "development",
+      "query": "说人话讲讲它们怎么选、怎么排的，不用报分。",
+      "gold": "仅预算硬条件，无明确软偏好，实际排序来自已有浏览记录相似的房型和面积；不能说用户明确要求这些或说按地点距离。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答说明了硬条件仅预算、排序依据为浏览记录相似的房型和面积，未误称用户明确偏好或按距离排序；覆盖两套的筛选与排序解释，语言通俗，无分数，篇幅合规。仅末尾补充可租性确认，属合理诚实说明。"
+      },
+      "answer": "这两套都先过了你的硬性条件：月租不超过3000新币。Willow Residence记录月租1900新币、室内约700平方英尺；Garden Court记录月租1600新币、两间卧室、室内约500平方英尺。\n\n排序时没有把租金高低当作标准，而是参考你以往浏览中偏好的房型和面积，作为兴趣线索来排，所以更便宜的Garden Court没有因此排到前面。这个顺序只反映兴趣上的接近程度，不代表哪套明显更好。\n\n记录里的租金和现在是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2839
+      },
+      "characters": 228,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4140
+    },
+    {
+      "id": "behavior-dev-3",
+      "scenario": "behavior",
+      "split": "development",
+      "query": "为什么第一套放在前面？",
+      "gold": "仅预算硬条件，无明确软偏好，实际排序来自已有浏览记录相似的房型和面积；不能说用户明确要求这些或说按地点距离。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均通过预算硬条件，排序来自以往浏览相似的房型和面积，并明确不是用户明确要求、也不是按租金或距离；事实与房源一致，语言自然简洁。"
+      },
+      "answer": "两套都先通过了月租不超过3000新币的筛选。Willow Residence 记录月租1900新币、室内约700平方英尺；Garden Court 记录月租1600新币、约500平方英尺。\n\nWillow Residence 排在前面，是因为排序参考了你以往浏览中偏好的房型和面积，它更接近这类线索；这只是兴趣参考，不代表你已明确要求。租金更低本身不是排前的原因。\n\n记录中的价格和当前是否仍可租都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "two-listing-comparison"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2621
+      },
+      "characters": 208,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3699
+    },
+    {
+      "id": "behavior-dev-4",
+      "scenario": "behavior",
+      "split": "development",
+      "query": "前两套帮我比一下，重点讲跟我要求有什么关系。",
+      "gold": "仅预算硬条件，无明确软偏好，实际排序来自已有浏览记录相似的房型和面积；不能说用户明确要求这些或说按地点距离。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均满足预算硬条件，并如实指出排序依据是浏览记录中相似房型和面积，而非用户明确要求或地点距离；比较了价格与面积，未虚构卧室数（Willow为null未编造），并诚实提示价格与可租状态需确认。语言自然简洁，无内部字段。"
+      },
+      "answer": "两套都先通过了你的必须条件：月租不超过3000新币。Willow Residence 记录月租1900新币、室内700平方英尺；Garden Court 记录月租1600新币、室内500平方英尺，是两居室。\n\n排序上，这次参考的是你以往浏览中相似的房型和面积，只作为兴趣线索，并不是你明确提出的要求；所以 Garden Court 月租低300新币，也不代表它因此排在后面。\n\n两套记录的价格和当前是否可租都还需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "two-listing-comparison",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2299
+      },
+      "characters": 214,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3624
+    },
+    {
+      "id": "behavior-dev-5",
+      "scenario": "behavior",
+      "split": "development",
+      "query": "这几套是越便宜排得越前吗？",
+      "gold": "仅预算硬条件，无明确软偏好，实际排序来自已有浏览记录相似的房型和面积；不能说用户明确要求这些或说按地点距离。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明预算仅为硬性筛选、两套均通过，排序来自浏览记录相似的房型和面积，且未误称为用户明确要求或按距离排序；直接回答“不是”，并诚实提示价格与可租状态需确认。语言自然简洁，无内部字段。"
+      },
+      "answer": "不是。预算只是先用来筛掉超支的房子，两套都在范围内，所以租金高低本身不决定先后。\n\n这次的顺序参考了你以往浏览中相似的房型和面积，只算兴趣线索，并不代表你明确提过这些要求。Garden Court 记录月租1600新币，比 Willow Residence 的1900新币低300新币，但便宜并不是它排在后面的原因。\n\n两套记录的价格和现在是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2971
+      },
+      "characters": 186,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4203
+    },
+    {
+      "id": "behavior-dev-6",
+      "scenario": "behavior",
+      "split": "development",
+      "query": "Why were these homes selected and ordered this way?",
+      "gold": "仅预算硬条件，无明确软偏好，实际排序来自已有浏览记录相似的房型和面积；不能说用户明确要求这些或说按地点距离。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明预算为硬条件、排序来自浏览记录相似的房型和面积，未误称为用户明确要求或按距离排序；两套均提及，语言自然简洁。小瑕疵：结尾提到“当前是否可租需确认”属额外信息，但未虚构，可接受。"
+      },
+      "answer": "这两套都先通过了必须条件：月租不超过3000新币。记录月租分别是1900和1600新币，所以预算只是门槛，租金更低并不代表排得更前。\n\n排序参考的是你以往浏览中相似的房型和面积，只作为兴趣线索，并不是你明确提出的要求。两套面积分别为700和500平方英尺，因此这个顺序反映的是偏好倾向，不能说明第一套一定更合适。\n\n记录中的价格和当前是否可租都还需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "english-explanation",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2658
+      },
+      "characters": 182,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3890
+    },
+    {
+      "id": "distance-dev-1",
+      "scenario": "distance",
+      "split": "development",
+      "query": "为什么推荐这几套房子？",
+      "gold": "硬条件预算3000、NTU直线5公里。唯一有资料的排序偏好是靠近NTU；MRT或公交1公里仍未知不能说满足。不要把预算当价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均满足预算3000与NTU直线5公里硬条件；排序依据为靠近NTU（850m vs 1600m），并明确价格只是筛选门槛不决定排序；公交/MRT 1公里未知被诚实标注为无法确认而非满足；语言自然、无内部字段，中文约230字，未虚构事实。"
+      },
+      "answer": "这两套都先通过了必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5000米以内。\n\n在符合条件的基础上，这次真正参与排序的偏好是离学校越近越好。Willow Residence记录约850米，Garden Court约1600米，所以前者排在前面；Garden Court月租1600新币虽比前者1900新币低，但价格只是筛选门槛，不决定先后。\n\n两套附近是否有1000米内的地铁或公交站，目前资料还不能确认，这不代表没有；记录的价格和现在是否仍可租，也需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2727
+      },
+      "characters": 243,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3910
+    },
+    {
+      "id": "distance-dev-2",
+      "scenario": "distance",
+      "split": "development",
+      "query": "说人话讲讲它们怎么选、怎么排的，不用报分。",
+      "gold": "硬条件预算3000、NTU直线5公里。唯一有资料的排序偏好是靠近NTU；MRT或公交1公里仍未知不能说满足。不要把预算当价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明硬条件（预算3000、NTU直线5公里）为筛选，排序依据为靠近NTU，Willow 850米在前、Garden Court 1600米在后；明确便宜不是排序依据，未把预算当价格排序。公交/MRT 1公里未知被诚实说明，未虚构。覆盖“怎么选、怎么排”，语言自然、无分数、篇幅合规。"
+      },
+      "answer": "这两套先过了必须条件：月租不超过3000新币，且离南洋理工大学在5公里直线距离内。\n\n符合条件后，主要按离学校越近越靠前来排。Willow Residence记录约850米，Garden Court约1600米，所以前者在前。Garden Court月租1600新币，比Willow Residence的1900新币低，但便宜不是这次排序的依据。\n\n两套附近是否有1公里内的地铁或公交站，目前资料还不能确认，这不代表没有。记录的价格和现在是否仍可租，也需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2771
+      },
+      "characters": 235,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4324
+    },
+    {
+      "id": "distance-dev-3",
+      "scenario": "distance",
+      "split": "development",
+      "query": "为什么第一套放在前面？",
+      "gold": "硬条件预算3000、NTU直线5公里。唯一有资料的排序偏好是靠近NTU；MRT或公交1公里仍未知不能说满足。不要把预算当价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明Willow因距NTU更近（约850米 vs 1.6公里）排前，两套均满足预算3000和5公里硬条件；明确租金低不是排序原因，未把预算当价格排序；诚实说明公交/MRT未知，未声称满足。内容自然简洁，无内部字段。"
+      },
+      "answer": "Willow Residence 排在前面，是因为它离南洋理工大学更近：直线约850米，而 Garden Court 约1.6公里。两套都满足月租和学校距离的必须条件。\n\n这次排序主要看离学校远近，所以距离更近的排在前。Garden Court 月租1600新币，比 Willow Residence 的1900新币低，但租金低并不是它排后的原因。\n\n两套附近是否有合适的地铁或公交站，目前还不能确认；记录的价格和现在是否仍可租，也需要向经纪人核实。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "two-listing-comparison"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2894
+      },
+      "characters": 225,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4103
+    },
+    {
+      "id": "distance-dev-4",
+      "scenario": "distance",
+      "split": "development",
+      "query": "前两套帮我比一下，重点讲跟我要求有什么关系。",
+      "gold": "硬条件预算3000、NTU直线5公里。唯一有资料的排序偏好是靠近NTU；MRT或公交1公里仍未知不能说满足。不要把预算当价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确比较前两套：硬条件（预算3000、NTU直线5公里）均满足，并给出各自价格与距离；排序原因归为“更靠近NTU”偏好，明确价格低不是排后原因，未把预算当价格排序；公交/MRT 1公里未知如实说明。语言自然、简洁，无内部字段。"
+      },
+      "answer": "两套都满足你的必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5公里内。Willow Residence 记录月租1900新币、直线约850米；Garden Court 记录月租1600新币、直线约1600米。\n\n排序时真正起作用的是“更靠近南洋理工大学”这一偏好，所以更近的 Willow Residence 排在前面。Garden Court 每月便宜300新币，但价格低本身不是它排后的原因。\n\n两套附近是否有1公里内的地铁或公交站，目前都还不能确认；记录中的价格和当前是否可租也需向经纪人核实。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "two-listing-comparison",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2748
+      },
+      "characters": 258,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4208
+    },
+    {
+      "id": "distance-dev-5",
+      "scenario": "distance",
+      "split": "development",
+      "query": "这几套是越便宜排得越前吗？",
+      "gold": "硬条件预算3000、NTU直线5公里。唯一有资料的排序偏好是靠近NTU；MRT或公交1公里仍未知不能说满足。不要把预算当价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明不是按价格排序，预算与5公里为硬筛选，排序依据靠近NTU；用两套价格与距离对比解释，未把预算当价格排序，公交/MRT未知如实说明，语言自然简洁。"
+      },
+      "answer": "不是。预算和学校距离范围只是先用来筛掉不符合的房子；在符合的房子里，这次真正参与排序的是离学校越近越好，所以顺序并不按租金从低到高。\n\n比如 Garden Court 记录月租1600新币，比 Willow Residence 的1900新币低，但它离学校约1600米，而 Willow Residence 约850米，所以后者排在前面。\n\n两套附近是否有合适的地铁或公交站还不能确认；记录的价格和现在是否仍可租，也需要向经纪人核实。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 3926
+      },
+      "characters": 217,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 5270
+    },
+    {
+      "id": "distance-dev-6",
+      "scenario": "distance",
+      "split": "development",
+      "query": "Why were these homes selected and ordered this way?",
+      "gold": "硬条件预算3000、NTU直线5公里。唯一有资料的排序偏好是靠近NTU；MRT或公交1公里仍未知不能说满足。不要把预算当价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均满足预算3000与NTU直线5公里硬条件，排序依据为靠近NTU（850m vs 1600m），明确价格不是排序依据，并诚实说明公交/MRT 1公里未知。无虚构事实，语言自然简洁。"
+      },
+      "answer": "这两套都先通过了必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5000米以内。Willow Residence记录月租1900新币、直线约850米；Garden Court记录月租1600新币、直线约1600米。\n\n排序上真正起作用的是“离学校越近越好”这一条，所以直线距离更近的Willow Residence排在前面。Garden Court虽然记录租金低300新币，但价格本身不是排序依据，因此没有因此提前。\n\n两套附近1000米内是否有MRT或公交站，目前资料还不足以确认，这不代表没有；记录中的价格和当前是否仍可租，也需要向经纪人核实。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "english-explanation",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 3300
+      },
+      "characters": 281,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4707
+    },
+    {
+      "id": "empty-dev-1",
+      "scenario": "empty",
+      "split": "development",
+      "query": "怎么这次一间都没推荐？",
+      "gold": "本次无可展示结果，只限这次范围，不等于全市场没房，不擅自放宽或编造第一第二套。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "空结果场景：说明本次无房可展示、无排序结果，并明确不等于全市场没房，未编造或放宽条件；回答直接解释\"一间都没推荐\"的原因，语言自然简洁，无内部字段。"
+      },
+      "answer": "这次按你给的条件没有找到能展示的房子，所以没有排序结果可讲。\n\n这只说明本次范围内没有合适选项，并不代表市场上没有房。如果你想调整某一项条件，比如预算或学校距离，可以告诉我，我们再看看。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 1908
+      },
+      "characters": 93,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3155
+    },
+    {
+      "id": "empty-dev-2",
+      "scenario": "empty",
+      "split": "development",
+      "query": "没有结果的话能解释下吗？",
+      "gold": "本次无可展示结果，只限这次范围，不等于全市场没房，不擅自放宽或编造第一第二套。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "空结果解释正确：说明本次范围内无可展示房源、无排序选项，并明确不等于全市场没房，未编造房源或擅自放宽条件；语言自然简洁，回应了用户对无结果的疑问。"
+      },
+      "answer": "这次没有结果，是因为按你目前的条件，本次范围内没有能展示的房源，所以也没有可排序的选项。\n\n这不代表整个市场都没有合适的房子，只是这次查询没有匹配到。你可以告诉我更想放宽预算还是距离范围，我再按新条件找。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "empty-results",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2362
+      },
+      "characters": 102,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3400
+    },
+    {
+      "id": "empty-dev-3",
+      "scenario": "empty",
+      "split": "development",
+      "query": "是不是新加坡整个市场都没有合适的了？",
+      "gold": "本次无可展示结果，只限这次范围，不等于全市场没房，不擅自放宽或编造第一第二套。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确澄清空结果仅限本次条件范围，不等于全市场无房，未编造房源；语气自然简洁，并给出可调整条件的下一步建议。"
+      },
+      "answer": "不能这么说。这次只是按你目前的条件没有找到能展示的房源，并不代表新加坡整个市场都没有合适的房子。\n\n如果你愿意，我们可以一起看看是预算还是距离范围可以松动一些，再重新找一轮。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "empty-results",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 1981
+      },
+      "characters": 87,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 2839
+    },
+    {
+      "id": "empty-dev-4",
+      "scenario": "empty",
+      "split": "development",
+      "query": "我这条件为什么没找到？",
+      "gold": "本次无可展示结果，只限这次范围，不等于全市场没房，不擅自放宽或编造第一第二套。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "空结果场景：说明本次范围内无匹配、不代表全市场无房、未擅自放宽或编造房源，符合金标准；回答直接解释原因，语言自然简洁，无内部字段。"
+      },
+      "answer": "这次按你给的条件没有找到能展示的房源，所以没有可排序的结果。\n\n这只说明本次范围内没有匹配，不代表整个市场都没有合适的房子。你可以考虑调整哪项条件，比如预算或学校距离范围；我不会自动放宽要求。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 1917
+      },
+      "characters": 96,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 2949
+    },
+    {
+      "id": "empty-dev-5",
+      "scenario": "empty",
+      "split": "development",
+      "query": "没房就说明我的预算绝对不可能租到吗？",
+      "gold": "本次无可展示结果，只限这次范围，不等于全市场没房，不擅自放宽或编造第一第二套。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "空结果下明确说明仅限本次条件组合、不代表全市场无房，未编造房源或擅自放宽条件；直接回答用户疑问，语言自然简洁，无内部字段。"
+      },
+      "answer": "不能。这次只是在你当前的条件组合下没有找到能展示的房源，并不代表整个市场都没有符合预算的房子。\n\n如果愿意，可以商量先调整哪一项条件，比如预算或学校距离范围；我不会自动放宽你的要求。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2116
+      },
+      "characters": 91,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3165
+    },
+    {
+      "id": "empty-dev-6",
+      "scenario": "empty",
+      "split": "development",
+      "query": "Why are there no results this time?",
+      "gold": "本次无可展示结果，只限这次范围，不等于全市场没房，不擅自放宽或编造第一第二套。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "空结果说明本次范围内无匹配，未编造房源，未放宽条件，并说明不代表全市场无房，回答简洁自然。"
+      },
+      "answer": "这次按你给的条件没有找到可以展示的房源，所以没有排序结果可讲。\n\n这只说明本次范围内没有匹配，并不代表市场上没有合适的房子。如果你想调整某一项条件，比如预算或距离范围，可以告诉我，我们再看看。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "english-explanation",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2216
+      },
+      "characters": 96,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3141
+    },
+    {
+      "id": "hard_unknown-dev-1",
+      "scenario": "hard_unknown",
+      "split": "development",
+      "query": "为什么推荐这几套房子？",
+      "gold": "独卫是必须条件但未知，整个列表只能待确认不能说硬条件全满足；记录的预算及学校范围符合，已有距离排序依据有效，仍需问独卫和是否可租。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答准确说明预算与学校距离为通过条件，独卫未知需确认，排序依据为距离偏好且未把价格当排序因素；覆盖两套比较与关键未知，语言自然简洁。"
+      },
+      "answer": "这两套都先通过了必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5000米以内。\n\n排序时，有资料可比较的偏好是离学校越近越好：Willow Residence约850米，Garden Court约1600米，所以前者排在前面。Garden Court记录月租1600新币，比前者低300新币，但价格只是筛选门槛，不决定先后。\n\n两套的独立卫浴都还不能确认，资料不足不代表没有；记录的价格和现在是否仍可租，也需要向经纪人核实。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2503
+      },
+      "characters": 220,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3688
+    },
+    {
+      "id": "hard_unknown-dev-2",
+      "scenario": "hard_unknown",
+      "split": "development",
+      "query": "说人话讲讲它们怎么选、怎么排的，不用报分。",
+      "gold": "独卫是必须条件但未知，整个列表只能待确认不能说硬条件全满足；记录的预算及学校范围符合，已有距离排序依据有效，仍需问独卫和是否可租。",
+      "passed": false,
+      "error": "EXPLANATION_GENERATION_FAILED: GROUNDING: numeric claim not supported by cited facts",
+      "diagnostic": {
+        "last_output": {
+          "version": "2.0",
+          "focus_listing_ids": [
+            "83000001",
+            "83000002"
+          ],
+          "paragraphs": [
+            {
+              "text": "这两套都是先过了硬条件：月租不超过3000新币，且离南洋理工大学在5公里直线距离内。",
+              "support_refs": [
+                "condition:83000001:rent",
+                "condition:83000001:university",
+                "condition:83000002:rent",
+                "condition:83000002:university"
+              ]
+            },
+            {
+              "text": "排序上真正起作用的是“离学校越近越好”：Willow Residence记录约850米直线距离，Garden Court约1600米，所以前者排在前面。Garden Court月租1600新币，比Willow的1900新币低，但便宜不是这次排序的依据。",
+              "support_refs": [
+                "ranking:method",
+                "condition:83000001:closer",
+                "condition:83000002:closer",
+                "compare:1:2"
+              ]
+            },
+            {
+              "text": "两套的独立卫浴都还缺资料，不能确定是否满足全部要求；记录的价格和现在是否仍可租，也需要向经纪人确认。",
+              "support_refs": [
+                "condition:83000001:bath",
+                "condition:83000002:bath",
+                "availability:current"
+              ]
+            }
+          ]
+        },
+        "repair_notes": [
+          "GROUNDING: numeric claim not supported by cited facts",
+          "GROUNDING: numeric claim not supported by cited facts"
+        ]
+      },
+      "latency_ms": 4939
+    },
+    {
+      "id": "hard_unknown-dev-3",
+      "scenario": "hard_unknown",
+      "split": "development",
+      "query": "为什么第一套放在前面？",
+      "gold": "独卫是必须条件但未知，整个列表只能待确认不能说硬条件全满足；记录的预算及学校范围符合，已有距离排序依据有效，仍需问独卫和是否可租。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确解释排序依据为距离（850m vs 1.6km），符合软性距离偏好；说明预算与学校范围均满足，独卫未知不能视为硬条件全满足，并提示需确认独卫与可租。未虚构事实，语言自然简洁，约150词内。"
+      },
+      "answer": "Willow Residence 排在前面，是因为它离南洋理工大学更近：直线约850米，而 Garden Court 约1.6公里。两套都在预算和学校距离范围内，排序时主要看离学校远近，所以更近的这套靠前。\n\nGarden Court 的月租记录是1600新币，比 Willow Residence 的1900新币低，但租金低并不是它排在后面的原因。两套的独立卫浴都还无法确认，不能据此判断是否满足全部要求；当前价格和是否可租也需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "two-listing-comparison"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2605
+      },
+      "characters": 223,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4163
+    },
+    {
+      "id": "hard_unknown-dev-4",
+      "scenario": "hard_unknown",
+      "split": "development",
+      "query": "前两套帮我比一下，重点讲跟我要求有什么关系。",
+      "gold": "独卫是必须条件但未知，整个列表只能待确认不能说硬条件全满足；记录的预算及学校范围符合，已有距离排序依据有效，仍需问独卫和是否可租。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答准确比较前两套，说明预算与学校距离硬条件通过、独卫未知不能算全满足，排序依据为距离软条件而非价格，并诚实提示需确认独卫与可租状态；语言自然简洁，无内部字段。"
+      },
+      "answer": "两套都先过了你的硬条件：月租不超过3000新币，且到南洋理工大学的直线距离在5公里内。Willow Residence 记录月租1900新币、直线约850米；Garden Court 记录月租1600新币、直线约1600米。\n\n排序上真正起作用的是“越靠近南洋理工大学越好”，所以更近的 Willow Residence 排在前面。Garden Court 每月便宜300新币，但价格低本身不是它排后的原因。\n\n两套的独立卫浴都还查不到资料，因此还不能确定它们符合你的全部要求；这不代表没有独卫。记录中的价格和当前是否可租，也需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "two-listing-comparison",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2810
+      },
+      "characters": 272,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4029
+    },
+    {
+      "id": "hard_unknown-dev-5",
+      "scenario": "hard_unknown",
+      "split": "development",
+      "query": "这几套是越便宜排得越前吗？",
+      "gold": "独卫是必须条件但未知，整个列表只能待确认不能说硬条件全满足；记录的预算及学校范围符合，已有距离排序依据有效，仍需问独卫和是否可租。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明不是按价格排序，而是预算/距离筛选后按离NTU直线距离排序；两套距离与价格引用准确，独卫未知与可租需确认也诚实说明。无虚构事实，语言自然简洁。"
+      },
+      "answer": "不是。预算和学校距离范围只是先用来筛选，符合之后主要按离南洋理工大学的直线距离排序，越近越靠前。\n\n所以记录月租1600新币的Garden Court虽然比1900新币的Willow Residence便宜，但离学校约1600米，比约850米的Willow Residence远，就排在后面。\n\n两套的独立卫浴都还不能确认，因此不能说已满足全部要求；现在是否可租和实际价格也需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2523
+      },
+      "characters": 196,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3873
+    },
+    {
+      "id": "hard_unknown-dev-6",
+      "scenario": "hard_unknown",
+      "split": "development",
+      "query": "Why were these homes selected and ordered this way?",
+      "gold": "独卫是必须条件但未知，整个列表只能待确认不能说硬条件全满足；记录的预算及学校范围符合，已有距离排序依据有效，仍需问独卫和是否可租。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答准确说明预算与NTU距离硬条件通过、按距离偏好排序（Willow更近排第一，租金低不是排序原因），并诚实指出独卫未知、不能称完全匹配，还需确认可租。无虚构事实，语言自然简洁，约130词。"
+      },
+      "answer": "Both homes pass the must-haves that have data: rent within 3,000 SGD a month and within 5 km straight-line of NTU. Willow Residence is recorded at 1,900 SGD and about 850 m away; Garden Court at 1,600 SGD and about 1,600 m away.\n\nThe order follows the one preference with data: closer to NTU. Willow Residence is the nearer of the two, so it comes first. Garden Court's lower rent is not why it ranks second.\n\nA private bathroom is a must-have for both, but the records don't confirm it, so neither can yet be called fully matching. Current availability and prices also need checking with the agent.",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "english-explanation",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2642
+      },
+      "characters": 599,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3872
+    },
+    {
+      "id": "hybrid-dev-1",
+      "scenario": "hybrid",
+      "split": "development",
+      "query": "为什么推荐这几套房子？",
+      "gold": "预算学校范围先筛选，排序以更靠近学校为主，已有浏览记录的房型与面积作为辅助；不能说只按距离。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均通过租金与学校距离硬性筛选，排序以更靠近学校为主（850m vs 1600m），并明确价格只是筛选门槛而非排序依据；提到浏览记录作为辅助兴趣线索，符合金标准。距离为直线距离、不换算步行时间，并诚实提示价格与可租状态需确认，未虚构事实。整体自然、简洁，无内部字段或分数。"
+      },
+      "answer": "这两套都先通过了必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5000米以内。\n\n排序时主要看离学校远近：Willow Residence约850米，Garden Court约1600米，所以前者排在前面。Garden Court月租1600新币，比Willow Residence的1900新币低，但价格只是筛选门槛，不是排序依据。\n\n另外，你之前浏览过相似的房型和面积，这作为辅助兴趣线索参考，不是明确要求。距离都是直线距离，不能换算成步行时间；记录的价格和现在是否仍可租，需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2929
+      },
+      "characters": 256,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4285
+    },
+    {
+      "id": "hybrid-dev-2",
+      "scenario": "hybrid",
+      "split": "development",
+      "query": "说人话讲讲它们怎么选、怎么排的，不用报分。",
+      "gold": "预算学校范围先筛选，排序以更靠近学校为主，已有浏览记录的房型与面积作为辅助；不能说只按距离。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答说明了预算与学校范围先筛选、排序以距离为主、浏览记录房型面积为辅助，未混淆筛选与排序；未报分，语言通俗，长度合规。距离为直线距离的说明也诚实。"
+      },
+      "answer": "这两套先过了必须条件：月租不超过3000新币，且离南洋理工大学直线距离在5公里内。两套都符合，所以都留了下来。\n\n排序主要看离学校远近：Willow Residence约850米，Garden Court约1600米，所以前者排在前面。Garden Court月租1600新币，比Willow Residence的1900新币便宜，但价格只是筛选门槛，便宜不等于排前面。\n\n另外，你之前浏览过相似房型和面积的房子，这作为辅助兴趣参考，不是明确要求。距离都是直线距离，不能换算成步行时间；记录里的价格和现在是否还能租，需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2545
+      },
+      "characters": 267,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3942
+    },
+    {
+      "id": "hybrid-dev-3",
+      "scenario": "hybrid",
+      "split": "development",
+      "query": "为什么第一套放在前面？",
+      "gold": "预算学校范围先筛选，排序以更靠近学校为主，已有浏览记录的房型与面积作为辅助；不能说只按距离。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均通过硬性筛选（租金≤3000、直线距离≤5km），排序主因是更靠近学校（850m vs 1.6km），未误称只按距离或价格排序；未虚构浏览记录等未知信息，并诚实提示价格与可租状态需确认。语言自然简洁，中文约200字。"
+      },
+      "answer": "两套都先通过了月租不超过3000新币、离南洋理工大学直线距离不超过5公里的必须条件，所以都能进入候选。\n\n排序时真正起作用的是“越靠近学校越好”：Willow Residence 直线约850米，Garden Court 约1.6公里，因此 Willow Residence 排在前面。\n\nGarden Court 记录月租1600新币，比 Willow Residence 的1900新币低，但价格低本身不是它排后的原因；两套记录的价格和现在是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "two-listing-comparison"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 3140
+      },
+      "characters": 238,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4580
+    },
+    {
+      "id": "hybrid-dev-4",
+      "scenario": "hybrid",
+      "split": "development",
+      "query": "前两套帮我比一下，重点讲跟我要求有什么关系。",
+      "gold": "预算学校范围先筛选，排序以更靠近学校为主，已有浏览记录的房型与面积作为辅助；不能说只按距离。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均通过预算与5公里硬性筛选，排序以更近学校为主（850m vs 1600m），并将租金/面积作为辅助而非排序主因，未混淆筛选与排序。覆盖前两套比较及与要求的关系，诚实说明直线距离非步行、可租状态未知。语言自然简洁，无内部字段。"
+      },
+      "answer": "两套都满足你的必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5公里内。\n\n差别主要在离学校远近：Willow Residence 直线约850米，Garden Court 约1600米。你明确说过越近越好，所以 Willow Residence 排在前面。\n\nGarden Court 的记录月租是1600新币，比 Willow Residence 的1900新币低300新币，室内面积则是500平方英尺对700平方英尺；租金更低并不是它排后的原因，只是排序时更看重离学校近。\n\n这些是记录中的价格和距离，直线距离不能换算成步行时间；现在是否仍可租、价格是否有变，需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "two-listing-comparison",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 3488
+      },
+      "characters": 299,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 5077
+    },
+    {
+      "id": "hybrid-dev-5",
+      "scenario": "hybrid",
+      "split": "development",
+      "query": "这几套是越便宜排得越前吗？",
+      "gold": "预算学校范围先筛选，排序以更靠近学校为主，已有浏览记录的房型与面积作为辅助；不能说只按距离。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明预算与距离范围是筛选条件，排序以离学校距离为主（850m vs 1600m），并指出价格低300新币不决定名次；提到浏览记录房型面积为辅助，未混淆筛选与排序。事实与房源一致，语言自然，中文约230字，无内部字段。"
+      },
+      "answer": "不是。预算和学校距离范围只是先用来筛掉不符合的房子，符合之后并不是租金越低越靠前。\n\n这次真正参与排序的是离学校的直线距离：Willow Residence 约850米，Garden Court 约1600米，所以前者排在前面。Garden Court 记录月租1600新币，比前者低300新币，但价格差异本身不决定名次。\n\n另外还参考了你浏览记录里相似的房型和面积，只作为辅助兴趣线索，不是明确要求。两套记录的价格和现在是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2556
+      },
+      "characters": 227,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3965
+    },
+    {
+      "id": "hybrid-dev-6",
+      "scenario": "hybrid",
+      "split": "development",
+      "query": "Why were these homes selected and ordered this way?",
+      "gold": "预算学校范围先筛选，排序以更靠近学校为主，已有浏览记录的房型与面积作为辅助；不能说只按距离。",
+      "passed": false,
+      "error": "EXPLANATION_GENERATION_FAILED: GROUNDING: numeric claim not supported by cited facts",
+      "diagnostic": {
+        "last_output": {
+          "version": "2.0",
+          "focus_listing_ids": [
+            "83000001",
+            "83000002"
+          ],
+          "paragraphs": [
+            {
+              "text": "这两套都先通过了必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5公里以内。",
+              "support_refs": [
+                "condition:83000001:rent",
+                "condition:83000001:university",
+                "condition:83000002:rent",
+                "condition:83000002:university"
+              ]
+            },
+            {
+              "text": "排序上真正起作用的是“离学校越近越好”：Willow Residence约850米，Garden Court约1600米，所以前者排在前面。Garden Court月租1600新币，比Willow Residence的1900新币低，但租金低本身不是排前的原因。",
+              "support_refs": [
+                "ranking:method",
+                "condition:83000001:closer",
+                "condition:83000002:closer",
+                "compare:1:2"
+              ]
+            },
+            {
+              "text": "另外还参考了你之前浏览过的相似房型和面积，作为兴趣线索，不是明确要求。距离都是直线距离，不能换算成步行时间；现在是否仍可租、价格是否变动，都需要联系经纪人确认。",
+              "support_refs": [
+                "ranking:method",
+                "availability:current"
+              ]
+            }
+          ]
+        },
+        "repair_notes": [
+          "GROUNDING: numeric claim not supported by cited facts",
+          "GROUNDING: numeric claim not supported by cited facts"
+        ]
+      },
+      "latency_ms": 5598
+    },
+    {
+      "id": "multiple-dev-1",
+      "scenario": "multiple",
+      "split": "development",
+      "query": "为什么推荐这几套房子？",
+      "gold": "预算与学校直线5公里先筛选，排序同时考虑更靠近学校及租金1800以内，不能说唯一按距离或价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均通过预算与学校直线5公里硬筛选，并解释排序同时考虑更近学校与租金1800以内，明确不是单看距离或价格；距离为直线、不推算步行，价格与可租状态需确认，事实与金标准一致，语言自然简洁。"
+      },
+      "answer": "这两套都先通过了必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5000米以内。\n\n排序时看两点：离学校越近越好，月租尽量不超过1800新币。Willow Residence直线约850米、记录月租1900新币，更近但略超这个希望价位；Garden Court直线约1600米、记录月租1600新币，更便宜但离学校远一些。两项各有取舍，所以顺序不是单看租金或单看距离。\n\n距离都是直线距离，不能据此推算步行或通勤时间。记录中的价格和现在是否仍可租，需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2843
+      },
+      "characters": 240,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4506
+    },
+    {
+      "id": "multiple-dev-2",
+      "scenario": "multiple",
+      "split": "development",
+      "query": "说人话讲讲它们怎么选、怎么排的，不用报分。",
+      "gold": "预算与学校直线5公里先筛选，排序同时考虑更靠近学校及租金1800以内，不能说唯一按距离或价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明硬性筛选（预算3000、直线5公里）与排序同时考虑更近学校及租金1800以内，未误称为唯一按距离或价格排序；距离为直线、不换算步行，价格与可租状态需确认，均诚实；语言自然简洁，无内部字段或分数。"
+      },
+      "answer": "这两套都是先过了必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5公里内。\n\n排序时看两件事：离学校越近越好，以及月租尽量不超过1800新币。Willow Residence离学校约850米，更近，但记录月租1900新币，略高于这个希望值；Garden Court约1600米，记录月租1600新币，租金上更贴合。两个因素一起权衡，所以不是单看谁便宜或谁更近。\n\n距离都是直线距离，不能直接换算成步行或通勤时间。记录里的价格和现在是否仍可租，也需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2578
+      },
+      "characters": 238,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4090
+    },
+    {
+      "id": "multiple-dev-3",
+      "scenario": "multiple",
+      "split": "development",
+      "query": "为什么第一套放在前面？",
+      "gold": "预算与学校直线5公里先筛选，排序同时考虑更靠近学校及租金1800以内，不能说唯一按距离或价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均通过硬性筛选（租金≤3000、直线距离≤5公里），并解释排序同时考虑更近学校与租金≤1800两项偏好，未误称为唯一按距离或价格排序。事实与房源数据一致（1600/1600m、1900/850m），无虚构。直接回答“为什么第一套在前”，并诚实提示价格与可租状态需确认。语言自然、简洁，无内部字段或分数。"
+      },
+      "answer": "两套都先通过了必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5公里内。\n\n排序时同时看两项偏好：离学校越近越好，以及月租尽量不超过1800新币。Garden Court 记录月租1600新币，符合低租金偏好，但到学校直线约1600米；Willow Residence 到学校直线约850米，更近，但月租1900新币，略高于1800。\n\nGarden Court 排在前面，是因为它在租金偏好上更符合，而 Willow Residence 在距离偏好上更符合；两项偏好共同作用，不能只凭其中一项判断谁一定更好。记录的价格和当前是否可租仍需向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "two-listing-comparison"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2549
+      },
+      "characters": 283,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4012
+    },
+    {
+      "id": "multiple-dev-4",
+      "scenario": "multiple",
+      "split": "development",
+      "query": "前两套帮我比一下，重点讲跟我要求有什么关系。",
+      "gold": "预算与学校直线5公里先筛选，排序同时考虑更靠近学校及租金1800以内，不能说唯一按距离或价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均通过预算与5公里直线距离硬性筛选，并解释Garden Court因租金≤1800偏好胜出、Willow Residence因更近学校胜出，排序为两项偏好权衡而非单一距离或价格，符合金标准。未虚构事实，未知的卧室数未提及，价格与可租状态诚实提示需确认。语言自然简洁，中文约250字。"
+      },
+      "answer": "两套都满足你的必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5公里内。\n\n差别在于两项偏好各偏向一套。Garden Court 记录月租1600新币，符合你希望月租不超过1800新币的偏好；Willow Residence 记录月租1900新币，这项没达到。\n\n距离上则相反：Willow Residence 到学校直线约850米，比 Garden Court 的约1600米更近，更符合“越近越好”的偏好。所以 Garden Court 排在前，是租金偏好和距离偏好共同权衡的结果，并非单看某一项。\n\n两套记录的价格和当前是否可租都还需向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "two-listing-comparison",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2972
+      },
+      "characters": 284,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4331
+    },
+    {
+      "id": "multiple-dev-5",
+      "scenario": "multiple",
+      "split": "development",
+      "query": "这几套是越便宜排得越前吗？",
+      "gold": "预算与学校直线5公里先筛选，排序同时考虑更靠近学校及租金1800以内，不能说唯一按距离或价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明并非单纯按价格排序，先以预算和学校5公里直线距离硬性筛选，再综合更近学校与租金1800以内两项软条件；引用1600/1900新币及1600/850米直线距离均与房源事实一致，并诚实提示可租状态与价格需确认。语言自然简洁，未出现内部字段或分数。"
+      },
+      "answer": "不是单纯按租金从低到高排。预算和学校距离先作为必须条件筛选，符合之后，排序同时看两点：离学校越近越好，以及月租尽量不超过1800新币。\n\n所以排第一的Garden Court记录月租1600新币、离学校约1600米（直线），租金更省但距离较远；排第二的Willow Residence记录月租1900新币、约850米（直线），更近但贵300新币。两套各有取舍，不能只凭价格判断谁更合适。\n\n这些是记录中的价格和距离，现在是否仍可租、价格有无变化，需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2499
+      },
+      "characters": 232,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4070
+    },
+    {
+      "id": "multiple-dev-6",
+      "scenario": "multiple",
+      "split": "development",
+      "query": "Why were these homes selected and ordered this way?",
+      "gold": "预算与学校直线5公里先筛选，排序同时考虑更靠近学校及租金1800以内，不能说唯一按距离或价格排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均通过硬性条件（租金≤3000、直线距离≤5000米），并解释排序同时权衡更近学校与租金≤1800两项偏好，明确不是单看距离或价格。事实与房源一致，距离为直线距离且未推算步行，未知可租状态诚实说明。语言自然简洁，中文约300字。"
+      },
+      "answer": "这两套都先通过了必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5000米以内。\n\n排序时看两项有资料的偏好：离学校越近越好，以及月租尽量不超过1800新币。Garden Court 记录月租1600新币，符合较低的租金期望，但直线距离约1600米；Willow Residence 直线距离约850米，更靠近学校，但记录月租1900新币，略高于1800新币的期望。两项偏好各有取舍，所以这个顺序不是单看租金或单看距离得出的。\n\n距离都是直线距离，不能据此推算步行或通勤时间。记录中的价格和当前是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "english-explanation",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2972
+      },
+      "characters": 270,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4263
+    },
+    {
+      "id": "price-dev-1",
+      "scenario": "price",
+      "split": "development",
+      "query": "为什么推荐这几套房子？",
+      "gold": "预算3000。实际排序偏好是月租1800以内，第一套1700符合，第二套2100不符这项软偏好；不能说第二套超过硬预算或断言按距离排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均满足硬条件（≤3000、直线距离≤5000m），并正确以软偏好≤1800解释排序：1700符合、2100不符合，未误称第二套超硬预算或按距离排序。距离说明为直线距离、不换算步行时间，属诚实说明。整体回答“为什么推荐这几套”，无内部字段或分数，语言自然简洁，中文约200字。"
+      },
+      "answer": "这两套都先通过了必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5000米以内。\n\n在满足必须条件的房源里，有资料可比较的排序偏好是月租尽量不超过1800新币。Willow Residence记录月租1700新币，符合这项偏好；Garden Court记录2100新币，未达到，所以排在后面。\n\n两套到学校的距离分别是约850米和1600米，都是直线距离，不能直接换算成步行时间。记录中的租金和当前是否仍可租，还需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2821
+      },
+      "characters": 222,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4330
+    },
+    {
+      "id": "price-dev-2",
+      "scenario": "price",
+      "split": "development",
+      "query": "说人话讲讲它们怎么选、怎么排的，不用报分。",
+      "gold": "预算3000。实际排序偏好是月租1800以内，第一套1700符合，第二套2100不符这项软偏好；不能说第二套超过硬预算或断言按距离排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答用通俗语言说明硬条件（预算3000、5公里内）与软偏好（1800以内）如何决定排序，正确指出第二套2100未达软偏好而非超硬预算，未断言按距离排序；覆盖两套比较与排序原因，未虚构事实，长度适中。"
+      },
+      "answer": "这两套都是先过了必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5公里内。Willow Residence约850米，Garden Court约1600米，都符合。\n\n排序时真正起作用的是你希望月租尽量不超过1800新币这一条。Willow Residence记录月租1700新币，符合；Garden Court记录2100新币，比它高400新币，没达到这个偏好，所以排在后面。\n\n两套面积不同，Willow约700平方英尺，Garden Court约500平方英尺，但面积没有参与这次排序。记录里的价格和现在是否还能租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2403
+      },
+      "characters": 278,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3518
+    },
+    {
+      "id": "price-dev-3",
+      "scenario": "price",
+      "split": "development",
+      "query": "为什么第一套放在前面？",
+      "gold": "预算3000。实际排序偏好是月租1800以内，第一套1700符合，第二套2100不符这项软偏好；不能说第二套超过硬预算或断言按距离排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均通过硬条件（≤3000、≤5km直线），并指出排序依据是软偏好月租≤1800：第一套1700符合、第二套2100不符合，未误称超硬预算或按距离排序。事实与房源一致，语言自然简洁，中文约200字。末尾提示价格与可租状态需确认属诚实说明，未虚构。"
+      },
+      "answer": "两套都先通过了必须条件：月租不超过3000新币，且离南洋理工大学的直线距离在5公里内。Willow Residence 记录月租1700新币、直线约850米；Garden Court 记录月租2100新币、直线约1600米。\n\n真正参与排序的偏好是月租尽量不超过1800新币。Willow Residence 符合这条，Garden Court 未达到，所以它排在前面；这不是单看价格高低得出的结论。\n\n两套记录的价格和当前是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "two-listing-comparison"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2566
+      },
+      "characters": 228,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4152
+    },
+    {
+      "id": "price-dev-4",
+      "scenario": "price",
+      "split": "development",
+      "query": "前两套帮我比一下，重点讲跟我要求有什么关系。",
+      "gold": "预算3000。实际排序偏好是月租1800以内，第一套1700符合，第二套2100不符这项软偏好；不能说第二套超过硬预算或断言按距离排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均满足硬性预算3000与5公里距离条件，并指出排序依据是1800以内软偏好：第一套1700符合、第二套2100不符合，未误称第二套超硬预算或按距离排序。比较了两套并解释与要求的关系，语言自然、无内部字段，中文约300字。末尾“当前是否可租需确认”属合理谨慎说明，未虚构事实。"
+      },
+      "answer": "两套都满足你的必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5公里内。Willow Residence 记录月租1700新币、直线约850米；Garden Court 记录月租2100新币、直线约1600米。\n\n排序时真正起作用的是你希望月租尽量不超过1800新币：Willow Residence 符合，Garden Court 未达到这项偏好，所以前者排在前面。这个顺序不是单纯按距离或价格高低决定的。\n\n另外，Garden Court 是两卧、室内约500平方英尺，Willow Residence 室内约700平方英尺；如果你更看重空间或户型，可以据此权衡。两套记录的价格和当前是否可租都还需向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 2,
+        "example_ids": [
+          "two-listing-comparison",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [
+          "GROUNDING: numeric claim not supported by cited facts"
+        ],
+        "latency_ms": 4381
+      },
+      "characters": 315,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 5756
+    },
+    {
+      "id": "price-dev-5",
+      "scenario": "price",
+      "split": "development",
+      "query": "这几套是越便宜排得越前吗？",
+      "gold": "预算3000。实际排序偏好是月租1800以内，第一套1700符合，第二套2100不符这项软偏好；不能说第二套超过硬预算或断言按距离排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明并非单纯按价格排序，而是软偏好月租≤1800：1700符合、2100不符合；未误称第二套超硬预算或按距离排序。事实与房源一致，语言自然简洁，中文约200字。末尾关于价格与可租性需确认略超出所问，但属诚实提示，不影响。"
+      },
+      "answer": "不是单纯按价格从低到高排。两套都先通过了月租不超过3000新币、离南洋理工大学直线距离5公里内的必须条件；之后真正参与排序的是“月租尽量不超过1800新币”这个偏好。\n\nWillow Residence记录月租1700新币，符合这项偏好；Garden Court记录2100新币，未达到。所以前者排在前面，价格差只是这个偏好带来的结果，不是“越便宜越靠前”的规则。\n\n两套记录的价格和现在是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2701
+      },
+      "characters": 210,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4654
+    },
+    {
+      "id": "price-dev-6",
+      "scenario": "price",
+      "split": "development",
+      "query": "Why were these homes selected and ordered this way?",
+      "gold": "预算3000。实际排序偏好是月租1800以内，第一套1700符合，第二套2100不符这项软偏好；不能说第二套超过硬预算或断言按距离排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均通过硬条件（≤3000、≤5000米直线），并指出排序由“月租≤1800”软偏好决定：1700符合、2100不符合，故前者在前；明确否认按距离或单纯租金排序，也未误称第二套超硬预算。事实与房源一致，语言自然、简洁，无内部字段。"
+      },
+      "answer": "这两套都先通过了必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5000米以内。Willow Residence记录月租1700新币、直线约850米；Garden Court记录月租2100新币、直线约1600米。\n\n排序时真正起作用的是“月租尽量不超过1800新币”这个偏好：Willow Residence符合，Garden Court未达到，所以前者排在前面。这不是单纯按租金从低到高排，也不是只按距离排。\n\n两套记录的价格和当前是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "english-explanation",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2334
+      },
+      "characters": 241,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3647
+    },
+    {
+      "id": "stable-dev-1",
+      "scenario": "stable",
+      "split": "development",
+      "query": "为什么推荐这几套房子？",
+      "gold": "没有可用软偏好或浏览兴趣，顺序固定，不代表第一套更合适，不能虚构按价格或面积排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均通过月租≤3000的硬条件，并明确无软偏好、沿用固定顺序、第一套不代表更合适，未虚构按价格或面积排序。覆盖了推荐原因与排序含义，语言自然简洁，且诚实提示价格与可租状态需确认。"
+      },
+      "answer": "这两套都是先通过必须条件筛出来的：月租不超过3000新币，记录价分别是1900和1600新币。\n\n排序上目前没有能拉开差距的偏好依据，所以沿用固定展示顺序，排第一不代表明显更合适。第二套租金低300新币，但这只是差别，不是它排后的原因。\n\n两套的面积和卧室数不同，可按实际居住需求再看；记录的价格和现在是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2772
+      },
+      "characters": 167,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4033
+    },
+    {
+      "id": "stable-dev-2",
+      "scenario": "stable",
+      "split": "development",
+      "query": "说人话讲讲它们怎么选、怎么排的，不用报分。",
+      "gold": "没有可用软偏好或浏览兴趣，顺序固定，不代表第一套更合适，不能虚构按价格或面积排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答说明了硬条件筛选（月租≤3000）、无软偏好时沿用固定顺序、第一不代表更合适，未虚构按价格/面积排序；事实与房源一致，语言通俗，未报分，长度合规。仅补充了可租性未知，属诚实说明，不影响。"
+      },
+      "answer": "这两套都是先过了必须条件：月租不超过3000新币。记录上Willow Residence约1900新币、700平方英尺，Garden Court约1600新币、500平方英尺。\n\n排序上目前没有能拉开差距的偏好依据，所以沿用固定展示顺序，排第一不代表明显更合适。Garden Court记录租金低300新币，但便宜本身不是它排后的原因。\n\n这些记录不能证明现在仍可租，实际租金和可租情况需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2274
+      },
+      "characters": 202,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3588
+    },
+    {
+      "id": "stable-dev-3",
+      "scenario": "stable",
+      "split": "development",
+      "query": "为什么第一套放在前面？",
+      "gold": "没有可用软偏好或浏览兴趣，顺序固定，不代表第一套更合适，不能虚构按价格或面积排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明第一套靠前只是固定顺序、不代表更合适，未虚构按价格或面积排序；事实与房源一致，并诚实提示价格与可租状态需确认。语言自然简洁，未出现内部字段。"
+      },
+      "answer": "Willow Residence 排在前面，并不代表它明显更合适。两套都满足月租不超过3000新币这一必须条件，但这次没有能拉开差距的偏好依据，所以沿用了固定展示顺序。\n\n两套的实际差别在记录上：Willow Residence 月租1900新币、室内700平方英尺；Garden Court 月租1600新币、两间卧室、室内500平方英尺。租金更低并不是它排后的原因。\n\n记录的价格和当前是否仍可租都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "two-listing-comparison"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2627
+      },
+      "characters": 210,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3913
+    },
+    {
+      "id": "stable-dev-4",
+      "scenario": "stable",
+      "split": "development",
+      "query": "前两套帮我比一下，重点讲跟我要求有什么关系。",
+      "gold": "没有可用软偏好或浏览兴趣，顺序固定，不代表第一套更合适，不能虚构按价格或面积排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答准确比较前两套，说明均满足月租≤3000硬条件，价格与面积差异属取舍，未虚构排序依据，明确固定顺序不代表更合适；语言自然简洁，无内部字段。"
+      },
+      "answer": "两套都满足你月租不超过3000新币的必须条件。Willow Residence 记录月租1900新币、室内约700平方英尺；Garden Court 记录月租1600新币、两间卧室、约500平方英尺。\n\nGarden Court 每月便宜300新币，但面积小一些；Willow Residence 空间更大、租金更高。这属于取舍，不是谁更符合要求。\n\n目前没有能拉开差距的偏好依据，所以沿用固定展示顺序，排在前面的并不代表明显更合适。记录中的价格和当前是否可租，仍需向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "two-listing-comparison",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2651
+      },
+      "characters": 240,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3971
+    },
+    {
+      "id": "stable-dev-5",
+      "scenario": "stable",
+      "split": "development",
+      "query": "这几套是越便宜排得越前吗？",
+      "gold": "没有可用软偏好或浏览兴趣，顺序固定，不代表第一套更合适，不能虚构按价格或面积排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答明确否认按价格排序，说明预算仅作硬性筛选、两套均通过，顺序为固定展示顺序且不代表更合适；价格1600/1900与房源事实一致，未虚构排序依据；直接回应“是否越便宜越前”，并诚实提示价格与可租状态需确认。语言自然简洁，无内部字段。"
+      },
+      "answer": "不是。预算只是先用来筛掉超支的房子，两套都在3000新币以内，所以租金高低并没有决定先后。\n\n这次没有能拉开差距的偏好依据，因此沿用了固定展示顺序，排在前面的不代表更合适。第二套记录月租1600新币，比第一套的1900新币低，但这只是价格差别，不是排序原因。\n\n两套记录的价格和现在是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2741
+      },
+      "characters": 157,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4166
+    },
+    {
+      "id": "stable-dev-6",
+      "scenario": "stable",
+      "split": "development",
+      "query": "Why were these homes selected and ordered this way?",
+      "gold": "没有可用软偏好或浏览兴趣，顺序固定，不代表第一套更合适，不能虚构按价格或面积排序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均通过月租≤3000的硬性筛选，并明确排序为固定展示顺序、不代表第一套更合适，未虚构按价格或面积排序。补充了面积/户型差异供取舍，且诚实提示价格与可租状态需确认。语言自然、无内部字段，中文约250字，简洁。"
+      },
+      "answer": "这两套都是先按必须条件筛出来的：月租不超过3000新币，记录上分别是1900和1600新币，都符合。\n\n排序上目前没有能拉开差距的偏好依据，所以沿用了固定展示顺序，排在前面的并不代表更合适。第二套记录租金低300新币，但租金高低本身不是这次的排序原因。\n\n两套的面积和户型不同，第一套约700平方英尺，第二套约500平方英尺、两间卧室，可以按你对空间的需求来取舍。\n\n记录里的价格和当前是否仍可租都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "english-explanation",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 3135
+      },
+      "characters": 208,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4314
+    },
+    {
+      "id": "tie-dev-1",
+      "scenario": "tie",
+      "split": "development",
+      "query": "为什么推荐这几套房子？",
+      "gold": "两套到学校都是直线900米，唯一排序偏好就是更近，实际同分；现顺序不能证明第一套更优，月租不决定顺序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均通过硬性条件（租金≤3000、直线距离≤5000m），软偏好为更近但两者同为约900m故同分，现顺序不能证明第一套更优，租金不决定排序；并诚实提示价格与可租状态需确认。无虚构事实，语言自然简洁。"
+      },
+      "answer": "这两套都是先通过必须条件筛出来的：月租不超过3000新币，且到南洋理工大学的直线距离在5000米以内。两套记录的距离都是约900米，租金分别是1900和1600新币。\n\n排序上唯一有资料可比的偏好是离学校越近越好，但两套距离相同，没有拉开差距，所以沿用了现在的固定次序，不能说第一套明显更合适。租金更低也不是排在前面的理由。\n\n两套记录的价格和当前是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2975
+      },
+      "characters": 190,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4199
+    },
+    {
+      "id": "tie-dev-2",
+      "scenario": "tie",
+      "split": "development",
+      "query": "说人话讲讲它们怎么选、怎么排的，不用报分。",
+      "gold": "两套到学校都是直线900米，唯一排序偏好就是更近，实际同分；现顺序不能证明第一套更优，月租不决定顺序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答用通俗语言说明筛选（月租≤3000、直线距离≤5km）与排序（唯一偏好更近，两套均900m同分，现顺序不代表第一套更优，价格不决定排序），与金标准一致；未报分，无内部字段；中文约200字，无重复。仅末尾补充价格与可租需确认，属诚实说明，不影响。"
+      },
+      "answer": "这两套都是先过了必须条件：月租不超过3000新币，并且离南洋理工大学在5公里以内（直线距离）。\n\n排序上唯一有资料可比的偏好是离学校越近越好，但两套记录的直线距离都是900米，没有拉开差距，所以现在的先后只是沿用固定次序，不能说第一套明显更合适。\n\n顺带一提，第二套记录月租1600新币，比第一套的1900新币低300新币，但价格只是筛选门槛，不决定排名。\n\n两套记录的价格和现在是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2728
+      },
+      "characters": 206,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4226
+    },
+    {
+      "id": "tie-dev-3",
+      "scenario": "tie",
+      "split": "development",
+      "query": "为什么第一套放在前面？",
+      "gold": "两套到学校都是直线900米，唯一排序偏好就是更近，实际同分；现顺序不能证明第一套更优，月租不决定顺序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套到校直线距离同为约900米、排序偏好同分，现顺序不能证明第一套更优，且租金不决定顺序；事实与房源一致，语言自然简洁，并诚实提示价格与可租状态需确认。"
+      },
+      "answer": "Willow Residence 排在前面，并不是因为它明显更好。两套都满足预算和学校距离要求，离南洋理工大学的直线距离也都是约900米，在“越近越好”这一项上没有拉开差距。\n\n两套的差别主要在租金和面积：Willow Residence 记录月租1900新币、约700平方英尺；Garden Court 记录月租1600新币、约500平方英尺。租金更低本身不是排序靠前的理由，所以目前无法判断哪套更合适，你可以按预算和空间偏好来选。\n\n记录中的价格和当前是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "two-listing-comparison"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2689
+      },
+      "characters": 244,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3896
+    },
+    {
+      "id": "tie-dev-4",
+      "scenario": "tie",
+      "split": "development",
+      "query": "前两套帮我比一下，重点讲跟我要求有什么关系。",
+      "gold": "两套到学校都是直线900米，唯一排序偏好就是更近，实际同分；现顺序不能证明第一套更优，月租不决定顺序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均满足硬性条件（租金≤3000、直线距离≤5km），并指出唯一排序偏好为更近，两套同为约900米故同分，现顺序不能证明第一套更优；未把租金当作排序依据。补充租金/面积差异属事实且与要求相关，未知可租性也诚实说明。语言自然简洁，无内部字段。"
+      },
+      "answer": "两套都满足你的必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5公里内。\n\n差别主要在租金和面积：Willow Residence 记录月租1900新币、室内约700平方英尺；Garden Court 记录月租1600新币、约500平方英尺，每月低300新币，但空间小一些。\n\n排序上，唯一有资料可比的偏好是离学校越近越好，而两套到学校的直线距离都是约900米，没有拉开差距，所以现在的先后不代表第一套明显更合适。\n\n记录中的价格和当前是否可租都还需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "two-listing-comparison",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2739
+      },
+      "characters": 240,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4307
+    },
+    {
+      "id": "tie-dev-5",
+      "scenario": "tie",
+      "split": "development",
+      "query": "这几套是越便宜排得越前吗？",
+      "gold": "两套到学校都是直线900米，唯一排序偏好就是更近，实际同分；现顺序不能证明第一套更优，月租不决定顺序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答明确否定\"越便宜越前\"，正确说明租金仅作筛选门槛、排序偏好为更近，且两套直线距离同为约900米故同分、现顺序不能证明第一套更优；未虚构事实，未知的可用性/价格有效性也诚实提示。语言自然简洁，中文约230字。"
+      },
+      "answer": "不是。预算和学校距离范围先用来筛选，符合之后才看排序偏好；这次有资料可比的偏好是离学校越近越好，不是租金越低越靠前。\n\n这两套到学校的直线距离记录相同，都是约900米，排序上没拉开差距，所以沿用了现在的先后顺序，不能说第一套明显更好。\n\n第二套记录月租1600新币，比第一套的1900新币低，但价格只是筛选门槛，不决定名次。两套现在是否仍可租、价格是否还有效，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2952
+      },
+      "characters": 190,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4183
+    },
+    {
+      "id": "tie-dev-6",
+      "scenario": "tie",
+      "split": "development",
+      "query": "Why were these homes selected and ordered this way?",
+      "gold": "两套到学校都是直线900米，唯一排序偏好就是更近，实际同分；现顺序不能证明第一套更优，月租不决定顺序。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均通过硬性条件（租金≤3000、直线距离≤5000米），并指出唯一排序偏好为更近但两者同为约900米、实际同分，现顺序不能证明第一套更优；也明确租金不决定顺序。事实与房源一致，未虚构，语言自然简洁，中文约300字。"
+      },
+      "answer": "这两套都先通过了必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5000米以内。\n\n排序上唯一有资料可比的偏好是离学校越近越好，但两套记录的直线距离都是约900米，没有拉开差距，所以沿用了当前固定次序，不能说第一套明显更合适。\n\n两套的差别在租金和面积：Garden Court记录月租1600新币、室内约500平方英尺；Willow Residence记录月租1900新币、约700平方英尺。租金更低并不是排序靠前的原因。\n\n这些记录不能证明现在仍可租，实际价格和可租情况需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "english-explanation",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2897
+      },
+      "characters": 253,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4375
+    },
+    {
+      "id": "unknown_soft-dev-1",
+      "scenario": "unknown_soft",
+      "split": "development",
+      "query": "为什么推荐这几套房子？",
+      "gold": "有预算与学校范围，但唯一软偏好MRT/公交1公里未知，没有能区分优劣的可用偏好依据，不能说优选了交通方便或更近。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答准确说明两套均满足硬条件（租金≤3000、距NTU≤5km），并诚实指出交通软偏好未知、无区分依据，未虚构交通便利或更近，排序沿用固定次序而非声称优选，符合金标准。覆盖了推荐原因、比较与未知信息，语言自然简洁，无内部字段。"
+      },
+      "answer": "这两套都先通过了必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5公里内。Willow Residence记录月租1900新币、直线约850米；Garden Court记录月租1600新币、直线约1600米。\n\n排序上目前没有能拉开差距的偏好依据，所以沿用推荐方给出的固定次序，不能据此说第一套明显更合适。Garden Court虽然记录租金低300新币，但价格低本身不是排在前面的理由。\n\n两套到地铁或公交站的距离都还不能确认，资料不足不代表附近没有；记录的价格和现在是否仍可租，也需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2198
+      },
+      "characters": 258,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3461
+    },
+    {
+      "id": "unknown_soft-dev-2",
+      "scenario": "unknown_soft",
+      "split": "development",
+      "query": "说人话讲讲它们怎么选、怎么排的，不用报分。",
+      "gold": "有预算与学校范围，但唯一软偏好MRT/公交1公里未知，没有能区分优劣的可用偏好依据，不能说优选了交通方便或更近。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答如实说明两套均满足硬条件（租金≤3000、距NTU≤5km），并给出记录数值；排序上明确没有可用偏好依据、沿用推荐顺序，未虚构交通便利或更近；交通1公里未知也诚实说明。语言通俗、无分数与内部字段，篇幅合规。"
+      },
+      "answer": "这两套都是先过了必须条件：月租不超过3000新币，且离南洋理工大学的直线距离在5公里内。Willow Residence记录月租1900新币、直线约850米；Garden Court记录月租1600新币、直线约1600米。\n\n排序上，目前没有能拉开差距的偏好依据，所以沿用了推荐方给出的先后顺序，不能据此说第一套明显更合适。Garden Court虽然记录租金低300新币，但便宜本身不是排在前面的理由。\n\n两套离地铁或公交站是否在1公里内，资料还不足，不能确认，也不代表附近没有；记录的价格和现在是否仍可租，都需要向经纪人核实。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2705
+      },
+      "characters": 265,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4095
+    },
+    {
+      "id": "unknown_soft-dev-3",
+      "scenario": "unknown_soft",
+      "split": "development",
+      "query": "为什么第一套放在前面？",
+      "gold": "有预算与学校范围，但唯一软偏好MRT/公交1公里未知，没有能区分优劣的可用偏好依据，不能说优选了交通方便或更近。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套均满足硬条件、交通偏好未知、无区分依据，未虚构交通优势；事实与房源一致（1900/850m、1600/1.6km），并诚实说明未知与需核实。语言自然简洁，中文约200字。"
+      },
+      "answer": "Willow Residence 排在前面，并不代表它明显更好。两套都满足月租和学校距离的必须条件，目前没有能拉开差距的偏好依据，所以沿用了推荐方给出的固定顺序。\n\n实际差别上，Willow Residence 记录月租1900新币、离学校直线约850米；Garden Court 记录月租1600新币、直线约1.6公里。租金更低本身不是排在前面的原因。\n\n两套到地铁或公交站的距离都还不能确认，资料不足不代表附近没有站点。记录的价格和当前是否可租也需要向经纪人核实。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "two-listing-comparison"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2526
+      },
+      "characters": 234,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3663
+    },
+    {
+      "id": "unknown_soft-dev-4",
+      "scenario": "unknown_soft",
+      "split": "development",
+      "query": "前两套帮我比一下，重点讲跟我要求有什么关系。",
+      "gold": "有预算与学校范围，但唯一软偏好MRT/公交1公里未知，没有能区分优劣的可用偏好依据，不能说优选了交通方便或更近。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答准确比较两套：均满足预算与学校距离硬条件，列出价格与距离差异，并诚实说明交通软偏好未知、不能据此判定优劣，排序沿用展示顺序且不夸大。语言自然简洁，无内部字段。"
+      },
+      "answer": "两套都满足你的必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5公里内。Willow Residence 记录月租1900新币、直线约850米；Garden Court 记录月租1600新币、直线约1600米，室内面积500平方英尺。\n\n差别在于：Willow Residence 离学校更近，Garden Court 每月便宜300新币。你希望尽量靠近地铁或公交站，但两套目前都还不能确认这一点，资料不足不代表附近没有。\n\n这次排序没有可分辨的偏好差距，所以沿用当前展示顺序，不能据此说第一套明显更好。记录中的价格和现在是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "two-listing-comparison",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2983
+      },
+      "characters": 284,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4293
+    },
+    {
+      "id": "unknown_soft-dev-5",
+      "scenario": "unknown_soft",
+      "split": "development",
+      "query": "这几套是越便宜排得越前吗？",
+      "gold": "有预算与学校范围，但唯一软偏好MRT/公交1公里未知，没有能区分优劣的可用偏好依据，不能说优选了交通方便或更近。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答明确否认按价格排序，说明预算与学校距离仅作筛选，交通偏好未知无法区分优劣，未虚构事实；直接回应问题，语言自然简洁，无内部字段。"
+      },
+      "answer": "不是。预算和学校距离范围只是先用来筛选，符合之后并没有按租金从低到高排。\n\n这次没有能拉开差距的偏好依据，所以沿用推荐方给出的固定顺序，不能据此说排在前面的明显更合适。\n\n两套的租金记录有差别，但价格差本身不是排序原因；附近是否有合适的地铁或公交站也还不能确认。\n\n记录中的价格和现在是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2596
+      },
+      "characters": 158,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3698
+    },
+    {
+      "id": "unknown_soft-dev-6",
+      "scenario": "unknown_soft",
+      "split": "development",
+      "query": "Why were these homes selected and ordered this way?",
+      "gold": "有预算与学校范围，但唯一软偏好MRT/公交1公里未知，没有能区分优劣的可用偏好依据，不能说优选了交通方便或更近。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答准确说明两套均通过硬性条件（租金≤3000、距NTU≤5000米），并诚实指出交通软偏好未知、无可用排序依据，未虚构交通便利或更近，符合金标准。覆盖了筛选与排序原因，语言自然简洁，无内部字段。"
+      },
+      "answer": "这两套都是先通过必须条件筛出来的：月租不超过3000新币，且到南洋理工大学的直线距离在5000米以内。Willow Residence记录月租1900新币、直线约850米；Garden Court记录月租1600新币、直线约1600米。\n\n排序上目前没有能拉开差距的偏好依据，所以沿用了推荐方给出的固定顺序，不能据此说第一套明显更合适。Garden Court的租金虽然低300新币，但租金高低本身不是排序原因。\n\n两套到地铁或公交站的距离都还不能确认，资料不足不代表附近没有站点；记录中的价格和现在是否仍可租，也需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 2,
+        "example_ids": [
+          "english-explanation",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [
+          "GROUNDING: unknown support reference"
+        ],
+        "latency_ms": 4073
+      },
+      "characters": 266,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 5577
+    },
+    {
+      "id": "unscored-dev-1",
+      "scenario": "unscored",
+      "split": "development",
+      "query": "为什么推荐这几套房子？",
+      "gold": "独卫必须但未知，这组没有评分，只沿用返回顺序，不能说按近远或价格排好、不能说全部条件满足。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答准确说明两套仅通过租金与直线距离硬条件，独卫未知，未声称按价格或距离排序，展示顺序不代表优劣；事实与房源一致，语言自然简洁，未虚构步行路线或可用性。"
+      },
+      "answer": "这两套都先通过了必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5公里内。Willow Residence记录月租1900新币、直线约850米；Garden Court记录月租1600新币、直线约1600米。\n\n它们都还缺独立卫浴的资料，属于待确认选项，所以目前没有可比较的排序依据，展示顺序不代表第一套更合适。Garden Court虽然记录租金低300新币，但价格低本身不是排在前面的理由。\n\n记录中的租金和当前是否仍可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2568
+      },
+      "characters": 231,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3698
+    },
+    {
+      "id": "unscored-dev-2",
+      "scenario": "unscored",
+      "split": "development",
+      "query": "说人话讲讲它们怎么选、怎么排的，不用报分。",
+      "gold": "独卫必须但未知，这组没有评分，只沿用返回顺序，不能说按近远或价格排好、不能说全部条件满足。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明硬性筛选条件（租金≤3000、直线距离≤5000米），如实标注独卫为未知、不宣称满足；排序上明确无评分、仅沿用返回顺序，未误称按距离或价格排序；覆盖两套的筛选与排序逻辑，未报分，语言自然简洁，字数在限内。"
+      },
+      "answer": "这两套都是先按必须条件筛出来的：月租不超过3000新币，离南洋理工大学的直线距离在5000米以内。记录上，Willow Residence 月租1900新币、直线约850米；Garden Court 月租1600新币、直线约1600米。\n\n排序上，这两套都还缺必须条件的资料，属于待确认选项，目前没有可比较的排序依据，所以现在的先后只是沿用返回顺序，不能说第一套更合适。Garden Court 虽然记录租金低300新币，但便宜本身不是排在前面的理由。\n\n两套的独立卫浴都还不能确认，资料不足不代表没有；记录的价格和现在是否仍可租，也需要向经纪人核实。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "budget-not-price-sort"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2637
+      },
+      "characters": 276,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4003
+    },
+    {
+      "id": "unscored-dev-3",
+      "scenario": "unscored",
+      "split": "development",
+      "query": "为什么第一套放在前面？",
+      "gold": "独卫必须但未知，这组没有评分，只沿用返回顺序，不能说按近远或价格排好、不能说全部条件满足。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明排序只是沿用返回顺序、无评分依据，独卫未知，未虚构近远或价格排序；事实与房源一致，语言自然简洁。"
+      },
+      "answer": "Willow Residence 排在前面，并不代表它比 Garden Court 更合适。这两套都还缺少独立卫浴的资料，属于待确认选项，目前没有可比较的排序依据，所以只是沿用返回时的顺序。\n\n能确认的是：两套月租都在预算内，离南洋理工大学的直线距离也都在范围内。Willow Residence 记录月租1900新币、直线约850米、700平方英尺；Garden Court 记录月租1600新币、直线约1.6公里、500平方英尺。租金更低并不是它排后的原因。\n\n两套都还不能确定是否满足全部要求，记录的价格和当前是否可租也需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-distance",
+          "two-listing-comparison"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2855
+      },
+      "characters": 272,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4094
+    },
+    {
+      "id": "unscored-dev-4",
+      "scenario": "unscored",
+      "split": "development",
+      "query": "前两套帮我比一下，重点讲跟我要求有什么关系。",
+      "gold": "独卫必须但未知，这组没有评分，只沿用返回顺序，不能说按近远或价格排好、不能说全部条件满足。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答准确比较了前两套：租金与直线距离均与数据一致，独卫未知如实说明，未把返回顺序说成排序依据，也未声称全部条件满足。语言自然简洁，无内部字段。"
+      },
+      "answer": "这两套都符合你月租不超过3000新币、离南洋理工大学直线距离不超过5公里的要求。Willow Residence 记录月租1900新币、直线约850米；Garden Court 记录月租1600新币、直线约1600米，后者每月便宜300新币，但离学校更远。\n\n两套的独立卫浴都还无法确认，所以目前不能确定它们完全满足你的全部要求；资料不足不代表没有这个设施。\n\n这组房源缺少可比较的排序依据，因此现在的先后顺序不代表第一套更合适，也不能据此判断哪套更优。记录中的价格和当前是否可租，都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "two-listing-comparison",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2094
+      },
+      "characters": 251,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 3349
+    },
+    {
+      "id": "unscored-dev-5",
+      "scenario": "unscored",
+      "split": "development",
+      "query": "这几套是越便宜排得越前吗？",
+      "gold": "独卫必须但未知，这组没有评分，只沿用返回顺序，不能说按近远或价格排好、不能说全部条件满足。",
+      "passed": false,
+      "error": "EXPLANATION_GENERATION_FAILED: GROUNDING: numeric claim not supported by cited facts",
+      "diagnostic": {
+        "last_output": {
+          "version": "2.0",
+          "focus_listing_ids": [
+            "83000001",
+            "83000002"
+          ],
+          "paragraphs": [
+            {
+              "text": "不是。预算和学校距离范围只是先用来筛选，符合之后并没有按租金从低到高排序。",
+              "support_refs": [
+                "ranking:method",
+                "condition:83000001:rent",
+                "condition:83000002:rent"
+              ]
+            },
+            {
+              "text": "这两套都还缺独立卫浴的资料，属于待确认选项，目前没有可比较的排序依据，所以现在的先后顺序不能说明哪套更合适。",
+              "support_refs": [
+                "ranking:method",
+                "condition:83000001:bath",
+                "condition:83000002:bath"
+              ]
+            },
+            {
+              "text": "记录上第二套月租1600新币、第一套1900新币，但价格差本身不是排名原因；两套离学校的直线距离分别约850米和1600米。",
+              "support_refs": [
+                "compare:1:2",
+                "condition:83000001:university",
+                "condition:83000002:university"
+              ]
+            },
+            {
+              "text": "记录的价格和现在是否仍可租，都需要向经纪人确认。",
+              "support_refs": [
+                "availability:current"
+              ]
+            }
+          ]
+        },
+        "repair_notes": [
+          "GROUNDING: numeric claim not supported by cited facts",
+          "GROUNDING: numeric claim not supported by cited facts"
+        ]
+      },
+      "latency_ms": 4946
+    },
+    {
+      "id": "unscored-dev-6",
+      "scenario": "unscored",
+      "split": "development",
+      "query": "Why were these homes selected and ordered this way?",
+      "gold": "独卫必须但未知，这组没有评分，只沿用返回顺序，不能说按近远或价格排好、不能说全部条件满足。",
+      "passed": true,
+      "grading": {
+        "grounded": true,
+        "ranking_correct": true,
+        "covers_question": true,
+        "natural": true,
+        "concise": true,
+        "note": "回答正确说明两套仅通过租金与直线距离两项硬条件，独卫未知、属待确认；明确顺序只是沿用返回顺序，未声称按距离或价格排序，也未说全部条件满足。事实与房源数据一致（1900/850、1600/1600），未虚构步行路线。覆盖了\"为何被选及为何如此排序\"，语言自然、无内部字段，中文约300字。"
+      },
+      "answer": "这两套都先通过了必须条件：月租不超过3000新币，且到南洋理工大学的直线距离在5000米以内。Willow Residence记录月租1900新币、直线约850米；Garden Court记录月租1600新币、直线约1600米。\n\n不过两套的独立卫浴都还没有资料确认，所以它们属于待确认选项，还不能确定完全符合你的全部要求。资料不足不代表没有独卫，只是目前无法确认。\n\n这组待确认房源没有可比较的排序依据，因此现在的先后顺序只是沿用返回顺序，并不表示第一套更合适；租金更低也不是排在前面的理由。\n\n记录中的价格和当前是否仍可租都需要向经纪人确认。",
+      "generation": {
+        "version": "2.0",
+        "mode": "llm_grounded",
+        "attempts": 1,
+        "example_ids": [
+          "english-explanation",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "latency_ms": 2564
+      },
+      "characters": 273,
+      "legacy_diagnostic_removed": true,
+      "latency_ms": 4000
+    }
+  ]
+}

@@ -11,7 +11,7 @@ after evaluating every criterion like the rank_candidates stage. Nothing is writ
 import time
 from dataclasses import dataclass
 
-from recommendation.contracts.feedback import FeedbackSnapshot
+from recommendation.contracts.behavior import BehaviorContext
 from recommendation.contracts.request import RecommendationRequest
 from ..geography.resolver import key_map
 from ..ranking.scoring_v2 import score_pool
@@ -57,7 +57,7 @@ class Data:
         body = {"request_id": request_id, "conversation_id": conversation, "requirements_version": 1,
                 "requirements": {"listing_type": "RENT", "criteria": list(criteria)}, **extra}
         if feedback is not None:
-            body["feedback"] = feedback
+            body["behavior_context"] = feedback
         return RecommendationRequest.model_validate(body)
 
     def build(self, name, hard_criteria, settings):
@@ -97,6 +97,6 @@ class Data:
         grouped = by_listing(evidence)
         results = {r.listing_id: evaluate(r, criteria, grouped.get(r.listing_id, [])) for r in build.rows}
         valid = [r for r in build.rows if eligible(results[r.listing_id], criteria)]
-        snapshot = FeedbackSnapshot.model_validate(feedback or {})
+        snapshot = BehaviorContext.model_validate(feedback) if feedback else None
         return score_pool(valid, criteria, results, grouped, snapshot, settings), request.model_copy(
-            update={"feedback": snapshot, "result_limit": settings.recommendation.default_result_limit})
+            update={"behavior_context": snapshot, "result_limit": settings.recommendation.default_result_limit})

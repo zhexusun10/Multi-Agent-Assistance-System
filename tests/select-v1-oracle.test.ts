@@ -68,9 +68,10 @@ test('scoreOrder sorts by score then code-point listing_id; linearPercentile mat
   assert(Number.isNaN(linearPercentile([NaN],50)));
 });
 
-test('fused-v2 single-reference oracle reproduces the native scores of the committed single-reference fixture (self pair excluded, duration cancels)',async()=>{
+test('fused-v2 single-reference oracle reproduces the native scores of the committed single-reference fixture (self pair excluded, duration cancels, interest gate)',async()=>{
   const fx=await read('tests/fixtures/recommendation-v2/single-reference.json'),listings=(await read('recommendation/examples/listings.json')).map(oracleRow);
-  const native=fx.response,round=fx.native_body.feedback.previous_round,usable=round.browsing.filter((b:any)=>b.status==='recorded'&&b.duration_seconds>0);
+  // behavior_context (main contract): only interest_eligible summaries with positive cumulative seconds are references.
+  const native=fx.response,usable=fx.native_body.behavior_context.listing_view_durations.filter((v:any)=>v.interest_eligible&&v.duration_seconds>0);
   assert.equal(usable.length,1);const reference=usable[0].listing_id;
   // Hard budget <= 6000 keeps all 12 fixture listings; suppression hard_criteria removes only price.
   const pool=listings.filter((r:any)=>r.price!==null&&r.price<=fx.native_body.requirements.criteria[0].value);assert.equal(pool.length,native.pool.size);

@@ -105,7 +105,10 @@ def returned_evidence(dispatcher, built):
 
 def warnings(request, pool, extra=()):
     notes = [
-        "Sample viewing durations are simulated observations.",
+        ("Browser detail durations are attention estimates, not verified preferences."
+         if request.behavior_context is not None or any(e.source == "web_detail" for e in request.feedback)
+         else "Sample viewing durations are simulated observations."),
+        "Viewing drafts with a saved time are interest signals, not confirmed appointments.",
         "Posting time does not establish current availability.",
         *extra,
     ]

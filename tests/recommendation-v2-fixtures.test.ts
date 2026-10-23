@@ -1,5 +1,6 @@
-// Contract 2.0 / P2 validation (TS half) driven by the SAME fixture files as
-// recommendation/tests/test_contract_v2_fixtures.py: tests/fixtures/recommendation-v2/.
+// Native request (main contract 1.0 + behavior_context + cold_start) / response 2.0 validation (TS half)
+// driven by the SAME fixture files as recommendation/tests/test_contract_v2_fixtures.py: tests/fixtures/recommendation-v2/.
+// The app contract requires numeric listing IDs: fixture-NN -> 910000NN, consistently across a file.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile,readdir} from 'node:fs/promises';
@@ -7,18 +8,19 @@ import {z} from 'zod';
 import {nativeRequest,projectNative} from '../src/adapters/native-recommendation.js';
 import {recommendationRequestSchema,validateResponse} from '../src/contracts/recommendation-v1.js';
 import type {ToolContext} from '../src/tools/executor.js';
-import {nativeRequestSchema,nativeResponseSchema,nativeItemSchema,feedbackSidecarSchema,COUNTED_APPOINTMENT_STATUSES,NATIVE_MAX_RESULTS,EMPTY_SIDECAR} from '../src/contracts/recommendation-native.js';
-import {buildFeedbackSidecar,coldStartAfterAdoption} from '../src/domain/feedback-sidecar.js';
+import {nativeRequestSchema,nativeResponseSchema,nativeItemSchema,coldStartInputSchema,COUNTED_APPOINTMENT_SIGNALS,NATIVE_MAX_RESULTS,NOT_EXITED} from '../src/contracts/recommendation-native.js';
+import {coldStartAfterAdoption} from '../src/domain/cold-start.js';
 import {interpretFeedback} from '../src/domain/selection.js';
 
 const read=async(path:string)=>JSON.parse(await readFile(path,'utf8'));
+const numeric=async(path:string)=>JSON.parse((await readFile(path,'utf8')).replace(/fixture-(\d+)/g,(_m,n)=>'910000'+n));
 const dir='tests/fixtures/recommendation-v2/';
 const yaml=await readFile('recommendation/settings/recommendation.yaml','utf8');
 
 test('generated Python examples parse with the strict 2.0 mirror; max_result_limit == schema maximum',async()=>{
  const folder='recommendation/examples/contracts/';let responses=0,requests=0;
  for(const name of (await readdir(folder)).filter(n=>n.endsWith('.json'))){
-  const body=await read(folder+name);
+  const body=await numeric(folder+name);
   if('status' in body){const r=nativeResponseSchema.parse(body);assert.match(r.execution.config_hash,/^[0-9a-f]{64}$/);assert.match(r.execution.selection_hash,/^[0-9a-f]{64}$/);responses++;}else{nativeRequestSchema.parse(body);requests++;}
  }
  assert(responses>=4&&requests>=3);
@@ -53,44 +55,31 @@ test('response cases: the strict mirror enforces the same 2.0 response invariant
  }
 });
 
-test('TS valid appointment statuses equal ranking.behavior.counted_appointment_statuses (YAML)',()=>{
- const list=yaml.match(/counted_appointment_statuses:\s*\[([^\]]*)\]/)![1].split(',').map(s=>s.trim());
- assert.deepEqual([...COUNTED_APPOINTMENT_STATUSES],[...list].sort());
+test('TS counted viewing signals equal ranking.behavior.counted_appointment_signals (YAML)',()=>{
+ const list=yaml.match(/counted_appointment_signals:\s*\[([^\]]*)\]/)![1].split(',').map(s=>s.trim());
+ assert.deepEqual([...COUNTED_APPOINTMENT_SIGNALS],[...list].sort());
 });
 
 test('contract cases: nativeRequestSchema accepts exactly the cases Python accepts',async()=>{
- const {cases}=await read(dir+'contract-cases.json');assert(cases.length>=25);
+ const {cases}=await numeric(dir+'contract-cases.json');assert(cases.length>=25);
  for(const c of cases){
   const parsed=nativeRequestSchema.safeParse(c.body);assert.equal(parsed.success,c.valid,`${c.name}: ${parsed.success?'accepted':parsed.error.message}`);
-  if(c.service_error&&c.body.feedback.appointments.some((a:any)=>!(COUNTED_APPOINTMENT_STATUSES as readonly string[]).includes(a.statuses[0])))
-   assert.equal(feedbackSidecarSchema.safeParse({...c.body.feedback,cold_start:c.body.cold_start}).success,false,`${c.name}: the orchestrator sidecar must never carry it`);
  }
 });
 
-test('flow rounds: nativeRequest(v1_request, sidecar) == native_body (version+1, native: prefix, snapshot, no field loss), pure',async()=>{
- const flow=await read(dir+'flow.json');
+test('flow rounds: nativeRequest(v1_request, cold_start) == native_body (version+1, native: prefix, behavior_context and events, no field loss), pure',async()=>{
+ const flow=await numeric(dir+'flow.json');
  for(const round of flow.rounds){
-  const v1=recommendationRequestSchema.parse(round.v1_request),sidecar=feedbackSidecarSchema.parse(round.sidecar);
-  const body=nativeRequest(v1,sidecar).request;
-  assert.deepEqual(body,round.native_body,round.name);
+  const v1=recommendationRequestSchema.parse(round.v1_request),cold=coldStartInputSchema.parse(round.cold_start) as any;
+  const body=nativeRequest(v1,cold).request;
+  assert.deepEqual(JSON.parse(JSON.stringify(body)),round.native_body,round.name);
   assert.equal(body.requirements_version,v1.requirements_version+1);
   assert.equal(body.previous_state_id,v1.previous_state_id?.replace(/^native:/,'')??null);
-  assert.equal(JSON.stringify(nativeRequest(structuredClone(v1),structuredClone(sidecar)).request),JSON.stringify(body));
+  assert.deepEqual(body.behavior_context,v1.behavior_context);
+  assert.equal(JSON.stringify(nativeRequest(structuredClone(v1),structuredClone(cold)).request),JSON.stringify(body));
   nativeRequestSchema.parse(body);
  }
- assert.deepEqual(flow.rounds[0].sidecar,EMPTY_SIDECAR);
-});
-
-test('sidecar cases: buildFeedbackSidecar == expected (native adopted, hardGap, baseline, legacy, empty, none); always a valid native body',async()=>{
- const {cases}=await read(dir+'sidecar-cases.json');assert(cases.length>=6);
- for(const c of cases){
-  const built=buildFeedbackSidecar(c.input.recommendation,c.input.durations,c.input.actions,c.input.cold_start);
-  assert.deepEqual(built,c.expected,c.name);
-  const v1=recommendationRequestSchema.parse({contract_version:'1.0',request_id:'v2-next',conversation_id:'v2-fixture',requirements_version:0,requirements:{listing_type:'RENT',criteria:[]},result_limit:10});
-  nativeRequestSchema.parse(nativeRequest(v1,built).request);
-  // Shuffled rows give the identical snapshot (deterministic; persisted once, never recomputed).
-  assert.deepEqual(buildFeedbackSidecar(c.input.recommendation,[...c.input.durations].reverse(),[...c.input.actions].reverse(),c.input.cold_start),built);
- }
+ assert.deepEqual(flow.rounds[0].cold_start,NOT_EXITED);
 });
 
 test('cold-start exit is stored only when the adopted native response evaluated and met all exit conditions',()=>{

@@ -1,0 +1,242 @@
+{
+  "external_messages_sent": 0,
+  "cases": [
+    {
+      "name": "jurong-east-1b1b",
+      "query": "你好，我要租裕廊东附近5公里内的房子，预算在2500新币每月，房子附近1公里内最好有MRT或公交站，要求房型为1B1B",
+      "status": "passed",
+      "duration_seconds": 34.19,
+      "requirements": {
+        "criteria": [
+          {
+            "unit": "count",
+            "field": "bathrooms",
+            "value": 1,
+            "operator": "eq",
+            "strength": "hard",
+            "criterion_id": "bathrooms"
+          },
+          {
+            "unit": "count",
+            "field": "bedrooms",
+            "value": 1,
+            "operator": "eq",
+            "strength": "hard",
+            "criterion_id": "minimum-bedrooms"
+          },
+          {
+            "unit": "SGD/month",
+            "field": "price",
+            "value": 2500,
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "monthly-rent"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 1000,
+            "target": {
+              "name": "最近的MRT或公交站",
+              "category": "PublicTransport"
+            },
+            "weight": 1,
+            "operator": "lte",
+            "strength": "soft",
+            "criterion_id": "place_proximity:PublicTransport-preference",
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 5000,
+            "target": {
+              "name": "JURONG EAST",
+              "place_id": "URA:AREA:JURONG_EAST"
+            },
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST",
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 1000,
+            "target": {
+              "name": "JURONG EAST",
+              "place_id": "URA:AREA:JURONG_EAST"
+            },
+            "weight": 1,
+            "operator": "lte",
+            "strength": "soft",
+            "criterion_id": "place_proximity:URA:AREA:JURONG_EAST-preference",
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ],
+        "listing_type": "RENT"
+      },
+      "answer": "这四套都还不能确定符合你的全部要求。已确认的是卧室数为1、记录月租在2500新币以内；但到裕廊东5公里内、1公里内有MRT或公交站、以及卫浴情况都缺少资料，需要逐套核实，资料不足不代表没有。\n\n因此目前的顺序只是待确认选项的展示顺序，没有可比较的排序依据，不能据此判断哪套更近、交通更方便或更合适；租金较低也不代表排在前面。\n\n记录价格和现在是否仍可租，都需要联系经纪人确认。",
+      "app_status": "no_match",
+      "native_status": "needs_clarification",
+      "verified": 0,
+      "unverified": 4,
+      "execution": {
+        "tokens": 20740,
+        "strategy": "complete-pool weighted ranking",
+        "trace_id": "5f8fd956-40bb-415c-b596-afb5688071e9",
+        "data_mode": "database",
+        "trace_ref": "sqlite:5f8fd956-40bb-415c-b596-afb5688071e9",
+        "tool_calls": 4,
+        "duration_ms": 19030.99999995902,
+        "model_calls": 4,
+        "controller_mode": "live",
+        "scoring_version": "weighted-v1",
+        "model_identifier": "openai:deepseek-flash"
+      },
+      "tools": [
+        "retrieve_listings",
+        "get_geographic_evidence",
+        "validate_hard_constraints",
+        "rank_candidates"
+      ],
+      "normalized_model_outputs": 1
+    },
+    {
+      "name": "no-matching-bedrooms",
+      "query": "我要租D01的房子，至少5间卧室，预算每月不超过2000新币。",
+      "status": "passed",
+      "duration_seconds": 41.22,
+      "requirements": {
+        "criteria": [
+          {
+            "unit": "count",
+            "field": "bedrooms",
+            "value": 5,
+            "operator": "gte",
+            "strength": "hard",
+            "criterion_id": "minimum-bedrooms"
+          },
+          {
+            "unit": "SGD/month",
+            "field": "price",
+            "value": 2000,
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "monthly-rent"
+          },
+          {
+            "field": "district",
+            "value": "D01",
+            "operator": "eq",
+            "strength": "hard",
+            "criterion_id": "preferred-district"
+          }
+        ],
+        "listing_type": "RENT"
+      },
+      "answer": "按你提出的卧室数量和月租预算，这次没有找到能展示的房源。这只是本次范围内的结果，不能说明市场上没有合适的房子。\n\n如果你愿意，我们可以一起看看调整哪项条件更合适，我不会自动放宽你的要求。",
+      "app_status": "no_match",
+      "native_status": "no_match",
+      "verified": 0,
+      "unverified": 0,
+      "execution": {
+        "tokens": 8721,
+        "strategy": "complete-pool weighted ranking",
+        "trace_id": "f3b9135f-12d6-4a8a-a354-258d5bb435db",
+        "data_mode": "database",
+        "trace_ref": "sqlite:f3b9135f-12d6-4a8a-a354-258d5bb435db",
+        "tool_calls": 4,
+        "duration_ms": 19687.00000003446,
+        "model_calls": 4,
+        "controller_mode": "live",
+        "scoring_version": "weighted-v1",
+        "model_identifier": "openai:deepseek-flash"
+      },
+      "tools": [
+        "retrieve_listings",
+        "get_geographic_evidence",
+        "validate_hard_constraints",
+        "rank_candidates"
+      ],
+      "normalized_model_outputs": 1
+    },
+    {
+      "name": "known-geography",
+      "query": "我要租新加坡国立大学附近5公里内的房子，预算在2000新币每月。",
+      "status": "passed",
+      "duration_seconds": 66.52,
+      "requirements": {
+        "criteria": [
+          {
+            "unit": "SGD/month",
+            "field": "price",
+            "value": 2000,
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "monthly-rent"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 5000,
+            "target": {
+              "name": "National University of Singapore",
+              "place_id": "OSM:way:54519165"
+            },
+            "operator": "lte",
+            "strength": "hard",
+            "criterion_id": "place_proximity:OSM:way:54519165",
+            "distance_type": "straight_line",
+            "distance_preference": "bounded"
+          },
+          {
+            "unit": "m",
+            "field": "place_proximity",
+            "value": 1000,
+            "target": {
+              "name": "National University of Singapore",
+              "place_id": "OSM:way:54519165"
+            },
+            "weight": 1,
+            "operator": "lte",
+            "strength": "soft",
+            "criterion_id": "place_proximity:OSM:way:54519165-preference",
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ],
+        "listing_type": "RENT"
+      },
+      "answer": "先按你的两个必须条件筛：月租不超过2000新币，且在新加坡国立大学5公里直线范围内。前四套的资料能确认这两项都符合，所以排在前面；它们之间主要按离学校的直线距离排序，越近越靠前，比如前两套约961米，第四套约1036米。租金低并不等于排名更前。\n\n后四套的租金记录都在预算内，但缺少到学校的距离资料，还不能确定是否满足5公里要求，因此按原顺序列在后面，先后不代表谁更合适。\n\n这些价格和距离都是记录值，现在是否仍可租、价格有无变化，需要联系经纪人确认。",
+      "app_status": "success",
+      "native_status": "success",
+      "verified": 4,
+      "unverified": 4,
+      "execution": {
+        "tokens": 21137,
+        "strategy": "complete-pool weighted ranking",
+        "trace_id": "d3494233-87fc-4da2-9533-7063c555e3ae",
+        "data_mode": "database",
+        "trace_ref": "sqlite:d3494233-87fc-4da2-9533-7063c555e3ae",
+        "tool_calls": 4,
+        "duration_ms": 45687.99999996554,
+        "model_calls": 4,
+        "controller_mode": "live",
+        "scoring_version": "weighted-v1",
+        "model_identifier": "openai:deepseek-flash"
+      },
+      "tools": [
+        "retrieve_listings",
+        "get_geographic_evidence",
+        "validate_hard_constraints",
+        "rank_candidates"
+      ],
+      "normalized_model_outputs": 1
+    }
+  ],
+  "status": "passed"
+}

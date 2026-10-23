@@ -6,7 +6,7 @@ from recommendation.contracts.request import (
     RecommendationRequest,
 )
 from recommendation.contracts.requirements import Requirements
-from recommendation.contracts.feedback import FeedbackSnapshot, BrowsingRecord
+from recommendation.contracts.behavior import BehaviorContext, ListingViewDuration
 from recommendation.contracts.errors import RecommendationError
 from recommendation.repositories.connections import repositories
 from recommendation.state.store import StateStore
@@ -49,10 +49,10 @@ def req(**changes):
 
 
 def snapshot(response, **changes):
-    """Full previous-round feedback snapshot for ``response`` (simulated orchestrator)."""
-    data = feedback_example(response)
+    """behavior_context for ``response`` (simulated orchestrator, main contract)."""
+    data = feedback_example(response, as_of="2026-10-23T08:00:00Z")
     data.update(changes)
-    return FeedbackSnapshot.model_validate(data)
+    return BehaviorContext.model_validate(data)
 
 
 def next_req(response, **changes):
@@ -74,21 +74,22 @@ def test_full_flow_and_restart(service):
     validate_response(first)
     generate(check=True)
     feedback = snapshot(first)
-    second = service.recommend(next_req(first, feedback=feedback))
+    second = service.recommend(next_req(first, behavior_context=feedback))
     assert second.status == "success"
     # P5: the configured behaviour weight (ranking.behavior_weight) replaces weighted-v1's
     # fixed implicit weight.
     behavior_weight = RecommendationConfig.default().ranking.behavior_weight
     assert all(r.scores.behavior_weight == behavior_weight for r in second.recommendations)
-    assert service.recommend(next_req(first, feedback=feedback)) == second
-    # Re-sending the same snapshot (previous_round need not be the head) adds nothing.
+    assert service.recommend(next_req(first, behavior_context=feedback)) == second
+    # Re-sending the same snapshot under a new request ID adds nothing (no native accumulation).
     duplicate = service.recommend(
-        req(request_id="r3", previous_state_id=second.state.state_id, feedback=feedback)
+        req(request_id="r3", previous_state_id=second.state.state_id, behavior_context=feedback)
     )
     profile = service.store.current("c1")["profile"]
     assert profile["browsing"] == {
-        r.listing_id: {"status": "recorded", "duration_seconds": r.duration_seconds}
-        for r in feedback.previous_round.browsing
+        r.listing_id: {"duration_seconds": r.duration_seconds, "view_count": r.view_count,
+                       "interest_eligible": r.interest_eligible}
+        for r in feedback.listing_view_durations
     }
     assert [r.scores for r in duplicate.recommendations] == [
         r.scores for r in second.recommendations
@@ -131,15 +132,16 @@ def test_conflicts_atomicity_and_stale(service):
     first = service.recommend(req())
     assert service.recommend(req(result_limit=2)).error.code == "IDEMPOTENCY_CONFLICT"
     assert service.recommend(req(request_id="late")).error.code == "STALE_REFERENCE"
-    data = feedback_example(first)
-    data["previous_round"]["shown_listing_ids"][0] = "invented"
-    data["previous_round"]["browsing"][0]["listing_id"] = "invented"
-    failed = service.recommend(
-        next_req(first, feedback=FeedbackSnapshot.model_validate(data))
-    )
-    assert failed.error.code == "INVALID_FEEDBACK"
-    assert service.store.current("c1")["request"] == req().model_dump(mode="json")
+    # The failed requests above committed nothing (still sequence 1, first's state).
     assert service.store.current("c1")["state_id"] == first.state.state_id
+    # A behaviour summary for a listing outside the pool is not an error: it is ignored and
+    # counted (in-pool references only).
+    data = feedback_example(first, as_of="2026-10-23T08:00:00Z")
+    data["listing_view_durations"][0]["listing_id"] = "invented"
+    accepted = service.recommend(next_req(first, behavior_context=BehaviorContext.model_validate(data)))
+    assert accepted.status == "success"
+    assert service.store.current("c1")["sequence"] == 2
+    assert service.store.current("c1")["state_id"] == accepted.state.state_id
 
 
 def test_stale_requirements_version_backwards_or_changed_without_newer_version(service):
@@ -167,11 +169,11 @@ def test_session_conflict(service):
     # request ID is a different body and is rejected by request identity.
     first = service.recommend(req())
     feedback = snapshot(first)
-    second = service.recommend(next_req(first, feedback=feedback))
+    second = service.recommend(next_req(first, behavior_context=feedback))
     assert second.status == "success"
     changed = feedback.model_copy(deep=True)
-    changed.previous_round.browsing[0].duration_seconds = 99
-    third = service.recommend(next_req(first, feedback=changed))
+    changed.listing_view_durations[0].duration_seconds = 99
+    third = service.recommend(next_req(first, behavior_context=changed))
     assert third.error.code == "IDEMPOTENCY_CONFLICT"
 
 
@@ -384,12 +386,12 @@ def test_reference_resolution_and_gate_replay(service):
 def test_feedback_cannot_override_budget(service):
     first = service.recommend(req())
     feedback = snapshot(first)
-    feedback.previous_round.browsing[0].duration_seconds = 100000
+    feedback.listing_view_durations[0].duration_seconds = 100000
     requirements = req().requirements.model_copy(deep=True)
     requirements.criteria[0].value = 2000.0
     result = service.recommend(
         next_req(
-            first, feedback=feedback, requirements=requirements, requirements_version=2
+            first, behavior_context=feedback, requirements=requirements, requirements_version=2
         )
     )
     assert result.status == "no_match" and not result.recommendations
@@ -415,10 +417,10 @@ def test_failed_request_identity_and_finite_duration(service):
     bad.previous_state_id = "wrong"
     assert service.recommend(bad).status == "error"
     assert service.recommend(next_req(first)).error.code == "IDEMPOTENCY_CONFLICT"
-    raw = feedback_example(first)["previous_round"]["browsing"][0]
+    raw = feedback_example(first)["listing_view_durations"][0]
     for duration in [-1, float("inf"), float("nan")]:
         with pytest.raises(ValidationError):
-            BrowsingRecord.model_validate({**raw, "duration_seconds": duration})
+            ListingViewDuration.model_validate({**raw, "duration_seconds": duration})
 
 
 def test_concurrent_state_updates(tmp_path):

@@ -53,7 +53,7 @@ def test_native_http_auth_replay_and_presentation(monkeypatch, tmp_path):
         assert conflict['presentation']=={'listings':[],'counts':None}
 
 
-def test_contract_2_transport_rejects_1_0_and_maps_legacy_or_unknown_state_to_fresh_chain(monkeypatch, tmp_path):
+def test_transport_rejects_2_0_requests_and_maps_legacy_or_unknown_state_to_fresh_chain(monkeypatch, tmp_path):
     """R7 conversions at the transport boundary: a contract 1.0 body is a 422 (UNSUPPORTED_VERSION);
     on /app/recommend a previous_state_id that only resolves to a legacy v1 run, or to nothing,
     becomes null and the request starts a fresh v2 chain (no STALE_REFERENCE); /recommend keeps
@@ -69,9 +69,10 @@ def test_contract_2_transport_rejects_1_0_and_maps_legacy_or_unknown_state_to_fr
     monkeypatch.setenv('RECOMMENDATION_CONTROLLER', 'scripted')
     headers = {'x-recommendation-token': 'test-only-credential'}
     requirements = json.loads(Path('recommendation/examples/requirements.json').read_text())
-    base = {'contract_version': '2.0', 'conversation_id': 'legacy-session', 'requirements_version': 1, 'requirements': requirements}
+    base = {'contract_version': '1.0', 'conversation_id': 'legacy-session', 'requirements_version': 1, 'requirements': requirements}
     with TestClient(app) as client:
-        old = client.post('/app/recommend', json={**base, 'request_id': 'old', 'contract_version': '1.0'}, headers=headers)
+        # The request keeps the main orchestrator contract 1.0; a 2.0 request body is rejected.
+        old = client.post('/app/recommend', json={**base, 'request_id': 'old', 'contract_version': '2.0'}, headers=headers)
         assert old.status_code == 422 and 'UNSUPPORTED_VERSION' in old.text
         direct = client.post('/recommend', json={**base, 'request_id': 'direct', 'previous_state_id': 'legacy-state-7'}, headers=headers).json()
         assert direct['error']['code'] == 'STALE_REFERENCE'

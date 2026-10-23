@@ -1,0 +1,37 @@
+{
+  "query": "地址离nus越近越好，然后1个房间",
+  "checked_at": "2026-10-22T12:46:13.284Z",
+  "limits": {
+    "cases": 1,
+    "requests": 3,
+    "maxInputCharacters": 24000,
+    "maxOutputTokens": 1600,
+    "concurrency": 1
+  },
+  "live": true,
+  "requests": 2,
+  "source_hashes": {
+    "src/agents/explanation/contracts.ts": "d699fb05713f9be2162ba3126b870f88636d8fa611c020c5538c27f244ff41b7",
+    "src/agents/explanation/evidence.ts": "4bbd825910a8ed2a9a8e860249199c1c740b2424ba75be2c2980175961e0b742",
+    "src/agents/explanation/prompt.ts": "6fa9fbe437e2309fffd2dea05ef32009194a8b3caa3bcc870f9d1c9801eb3ff4",
+    "src/agents/explanation/few-shot.ts": "1823f36ff01af861b2620c2c12c04d9ab6049858db426f718f0468c7d4793802",
+    "src/agents/explanation/generator.ts": "7d8add9f5ea9b42bdc0ddfc52faf355b7a67182ce4ff45949c9c7e7fcc09f2f6",
+    "src/agents/explanation/model-input.ts": "8123476e930fa464bf9e66c78d595caca2474be434e52966d700eb40f84a97d6",
+    "skills/evidence-based-explanation/SKILL.md": "4c87fa8e98d179e19e9d1745dd42892cd79271c5d2c0c6eaf2c9b0c5cc428880"
+  },
+  "serialized_prompt_characters": [
+    23089,
+    18271
+  ],
+  "evidence_characters": {
+    "original": 55874,
+    "model": 13409
+  },
+  "status": "failed",
+  "error": "EXPLANATION_GENERATION_FAILED: MODEL_TEST_CONTEXT_LIMIT: context exceeds the local test ceiling; shorten the targeted fixture before making a paid request.",
+  "diagnostic": {
+    "repair_notes": [
+      "SEMANTIC_AUDIT: [{\"code\":\"grounding\",\"detail\":\"“还需要了解的部分”称这四套（NEWest、Lyf One-North、lyf one-north 80 Nepal Park、345 Clementi Avenue 5）到超市的距离都没有资料，但事实包中345 Clementi Avenue 5（500278815）到超市有记录约57米（f59），与同段下一句自相矛盾，属事实错误。\"},{\"code\":\"ranking\",\"detail\":\"排序段把728 Clementi West Street 2“排在后面”归因于超市距离相对更远，但该套到学校约1,832米是入选四套中最近的，且其超市约305米仍在800米内；正文未说明它与第2、3套（学校约2,370米、超市约140米）之间的取舍关系，仅以“超市更远”解释其排后，归因不完整。\"}]"
+    ]
+  }
+}

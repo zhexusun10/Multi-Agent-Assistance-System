@@ -1,0 +1,35 @@
+{
+  "status": "passed",
+  "checked_at": "2026-10-21T11:10:11.650869+00:00",
+  "node_passed": 153,
+  "node_opt_in_skipped": 20,
+  "python_passed": 64,
+  "postgres_behavior_acceptance": "passed",
+  "real_browser_and_model": "passed",
+  "browser_boundary_checks": "passed",
+  "detail_followup": "passed",
+  "behavior_update_policy": "only_user_recommendation_request",
+  "protected_native_kernels": {
+    "recommendation/config.py": true,
+    "recommendation/ranking/__init__.py": true,
+    "recommendation/ranking/metrics.py": true,
+    "recommendation/ranking/ranker.py": true,
+    "recommendation/tools/__init__.py": true,
+    "recommendation/tools/dispatcher.py": true,
+    "recommendation/validation/__init__.py": true,
+    "recommendation/validation/gate.py": true,
+    "recommendation/validation/rules.py": true
+  },
+  "other_agent_logic_byte_preserved": {
+    "src/agents/orchestrator/agent-orchestrator.ts": true,
+    "src/agents/orchestrator/intent-recognizer.ts": true,
+    "src/agents/orchestrator/intent-templates.ts": true,
+    "src/domain/requirements.ts": true,
+    "src/domain/knowledge.ts": true,
+    "src/domain/explanation.ts": true,
+    "src/domain/followup.ts": true,
+    "src/domain/manual-followup.ts": true
+  },
+  "native_contract_source_extensions": 5,
+  "external_messages_sent": 0
+}

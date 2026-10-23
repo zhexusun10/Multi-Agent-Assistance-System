@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "model_calls": 0,
+  "checks": [
+    "web and graph healthy",
+    "migration and public card state",
+    "same-origin refinement endpoint forwarded to graph",
+    "unknown plan rejected",
+    "foreign session rejected",
+    "latest frontend module served"
+  ]
+}

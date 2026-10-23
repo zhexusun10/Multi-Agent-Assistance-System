@@ -28,11 +28,10 @@
       "browsing_weight": 0.4,
       "missing_branch_contribution": 0.0,
       "redistribute_missing_branch_weight": false,
-      "counted_appointment_statuses": [
-        "MANUAL_SENT",
-        "MANUAL_REPLIED",
-        "CONFIRMED"
+      "counted_appointment_signals": [
+        "viewing_draft_saved"
       ],
+      "browsing_requires_interest_eligible": true,
       "reference_scope": "in_pool"
     },
     "browsing": {

@@ -5,6 +5,7 @@ import {observed,classify} from '../src/adapters/recommendation.js';
 import {unknownReason} from '../src/domain/field-capabilities.js';
 import {criterionText} from '../src/domain/explanation.js';
 import {rentalNumber} from '../src/domain/rental-language.js';
+import {attribute,output} from '../src/agents/requirement/few-shot.js';
 import type {BaseChatModel} from '@langchain/core/language_models/chat_models';
 const empty={listing_type:'RENT' as const,criteria:[]};
 test('1B1B is exactly one bedroom and one bathroom; it proves neither private use nor whole-unit rental',()=>{
@@ -23,9 +24,11 @@ test('MRT platform annotations and actual commute remain separate; HDB room labe
  const d=extractRules('地铁站步行10分钟内，去NUS公交30分钟以内',empty);assert(d.upsert.some(c=>c.field==='mrt_walking_mins'&&c.value===10&&c.distance_type==='platform_reported'));assert(d.upsert.some(c=>c.field==='commute_time'&&c.value===30&&c.target?.name==='NUS'));assert(!d.upsert.some(c=>c.field==='price'));
  const hdb=extractRules('HDB 3-room flat',empty);assert(hdb.clarifications.length);assert(!hdb.upsert.some(c=>c.field==='bedrooms'));
 });
-test('a model cannot overwrite literal slots, round area conversion, or infer scope from no live-in landlord',async()=>{
- const mock={withStructuredOutput:()=>({invoke:async()=>({upsert:[criterion('floor_area_sqft','gte',861,'sqft'),criterion('rental_scope','eq','whole_unit')],remove_fields:[],sources:[{field:'floor_area_sqft',quote:'80平方米'},{field:'rental_scope',quote:'不和房东同住'}],clarifications:['请提供预算'],supported:true})})} as unknown as BaseChatModel;
- const draft=await extractRequirements('面积至少80平方米，不和房东同住',empty,mock);assert.equal(draft.clarifications.length,0);assert(Math.abs(Number(draft.upsert.find(c=>c.field==='floor_area_sqft')?.value)-861.1128333368)<1e-8);assert(!draft.upsert.some(c=>c.field==='rental_scope'));assert(draft.upsert.some(c=>c.field==='amenities'&&c.value==='no_live_in_landlord'));
+test('semantic audit returns an invented rental scope to the model, while arithmetic stays deterministic',async()=>{
+ const q='面积至少80平方米，不和房东同住';let calls=0,audits=0;
+ const bad=output(q,{upsert:[attribute('floor_area_sqft','gte',80,'面积至少80平方米',{unit:'sqm'}),attribute('rental_scope','eq','whole_unit','不和房东同住')]}),good=output(q,{upsert:[attribute('floor_area_sqft','gte',80,'面积至少80平方米',{unit:'sqm'}),attribute('amenities','eq','no_live_in_landlord','不和房东同住')]});
+ const mock={withStructuredOutput:(_s:unknown,o:any)=>({invoke:async()=>o.name==='audit_requirement_intake'?(++audits===1?{valid:false,issues:[{quote:'不和房东同住',reason:'不能推断整租'}]}:{valid:true,issues:[]}):(++calls===1?bad:good)})} as unknown as BaseChatModel;
+ const draft=await extractRequirements(q,empty,mock);assert.equal(draft.extraction?.attempts,2);assert.equal(draft.clarifications.length,0);assert(Math.abs(Number(draft.upsert.find(c=>c.field==='floor_area_sqft')?.value)-861.1128333368)<.00001);assert(!draft.upsert.some(c=>c.field==='rental_scope'));assert(draft.upsert.some(c=>c.field==='amenities'&&c.value==='no_live_in_landlord'));
 });
 test('missing data, absent capability and unconnected routes have distinct user-readable reasons',()=>{
  const privateBath=criterion('amenities','eq','private_bathroom');assert(unknownReason(privateBath).includes('数据未收录'));assert(unknownReason(criterion('commute_time','lte',30,'min')).includes('路线工具未接入'));assert(unknownReason(criterion('floor_area_sqft','gte',80,'sqft')).includes('记录值缺失'));assert(!criterionText(privateBath).includes('amenities'));assert(!criterionText(privateBath).includes('等于'));

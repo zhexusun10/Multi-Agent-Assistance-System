@@ -1,0 +1,77 @@
+{
+  "external_messages_sent": 0,
+  "checks": [
+    {
+      "query": "给我解释一下为什么推荐这几套房子？",
+      "operation": {
+        "kind": "explain",
+        "status": "failed",
+        "intent_plan": {
+          "kind": "explain",
+          "agent": "c",
+          "intent": {
+            "intent": "recommendation_explanation",
+            "urgency": 1,
+            "channels": {
+              "llm": {
+                "intent": "recommendation_explanation",
+                "reasoning": "用户要求解释已有推荐房源的推荐理由，属于解释已有推荐。",
+                "confidence": 0.95,
+                "requested_tasks": [
+                  "explain"
+                ]
+              },
+              "pattern": {
+                "intent": "recommendation_explanation",
+                "confidence": 0.5
+              },
+              "embedding": {
+                "intent": "explanation",
+                "source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                "reasoning": "Chroma cosine nearest template",
+                "confidence": 0.629635833236409
+              }
+            },
+            "entities": {
+              "date": [],
+              "amount": [],
+              "listing_id": []
+            },
+            "cache_hit": false,
+            "reasoning": "用户要求解释已有推荐房源的推荐理由，属于解释已有推荐。",
+            "confidence": 0.8409271666472817,
+            "latency_ms": 972.1454000000003,
+            "intent_group": "explanation",
+            "source_scores": {
+              "llm": 0.95,
+              "pattern": 0.5,
+              "embedding": 0.629635833236409
+            },
+            "requested_tasks": [
+              "explain"
+            ],
+            "embedding_source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            "template_version": "ce9dad379be2e6517d6ed83be4014b4f95604ba5dda89a65229bacfa6acd7985"
+          },
+          "deferred_summary": false
+        }
+      },
+      "answer": "本轮未完成：推荐理由暂时没能整理好，请再试一次。你可以继续查看当前房源。",
+      "generation": {
+        "mode": "llm_grounded",
+        "version": "2.0",
+        "attempts": 1,
+        "latency_ms": 3467,
+        "example_ids": [
+          "whole-list-distance",
+          "two-listing-comparison"
+        ],
+        "repair_notes": [],
+        "semantic_audit": "passed"
+      }
+    }
+  ],
+  "reused_full_data_search": true,
+  "status": "failed",
+  "error": "本轮未完成：推荐理由暂时没能整理好，请再试一次。你可以继续查看当前房源。\n+ actual - expected\n\n+ 'failed'\n- 'completed'\n"
+}

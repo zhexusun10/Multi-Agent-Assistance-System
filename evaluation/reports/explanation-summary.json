@@ -1,0 +1,225 @@
+{
+  "checked_at": "2026-10-22T09:23:00.964Z",
+  "status": "blocked_external_balance",
+  "model": "openai:deepseek-flash",
+  "current_hashes": {
+    "src/agents/explanation/contracts.ts": "9c1027464ac37e8d0465a6cab6c9831efe9cc5d0e3b215c3019e02f4b7b3d039",
+    "src/agents/explanation/evidence.ts": "7270ef631ed12cf02f92e29acfb716652e8173eee4ad394e2b8a890370bd7206",
+    "src/agents/explanation/prompt.ts": "ce12d51b9ec8b01ab5b84c094598c4d916a7201c542d8981aac67c39b5380ac8",
+    "src/agents/explanation/few-shot.ts": "0747dfd904523556d513cab9221e5846213c32e85320797744570f99e5f5bb28",
+    "src/agents/explanation/validation.ts": "58d7402435bdf91451fe1aa8c9e53034a87049f54513fe90348ae79e5cf929e7",
+    "src/agents/explanation/generator.ts": "8dfcccf8f8a81444bc3dc9a24ac94ddf7dd041b14205c1f88dd11d08a806651a",
+    "skills/evidence-based-explanation/SKILL.md": "f82b18cac632bcd58761ff340cf96d517e075f14e41701f94866d3514c8129cc",
+    "evaluation/explanation-cases.ts": "4a4197b9d6e196ed82cd8b7f0c51a601fab646a9421eb0c230351ede18e31720",
+    "evaluation/evaluate-explanation.ts": "788986a0746fcb4bf5cf6f4a97137dfa370cbad2f1ad0e6cbce80bd97caf57de"
+  },
+  "latest_development_run": {
+    "tag": "v18-literals",
+    "metrics": {
+      "cases": 109,
+      "passed": 107,
+      "grounded": 108,
+      "ranking_correct": 108,
+      "covers_question": 107,
+      "natural": 108,
+      "concise": 108,
+      "exceptions": 1,
+      "repaired": 2
+    },
+    "provider_balance_failures": [
+      "district_mixed-dev-1"
+    ]
+  },
+  "holdout": {
+    "cases": 36,
+    "passed": 34,
+    "grounded": 34,
+    "ranking_correct": 34,
+    "covers_question": 34,
+    "natural": 34,
+    "concise": 34,
+    "exceptions": 2,
+    "repaired": 3
+  },
+  "current_source_fully_model_verified": false,
+  "workflow": {
+    "passed": true,
+    "checks": 5,
+    "english_answer_verified": true
+  },
+  "ui": {
+    "passed": true,
+    "read_only": false
+  },
+  "pending": [
+    "Complete current-source development and regression validation"
+  ],
+  "verification_notes": [
+    "The pre-recharge v7 report is preserved. Its English question received Chinese prose; the current language guard is validated separately against current-source model cases and deployed English output.",
+    "Final model cases use frozen matching source hashes, independent semantic review and separate gold-rubric grading. Passing a finite corpus does not establish universal accuracy.",
+    "The previous 136-case corpus missed digit-bearing string identifiers such as D05. The real failing request and mixed bedroom-known/unknown homes now have dedicated read-only replay, fresh A/B/C workflow, direct C explanation and desktop/mobile browser checks. District/postcode/date scenarios extend regression to 160 cases; passing this finite corpus is not a universal reliability claim.",
+    "Standalone Explanation routing, unchanged recommendations and English output are checked in explanation-model-workflow.json; current single-submit delivery and desktop/mobile layout are checked in explanation-delivery-ui.json."
+  ],
+  "iterations": [
+    {
+      "tag": "v1-smoke",
+      "metrics": {
+        "cases": 12,
+        "passed": 9,
+        "grounded": 9,
+        "ranking_correct": 11,
+        "covers_question": 11,
+        "natural": 11,
+        "concise": 11,
+        "exceptions": 1,
+        "repaired": 1,
+        "average_characters": 229.83333333333334
+      }
+    },
+    {
+      "tag": "v2-development",
+      "metrics": {
+        "cases": 72,
+        "passed": 68,
+        "grounded": 68,
+        "ranking_correct": 68,
+        "covers_question": 68,
+        "natural": 68,
+        "concise": 68,
+        "exceptions": 4,
+        "repaired": 2,
+        "average_characters": 214.69444444444446
+      }
+    },
+    {
+      "tag": "v3-development",
+      "metrics": {
+        "cases": 72,
+        "passed": 72,
+        "grounded": 72,
+        "ranking_correct": 72,
+        "covers_question": 72,
+        "natural": 72,
+        "concise": 72,
+        "exceptions": 0,
+        "repaired": 2,
+        "average_characters": 238.625
+      }
+    },
+    {
+      "tag": "v4-development",
+      "metrics": {
+        "cases": 72,
+        "passed": 68,
+        "grounded": 69,
+        "ranking_correct": 69,
+        "covers_question": 70,
+        "natural": 70,
+        "concise": 70,
+        "exceptions": 2,
+        "repaired": 2,
+        "average_characters": 189.16666666666666
+      }
+    },
+    {
+      "tag": "v5-development",
+      "metrics": {
+        "cases": 72,
+        "passed": 72,
+        "grounded": 72,
+        "ranking_correct": 72,
+        "covers_question": 72,
+        "natural": 72,
+        "concise": 72,
+        "exceptions": 0,
+        "repaired": 2,
+        "average_characters": 191.09722222222223
+      }
+    },
+    {
+      "tag": "v6-development",
+      "metrics": {
+        "cases": 78,
+        "passed": 78,
+        "grounded": 78,
+        "ranking_correct": 78,
+        "covers_question": 78,
+        "natural": 78,
+        "concise": 78,
+        "exceptions": 0,
+        "repaired": 0,
+        "average_characters": 199.78205128205127
+      }
+    },
+    {
+      "tag": "v7-development",
+      "metrics": {
+        "cases": 84,
+        "passed": 65,
+        "grounded": 65,
+        "ranking_correct": 65,
+        "covers_question": 65,
+        "natural": 65,
+        "concise": 65,
+        "exceptions": 19,
+        "repaired": 2,
+        "average_characters": 142.57142857142858
+      }
+    },
+    {
+      "tag": "v8-development",
+      "metrics": {
+        "cases": 84,
+        "passed": 84,
+        "grounded": 84,
+        "ranking_correct": 84,
+        "covers_question": 84,
+        "natural": 84,
+        "concise": 84,
+        "exceptions": 0,
+        "repaired": 16,
+        "average_characters": 258.4761904761905
+      }
+    },
+    {
+      "tag": "v10-layout",
+      "metrics": {
+        "cases": 128,
+        "passed": 126,
+        "grounded": 126,
+        "ranking_correct": 126,
+        "covers_question": 126,
+        "natural": 126,
+        "concise": 126,
+        "exceptions": 2,
+        "repaired": 18,
+        "average_characters": 396.96875
+      }
+    },
+    {
+      "tag": "v11-layout",
+      "metrics": {
+        "cases": 128,
+        "passed": 128,
+        "grounded": 128,
+        "ranking_correct": 128,
+        "covers_question": 128,
+        "natural": 128,
+        "concise": 128,
+        "exceptions": 0,
+        "repaired": 26,
+        "average_characters": 409.3828125
+      }
+    }
+  ],
+  "district_identifier_fix": {
+    "passed": true,
+    "replay": "passed",
+    "workflow": "passed",
+    "ui": "passed"
+  },
+  "regression": {
+    "tag": "v18-literals",
+    "note": "Existing corpus reused as regression, including bathroom-count and Jurong East missing-data/layout scenarios; this is not a new untouched holdout"
+  }
+}

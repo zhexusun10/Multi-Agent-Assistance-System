@@ -5,7 +5,7 @@ from pathlib import Path
 from recommendation.contracts.request import (
     RecommendationRequest,
 )
-from recommendation.contracts.feedback import FeedbackSnapshot
+from recommendation.contracts.behavior import BehaviorContext
 from ..repositories.connections import repositories
 from ..service import RecommendationService
 from ..state.store import StateStore
@@ -42,7 +42,9 @@ def main():
         feedback = request.model_copy(
             update={
                 "request_id": "sample-feedback",
-                "feedback": FeedbackSnapshot.model_validate(feedback_example(first)),
+                "behavior_context": BehaviorContext.model_validate(
+                    feedback_example(first, as_of="2026-10-23T08:00:00Z")
+                ),
                 "previous_state_id": first.state.state_id,
             }
         )

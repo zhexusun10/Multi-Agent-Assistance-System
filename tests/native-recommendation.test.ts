@@ -4,9 +4,7 @@ import {readFile} from 'node:fs/promises';
 import {randomUUID} from 'node:crypto';
 import {nativeRequest,projectNative} from '../src/adapters/native-recommendation.js';
 import {recommendationRequestSchema,validateResponse} from '../src/contracts/recommendation-v1.js';
-import {EMPTY_SIDECAR,type FeedbackSidecar} from '../src/contracts/recommendation-native.js';
 import {buildExplanation} from '../src/domain/explanation.js';
-import {buildFeedbackSidecar} from '../src/domain/feedback-sidecar.js';
 import type {ToolContext} from '../src/tools/executor.js';
 
 async function fixture(){
@@ -20,10 +18,10 @@ async function fixture(){
  let archive:any;const save=async(_ctx:ToolContext,data:unknown)=>{archive=data;return '00000000-0000-4000-8000-000000000055';};
  return {req,envelope,ctx,save,archive:()=>archive};
 }
-test('native request 2.0 uses native field/unit/utility/limit/version semantics, without faking missing fields',async()=>{
+test('native request (main contract 1.0 + cold_start) uses native field/unit/utility/limit/version semantics, without faking missing fields',async()=>{
  const {req}=await fixture();req.result_limit=5;req.requirements.criteria.push({criterion_id:'bath',field:'amenities',operator:'eq',value:'private_bathroom',strength:'hard'},{criterion_id:'near',field:'place_proximity',operator:'lte',value:1000,unit:'m',strength:'soft',weight:3,target:{place_id:'OSM:way:54519165',name:'NUS'},distance_type:'straight_line'});
- const mapped=nativeRequest(req);assert.equal(mapped.request.contract_version,'2.0');assert.equal(mapped.request.result_limit,5);assert.equal(mapped.request.requirements_version,1);assert.equal(mapped.request.previous_state_id,null);assert.equal(mapped.unsupported[0].field,'amenities');
- assert.deepEqual(mapped.request.feedback,{previous_round:null,appointments:[]});assert.deepEqual(mapped.request.cold_start,{exited:false,exited_pool_key:null});
+ const mapped=nativeRequest(req);assert.equal(mapped.request.contract_version,'1.0');assert.equal(mapped.request.result_limit,5);assert.equal(mapped.request.requirements_version,1);assert.equal(mapped.request.previous_state_id,null);assert.equal(mapped.unsupported[0].field,'amenities');
+ assert.deepEqual(mapped.request.feedback,[]);assert.equal('behavior_context' in mapped.request,false);assert.deepEqual(mapped.request.cold_start,{exited:false,exited_pool_key:null});
  req.result_limit=20;assert.equal(nativeRequest(req).request.result_limit,10);// V1 allows 20; native caps at its contract maximum
  const criteria=mapped.request.requirements.criteria;assert.equal(criteria.find(c=>c.field==='bedrooms')!.unit,undefined);assert.equal(criteria.find(c=>c.field==='district_code')!.utility,'threshold');const geo=criteria.find(c=>c.field==='distance')!;assert.equal(geo.utility,'proximity');assert.equal(geo.destination_id,'OSM:way:54519165');assert.equal(geo.destination_name,'NUS');assert(!criteria.some(c=>c.field==='amenities'));
  req.previous_state_id='native:state-123';assert.equal(nativeRequest(req).request.previous_state_id,'state-123');req.previous_state_id='baseline:old';assert.equal(nativeRequest(req).request.previous_state_id,null);
@@ -32,7 +30,7 @@ test('native 2.0 output preserves order, fused scores, selection reasons, pool/s
  const f=await fixture(),rec=await projectNative(f.req,f.ctx,f.envelope,f.save);
  const native=f.envelope.response;
  assert.deepEqual(rec.recommendations.map(c=>c.listing.listing_id),native.recommendations.map((c:any)=>c.listing.listing_id));
- assert.deepEqual(f.archive().response,native);assert.equal(f.archive().contract,'2.0');assert.deepEqual(f.archive().feedback_sidecar,EMPTY_SIDECAR);
+ assert.deepEqual(f.archive().response,native);assert.equal(f.archive().contract,'2.0');assert.deepEqual(f.archive().cold_start,{exited:false,exited_pool_key:null});
  for(const item of rec.recommendations){const original=native.recommendations.find((c:any)=>c.listing.listing_id===item.listing.listing_id);assert.equal(item.score,original.scores.combined_score);assert.deepEqual(rec.native!.scores[item.listing.listing_id],original.scores);
   assert.deepEqual(rec.native!.selection_reasons![item.listing.listing_id],{selection_reason:original.selection_reason,selection_note:original.selection_note,score_rank:original.score_rank});
   assert(item.score_breakdown.every(b=>['native:soft','native:behavior'].includes(b.criterion_id)));}
@@ -40,7 +38,9 @@ test('native 2.0 output preserves order, fused scores, selection reasons, pool/s
  assert.equal(rec.state.state_id,`native:${native.state.state_id}`);assert.equal(rec.execution.score_semantics,'native_soft_behavior_weighted_fit_not_probability');
  assert(!rec.warnings.some(w=>w.code==='NATIVE_GEOGRAPHY_GAP'));
  assert(rec.warnings.find(w=>w.code==='JIANGSHAN_NATIVE')!.message.includes('最多10套'));
- assert(rec.evidence.every(e=>e.source_ref===rec.native!.exchange_ref));const summary=buildExplanation(f.req.requirements,rec,'synthetic','解释第一套为什么推荐').summary;assert(summary.includes('原生融合匹配分'));assert(summary.includes('软需求匹配'));assert(summary.includes('选择原因'));
+ assert(rec.evidence.every(e=>e.source_ref===rec.native!.exchange_ref));const explanation=buildExplanation(f.req.requirements,rec,'synthetic','解释第一套为什么推荐');assert.deepEqual(explanation.verified[0].native_scores,rec.native!.scores[rec.recommendations[0].listing.listing_id]);assert(!explanation.summary.includes('原生融合匹配分'));
+ // The per-listing score meaning (2.0 soft/behaviour + selection reason) stays available to the Explanation Agent.
+ const meaning=String((explanation.verified[0] as any).score_meaning);assert(meaning.includes('原生融合匹配分')&&meaning.includes('软需求匹配')&&meaning.includes('选择原因'));
 });
 test('LTA:/URA: place targets go to native as destination IDs and no longer raise NATIVE_GEOGRAPHY_GAP (native LTA/URA catalog, P4)',async()=>{
  for(const place_id of ['LTA:MRT:CLEMENTI','URA:AREA:CLEMENTI','URA:REGION:WEST']){
@@ -52,21 +52,25 @@ test('LTA:/URA: place targets go to native as destination IDs and no longer rais
   const mapped=nativeRequest(g).request.requirements.criteria.find(c=>c.criterion_id==='near')!;assert.equal(mapped.destination_id,place_id);assert.equal(mapped.field,'distance');
  }
 });
-test('unsupported hard app criteria stay visible and unverified (hardGap guard); native response remains byte-equivalent; next sidecar still uses the native ranking',async()=>{
+test('unsupported hard app criteria stay visible and unverified (hardGap guard); native response remains byte-equivalent; native ranking kept',async()=>{
  const f=await fixture();f.req.requirements.criteria.push({criterion_id:'bath',field:'amenities',operator:'eq',value:'private_bathroom',strength:'hard'});
  const original=structuredClone(f.envelope.response),rec=await projectNative(f.req,f.ctx,f.envelope,f.save);
  assert.equal(rec.recommendations.length,0);assert.equal(rec.unverified_candidates.length,original.recommendations.length);assert.equal(rec.native!.status,'success');assert.equal(rec.status,'no_match');assert(rec.unverified_candidates.every(c=>c.criterion_results.find(r=>r.criterion_id==='bath')?.status==='unknown'));assert.deepEqual(f.archive().response,original);assert.deepEqual(rec.unverified_candidates.map(c=>c.score),original.recommendations.map((c:any)=>c.scores.combined_score));assert(rec.warnings.some(w=>w.code==='NATIVE_CONTRACT_GAP'));
  assert.deepEqual(rec.state.counts,{assessed:original.recommendations.length,eligible:0,unverified:original.recommendations.length,excluded:0});
  validateResponse(rec,f.req);
- const next=buildFeedbackSidecar(rec,[],[],null);assert.deepEqual(next.previous_round!.shown_listing_ids,original.recommendations.map((c:any)=>c.listing.listing_id));assert.equal(next.previous_round!.request_id,rec.request_id);
+ assert.deepEqual(rec.native!.ranking,original.recommendations.map((c:any)=>c.listing.listing_id));
 });
-test('V1 feedback events are never forwarded: native receives the persisted sidecar snapshot; saves/likes stay ignored',async()=>{
- const f=await fixture();f.req.feedback=[{event_id:'save',listing_id:'91000001',occurred_at:new Date().toISOString(),event_type:'save',payload:{}},{event_id:'sample',listing_id:'91000001',occurred_at:new Date().toISOString(),event_type:'active_view',payload:{active_duration_ms:30000,source:'sample',view_session_id:'view-1',recommendation_request_id:'old-native'}}];
- const sidecar:FeedbackSidecar={previous_round:{request_id:'old-native',shown_listing_ids:['91000001','91000003'],browsing:[{listing_id:'91000001',status:'recorded',duration_seconds:30},{listing_id:'91000003',status:'missing',duration_seconds:null}]},appointments:[{listing_id:'91000005',statuses:['CONFIRMED'],action_ids:['a1']}],cold_start:{exited:true,exited_pool_key:'pool-1'}};
- const r=nativeRequest(f.req,sidecar);assert.deepEqual(r.ignored_feedback,['save']);assert.deepEqual(r.request.feedback,{previous_round:sidecar.previous_round,appointments:sidecar.appointments});assert.deepEqual(r.request.cold_start,sidecar.cold_start);
+test('main contract: sample/web_detail durations forwarded as native events, behavior_context forwarded unchanged, cold_start added; saves ignored; pure',async()=>{
+ const f=await fixture();const at='2026-10-23T08:00:00.000Z',rid='a028cc35-820d-43f6-92ef-7875ccff67e0';
+ f.req.feedback=[{event_id:'save',listing_id:'91000001',occurred_at:at,event_type:'save',payload:{}},{event_id:'web',listing_id:'91000001',occurred_at:at,event_type:'active_view',payload:{active_duration_ms:30000,source:'web_detail',view_session_id:'view-1',recommendation_request_id:rid}}];
+ f.req.behavior_context={version:'1.0',as_of:at,listing_view_durations:[{listing_id:'91000001',duration_seconds:45.25,view_count:2,last_viewed_at:at,source_request_ids:[rid],interest_eligible:true}],book_viewing_listings:[{listing_id:'91000005',action_id:'e4287655-c28c-4a97-ad7f-70cf0cb30911',source_request_id:rid,requirements_version:1,starts_at:'2026-10-24T06:00:00.000Z',ends_at:'2026-10-24T07:00:00.000Z',time_zone:'Asia/Singapore',recorded_at:at,signal:'viewing_draft_saved',appointment_confirmed:false}]};
+ const cold={exited:true,exited_pool_key:'pool-1'};
+ const r=nativeRequest(f.req,cold);assert.deepEqual(r.ignored_feedback,['save']);
+ assert.deepEqual(r.request.feedback,[{event_id:'web',conversation_id:f.req.conversation_id,recommendation_request_id:rid,listing_id:'91000001',event_type:'listing_view_duration',source:'web_detail',occurred_at:at,payload:{view_session_id:'view-1',duration_seconds:30}}]);
+ assert.deepEqual(r.request.behavior_context,f.req.behavior_context);assert.deepEqual(r.request.cold_start,cold);
  // Pure: identical body for transport retries and for projectNative's recomputation.
- assert.equal(JSON.stringify(nativeRequest(f.req,structuredClone(sidecar)).request),JSON.stringify(r.request));
- assert.throws(()=>nativeRequest(f.req,{...sidecar,appointments:[{listing_id:'1',statuses:['DRAFT'],action_ids:['a']}]}));
+ assert.equal(JSON.stringify(nativeRequest(structuredClone(f.req),structuredClone(cold)).request),JSON.stringify(r.request));
+ assert.throws(()=>nativeRequest(f.req,{exited:true,exited_pool_key:null} as any));
 });
 test('projection rejects contract 1.0, wrong identity or version, corrupt scores and missing native listing proofs',async()=>{
  const f=await fixture();const wrong=structuredClone(f.envelope);wrong.response.conversation_id='other';await assert.rejects(projectNative(f.req,f.ctx,wrong,f.save),/identity/);

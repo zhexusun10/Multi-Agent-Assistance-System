@@ -6,7 +6,7 @@ import type {LocationService} from './locations.js';
 import {geodesic,distanceToEntity,proximityUtility} from '../domain/spatial.js';
 import {unknownReason} from '../domain/field-capabilities.js';
 import {callNative} from './native-recommendation.js';
-import {EMPTY_SIDECAR,type FeedbackSidecar} from '../contracts/recommendation-native.js';
+import {NOT_EXITED,type ColdStartInput} from '../contracts/recommendation-native.js';
 export {geodesic} from '../domain/spatial.js';
 
 function numeric(v:unknown){return typeof v==='number'&&Number.isFinite(v)&&v>=0?v:null;}
@@ -23,10 +23,10 @@ export function classify(results:Candidate['criterion_results'],criteria:Criteri
 }
 export class RecommendationGateway {
   constructor(private data:DataHttpAdapter,private save:(ctx:ToolContext,body:unknown)=>Promise<string>,private mode:string,private remoteUrl:string|undefined,private locations?:LocationService){}
-  // The feedback sidecar is only mapped into the native 2.0 transport; remote and baseline keep
-  // sending/using the pure V1 request.
-  async recommend(req:RecommendationRequest,ctx:ToolContext,sidecar:FeedbackSidecar|null=null):Promise<RecommendationResponse>{
-    if(this.mode==='native')return callNative(req,ctx,this.remoteUrl||'http://127.0.0.1:8092',this.save,sidecar??EMPTY_SIDECAR);
+  // The cold-start state is only mapped into the native transport; remote and baseline keep
+  // sending the pure V1 request.
+  async recommend(req:RecommendationRequest,ctx:ToolContext,coldStart:ColdStartInput=NOT_EXITED):Promise<RecommendationResponse>{
+    if(this.mode==='native')return callNative(req,ctx,this.remoteUrl||'http://127.0.0.1:8092',this.save,coldStart);
     if(this.mode==='remote'){
       if(!this.remoteUrl)throw Error('RECOMMENDATION_API_URL is required');
       // Logical retries use the exact persisted request body and ID.

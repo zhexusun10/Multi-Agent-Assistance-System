@@ -1,140 +1,82 @@
 {
   "$defs": {
-    "AppointmentSignal": {
-      "additionalProperties": false,
-      "description": "One entry per listing: every non-draft VIEWING action status and action ID for it.",
-      "properties": {
-        "action_ids": {
-          "items": {
-            "maxLength": 128,
-            "minLength": 1,
-            "type": "string"
-          },
-          "minItems": 1,
-          "title": "Action Ids",
-          "type": "array"
-        },
-        "listing_id": {
-          "maxLength": 128,
-          "minLength": 1,
-          "title": "Listing Id",
-          "type": "string"
-        },
-        "statuses": {
-          "items": {
-            "maxLength": 64,
-            "minLength": 1,
-            "type": "string"
-          },
-          "minItems": 1,
-          "title": "Statuses",
-          "type": "array"
-        }
-      },
-      "required": [
-        "listing_id",
-        "statuses",
-        "action_ids"
-      ],
-      "title": "AppointmentSignal",
-      "type": "object"
-    },
-    "BrowsingRecord": {
+    "ViewPayload": {
       "additionalProperties": false,
       "properties": {
         "duration_seconds": {
-          "anyOf": [
-            {
-              "minimum": 0,
-              "type": "number"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Duration Seconds"
+          "minimum": 0,
+          "title": "Duration Seconds",
+          "type": "number"
         },
-        "listing_id": {
-          "maxLength": 128,
+        "view_session_id": {
           "minLength": 1,
-          "title": "Listing Id",
-          "type": "string"
-        },
-        "status": {
-          "enum": [
-            "recorded",
-            "missing"
-          ],
-          "title": "Status",
+          "title": "View Session Id",
           "type": "string"
         }
       },
       "required": [
-        "listing_id",
-        "status"
+        "view_session_id",
+        "duration_seconds"
       ],
-      "title": "BrowsingRecord",
-      "type": "object"
-    },
-    "PreviousRound": {
-      "additionalProperties": false,
-      "properties": {
-        "browsing": {
-          "items": {
-            "$ref": "#/$defs/BrowsingRecord"
-          },
-          "title": "Browsing",
-          "type": "array"
-        },
-        "request_id": {
-          "maxLength": 128,
-          "minLength": 1,
-          "title": "Request Id",
-          "type": "string"
-        },
-        "shown_listing_ids": {
-          "items": {
-            "maxLength": 128,
-            "minLength": 1,
-            "type": "string"
-          },
-          "maxItems": 10,
-          "minItems": 1,
-          "title": "Shown Listing Ids",
-          "type": "array"
-        }
-      },
-      "required": [
-        "request_id",
-        "shown_listing_ids",
-        "browsing"
-      ],
-      "title": "PreviousRound",
+      "title": "ViewPayload",
       "type": "object"
     }
   },
   "additionalProperties": false,
+  "description": "Incremental, quality-gated duration event (main contract). Validated, not scored:\nbehavior_context.listing_view_durations already holds the same time cumulatively.",
   "properties": {
-    "appointments": {
-      "items": {
-        "$ref": "#/$defs/AppointmentSignal"
-      },
-      "title": "Appointments",
-      "type": "array"
+    "conversation_id": {
+      "minLength": 1,
+      "title": "Conversation Id",
+      "type": "string"
     },
-    "previous_round": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/PreviousRound"
-        },
-        {
-          "type": "null"
-        }
+    "event_id": {
+      "minLength": 1,
+      "title": "Event Id",
+      "type": "string"
+    },
+    "event_type": {
+      "const": "listing_view_duration",
+      "default": "listing_view_duration",
+      "title": "Event Type",
+      "type": "string"
+    },
+    "listing_id": {
+      "minLength": 1,
+      "title": "Listing Id",
+      "type": "string"
+    },
+    "occurred_at": {
+      "format": "date-time",
+      "title": "Occurred At",
+      "type": "string"
+    },
+    "payload": {
+      "$ref": "#/$defs/ViewPayload"
+    },
+    "recommendation_request_id": {
+      "minLength": 1,
+      "title": "Recommendation Request Id",
+      "type": "string"
+    },
+    "source": {
+      "default": "sample",
+      "enum": [
+        "sample",
+        "web_detail"
       ],
-      "default": null
+      "title": "Source",
+      "type": "string"
     }
   },
-  "title": "FeedbackSnapshot",
+  "required": [
+    "event_id",
+    "conversation_id",
+    "recommendation_request_id",
+    "listing_id",
+    "occurred_at",
+    "payload"
+  ],
+  "title": "ViewingEvent",
   "type": "object"
 }

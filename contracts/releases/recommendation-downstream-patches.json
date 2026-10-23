@@ -1,13 +1,13 @@
 {
   "upstream_commit": "907cfa839d2665b3702450eb40acd4c96fe9296c",
   "project_base_commit": "89131897f56bbc176c30246a451f118f7de0209f",
-  "purpose": "Declared local changes to the 907cfa8 port; original upstream fingerprints retained. DEF11: recommendation-fit remediation (controller). Recommendation v2: native contract 2.0 (feedback snapshot, pool cache, native geography, fused-v2 full-pool scoring, select-v1 selection, slim trace), branch feat/recommendation-exploration; see evaluation/recommendation-exploration-2026-10-23/MIGRATION.md. Team review and final system signoff remain pending.",
+  "purpose": "Declared local changes to the 907cfa8 port; original upstream fingerprints retained. DEF11: recommendation-fit remediation (controller). Recommendation v2: native contract 2.0 (pool cache, native geography, fused-v2 full-pool scoring, select-v1 selection, slim trace), merged with main c7dc536 (request = main contract 1.0 + behavior_context + cold_start; behavior_context scored natively), branch feat/recommendation-exploration; see evaluation/recommendation-exploration-2026-10-23/MIGRATION.md. Team review and final system signoff remain pending.",
   "files": [
     {
       "target": "recommendation/agent/controller.py",
       "base_ported_sha256": "a17495fcca30a3fdfb35ad7f28db3468087b212ab21b57855b10eb6cc6bf4ede",
       "patched_sha256": "1b5127cb7977fd75b18fe76e3913b694ee91bae9f026b3e6b856039b7b9971ba",
-      "issue": "DEF11 controller terminal output and final-gate recovery; Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md)",
+      "issue": "DEF11 controller terminal output and final-gate recovery; Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md)",
       "changes": [
         "Complete assessed empty rankings through the existing final gate",
         "Retain tool history and explicit error feedback across bounded final-gate repairs",
@@ -21,7 +21,7 @@
       "target": "recommendation/config.py",
       "base_ported_sha256": "3c972d05b50d3216829260d8362a56ed42e5e4046538d7276786093f04a4384b",
       "patched_sha256": "6ace36cc9f26a5f2d3ad3c44822b4002f4b203a5e2c66653e153301d375c3539",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): single settings source",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): single settings source",
       "changes": [
         "Thin re-export of recommendation/settings/loader.py under the public name RecommendationConfig",
         "DEFAULT_* dictionaries, ScoringPolicy and RunLimits removed (values live in recommendation/settings/recommendation.yaml)"
@@ -30,19 +30,19 @@
     {
       "target": "recommendation/context/manager.py",
       "base_ported_sha256": "0151d9ea01045a81e1ab97e00f9deda0b412982dff48d669f147876afd475953",
-      "patched_sha256": "c53d449bc3cf07def0b5886a8aea2a491c7fcb21c2b07d78739088e7c3476c72",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): no feedback accumulation",
+      "patched_sha256": "ba88d3831f5c0c378666c114c81e9d6c25180d348d17f6c52320f5c33a157139",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): no feedback accumulation",
       "changes": [
         "Run-consistency checks kept (STALE_REFERENCE against the v2 head, STALE_REQUIREMENTS, run_sequence)",
-        "Feedback snapshot checks: previous_round must be a committed v2 run with the same recommendation ID set; uncounted appointment statuses rejected (INVALID_FEEDBACK)",
-        "Profile records the snapshot and the v2 browsing weights; weighted-v1 duration cap and event merging removed"
+        "behavior_context checks: uncounted viewing signals rejected (INVALID_FEEDBACK); feedback events validated, recorded, never scored",
+        "Profile records the behaviour snapshot (cumulative browsing, interest_eligible, viewing drafts) and the v2 browsing weights; weighted-v1 duration cap and event merging removed"
       ]
     },
     {
       "target": "recommendation/examples/config.json",
       "base_ported_sha256": "ad2a488dcb452890426f3842793dbd71875a55255745350990efd9b5a198aff2",
-      "patched_sha256": "9501d29360e72ffe7345940952b6186d6e423eccc1e3bdf6e1861bea5694ed41",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): settings experiment file",
+      "patched_sha256": "9e5fd550c1e78606c55b17d36fd41fb95546abded8e178f3814eb1846b502d64",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): settings experiment file",
       "changes": [
         "Rewritten in the v2 settings schema: identical to recommendation.yaml except cold_start.enabled false (not a production source)"
       ]
@@ -50,89 +50,89 @@
     {
       "target": "recommendation/examples/contracts/clarification.json",
       "base_ported_sha256": "c25a275cef88371b9f71a6488e1620139817e0a55135d00dfe66be7bd248f633",
-      "patched_sha256": "04e376b20e6a4fb489ace4629a0e92711e2df0b8c52faf22fea53090ae51b313",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
+      "patched_sha256": "d53b8454b87b2f86270016356b40cc59bf59f7ceeed3df9d1c1bca29ba0a775b",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
       "changes": [
-        "Regenerated contract-2.0 example (python -m recommendation.examples.generate_contract_examples): feedback snapshot, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
+        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
       ]
     },
     {
       "target": "recommendation/examples/contracts/error.json",
       "base_ported_sha256": "99d3a3a73be8047854bcf50ff6dcbdede0c833ab3797405f08b5d856146e3bc8",
-      "patched_sha256": "3582f09395d12bde4aac01555b9bb041537c4e2c441f3a09293321d9e3e922df",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
+      "patched_sha256": "72db0310acfdf68795c8c6baf14b32ede2119cfb6c93d747194b575d2636872f",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
       "changes": [
-        "Regenerated contract-2.0 example (python -m recommendation.examples.generate_contract_examples): feedback snapshot, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
+        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
       ]
     },
     {
       "target": "recommendation/examples/contracts/feedback-only-update.json",
       "base_ported_sha256": "4ab96301f0a571f49dc7c6a3da25493cc1b1046efbb32c01d6f77434d3d8062e",
-      "patched_sha256": "c28110fa59ab713e355e6d18b63d9305f70c1fe225e3e097525fbaa323f441aa",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
+      "patched_sha256": "d2b9d6813b36d16216b8187a55a5d4746226907b0ddfe6e7266ae19b06803fcf",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
       "changes": [
-        "Regenerated contract-2.0 example (python -m recommendation.examples.generate_contract_examples): feedback snapshot, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
+        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
       ]
     },
     {
       "target": "recommendation/examples/contracts/initial-search.json",
       "base_ported_sha256": "b3df49b60f851a597f2e048f44f19c325000af592f8097c582f12fd4ea3bfab0",
-      "patched_sha256": "ec318b20f36084addb45e7ac014eb563a523d99be633b6b5a2d198c788e85838",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
+      "patched_sha256": "66ccb177739b958164c1fc5db19791ae2ed93ed04db04c7ec1e1eecd6d5c23bc",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
       "changes": [
-        "Regenerated contract-2.0 example (python -m recommendation.examples.generate_contract_examples): feedback snapshot, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
+        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
       ]
     },
     {
       "target": "recommendation/examples/contracts/no-match.json",
       "base_ported_sha256": "7a9db3082026ea76d6d3ed454d7cfe18f9cae8739004adc5371c1355874af780",
-      "patched_sha256": "de630e09a8a7fe90e81f2d9262b2b244d9202ae202cfe8293937d7d2e1bfbd5b",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
+      "patched_sha256": "34d8dc98b574353d85353c290618d009f332539c36dc01585c12a2109ac2113d",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
       "changes": [
-        "Regenerated contract-2.0 example (python -m recommendation.examples.generate_contract_examples): feedback snapshot, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
+        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
       ]
     },
     {
       "target": "recommendation/examples/contracts/preference-update.json",
       "base_ported_sha256": "470c7af9064ae6ba25a1ceceb3e701a49c977c7e3f919c5415151f441d94c0f8",
-      "patched_sha256": "1f90a044424c241b60b5462035c80287fe342b1db7b6a54fffb8e15791f26823",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
+      "patched_sha256": "cd86b1b51f97e4557d8feafb6c53fb22f49ceeaf5c77838f2165c255dfc48981",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
       "changes": [
-        "Regenerated contract-2.0 example (python -m recommendation.examples.generate_contract_examples): feedback snapshot, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
+        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
       ]
     },
     {
       "target": "recommendation/examples/contracts/success.json",
       "base_ported_sha256": "017f056380151e5c7cd748506691a28747551479f9266179b72ac5767a8166df",
-      "patched_sha256": "ffd52bb9b828e66677a1716d87de4f9cd3b78ec413d488661a27ba1037bd3ef0",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
+      "patched_sha256": "54d83198b76f984ddf06dafaff80ec94b60164bebdc4783e87f758ae65253bac",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
       "changes": [
-        "Regenerated contract-2.0 example (python -m recommendation.examples.generate_contract_examples): feedback snapshot, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
+        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
       ]
     },
     {
       "target": "recommendation/examples/generate_contract_examples.py",
       "base_ported_sha256": "fdae8b42b499c47ea8ca3c53aec4f3b8e7cd614be25d5897527c30f3affe63ed",
-      "patched_sha256": "fa5a67b2430aed33fe0aa301b392cc20f012e6c93a265650cc405cea32772a2b",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract examples",
+      "patched_sha256": "280671e9545a7ab81a187f7923ee8d07714e7cd85763d0dad77ac32a8153439d",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract examples",
       "changes": [
-        "Feedback-only and preference-update examples use a FeedbackSnapshot built from the preceding response; result_limit 10"
+        "Feedback-only and preference-update examples use a behavior_context built from the preceding response (fixed as_of); result_limit 10"
       ]
     },
     {
       "target": "recommendation/examples/run.py",
       "base_ported_sha256": "132f877b8b7e6e686646ba8a8026645022ec26827c83187f11158ab3d24b883e",
-      "patched_sha256": "7ef29378d628e1087a280f87a02efbf3d55ce4935eadb2cae6b28faecb5d0bfe",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): example runner",
+      "patched_sha256": "978ff55757a6bb1e18be642dfd839e5552307382eda0af8845c2cb4effe65be1",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): example runner",
       "changes": [
-        "Replays the example flow with a FeedbackSnapshot instead of ViewingEvents"
+        "Replays the example flow with a behavior_context instead of ViewingEvents"
       ]
     },
     {
       "target": "recommendation/models/candidate.py",
       "base_ported_sha256": "a8cd420e9fab64ae83b0ce65a914bbe1b943179bbc592b1c4e35e803adfe5ddf",
       "patched_sha256": "b8896a02b103e826b304eef37d2f8dfcd9b05533cb90f2214bec7228a961846c",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): recommendation item",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): recommendation item",
       "changes": [
         "rank <= MAX_RESULT_LIMIT (display order), new score_rank, selection_reason, selection_note",
         "Unique score_rank; evidence must be exactly the evidence referenced by returned items"
@@ -142,7 +142,7 @@
       "target": "recommendation/models/score_breakdown.py",
       "base_ported_sha256": "327f74de0a65605ee5cea7e0a13afce652e00a0295353193ae781149ffa0be05",
       "patched_sha256": "52c541f441fc0c75ab5c2a42611b9fc8283be01bd9dd555df486379ac2f38857",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): fused-v2 score breakdown",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): fused-v2 score breakdown",
       "changes": [
         "explicit/implicit renamed to soft/behavior; appointment_score, browsing_score and their weights added",
         "soft_evidence_coverage and comparison_coverage replace evidence_coverage; Contribution gains branch and method"
@@ -152,7 +152,7 @@
       "target": "recommendation/models/tool_results.py",
       "base_ported_sha256": "7412d1557bafc3a4f77b26065896fb91376d0039a05fc3158f16237ca6d52947",
       "patched_sha256": "ca1be199ec88a07535a81fc4c04a62235d5ce096657675b27cf29e1a9f706d45",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): tool results",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): tool results",
       "changes": [
         "Previews bounded by trace.preview_rows instead of 4; ScorePreview uses soft/behaviour names",
         "ToolResult carries selected_ids, completed_stages and compact data"
@@ -162,7 +162,7 @@
       "target": "recommendation/ranking/ranker.py",
       "base_ported_sha256": "7f8466d27a35f91e8e31677d73985a2013b1c06f6f38f48a3f2af0e5c844a605",
       "patched_sha256": "61ae653bae18f5aa03a424ea5684121f4e885a4ae07a6a357c6be5c4c8919278",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): scoring reference",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): scoring reference",
       "changes": [
         "Rewritten as the scalar fused-v2 reference (soft_utility, feature_similarity, pair_similarity) reading the settings; weighted-v1 constants removed"
       ]
@@ -170,10 +170,10 @@
     {
       "target": "recommendation/README.md",
       "base_ported_sha256": "5f4d39f15ca3781ab4470f7fe905d3a3c91c8527b0fc007dd644c6c5dc17c3aa",
-      "patched_sha256": "d12fef2c63321311de9f7373054867314822b9fedb5417b47b6b06d78caf167d",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): documentation",
+      "patched_sha256": "7a5baf497fb1c41879d9cae3f949cfe9a8dde647ebf587069a30c05bdc7b27ac",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): documentation",
       "changes": [
-        "Feedback snapshot, pool cache / data_version / final gate, fused-v2 scoring, select-v1 selection and cold start described",
+        "Main behavior_context request, pool cache / data_version / final gate, fused-v2 scoring, select-v1 selection and cold start described",
         "Settings section: single YAML source with confirmed / existing-default / experiment-result labels (provisional = not yet calibrated, pending) and TUNING.md; terminal debugging commands"
       ]
     },
@@ -181,7 +181,7 @@
       "target": "recommendation/repositories/geographic_repository.py",
       "base_ported_sha256": "407d791049d0b24af7770fd9b1fe9f01fdc740a6103387178caeddcb6c4205fb",
       "patched_sha256": "c71ab335c3ac0b6c66a71f064b60b4f7a9f1636ee08c20e976c6dde69e19c49f",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): native geography",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): native geography",
       "changes": [
         "Native catalog (LTA stations + exits, URA areas / regions, OSM places), resolver and Python haversine distances",
         "Neo4j NEAR_PLACE edges, point.distance and the 1 m tolerance comparison no longer used"
@@ -191,7 +191,7 @@
       "target": "recommendation/repositories/listing_repository.py",
       "base_ported_sha256": "a9fb02e6939b21aaefa020badf45d02014d87776aae82be459760d2fe4a8b1d6",
       "patched_sha256": "a533c5e9e4fb1dd082088f14c67f0bcd4e561127fad4573df04021bc32736e82",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): pool cache data version and by-id reads",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): pool cache data version and by-id reads",
       "changes": [
         "Shared alias-free column list; data_version fingerprint inside the retrieve REPEATABLE READ transaction (retrieve_versioned)",
         "By-id lookup / lookup_versioned with ANY(CAST(:ids AS BIGINT[])) for the final gate"
@@ -201,7 +201,7 @@
       "target": "recommendation/requirements.txt",
       "base_ported_sha256": "08ef6a1b3ea71b30004759d3bc7c81a461c89cfee781a30becfb99a6719042ae",
       "patched_sha256": "e1cfa5a805edd14b42e77382d6009f2c4485f6cd7d2b653a2bec452c33267989",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): dependencies",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): dependencies",
       "changes": [
         "PyYAML>=6,<7 (settings file) and numpy>=1.26,<3 (full-pool scoring)"
       ]
@@ -209,20 +209,20 @@
     {
       "target": "recommendation/schemas.py",
       "base_ported_sha256": "8f0b0e91121e51b4d60b39f25464c5d19445db06dc700c1ef1dd57fb797ebca7",
-      "patched_sha256": "16bb333fa7422eb32d4f66df9055d55de98c8c4359ff16f42c694e5a5fe39e3f",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): schema generation",
+      "patched_sha256": "f4f95a0e9e914774c28376e092ed81d94a78b05c4452153c85e3e90690701f40",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): schema generation",
       "changes": [
-        "feedback.schema.json generated from FeedbackSnapshot instead of ViewingEvent"
+        "behavior-context.schema.json added (main BehaviorContext); feedback.schema.json stays ViewingEvent"
       ]
     },
     {
       "target": "recommendation/service.py",
       "base_ported_sha256": "33fa52ebd3c41f3f8f33b883f0b4f10d70392610999173c571351711bdd41122",
-      "patched_sha256": "0789c581d9779366453d0df5a2d82746c16075f7d1716f5da50d6d50ca7fbeb7",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): service flow",
+      "patched_sha256": "fac4cf79f8422708c25230f8db0a23076a6f69b2f03481c4eaa7a4d1a7225626",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): service flow",
       "changes": [
         "Settings frozen per request; config_version / config_hash / selection_hash recorded; scoring_version fused-v2, selection_algorithm select-v1",
-        "Contract 2.0 flow: feedback snapshot checks, pool summary, select-v1 selection, compact run snapshot (format 2, selection_input), no unverified list",
+        "v2 flow: behaviour-input checks, pool summary, select-v1 selection, compact run snapshot (format 2, selection_input), no unverified list; web_detail / viewing-draft warnings",
         "Slim trace stage records (input_validation ... final_gate, response_assembly) with error location; replay via the stored selection_input"
       ]
     },
@@ -230,7 +230,7 @@
       "target": "recommendation/state/store.py",
       "base_ported_sha256": "b46ecd791302b3f40cbb552f28a004cde30c9a63641c1ff242180ec78d6898f7",
       "patched_sha256": "3070b37e0836cb00224bec7ceb99e1807bcf8a34bb17a3d19bdd2f6fcbef160d",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): state database",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): state database",
       "changes": [
         "v2 tables request_identities_v2 / conversations_v2 / runs_v2 with direct state lookup; legacy 1.0 tables untouched and readable",
         "resolve_reference through tracing/slim.py; '<trace>/pool' from pool_cache; legacy v1 trace note"
@@ -239,20 +239,20 @@
     {
       "target": "recommendation/terminal/__main__.py",
       "base_ported_sha256": "14277288e3cd570844b36f7b8006837b3509e7ae017b95e3444d06ec7bb69cdc",
-      "patched_sha256": "3634bed8d615dc8e081c79e2baee0d9aae819acd82eb5406d15b868bb0a9a17f",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): terminal",
+      "patched_sha256": "67397c40803d962f487ee45d46e5a595315a2dfd97fcee715de0e009ae0316d4",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): terminal",
       "changes": [
-        "Contract-2.0 requirements / feedback snapshot flow; recommend always mints a new request_id (except retrying a failed pending one)",
+        "Requirements / behavior_context flow (main contract); recommend always mints a new request_id (except retrying a failed pending one)",
         "Debug commands dispatched to terminal/debug.py; --config; staged cold_start / result_limit; response summary"
       ]
     },
     {
       "target": "recommendation/terminal/acceptance.py",
       "base_ported_sha256": "afd0df82e3962b3f40db34e59f86073f63eb11c6a69ec24cc98a0a404531af78",
-      "patched_sha256": "0fd9667cd51722685b3bb97a74a102d59a24bc339aebceaf73de7604fcfed1cb",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): acceptance companion",
+      "patched_sha256": "e8397e47079c16c1644ace1ba7ca38c8d482ad0f112ac3f699a290acef62ca98",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): acceptance companion",
       "changes": [
-        "Ported to contract 2.0: snapshot feedback, the same snapshot resent under a new request ID (request-independent outputs compared), scoring summary",
+        "Ported to the merged request: behavior_context, the same snapshot resent under a new request ID (request-independent outputs compared), scoring summary",
         "--config defaults to RECOMMENDATION_CONFIG"
       ]
     },
@@ -260,7 +260,7 @@
       "target": "recommendation/tests/test_policy_controller.py",
       "base_ported_sha256": "516366637a44438cb510c1c99add5e0f5c361c2699ecf05c8d8d45f8d377d45d",
       "patched_sha256": "68ed4625933de4e30e888851e0303ae459f447adecf792ebf1426095caacc50a",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): tests",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): tests",
       "changes": [
         "Assertions changed one at a time for intended v2 rule changes, intent kept (listed per phase in VALIDATION.md)"
       ]
@@ -268,8 +268,8 @@
     {
       "target": "recommendation/tests/test_recommendation.py",
       "base_ported_sha256": "fb4b0df776232cd35a9b321d5918d927c43cd6d6877f1379dcd4f437ac5b5f0a",
-      "patched_sha256": "9dcb76450d8e153fd3e5d650d0f680c28f108abea5ed5d026e20be740c7188e7",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): tests",
+      "patched_sha256": "122fbdef13a1135f1cf0ec02edbf2ff967f81592f04733e5bcacc663e4883db2",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): tests",
       "changes": [
         "Assertions changed one at a time for intended v2 rule changes, intent kept (listed per phase in VALIDATION.md)"
       ]
@@ -277,8 +277,8 @@
     {
       "target": "recommendation/tests/test_terminal_repositories.py",
       "base_ported_sha256": "db1f03d6d452a1736369c44ee05a59ddd055b31baf688635569255eae838cc19",
-      "patched_sha256": "ddb6174a6cbb197ac7f377ca3d8d36c4124ee343e2a8e2f45c1a54ddbf313030",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): tests",
+      "patched_sha256": "0e66c4412446092e29bf66c248dfff436e730a949a1770919300bfd275576cdd",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): tests",
       "changes": [
         "Assertions changed one at a time for intended v2 rule changes, intent kept (listed per phase in VALIDATION.md)"
       ]
@@ -286,8 +286,8 @@
     {
       "target": "recommendation/tools/dispatcher.py",
       "base_ported_sha256": "f5284475f19de65fa2e1d470f2f7645c17403c433415592860d368363fc69af8",
-      "patched_sha256": "610e58428d51f8fe5185e9527e9b110d84d82f4604a403ef853db367845c874f",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): tool dispatcher",
+      "patched_sha256": "5636942ef84a8c5b232189a9b01c4561856512598c187bb6fbf773f8d826d9b6",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): tool dispatcher",
       "changes": [
         "Pipeline tools with stage dependencies and invalidation, typed per-tool arguments, resolution budgets and bind_entity application",
         "Pool built or reused through tools/pool_builder.py; full-pool fused-v2 scoring and select-v1 selection in rank_candidates",
@@ -298,7 +298,7 @@
       "target": "recommendation/validation/gate.py",
       "base_ported_sha256": "d8a4ee4d1a0e20c8d1a64e8547329bf684844530e1625ae89895a6022302b2ad",
       "patched_sha256": "a8f8fd970bcf0df27d89f8e80d9f96ec75b06a79a8b10a7d49ce7d6d19de3302",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): gates",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): gates",
       "changes": [
         "final_gate: returned IDs equal the code selection, data_version re-checked (STALE_EVIDENCE), selected rows re-read by ID and hard criteria re-evaluated, selection replays from its input",
         "replay_gate: select-v1 recomputed from the stored selection_input; geographic provenance of returned listings recorded"
@@ -307,35 +307,35 @@
     {
       "target": "recommendation/contracts/feedback.py",
       "base_ported_sha256": "cdc47f196eea553c0a00121f1630a7a46747b263e9746a7c4b7e8fe6f1f93df3",
-      "patched_sha256": "7da462e90fc7e9c0d65666e3e8acd82f30e613161cc61a3d412164e71c14b4d9",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): feedback contract",
+      "patched_sha256": "5b9991753b37519ba376b50e9ed2db04f5e237b95793e2e72f7c2c893d66546c",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): feedback contract",
       "changes": [
-        "ViewingEvent replaced by FeedbackSnapshot (previous_round with exactly one browsing record per shown listing; one appointment entry per listing)"
+        "main's ViewingEvent (source sample | web_detail) kept; documented as validated, not scored (behavior_context holds the same time cumulatively)"
       ]
     },
     {
       "target": "recommendation/contracts/README.md",
       "base_ported_sha256": "881182397f4045b67d12aa469b817becc46072e14841addf077eccbe3d89a823",
-      "patched_sha256": "417954acfc4b41fd1259b90ad4335d4ed19e74c2f11e0fbfe7694cffbf7555c8",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): documentation",
+      "patched_sha256": "906b9423a8fb25e8308d524ec65c2851a4d50025ba9c56f1a900786c120acc69",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): documentation",
       "changes": [
-        "Interface description updated to contract 2.0 (feedback snapshot, summaries, no unverified list); links fixed"
+        "Interface description updated (main request + behavior_context + cold_start, response 2.0 summaries, no unverified list); links fixed"
       ]
     },
     {
       "target": "recommendation/contracts/request.py",
       "base_ported_sha256": "7abf36d1fad2a92d5e2e8d9abefb7806f1d8c4051d4cdaa3269963cc04f8d2c7",
-      "patched_sha256": "293a77aec2d16e1373a9a1fe676144fc677660732ac072ca7e64df302f6cec99",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): request contract",
+      "patched_sha256": "674f218a5cd6cb3701168f245a6e478debf0e549f14797979b63525eac75aa69",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): request contract",
       "changes": [
-        "contract_version 2.0 (1.0 rejected), result_limit None -> settings default, max 10, feedback snapshot, cold_start input"
+        "Main request contract 1.0 (2.0 bodies rejected) with feedback events and behavior_context; result_limit None -> settings default, max 10; recommendation-owned cold_start input; event conversation and unique IDs checked"
       ]
     },
     {
       "target": "recommendation/contracts/requirements.py",
       "base_ported_sha256": "f4eebcb6a5cc65dfe1dada1db2f2372864b6f106d8ba0c6ec9d21a50eed16924",
       "patched_sha256": "748579089dc683fd0335bd21fcec9eb8018d577c97e8c46a90e02e9061596365",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): requirements contract",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): requirements contract",
       "changes": [
         "A distance/commute criterion accepts a category alone, or a destination ID and/or a name (ID/name conflict -> ambiguous)"
       ]
@@ -344,7 +344,7 @@
       "target": "recommendation/contracts/response.py",
       "base_ported_sha256": "ae15815679bfb187fc6be86478c82b4865134c19f3a40cb5fe617d5a487c9fe2",
       "patched_sha256": "2f19fc7e87953e9487d59629c31bd2ff53604a26fe56bb8309b79afc124f4660",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): response contract",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): response contract",
       "changes": [
         "contract_version 2.0, recommendations max 10, unverified_candidates and state.feedback_version removed",
         "resolution / pool / selection summaries; execution config and selection identity; evidence one entry per (evidence_id, criterion_id)"
@@ -353,26 +353,26 @@
     {
       "target": "recommendation/contracts/schemas/feedback.schema.json",
       "base_ported_sha256": "c3ef20a566d11ae5029589c740a31d3d39aea185950a15d8af9954412ee1fb08",
-      "patched_sha256": "d2bc686013166d2c2caa2786f34a921ea5c389022a16b8e438512022d8b1e44f",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): generated schema",
+      "patched_sha256": "ca47073ad2e0953474bf55a2424c664d2c7898a92cf54826409d0ab11f11aca4",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): generated schema",
       "changes": [
-        "Regenerated by python -m recommendation.schemas (FeedbackSnapshot)"
+        "Regenerated by python -m recommendation.schemas (ViewingEvent, sample | web_detail)"
       ]
     },
     {
       "target": "recommendation/contracts/schemas/request.schema.json",
       "base_ported_sha256": "6b17d14c209d8fe8f62e8937e4394c6611a24a1be51b965ab04ef9f0b9345036",
-      "patched_sha256": "0e6fd55473592c38f9ff18b0d4484e8bcff42e1bf6023836cdedf70571d72a0d",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): generated schema",
+      "patched_sha256": "27163e698935cd6b52bdaeea6ad8fef5aca7033a2bfefdc7bdaf0834738ea8ee",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): generated schema",
       "changes": [
-        "Regenerated by python -m recommendation.schemas (request 2.0)"
+        "Regenerated by python -m recommendation.schemas (main request 1.0 + behavior_context + cold_start, result_limit <= 10)"
       ]
     },
     {
       "target": "recommendation/contracts/schemas/response.schema.json",
       "base_ported_sha256": "a575ed3e057b5c355da2079f4aaedbec3ece14e85b146b15ed9396b2934e1e16",
       "patched_sha256": "aaa7acd0772ab5f83e9b4d0bfadc27845eae044ad56b9109ea0dcdb45b5ddffe",
-      "issue": "Recommendation v2 (native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): generated schema",
+      "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): generated schema",
       "changes": [
         "Regenerated by python -m recommendation.schemas (response 2.0)"
       ]

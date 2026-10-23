@@ -1,5 +1,5 @@
 {
- "description": "Fixture data, scripted controller: round 2 of a hard-budget-only request with exactly one usable browsing reference (fixture-05, 90 s; fixture-07 recorded 0 s; others missing). Checked by tests/select-v1-oracle.test.ts against the independent TS fused-v2 oracle (single-reference normalisation, self pair excluded, p05_p95 spread, district fallback for fixture-12 without coordinates) and the select-v1 oracle.",
+ "description": "Fixture data, scripted controller: round 2 of a hard-budget-only request whose behavior_context has exactly one usable browsing reference (fixture-05, 90 s, interest_eligible); fixture-07 has 0 s and fixture-08 is not interest_eligible. Checked by tests/select-v1-oracle.test.ts against the independent TS fused-v2 oracle (single-reference normalisation, self pair excluded, p05_p95 spread, district fallback for fixture-12 without coordinates) and the select-v1 oracle.",
  "oracle_settings": {
   "soft_weight": 0.6,
   "behavior_weight": 0.4,
@@ -18,7 +18,7 @@
   "min_comparison_coverage": 0.5
  },
  "native_body": {
-  "contract_version": "2.0",
+  "contract_version": "1.0",
   "request_id": "single-r2",
   "conversation_id": "single-reference",
   "requirements_version": 1,
@@ -35,81 +35,49 @@
     }
    ]
   },
-  "previous_state_id": "956362cb-c89f-4b79-b17a-d88e38054f8f",
+  "feedback": [],
+  "previous_state_id": "8b30d161-f275-4fc7-9b7c-154aa1586989",
   "result_limit": 10,
-  "feedback": {
-   "previous_round": {
-    "request_id": "single-r1",
-    "shown_listing_ids": [
-     "fixture-01",
-     "fixture-02",
-     "fixture-04",
-     "fixture-05",
-     "fixture-06",
-     "fixture-07",
-     "fixture-08",
-     "fixture-09",
-     "fixture-11",
-     "fixture-12"
-    ],
-    "browsing": [
-     {
-      "listing_id": "fixture-01",
-      "status": "missing",
-      "duration_seconds": null
-     },
-     {
-      "listing_id": "fixture-02",
-      "status": "missing",
-      "duration_seconds": null
-     },
-     {
-      "listing_id": "fixture-04",
-      "status": "missing",
-      "duration_seconds": null
-     },
-     {
-      "listing_id": "fixture-05",
-      "status": "recorded",
-      "duration_seconds": 90
-     },
-     {
-      "listing_id": "fixture-06",
-      "status": "missing",
-      "duration_seconds": null
-     },
-     {
-      "listing_id": "fixture-07",
-      "status": "recorded",
-      "duration_seconds": 0
-     },
-     {
-      "listing_id": "fixture-08",
-      "status": "missing",
-      "duration_seconds": null
-     },
-     {
-      "listing_id": "fixture-09",
-      "status": "missing",
-      "duration_seconds": null
-     },
-     {
-      "listing_id": "fixture-11",
-      "status": "missing",
-      "duration_seconds": null
-     },
-     {
-      "listing_id": "fixture-12",
-      "status": "missing",
-      "duration_seconds": null
-     }
-    ]
-   },
-   "appointments": []
-  },
   "cold_start": {
    "exited": false,
    "exited_pool_key": null
+  },
+  "behavior_context": {
+   "version": "1.0",
+   "as_of": "2026-10-23T08:00:00.000Z",
+   "listing_view_durations": [
+    {
+     "listing_id": "fixture-05",
+     "duration_seconds": 90,
+     "view_count": 1,
+     "last_viewed_at": "2026-10-23T08:00:00.000Z",
+     "source_request_ids": [
+      "bfa7d178-8374-51bb-a4a3-ab2123913bf8"
+     ],
+     "interest_eligible": true
+    },
+    {
+     "listing_id": "fixture-07",
+     "duration_seconds": 0,
+     "view_count": 1,
+     "last_viewed_at": "2026-10-23T08:00:00.000Z",
+     "source_request_ids": [
+      "bfa7d178-8374-51bb-a4a3-ab2123913bf8"
+     ],
+     "interest_eligible": true
+    },
+    {
+     "listing_id": "fixture-08",
+     "duration_seconds": 40,
+     "view_count": 1,
+     "last_viewed_at": "2026-10-23T08:00:00.000Z",
+     "source_request_ids": [
+      "bfa7d178-8374-51bb-a4a3-ab2123913bf8"
+     ],
+     "interest_eligible": false
+    }
+   ],
+   "book_viewing_listings": []
   }
  },
  "response": {
@@ -1176,7 +1144,7 @@
   "selection": {
    "mode": "cold_start_exploration",
    "algorithm_version": "select-v1",
-   "seed": "521836a62962aabcc752a224b181fd47311565c9b127c266d40b6d4c2312f76c",
+   "seed": "311e196d3d38ccbbb08253f6b2f6e4a3d5b908c52320a164f25d8150e9869468",
    "result_limit": 10,
    "leaders": 9,
    "tie_group": {
@@ -1246,12 +1214,13 @@
   "clarifications": [],
   "relaxation_suggestions": [],
   "warnings": [
-   "Sample viewing durations are simulated observations.",
+   "Browser detail durations are attention estimates, not verified preferences.",
+   "Viewing drafts with a saved time are interest signals, not confirmed appointments.",
    "Posting time does not establish current availability."
   ],
   "state": {
-   "state_id": "f9f5b00a-70a3-45db-a6a4-e59fc32fad4d",
-   "candidate_pool_ref": "49515840-33c1-42e3-94fc-75d9a59bf97f/pool",
+   "state_id": "6aaeb046-768d-48db-aa7c-483e433c1e95",
+   "candidate_pool_ref": "4c6041c3-f038-447f-a1a4-4cc1e646222c/pool",
    "run_sequence": 2,
    "scope": "all RENT listings",
    "truncated": false,
@@ -1260,18 +1229,18 @@
    "assessed_count": 12
   },
   "execution": {
-   "trace_id": "49515840-33c1-42e3-94fc-75d9a59bf97f",
-   "trace_ref": "sqlite:49515840-33c1-42e3-94fc-75d9a59bf97f",
+   "trace_id": "4c6041c3-f038-447f-a1a4-4cc1e646222c",
+   "trace_ref": "sqlite:4c6041c3-f038-447f-a1a4-4cc1e646222c",
    "strategy": "full-pool fused-v2 scoring + select-v1 selection",
-   "scoring_version": "fused-v2:90e724bb160a",
+   "scoring_version": "fused-v2:cc051e535df4",
    "selection_algorithm": "select-v1",
    "config_version": 1,
-   "config_hash": "e46e754a9c6e6eafd4e2522f7bee4f26de37f956de50d3be6be173549710b2c8",
-   "selection_hash": "90e724bb160ae68524bd5d9b899959716d46f509627096c5696c7ec66d5a18a7",
+   "config_hash": "9a7477ea9224baf775654841f7a3808f539c116b3cde9a9f2a3e2785ea69f41b",
+   "selection_hash": "cc051e535df4be969ac533c865020a622f63651da3be65183b0dc84a1591b93d",
    "model_identifier": null,
    "model_calls": 0,
    "tool_calls": 4,
-   "duration_ms": 7.709708996117115,
+   "duration_ms": 4.169750027358532,
    "tokens": null,
    "data_mode": "fixture",
    "controller_mode": "scripted"

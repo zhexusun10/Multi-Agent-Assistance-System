@@ -1,5 +1,7 @@
 # 江山 Recommendation Agent 原生接入说明
 
+2026-10-21 补充（main）：真实浏览来源契约、主工作区详情及用户请求时使用兴趣已接入，见[真实浏览反馈实现与验收](真实浏览反馈_实现与验收.md)。2026-10-23 与 main c7dc536 合并：请求沿用 main 的 [Recommendation Contract：浏览时长与看房意向](Recommendation_Contract_浏览时长与看房意向.md)（契约 1.0 + `feedback` 事件 + `behavior_context`），另加推荐方的 `cold_start`；原生端对 `behavior_context` 评分（会话累计浏览摘要中 `interest_eligible` 的条目、已保存的看房意向），`feedback` 事件只校验不计分；响应为原生契约 2.0。合并说明见 MIGRATION.md 的“Merge with main c7dc536”一节。
+
 实现日期：2026-10-20；原生契约 2.0 改造：2026-10-23（分支 `feat/recommendation-exploration`）。对照的本地基线提交：`501fb6cdb0aa64bdbabb947324bf845654a9a269`；GitHub main 合并版本：`907cfa839d2665b3702450eb40acd4c96fe9296c`。以下描述当前代码的实际行为；第1节与第7节中标注为 2026-10-20 的内容是当时迁移的历史记录。原生 1.0 → 2.0 的逐字段变化、状态库和旧数据处理见 [MIGRATION.md](../evaluation/recommendation-exploration-2026-10-23/MIGRATION.md)。
 
 ## 1. 对比结论与迁移原则
@@ -213,7 +215,7 @@ SQLite 保留 request_id 绑定、会话 v2 state、runs（紧凑快照，不含
 | execution | 原生trace、策略、模型/工具调用数、耗时、tokens、数据/控制模式、评分版本（fused-v2）、选择算法（select-v1）、config_version / config_hash / selection_hash 全量留档；兼容execution保留可解析归档引用 |
 | error | 原生错误原样传递业务失败；无baseline回退 |
 
-`native.exchange_ref` 是会话隔离的完整交换存档。通过原有 `/api/evidence?session_id=...&ref=...` 读取，已有owner校验；存档包含 **request、transport_request、response、presentation、unsupported_criteria、ignored_feedback、feedback_sidecar**。原生HTTP `/recommend` 直接返回原生Response；`/app/recommend` 外壳增加 presentation，不污染原生response本身。
+`native.exchange_ref` 是会话隔离的完整交换存档。通过原有 `/api/evidence?session_id=...&ref=...` 读取，已有owner校验；存档包含 **request、transport_request、response、presentation、unsupported_criteria、ignored_feedback、cold_start**（请求含 main 的 `behavior_context` 与 `feedback` 事件）。原生HTTP `/recommend` 直接返回原生Response；`/app/recommend` 外壳增加 presentation，不污染原生response本身。
 
 原生单项返回结构示意（非完整报文，完整可执行示例见 `recommendation/examples/contracts/`）：
 
@@ -244,7 +246,7 @@ HTTP外壳在执行线程创建SQLite连接，避免跨线程复用；外部排�
 
 前端对未变化的不可变推荐快照保持卡片DOM，避免解释/消息SSE刷新恰好替换点击中的卡片。这个修改只影响渲染，不改变Agent编排或房源顺序。
 
-状态位于 `data/.runtime/recommendation/state.sqlite`，与原应用PostgreSQL状态相互独立。备份/迁移时要同时保留；应用传输入口会把无法解析为 v2 运行的 previous_state_id 视为空并开始新的 v2 链，不能假装恢复历史状态。契约 2.0 部署需要原生服务（8092）和应用（8010）同时切换到本分支代码，应用启动时执行 `migrations/004-feedback-snapshot.sql`；步骤见 MIGRATION.md。所有`.runtime`、密钥和1GB原始数据库仍在gitignore内。
+状态位于 `data/.runtime/recommendation/state.sqlite`，与原应用PostgreSQL状态相互独立。备份/迁移时要同时保留；应用传输入口会把无法解析为 v2 运行的 previous_state_id 视为空并开始新的 v2 链，不能假装恢复历史状态。本版部署需要原生服务（8092）和应用（8010）同时切换到本分支代码，应用启动时执行 main 的 `migrations/004`–`006` 与 `migrations/007-recommendation-cold-start.sql`；步骤见 MIGRATION.md。所有`.runtime`、密钥和1GB原始数据库仍在gitignore内。
 
 Windows手工运行原生CLI建议：
 

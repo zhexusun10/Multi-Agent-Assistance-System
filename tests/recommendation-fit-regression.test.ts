@@ -6,6 +6,7 @@ import {parseLocationIntents} from '../src/domain/geo-intake.js';
 import {LocationService} from '../src/adapters/locations.js';
 import type {DataHttpAdapter} from '../src/adapters/data-http.js';
 import type {ToolExecutor, ToolContext} from '../src/tools/executor.js';
+import {output} from '../src/agents/requirement/few-shot.js';
 
 const empty = {listing_type:'RENT' as const, criteria:[]};
 const bedroomCases = [
@@ -65,8 +66,17 @@ test('a hard bedroom phrase does not change a separate English district preferen
 test('explicit district cancellation is accepted with the original model evidence', async () => {
   const base = mergeRequirements(empty, extractRules('预算2500，至少2房，必须D05', empty));
   const query = '取消邮区限制，其他条件不变。';
-  const model = {withStructuredOutput:()=>({invoke:async()=>({upsert:[],remove_fields:['district'],clarifications:[],sources:[{field:'district',quote:query}],supported:true})})} as unknown as BaseChatModel;
+  const proposal=output(query,{removals:[{field:'district',criterion_id:null,quote:query}],coverage:[{quote:query,disposition:'removed'}]});
+  let audited=false;
+  const model = {withStructuredOutput:(_schema:unknown,options:any)=>({invoke:async(messages:any[])=>{
+    if(options.name==='submit_requirement_intake_v2')return proposal;
+    const audit=JSON.parse(String(messages.at(-1).content));
+    assert.equal(audit.query,query);assert.deepEqual(audit.compiled_draft.remove_fields,['district']);
+    assert(audit.compiled_draft.sources.some((s:any)=>s.field==='district'&&s.quote===query));
+    audited=true;return {valid:true,issues:[]};
+  }})} as unknown as BaseChatModel;
   const next = mergeRequirements(base, await extractRequirements(query, base, model));
+  assert(audited);
   assert(!next.criteria.some(c=>c.field==='district'));
   assert(next.criteria.some(c=>c.field==='price'&&c.value===2500&&c.operator==='lte'));
   assert(next.criteria.some(c=>c.field==='bedrooms'&&c.value===2&&c.operator==='gte'));
@@ -81,8 +91,16 @@ for (const query of ['不要取消邮区限制', '先不取消邮区限制', 'Do
 test('a model cannot authorize an unrelated district removal', async () => {
   const base = mergeRequirements(empty, extractRules('必须D05', empty));
   const query = '其他条件不变';
-  const model = {withStructuredOutput:()=>({invoke:async()=>({upsert:[],remove_fields:['district'],clarifications:[],sources:[{field:'district',quote:query}],supported:true})})} as unknown as BaseChatModel;
+  const proposal=output(query,{removals:[{field:'district',criterion_id:null,quote:query}],coverage:[{quote:query,disposition:'removed'}]});
+  const before=structuredClone(base);let audits=0;
+  const model = {withStructuredOutput:(_schema:unknown,options:any)=>({invoke:async(messages:any[])=>{
+    if(options.name==='submit_requirement_intake_v2')return proposal;
+    const audit=JSON.parse(String(messages.at(-1).content));
+    assert.equal(audit.query,query);assert.deepEqual(audit.compiled_draft.remove_fields,['district']);
+    audits++;return {valid:false,issues:[{quote:query,reason:'removal is not explicitly authorized'}]};
+  }})} as unknown as BaseChatModel;
   await assert.rejects(()=>extractRequirements(query,base,model), /removal is not explicitly authorized/);
+  assert(audits>0);assert.deepEqual(base,before);
 });
 
 for (const [query, radius] of [

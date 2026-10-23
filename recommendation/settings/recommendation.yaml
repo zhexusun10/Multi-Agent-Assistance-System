@@ -45,9 +45,10 @@ ranking:
     browsing_weight: 0.40           # confirmed
     missing_branch_contribution: 0.0          # confirmed (missing behaviour branch contributes 0)
     redistribute_missing_branch_weight: false # confirmed (branch weights are never redistributed)
-    counted_appointment_statuses: [MANUAL_SENT, MANUAL_REPLIED, CONFIRMED]  # confirmed (R1b); other statuses are rejected (INVALID_FEEDBACK)
+    counted_appointment_signals: [viewing_draft_saved]  # confirmed (main contract 2026-10-23: behavior_context.book_viewing_listings = saved timed VIEWING drafts); other signals are rejected (INVALID_FEEDBACK)
+    browsing_requires_interest_eligible: true  # confirmed (main contract: only listing_view_durations with interest_eligible=true are scoreable browsing facts)
     reference_scope: in_pool        # confirmed (decision 3: only references inside the current pool)
-  browsing:                         # previous-round browsing references (ranking/scoring_v2.py)
+  browsing:                         # session-cumulative behavior_context.listing_view_durations references (ranking/scoring_v2.py)
     transform: log1p                # confirmed (logarithmic growth)
     duration_cap_seconds: null      # confirmed: null = explicitly uncapped (not "uncalibrated")
     time_scale_seconds: 30          # provisional (not calibrated: no real dwell data exists); weight = log1p(t / scale)

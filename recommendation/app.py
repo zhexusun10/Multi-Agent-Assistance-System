@@ -2,15 +2,18 @@
 import asyncio
 import hmac
 import os
+import json
 
 from dotenv import dotenv_values
 from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.gzip import GZipMiddleware
 
-from .agent.controller import LiveController, ScriptedController
+from .agent.controller import ScriptedController
+from .app_controller import ApplicationLiveController
 from .config import RecommendationConfig
 from .contracts.request import RecommendationRequest
+from .app_contract import ApplicationRecommendationRequest
 from .models.candidate import Response
 from .repositories.connections import ROOT, repositories
 from .service import RecommendationService
@@ -55,6 +58,9 @@ def execute(request: RecommendationRequest, app_view=False):
     store = None
     try:
         store = StateStore(state_path())
+        # behavior_context (main contract) is part of the request, so the transport body, its
+        # fingerprint and the idempotency binding all cover it: a changed snapshot under the same
+        # request ID is a 409.
         transport_request = request.model_dump(mode="json")
         if app_view:
             # App operations can be superseded after the native run commits but
@@ -83,9 +89,10 @@ def execute(request: RecommendationRequest, app_view=False):
         controller_mode = os.getenv("RECOMMENDATION_CONTROLLER", "live")
         if controller_mode not in {"live", "scripted"}:
             raise ValueError("RECOMMENDATION_CONTROLLER must be live or scripted")
-        controller = LiveController() if controller_mode == "live" else ScriptedController()
         # Committed recommendation/settings/recommendation.yaml unless RECOMMENDATION_CONFIG names an alternative.
-        service = RecommendationService(listing, geographic, store, controller, config=RecommendationConfig.from_file(os.getenv("RECOMMENDATION_CONFIG")))
+        config = RecommendationConfig.from_file(os.getenv("RECOMMENDATION_CONFIG"))
+        controller = ApplicationLiveController() if controller_mode == "live" else ScriptedController()
+        service = RecommendationService(listing, geographic, store, controller, config=config)
         response = Response.model_validate(service.recommend(request).model_dump())
         native = response.model_dump(mode="json")
         if not app_view:
@@ -139,5 +146,5 @@ async def recommend(request: RecommendationRequest):
 
 
 @app.post("/app/recommend", dependencies=[Depends(authorize)])
-async def app_recommend(request: RecommendationRequest):
-    return await run(request, True)
+async def app_recommend(request: ApplicationRecommendationRequest):
+    return await run(request.native_request(), True)

@@ -172,17 +172,19 @@ def test_simulated_evaluation_three_modes_and_correctness(tmp_path, monkeypatch)
 
 
 def test_simulated_user_feedback_is_a_valid_orchestrator_snapshot():
-    from recommendation.contracts.feedback import FeedbackSnapshot
+    """The simulator emulates main's orchestrator: a session-cumulative behavior_context."""
+    from recommendation.contracts.behavior import BehaviorContext
 
     data = Data("fixture")
     try:
         user = simulate.SimulatedUser(data.rows, 0)
         records = [user.browse(1, r) for r in data.rows]
-        snapshot = FeedbackSnapshot.model_validate({"previous_round": {
-            "request_id": "r1", "shown_listing_ids": [r.listing_id for r in data.rows[:10]], "browsing": records[:10]}})
-        assert snapshot.previous_round is not None
         assert records == [user.browse(1, r) for r in data.rows]  # independent of call order / mode
         assert all(r["status"] == "missing" or r["duration_seconds"] >= 0 for r in records)
+        session = simulate.Session(next(iter(simulate.HARD_SCENARIOS)), next(iter(simulate.SOFT_SETS)), 0, user, "pool_cache")
+        assert session.body(1)["behavior_context"]["listing_view_durations"] == []
+        context = BehaviorContext.model_validate(session.body(1)["behavior_context"])
+        assert context.version == "1.0" and context.book_viewing_listings == []
     finally:
         data.close()
 

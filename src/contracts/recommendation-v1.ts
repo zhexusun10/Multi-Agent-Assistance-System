@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import {nativeScoresSchema,legacyNativeScoresSchema,SELECTION_REASONS} from './recommendation-native.js';
+import {behaviorContextSchema} from './behavior-context.js';
 
 export const FIELD_RULES: Record<string, { kind: 'number'|'integer'|'string'|'boolean'|'date'; ops: string[]; unit?: string; unsupported?: boolean }> = {
   price: {kind:'number',ops:['eq','gte','lte','between'],unit:'SGD/month'},
@@ -14,7 +15,7 @@ export const FIELD_RULES: Record<string, { kind: 'number'|'integer'|'string'|'bo
   place_proximity: {kind:'number',ops:['lte','gte','between'],unit:'m'},
   mrt_distance_m: {kind:'number',ops:['lte','gte','between'],unit:'m'},
   mrt_walking_mins: {kind:'number',ops:['lte','gte','between'],unit:'min'},
-  lease_months: {kind:'integer',ops:['eq','between'],unit:'month',unsupported:true},
+  lease_months: {kind:'integer',ops:['eq','gte','lte','between'],unit:'month',unsupported:true},
   furnishing: {kind:'string',ops:['eq','in'],unsupported:true},
   rental_scope: {kind:'string',ops:['eq','in'],unsupported:true},
   move_in_date: {kind:'date',ops:['eq','gte','lte'],unsupported:true},
@@ -28,6 +29,7 @@ export const criterionSchema = z.object({
   value:z.unknown(),unit:z.string().optional(),strength:z.enum(['hard','soft']),weight:z.number().positive().finite().optional(),
   target:targetSchema.optional(),distance_type:z.enum(['straight_line','walking','driving','transit','platform_reported']).optional(),
   transport_mode:z.string().optional(),
+  distance_preference:z.enum(['nearer','bounded']).optional(),
 }).strict().superRefine((c,ctx)=>{
   const r=FIELD_RULES[c.field]; const error=(message:string)=>ctx.addIssue({code:'custom',message});
   if(!r) return error(`Unsupported field: ${c.field}`);
@@ -50,6 +52,7 @@ export const criterionSchema = z.object({
   }
   if(c.field==='place_proximity'&&(!c.target||(!c.target.place_id&&!c.target.category)||!c.distance_type)) error('Geographic target and distance_type required');
   if(c.field.startsWith('mrt_')&&c.distance_type!=='platform_reported') error('MRT fields require explicit platform_reported semantics');
+  if(c.distance_preference&&c.field!=='place_proximity')error('distance_preference only applies to place_proximity');
 });
 export type Criterion=z.infer<typeof criterionSchema>;
 export const requirementsSchema=z.object({listing_type:z.literal('RENT'),criteria:z.array(criterionSchema).max(40)}).strict().superRefine((r,c)=>{
@@ -64,7 +67,7 @@ export const feedbackSchema=z.object({event_id:z.string().min(1),listing_id:z.st
   if(e.event_type==='explicit_attribute_feedback'&&(!['positive','negative'].includes(String(e.payload.sentiment))||typeof e.payload.attribute!=='string'))c.addIssue({code:'custom',message:'Attribute feedback needs attribute and sentiment'});
 });
 export type Feedback=z.infer<typeof feedbackSchema>;
-export const recommendationRequestSchema=z.object({contract_version:z.literal('1.0'),request_id:z.string().min(1),conversation_id:z.string().min(1),requirements_version:z.number().int().nonnegative(),requirements:requirementsSchema,feedback:z.array(feedbackSchema).default([]),previous_state_id:z.string().min(1).optional(),result_limit:z.number().int().min(1).max(20)}).strict();
+export const recommendationRequestSchema=z.object({contract_version:z.literal('1.0'),request_id:z.string().min(1),conversation_id:z.string().min(1),requirements_version:z.number().int().nonnegative(),requirements:requirementsSchema,feedback:z.array(feedbackSchema).default([]),behavior_context:behaviorContextSchema.optional(),previous_state_id:z.string().min(1).optional(),result_limit:z.number().int().min(1).max(20)}).strict();
 export type RecommendationRequest=z.infer<typeof recommendationRequestSchema>;
 export const evidenceSchema=z.object({evidence_id:z.string().min(1),listing_id:z.string().regex(/^\d+$/),field_path:z.string(),value:z.unknown(),unit:z.string().optional(),distance_type:z.string().optional(),raw_distance_type:z.string().optional(),target:targetSchema.optional(),source_kind:z.enum(['data_api','fixture','recommendation_service']),source_ref:z.string().min(1),dataset_version:z.string().min(1),retrieved_at:at,verified_at:at.nullable(),route_verified:z.boolean().optional(),measurement_method:z.string().optional()}).strict();
 export type Evidence=z.infer<typeof evidenceSchema>;
@@ -74,7 +77,7 @@ const candidateSchema=z.object({listing:listingSchema,rank:z.number().int().posi
 export type Candidate=z.infer<typeof candidateSchema>;
 export const recommendationResponseSchema=z.object({
   native:z.object({provider:z.literal('jiangshan-native'),upstream_commit:z.string(),exchange_ref:z.string().uuid(),status:z.enum(['success','needs_clarification','no_match','error']),state_id:z.string().nullable(),ranking:z.array(z.string()),scores:z.record(z.string(),z.union([nativeScoresSchema,legacyNativeScoresSchema])),criterion_results:z.record(z.string(),z.unknown()),unsupported_criterion_ids:z.array(z.string()),unscored_listing_ids:z.array(z.string()),
-    // Native contract 2.0 metadata (optional: archived contract-1.0 projections lack it). pool/selection/resolution
+    // Native response contract 2.0 metadata (optional: archived contract-1.0 projections lack it). pool/selection/resolution
     // are the lossless native objects, already validated by the strict 2.0 schema at projection time.
     contract:z.literal('2.0').optional(),pool:z.record(z.string(),z.unknown()).nullable().optional(),selection:z.record(z.string(),z.unknown()).nullable().optional(),resolution:z.array(z.record(z.string(),z.unknown())).optional(),config_hash:z.string().optional(),selection_reasons:z.record(z.string(),z.object({selection_reason:z.enum(SELECTION_REASONS),selection_note:z.string(),score_rank:z.number().int().positive()}).strict()).optional()}).strict().optional(),
   contract_version:z.literal('1.0'),request_id:z.string(),conversation_id:z.string(),requirements_version:z.number().int(),

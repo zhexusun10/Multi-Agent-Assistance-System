@@ -85,7 +85,7 @@ def make_request(criteria=(), request_id="r-1", conversation="sel", limit=10, ex
     return RecommendationRequest.model_validate({
         "request_id": request_id, "conversation_id": conversation, "requirements_version": 1,
         "result_limit": limit, "requirements": {"listing_type": "RENT", "criteria": list(criteria)},
-        "feedback": fb.model_dump(mode="json") if fb is not None else {},
+        "behavior_context": fb.model_dump(mode="json") if fb is not None else None,
         "cold_start": {"exited": exited_key is not None, "exited_pool_key": exited_key},
     })
 
@@ -93,7 +93,7 @@ def make_request(criteria=(), request_id="r-1", conversation="sel", limit=10, ex
 def scored_pool(rows, req, config):
     crit = req.requirements.criteria
     results = {r.listing_id: evaluate(r, crit, []) for r in rows}
-    return score_pool(rows, crit, results, {}, req.feedback, config)
+    return score_pool(rows, crit, results, {}, req.behavior_context, config)
 
 
 def run(rows, criteria=(), config=None, **request_kw):
@@ -274,7 +274,7 @@ def test_stability_is_computed_reweights_components_and_is_reproducible(monkeypa
     assert first.summary.cold_start.stability_s == second.summary.cold_start.stability_s
     assert first.summary.seed != second.summary.seed  # the selection seed does depend on them
     other_feedback = make_request(PLAN, "req-a", fb=feedback([("L001", 10.0)]))
-    assert selection.stability_seed(config, POOL_VERSION, other_feedback.requirements, other_feedback.feedback) != \
+    assert selection.stability_seed(config, POOL_VERSION, other_feedback.requirements, other_feedback.behavior_context) != \
         first.record["cold_start"]["stability_seed"]
     # Trials only reweight the stored components: no PoolScores is built again.
     monkeypatch.setattr(scoring_v2.PoolScores, "__init__", lambda *a, **k: pytest.fail("rescored"))
@@ -702,12 +702,13 @@ def test_timing_full_pipeline_on_synthetic_21431_listing_pool(capsys):
     measured = {}
     for name, (criteria, case_feedback) in cases.items():
         req = make_request(criteria, "timing", fb=case_feedback)
-        refs = len(req.feedback.appointments) + (len(req.feedback.previous_round.browsing) if req.feedback.previous_round else 0)
+        context = req.behavior_context
+        refs = len(context.book_viewing_listings) + len(context.listing_view_durations) if context else 0
         crit = req.requirements.criteria
         evaluate_started = time.perf_counter()
         results = {r.listing_id: evaluate(r, crit, []) for r in rows}
         started = time.perf_counter()
-        scored = score_pool(rows, crit, results, {}, req.feedback, config)
+        scored = score_pool(rows, crit, results, {}, req.behavior_context, config)
         scored_at = time.perf_counter()
         chosen = selection.select(scored, req, config, POOL_KEY, POOL_VERSION)
         breakdowns = [scored.breakdown(i) for i in dict.fromkeys(chosen.ids + scored.ranked[:config.trace.preview_rows])]

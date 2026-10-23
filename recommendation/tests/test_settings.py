@@ -75,7 +75,8 @@ def test_committed_yaml_loads_with_identity():
     assert config.recommendation.default_result_limit == config.recommendation.max_result_limit == 10
     assert (config.ranking.soft_weight, config.ranking.behavior_weight) == (0.60, 0.40)
     # A set, stored sorted (the YAML lists MANUAL_SENT, MANUAL_REPLIED, CONFIRMED).
-    assert config.ranking.behavior.counted_appointment_statuses == ("CONFIRMED", "MANUAL_REPLIED", "MANUAL_SENT")
+    assert config.ranking.behavior.counted_appointment_signals == ("viewing_draft_saved",)
+    assert config.ranking.behavior.browsing_requires_interest_eligible is True
     assert RecommendationConfig.from_file(None) is config and RecommendationConfig.from_file("") is config
 
 
@@ -140,13 +141,12 @@ def test_hash_identity_and_trace_mode_env(monkeypatch, tmp_path):
         RecommendationConfig.from_file(path)
 
 
-def test_counted_statuses_order_never_changes_identity():
+def test_counted_signals_are_canonical_and_the_interest_gate_is_result_affecting():
     config = default()
-    for order in (["CONFIRMED", "MANUAL_REPLIED", "MANUAL_SENT"], ["MANUAL_REPLIED", "CONFIRMED", "MANUAL_SENT"]):
-        reordered = config.with_overrides({"ranking.behavior.counted_appointment_statuses": order})
-        assert (reordered.config_hash, reordered.selection_hash) == (config.config_hash, config.selection_hash)
-    subset = config.with_overrides({"ranking.behavior.counted_appointment_statuses": ["CONFIRMED"]})
-    assert subset.selection_hash != config.selection_hash
+    same = config.with_overrides({"ranking.behavior.counted_appointment_signals": ["viewing_draft_saved"]})
+    assert (same.config_hash, same.selection_hash) == (config.config_hash, config.selection_hash)
+    ungated = config.with_overrides({"ranking.behavior.browsing_requires_interest_eligible": False})
+    assert ungated.selection_hash != config.selection_hash
 
 
 def test_settings_are_frozen_per_request():
@@ -208,11 +208,12 @@ def test_bad_weights_rejected(overrides, key):
         ({"trace.debug_max_rows": 5}, "trace.debug_max_rows"),
         ({"cache.ttl_seconds": -1}, "cache.ttl_seconds"),
         ({"cache.pool_retention_per_conversation": 1}, "cache.pool_retention_per_conversation"),
-        ({"ranking.behavior.counted_appointment_statuses": []}, "ranking.behavior.counted_appointment_statuses"),
-        *[({"ranking.behavior.counted_appointment_statuses": ["CONFIRMED", status]}, f"uncountable status(es) ['{status}']")
-          for status in ("DRAFT", "PENDING_REVIEW", "APPROVED", "CANCELLED", "FAILED", "VIEWED")],
-        ({"ranking.behavior.counted_appointment_statuses": ["confirmed"]}, "ranking.behavior.counted_appointment_statuses"),
-        ({"ranking.behavior.counted_appointment_statuses": ["CONFIRMED", "CONFIRMED"]}, "duplicates"),
+        ({"ranking.behavior.counted_appointment_signals": []}, "ranking.behavior.counted_appointment_signals"),
+        *[({"ranking.behavior.counted_appointment_signals": ["viewing_draft_saved", signal]}, f"uncountable signal(s) ['{signal}']")
+          for signal in ("manual_sent", "confirmed", "draft_opened")],
+        ({"ranking.behavior.counted_appointment_signals": ["VIEWING_DRAFT_SAVED"]}, "ranking.behavior.counted_appointment_signals"),
+        ({"ranking.behavior.counted_appointment_signals": ["viewing_draft_saved", "viewing_draft_saved"]}, "duplicates"),
+        ({"ranking.behavior.browsing_requires_interest_eligible": "yes"}, "ranking.behavior.browsing_requires_interest_eligible"),
         # enum values
         ({"ranking.similarity.numeric_scaling": "minmax"}, "ranking.similarity.numeric_scaling"),
         ({"ranking.similarity.suppression": "soft_criteria"}, "ranking.similarity.suppression"),
@@ -604,12 +605,15 @@ def test_config_change_never_alters_replay_of_old_request(tmp_path):
 # (VALIDATION.md P5).
 
 
-def test_ts_counted_appointment_statuses_equal_yaml():
-    """R7 cross-layer: the orchestrator's valid appointment-status constant (TS) equals the
-    native ranking.behavior.counted_appointment_statuses (the committed YAML)."""
-    match = re.search(r"COUNTED_APPOINTMENT_STATUSES=\[([^\]]*)\]", TS_MIRROR.read_text())
-    assert match, "COUNTED_APPOINTMENT_STATUSES not found in the TS mirror"
+def test_ts_counted_appointment_signals_equal_yaml_and_main_contract():
+    """Cross-layer: the TS mirror's counted viewing signals equal the native
+    ranking.behavior.counted_appointment_signals (committed YAML) and the main contract's only
+    book_viewing_listings signal (src/contracts/behavior-context.ts)."""
+    match = re.search(r"COUNTED_APPOINTMENT_SIGNALS=\[([^\]]*)\]", TS_MIRROR.read_text())
+    assert match, "COUNTED_APPOINTMENT_SIGNALS not found in the TS mirror"
     ts = [s.strip().strip("'\"") for s in match.group(1).split(",") if s.strip()]
-    yaml_list = yaml.safe_load(SETTINGS_PATH.read_text())["ranking"]["behavior"]["counted_appointment_statuses"]
+    yaml_list = yaml.safe_load(SETTINGS_PATH.read_text())["ranking"]["behavior"]["counted_appointment_signals"]
     assert ts == sorted(ts) and set(ts) == set(yaml_list) and len(ts) == len(yaml_list)
-    assert list(default().ranking.behavior.counted_appointment_statuses) == ts
+    assert list(default().ranking.behavior.counted_appointment_signals) == ts
+    main = (PACKAGE.parent / "src/contracts/behavior-context.ts").read_text()
+    assert re.findall(r"signal:z\.literal\('([a-z_]+)'\)", main) == ts

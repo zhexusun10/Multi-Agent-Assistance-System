@@ -40,7 +40,9 @@ Rules (all parameters from recommendation/settings/recommendation.yaml, no code 
   normalised in-branch weight; None when no pair is available or the active weight is 0.
 - Full-pool order O: sort by (-combined, listing_id); score_rank = 1-based position in O.
 
-Out-of-pool, uncounted, missing and zero-second references are not used and are counted in
+References come from behavior_context (main contract): appointments = book_viewing_listings
+(saved timed viewing drafts), browsing = session-cumulative listing_view_durations. Out-of-pool,
+uncounted, not interest_eligible and zero-second references are not used and are counted in
 ``summary()`` (recorded in the rank_candidates trace step).
 """
 
@@ -130,9 +132,11 @@ def describe(settings):
             "time_scale_seconds": ranking.browsing.time_scale_seconds,
             "duration_cap_seconds": ranking.browsing.duration_cap_seconds,
             "single_reference": "normalisation cancels the absolute duration",
+            "scope": "session-cumulative behavior_context.listing_view_durations",
         },
         "behavior": {
-            "counted_appointment_statuses": list(ranking.behavior.counted_appointment_statuses),
+            "counted_appointment_signals": list(ranking.behavior.counted_appointment_signals),
+            "browsing_requires_interest_eligible": ranking.behavior.browsing_requires_interest_eligible,
             "reference_scope": ranking.behavior.reference_scope,
             "missing_branch_contribution": ranking.behavior.missing_branch_contribution,
             "redistribute_missing_branch_weight": ranking.behavior.redistribute_missing_branch_weight,
@@ -201,7 +205,7 @@ def _unit(value):
 class PoolScores:
     """Component arrays, the base fused scores and the full-pool order of one rank stage."""
 
-    def __init__(self, rows, criteria, results, evidence, feedback, settings):
+    def __init__(self, rows, criteria, results, evidence, behavior_context, settings):
         started = time.perf_counter()
         self.settings = settings
         self.rows = list(rows)
@@ -227,7 +231,7 @@ class PoolScores:
                     self.util[i, j] = s
                     self.known[i, j] = True
         # --- behaviour references (in pool only; everything else counted) ------------------
-        self.references = self._references(feedback)
+        self.references = self._references(behavior_context)
         # --- similarity components ---------------------------------------------------------
         self.suppressed = sorted(
             suppressed_features(criteria, ranking.similarity.suppression) if behaviour_enabled(settings) else ()
@@ -267,35 +271,37 @@ class PoolScores:
         self.duration_ms = (time.perf_counter() - started) * 1000
 
     # --- references ----------------------------------------------------------------------
-    def _references(self, feedback):
+    def _references(self, behavior_context):
+        """References from behavior_context (main contract): appointments = book_viewing_listings
+        (counted signals, deduplicated per listing); browsing = session-cumulative
+        listing_view_durations (interest_eligible when required, duration > 0). In-pool only."""
         behavior = self.settings.ranking.behavior
-        counted = set(behavior.counted_appointment_statuses)
+        counted = set(behavior.counted_appointment_signals)
         enabled = behaviour_enabled(self.settings)
         appointment = {"ids": [], "weights": [], "out_of_pool": [], "not_counted": []}
-        for signal in sorted(feedback.appointments, key=lambda s: s.listing_id):
-            if not counted.intersection(signal.statuses):
-                appointment["not_counted"].append(signal.listing_id)
-            elif signal.listing_id not in self.index:
-                appointment["out_of_pool"].append(signal.listing_id)
-            elif enabled and signal.listing_id not in appointment["ids"]:
-                appointment["ids"].append(signal.listing_id)  # deduplicated per listing
+        browsing = {"ids": [], "weights": [], "seconds": [], "out_of_pool": [], "not_interest_eligible": [],
+                    "zero_seconds": []}
+        if behavior_context is None:
+            return {"appointment": appointment, "browsing": browsing}
+        for item in sorted(behavior_context.book_viewing_listings, key=lambda s: s.listing_id):
+            if item.signal not in counted:
+                appointment["not_counted"].append(item.listing_id)
+            elif item.listing_id not in self.index:
+                appointment["out_of_pool"].append(item.listing_id)
+            elif enabled and item.listing_id not in appointment["ids"]:
+                appointment["ids"].append(item.listing_id)  # deduplicated per listing
                 appointment["weights"].append(1.0)
-        browsing = {"ids": [], "weights": [], "seconds": [], "out_of_pool": [], "missing": [], "zero_seconds": []}
-        round_ = feedback.previous_round
-        if round_ is not None:
-            records = {record.listing_id: record for record in round_.browsing}
-            for listing_id in round_.shown_listing_ids:
-                record = records[listing_id]
-                if record.status != "recorded":
-                    browsing["missing"].append(listing_id)
-                elif not record.duration_seconds > 0:
-                    browsing["zero_seconds"].append(listing_id)
-                elif listing_id not in self.index:
-                    browsing["out_of_pool"].append(listing_id)
-                elif browsing_enabled(self.settings):
-                    browsing["ids"].append(listing_id)
-                    browsing["seconds"].append(record.duration_seconds)
-                    browsing["weights"].append(browsing_weight(record.duration_seconds, self.settings.ranking.browsing))
+        for item in sorted(behavior_context.listing_view_durations, key=lambda s: s.listing_id):
+            if behavior.browsing_requires_interest_eligible and not item.interest_eligible:
+                browsing["not_interest_eligible"].append(item.listing_id)
+            elif not item.duration_seconds > 0:
+                browsing["zero_seconds"].append(item.listing_id)
+            elif item.listing_id not in self.index:
+                browsing["out_of_pool"].append(item.listing_id)
+            elif browsing_enabled(self.settings):
+                browsing["ids"].append(item.listing_id)
+                browsing["seconds"].append(item.duration_seconds)
+                browsing["weights"].append(browsing_weight(item.duration_seconds, self.settings.ranking.browsing))
         return {"appointment": appointment, "browsing": browsing}
 
     # --- similarity components -----------------------------------------------------------
@@ -541,6 +547,6 @@ class PoolScores:
         }
 
 
-def score_pool(rows, criteria, results, evidence, feedback, settings):
+def score_pool(rows, criteria, results, evidence, behavior_context, settings):
     """Score every listing of ``rows`` (the eligible pool) -> PoolScores (spec section 7)."""
-    return PoolScores(rows, criteria, results, evidence, feedback, settings)
+    return PoolScores(rows, criteria, results, evidence, behavior_context, settings)

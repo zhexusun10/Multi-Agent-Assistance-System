@@ -1,0 +1,161 @@
+{
+  "checked_at": "2026-10-22T09:19:21.347Z",
+  "external_messages_sent": 0,
+  "checks": [
+    {
+      "mode": "fresh A/B/C workflow",
+      "query": "帮我找租房，预算不超过5000新币，至少2房，D05",
+      "answer": "您的要求：\n• 月租不超过5,000新币。\n• 至少2间卧室。\n• 位于D05邮区。\n\n这些房源符合的部分：\n• 预算：记录月租在2,500至4,500新币之间，都在上限内。\n• 邮区：记录均为D05。\n• 卧室：17 Dover Crescent、508 West Coast Drive为2间，456 Clementi Avenue 3、511 West Coast Drive为3间，都达到至少2间。\n\n还需要了解的部分：\n• NEWest、Lyf One-North Singapore、lyf one-north Singapore 80 Nepal Park、345 Clementi Avenue 5的卧室数量还没有资料，暂时不能确认是否达到2间。\n\n为什么这样排序：目前没有能拉开差距的偏好依据，顺序沿用固定次序，不代表排在前面的更合适。\n\n注意：还不能确认这几套房源全部符合您的要求；记录的价格和现在是否仍可租，需要联系经纪人确认。",
+      "generation": {
+        "mode": "llm_grounded",
+        "version": "2.0",
+        "attempts": 1,
+        "latency_ms": 4702,
+        "example_ids": [
+          "mixed-confirmed-pending",
+          "bathroom-count-not-privacy"
+        ],
+        "repair_notes": [],
+        "semantic_audit": "passed"
+      },
+      "operation": {
+        "kind": "search",
+        "status": "completed",
+        "intent_plan": {
+          "kind": "search",
+          "agent": "a",
+          "intent": {
+            "intent": "property_search",
+            "urgency": 1,
+            "channels": {
+              "llm": {
+                "intent": "property_search",
+                "reasoning": "用户明确给出预算、房型和区域条件，要求找租房，属于新的房源搜索。",
+                "confidence": 0.98,
+                "requested_tasks": [
+                  "search"
+                ]
+              },
+              "pattern": {
+                "intent": "property_search",
+                "confidence": 0.75
+              },
+              "embedding": {
+                "intent": "property_search",
+                "source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                "reasoning": "Chroma cosine nearest template",
+                "confidence": 0.8205552101135254
+              }
+            },
+            "entities": {
+              "date": [],
+              "amount": [
+                "5000新币"
+              ],
+              "listing_id": []
+            },
+            "cache_hit": true,
+            "reasoning": "用户明确给出预算、房型和区域条件，要求找租房，属于新的房源搜索。",
+            "confidence": 0.9251110420227051,
+            "latency_ms": 1110.4092,
+            "intent_group": "search",
+            "source_scores": {
+              "llm": 0.98,
+              "pattern": 0.75,
+              "embedding": 0.8205552101135254
+            },
+            "requested_tasks": [
+              "search"
+            ],
+            "embedding_source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            "template_version": "ce9dad379be2e6517d6ed83be4014b4f95604ba5dda89a65229bacfa6acd7985"
+          },
+          "deferred_summary": false
+        }
+      },
+      "eligible": 4,
+      "unknown": 4
+    },
+    {
+      "mode": "direct explanation C",
+      "query": "解释一下为什么推荐这几套房子？",
+      "answer": "您的要求：\n• 卧室至少2间，必须满足。\n• 月租不超过5,000新币，必须满足。\n• 邮区为D05，必须满足。\n\n这些房源符合的部分：\n• 邮区：这几套的记录都在D05。\n• 月租：记录月租在2,500至4,500新币之间，都在5,000新币以内。\n• 卧室：17 Dover Crescent、508 West Coast Drive各记录2间，456 Clementi Avenue 3、511 West Coast Drive各记录3间，均达到至少2间。\n\n还需要了解的部分：\n• NEWest、Lyf One-North Singapore、lyf one-north Singapore 80 Nepal Park, Singapore 139409、345 Clementi Avenue 5的卧室数还缺资料，暂时不能确认是否达到至少2间。\n\n为什么这样排序：目前没有能拉开差距的偏好依据，所以沿用现有顺序展示，不能据此判断哪套更合适，排在前面的也不代表明显更好。\n\n注意：还不能确认这几套房源全部符合您的要求；记录的价格和现在是否仍可租，都需要联系确认。",
+      "generation": {
+        "mode": "llm_grounded",
+        "version": "2.0",
+        "attempts": 1,
+        "latency_ms": 4826,
+        "example_ids": [
+          "mixed-confirmed-pending",
+          "whole-list-distance"
+        ],
+        "repair_notes": [],
+        "semantic_audit": "passed"
+      },
+      "operation": {
+        "kind": "explain",
+        "status": "completed",
+        "intent_plan": {
+          "kind": "explain",
+          "agent": "c",
+          "intent": {
+            "intent": "recommendation_explanation",
+            "urgency": 1,
+            "channels": {
+              "llm": {
+                "intent": "recommendation_explanation",
+                "reasoning": "用户要求解释已有推荐房源的排序和推荐理由，属于解释已有推荐。",
+                "confidence": 0.97,
+                "requested_tasks": [
+                  "explain"
+                ]
+              },
+              "pattern": {
+                "intent": "recommendation_explanation",
+                "confidence": 0.5
+              },
+              "embedding": {
+                "intent": "explanation",
+                "source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+                "reasoning": "Chroma cosine nearest template",
+                "confidence": 0.6250794529914856
+              }
+            },
+            "entities": {
+              "date": [],
+              "amount": [],
+              "listing_id": []
+            },
+            "cache_hit": false,
+            "reasoning": "用户要求解释已有推荐房源的排序和推荐理由，属于解释已有推荐。",
+            "confidence": 0.8540158905982971,
+            "latency_ms": 1010.2045999999973,
+            "intent_group": "explanation",
+            "source_scores": {
+              "llm": 0.97,
+              "pattern": 0.5,
+              "embedding": 0.6250794529914856
+            },
+            "requested_tasks": [
+              "explain"
+            ],
+            "embedding_source": "chroma/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            "template_version": "ce9dad379be2e6517d6ed83be4014b4f95604ba5dda89a65229bacfa6acd7985"
+          },
+          "deferred_summary": false
+        }
+      },
+      "eligible": 4,
+      "unknown": 4
+    }
+  ],
+  "source_hashes": {
+    "src/agents/explanation/contracts.ts": "9c1027464ac37e8d0465a6cab6c9831efe9cc5d0e3b215c3019e02f4b7b3d039",
+    "src/agents/explanation/evidence.ts": "7270ef631ed12cf02f92e29acfb716652e8173eee4ad394e2b8a890370bd7206",
+    "src/agents/explanation/validation.ts": "58d7402435bdf91451fe1aa8c9e53034a87049f54513fe90348ae79e5cf929e7",
+    "src/agents/explanation/generator.ts": "8dfcccf8f8a81444bc3dc9a24ac94ddf7dd041b14205c1f88dd11d08a806651a",
+    "src/agents/explanation/prompt.ts": "ce12d51b9ec8b01ab5b84c094598c4d916a7201c542d8981aac67c39b5380ac8",
+    "skills/evidence-based-explanation/SKILL.md": "f82b18cac632bcd58761ff340cf96d517e075f14e41701f94866d3514c8129cc"
+  },
+  "status": "passed"
+}
