@@ -12,6 +12,14 @@ database and local-snapshot checks. Both typechecks, build and provenance passed
 No real model call was made during this review. The original 44-case execution
 record remains unchanged and was not rerun in this pre-merge phase.
 
+## Recommendation relevance evaluation - 23 October 2026
+
+The [Revision 3 relevance evaluation](recommendation-relevance-2026-10-23/README.md) provides
+the English report, workbook, 577 frozen ratings and complete raw evidence for
+K=1,3,4,5,6,7,8,9,10. It uses 20 scenarios and the 9 October rental snapshot.
+The source under test is pinned at `d5af7e1`; this is an offline ranking analysis,
+not a live-model test of later main changes or a human acceptance signoff.
+
 ## Read these first
 
 | Material | Purpose |
