@@ -139,3 +139,8 @@ report and tracker, recorded results, open issues, complete original evidence
 and historical archive. The recommendation fixes and QA evidence are published
 in [PR 2](https://github.com/zhexusun10/Multi-Agent-Assistance-System/pull/2)
 for review; overall system acceptance remains PENDING.
+
+The [23 October recommendation relevance evaluation](evaluation/recommendation-relevance-2026-10-23/README.md)
+contains the English Revision 3 report, workbook, nine-cutoff comparison and
+complete frozen evidence. Its tested source is pinned at `d5af7e1`; independent
+human relevance validation and production acceptance remain pending.
