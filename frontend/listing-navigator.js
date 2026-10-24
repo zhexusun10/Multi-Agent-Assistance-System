@@ -1,7 +1,7 @@
 export class ListingNavigator{
   constructor(root,rail){this.root=root;this.rail=rail;this.cards=[];this.frame=0;root.addEventListener('scroll',()=>this.schedule(),{passive:true});for(const event of ['wheel','touchstart','pointerdown','keydown'])root.addEventListener(event,()=>{this.clicked=false;},{passive:true});window.addEventListener('resize',()=>this.schedule());}
   setCards(cards){this.clicked=false;this.cards=cards;this.rail.replaceChildren();this.root.scrollTop=0;
-    cards.forEach((card,index)=>{const b=document.createElement('button');b.type='button';b.textContent=String(index+1);b.title=card.querySelector('h3').textContent;b.setAttribute('aria-label',`第 ${index+1} 套：${b.title}`);b.onclick=()=>{this.clicked=true;const top=card.getBoundingClientRect().top-this.root.getBoundingClientRect().top+this.root.scrollTop;this.root.scrollTo({top,behavior:'instant'});this.select(index);card.focus({preventScroll:true});};this.rail.append(b);});
+    cards.forEach((card,index)=>{const b=document.createElement('button');b.type='button';b.textContent=String(index+1);b.title=card.querySelector('h3').textContent;b.setAttribute('aria-label',`No. ${index+1}: ${b.title}`);b.onclick=()=>{this.clicked=true;const top=card.getBoundingClientRect().top-this.root.getBoundingClientRect().top+this.root.scrollTop;this.root.scrollTo({top,behavior:'instant'});this.select(index);card.focus({preventScroll:true});};this.rail.append(b);});
     this.rail.hidden=!cards.length;this.select(0);
   }
   select(index){this.active=index;[...this.rail.children].forEach((b,i)=>{b.classList.toggle('active',i===index);if(i===index)b.setAttribute('aria-current','true');else b.removeAttribute('aria-current');});}

@@ -22,7 +22,7 @@ test('explanation intent routes directly to C without search or follow-up',()=>{
 });
 test('bundle contains the real ranking factors and unknown transit, without raw scores/counts',()=>{
   const {bundle}=fixture();assert.deepEqual(bundle.ranking.active_criteria,['closer']);
-  assert(bundle.facts.some(f=>f.kind==='limitation'&&f.text.includes('MRT或公交站')));
+  assert(bundle.facts.some(f=>f.kind==='limitation'&&(f.text).toLowerCase().includes("mrt or bus stop")));
   assert(!JSON.stringify(bundle).includes('21431'));assert(!JSON.stringify(bundle).includes('combined_score'));
 });
 test('source zero-bedroom placeholder is not emitted as a housing fact',()=>{
@@ -33,7 +33,7 @@ test('source zero-bedroom placeholder is not emitted as a housing fact',()=>{
 test('requirement overview contains every user condition, merges the same destination, and hides the internal nearer scale',()=>{
   const {bundle}=fixture();assert.equal(bundle.requirements.length,3);
   const location=bundle.requirements.find(c=>c.criterion_ids.includes('university'))!;
-  assert.deepEqual(location.criterion_ids,['university','closer']);assert.match(location.label,/5000/);assert.match(location.label,/更近/);
+  assert.deepEqual(location.criterion_ids,['university','closer']);assert.match(location.label,/5000/i);assert.match(location.label,/closer/i);
   assert(!location.label.includes('1000'));assert(!bundle.facts.find(f=>f.ref===location.ref)!.numbers.includes(1000));
   assert.equal(bundle.requirements.find(c=>c.criterion_ids.includes('transit'))!.results[0].status,'unknown');
 });
@@ -60,16 +60,16 @@ test('bathroom count selects a count-specific explanation example, without impor
 test('hybrid explanation distinguishes stated preferences from actual unsuppressed behavior features',()=>{
   const {req,rec}=explanationFixture('hybrid'),b=makeExplanationBundle(req,rec,'解释');
   assert.deepEqual(b.ranking.behavior_features,['property_type','floor_area_sqft']);
-  assert(b.facts.find(f=>f.ref==='ranking:method')!.text.includes('辅助作用'));
+  assert(b.facts.find(f=>f.ref==='ranking:method')!.text.includes('secondary'));
 });
 test('a farther cheaper home ranked first keeps its exact identity and distance direction in the evidence bundle',()=>{
   const f=explanationFixture('multiple'),b=makeExplanationBundle(f.req,f.rec,'Why were these homes selected?');
   const observations=b.requirements.find(r=>r.criterion_ids.includes('university'))!.results;
   assert.deepEqual(observations.map(r=>[r.position,r.title,r.observed_value]),[[1,'Garden Court',1600],[2,'Willow Residence',850]]);
-  assert.match(b.facts.find(f=>f.ref==='compare-distance:1:2:university')!.text,/第2套更近，第1套更远/);
+  assert.match(b.facts.find(f=>f.ref==='compare-distance:1:2:university')!.text,/No. 2.*closer.*No. 1.*farther/i);
 });
 test('same-score and no-score lists do not imply the first is better',()=>{
-  for(const name of ['tie','unscored','stable'] as const){const f=explanationFixture(name),b=makeExplanationBundle(f.req,f.rec,'为什么第一');assert.match(b.facts.find(f=>f.ref==='ranking:method')!.text,/固定|不能.*更|没有.*依据/);}
+  for(const name of ['tie','unscored','stable'] as const){const f=explanationFixture(name),b=makeExplanationBundle(f.req,f.rec,'为什么第一');assert.match(b.facts.find(f=>f.ref==='ranking:method')!.text,/stable|does not.*better|not.*distinguish|cannot.*distinguish/i);}
 });
 test('strict structured output rejects arbitrary model fields and reordered/nonexistent selection',()=>{
   const {bundle}=fixture();assert(!explanationOutputSchema.safeParse({...response(),score:.9}).success);
@@ -137,7 +137,7 @@ test('derived comparison references retain their parent requirement radius and t
   const f=explanationFixture('mixed_groups'),b=makeExplanationBundle(f.req,f.rec,'比较');
   validateExplanation({...response(),paragraphs:[...response().paragraphs,{text:'希望学校5公里内更近优先；Pending Court 1目前缺距离资料。',support_refs:['ranking:method','compare-distance:1:2:closer']}]},b);
   const behavior=explanationFixture('behavior'),interest=makeExplanationBundle(behavior.req,behavior.rec,'为什么第一');
-  assert.match(interest.facts.find(f=>f.ref==='compare-interest:1:2')!.text,/第1套Willow Residence整体上比第2套Garden Court更贴近/);
+  assert.match(interest.facts.find(f=>f.ref==='compare-interest:1:2')!.text,/No. 1.*Willow Residence.*greater overall similarity.*No. 2.*Garden Court/i);
   assert(!interest.facts.find(f=>f.ref==='compare-interest:1:2')!.text.includes('0.9'));
   const missing=behavior.rec.native!.scores['83000002'];for(const c of missing.contributions){c.unknown=true;c.similarity=null;}missing.implicit_score=0;
   assert(!makeExplanationBundle(behavior.req,behavior.rec,'为什么第一').facts.some(f=>f.ref==='compare-interest:1:2'),'A missing comparison is never treated as a lower interest match');
@@ -150,7 +150,7 @@ test('a small straight-line difference cannot become a claimed commute experienc
 });
 test('English questions cannot silently receive a Chinese explanation',()=>{
   const {bundle}=fixture();bundle.question='Why did you recommend these homes?';
-  assert.throws(()=>validateExplanation(response(),bundle),/question is in English/);
+  assert.throws(()=>validateExplanation(response(),bundle),/prose in English/);
   validateExplanation({...response(),paragraphs:[{text:'These homes fit the stated requirements. The order favors a shorter straight-line distance to the university. Nearby transport is unconfirmed, and current availability needs checking.',support_refs:['ranking:method','availability:current']}]},bundle);
 });
 test('every English repair ends with an explicit English language instruction after Chinese feedback',async()=>{
@@ -189,5 +189,5 @@ test('archived native rationale is accepted only for the same request and conver
   const {req,rec}=fixture();assert.throws(()=>makeExplanationBundle(req,rec,'解释',{response:{request_id:'other'}}));
 });
 test('evidence/document builder no longer contains the raw diagnostic chat branch',()=>{
-  const {req,rec}=fixture(),e=buildExplanation(req,rec,'test','解释这几套');assert(!e.summary.includes('已评估'));assert(!e.summary.includes('原生融合匹配分'));assert(e.verified[0].native_scores);
+  const {req,rec}=fixture(),e=buildExplanation(req,rec,'test','解释这几套');assert(!e.summary.includes('已评估'));assert(!(e.summary).toLowerCase().includes("native combined match score"));assert(e.verified[0].native_scores);
 });

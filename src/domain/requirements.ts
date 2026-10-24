@@ -47,7 +47,7 @@ export function repairPendingLocationSubjects(pending:RequirementDraft):Requirem
   const bad=(fixed.location_intents||[]).filter(l=>isListingReference(l.name));
   fixed.location_intents=(fixed.location_intents||[]).filter(l=>!isListingReference(l.name));
   for(const legacy of bad)for(const intent of parseLocationIntents(legacy.quote).filter(l=>l.category==='MRTStation')){
-    const target={category:'MRTStation',name:'最近的MRT地铁站'};
+    const target={category:'MRTStation',name:"Nearest MRT station"};
     fixed.upsert.push(criterion('place_proximity','lte',intent.radius_m??DEFAULT_PROXIMITY_SCALE_M,'m',intent.strength==='soft',{target,distance_type:intent.distance_type}));
     if(intent.strength==='hard')fixed.upsert.push(criterion('place_proximity','lte',DEFAULT_PROXIMITY_SCALE_M,'m',true,{target,distance_type:intent.distance_type}));
     fixed.sources.push({field:'place_proximity',quote:legacy.quote});

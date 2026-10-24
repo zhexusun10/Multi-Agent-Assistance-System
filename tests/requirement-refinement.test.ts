@@ -16,7 +16,7 @@ const submit=(questions:RefinementQuestion[],answers:unknown[],base:Requirements
 test('mock planner gives at most three useful questions and excludes unsupported fields',()=>{
   assert.deepEqual(ids(empty),['budget','bedrooms','property_type']);
   const q=planRefinement(core,rec());assert.deepEqual(q.map(q=>q.id),['property_type','area','ideal_rent']);
-  assert(!q.some(q=>/卫浴|通勤|家具|产权/.test(q.title)));assert.match(q.find(q=>q.id==='area')!.help!,/不代表单独卧室/);
+  assert(!q.some(q=>/卫浴|通勤|家具|产权/.test(q.title)));assert.match(q.find(q=>q.id==='area')!.help!,/not an individual bedroom/i);
 });
 test('75% valid coverage is required, with real differences rather than just populated fields',()=>{
   const base={...core,criteria:[...core.criteria,criterion('floor_area_sqft','gte',100,'sqft')]};

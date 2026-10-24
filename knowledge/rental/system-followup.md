@@ -1,27 +1,27 @@
 ---
 id: system-followup
-title: 手动联系、看房、回复理解与总结的使用流程
+title: Manual enquiries, viewings, reply analysis and summaries
 scope: system_help
-revision: '2026-10-20.1'
+revision: 2026-10-20.1
 checked_at: '2026-10-20'
 review_after: '2027-01-20'
 sources:
-  - title: 项目资料 knowledge/rental/system-followup.md
-    url: project://knowledge/rental/system-followup.md
+- title: Project guide knowledge/rental/system-followup.md
+  url: project://knowledge/rental/system-followup.md
 ---
-# 联系、看房和后续跟进
+# Contact, viewings and follow-up
 
-## 生成自然语言草稿
-在当前推荐的房源卡片选择咨询或“我要看房”，系统为所选房源准备第一人称草稿。用户可以加入议价、入住日、家具和其他诉求，再编辑、保存和复制。草稿应像人与人之间的消息；内部任务指令、证据状态代码和 ISO 时间不能混入发给经纪人的正文。日期选择器使用新加坡时间，选好后确认保存，正文用便于阅读的日期与时间询问是否方便。
+## Drafting a natural message
+Choose an enquiry or viewing on a current listing to prepare a first-person message. Add rent negotiation, move-in, furnishing or other requests, then edit, save and copy it. The draft should read like a message between people; internal routing commands, evidence-status codes and ISO timestamps do not belong in the message to the agent. The date picker uses Singapore time. Confirm the selection and use readable dates/times to ask whether the proposed viewing works.
 
-## 复制、自己发送、记录发送
-默认的手动流程不需要 WhatsApp 或 Telegram 平台密钥。用户复制草稿后，自行在外部软件发送，再点击已发送确认。本系统不会因为生成草稿、复制文本或点击人工确认，就声称取得平台送达回执。请区分草稿已保存、用户记录已发送、外部平台受理、实际送达和收到回复等不同状态。
+## Copy, send yourself and record sending
+The default manual flow needs no WhatsApp or Telegram API key. Copy the draft, send it in the external application and return to confirm that you sent it. Draft creation, copying or manual confirmation does not establish a platform delivery receipt. Distinguish draft saved, user-confirmed sending, platform acceptance, actual delivery and a received reply.
 
-## 粘贴回复与逐轮理解
-收到经纪人答复后，可粘贴原文并标记已收到回复。系统提取独立卫浴、最短租期、家具、被褥、水电和其他费用等条款，并保留对应原句。明确回答过的问题用于下一轮上下文，草稿应确认已知信息并追问剩余问题。含糊、否定、时间变化或相互冲突的回答需要继续确认；不得只看关键词就当作肯定。
+## Paste replies and retain context across rounds
+Paste the agent’s original reply and confirm receipt. The system extracts private bathroom, minimum lease, furniture, bedding, utilities and other charges, retaining each supporting original sentence. Explicitly answered items enter the next round’s context; the next draft acknowledges known information and asks what remains. Ambiguous, negative, time-sensitive or contradictory replies require confirmation, not keyword-only assumptions of agreement.
 
-## 看房不是选了时间就预约成功
-用户选择起止时间，表达的是希望安排看房。只有双方明确同意后，才能记录相应确认信息；选择日期或复制询问草稿本身不代表已预约。提醒、日历导出和跟进状态都应与真实沟通进展一致，不能自动替用户声称对方已同意。
+## A selected time is not a confirmed booking
+Selecting start and end times expresses a proposed viewing. Record confirmation only after both parties explicitly agree. A date selection or copied enquiry is not a booking. Reminders, calendar export and follow-up state must reflect actual communication; the system cannot claim the other party agreed automatically.
 
-## 总结与工作流中途跳转
-用户可以直接询问“为什么推荐第一套”，由解释模块使用已有推荐证据回答；也可以要求总结此前与经纪人的对话，由跟进模块整理确认项、未决问题及下一步。无需每次从重新搜房开始。总结和导出文档属于本会话资料整理，不会代替真实发送，也不会自动把用户粘贴的回复升级为平台核验。
+## Summaries and moving between workflow stages
+Ask why the first home was recommended to use existing recommendation evidence without searching again. Ask for a summary of earlier agent communication to organise confirmations, open questions and next steps. There is no need to restart the search each time. Summaries and exports organise conversation information; they do not send messages or upgrade pasted replies to platform verification.

@@ -55,10 +55,10 @@ export class WorkflowService{
     // Reserve arrival order before remote classification, without holding a DB lock during LLM/Chroma calls.
     const reservation=await this.store.transaction(async tx=>{
       const s=await this.store.lock(tx,sessionId),existing=(await tx.query('SELECT id,query,kind,status,intent_plan,created_at FROM domain_operations WHERE session_id=$1 AND request_id=$2',[sessionId,requestId])).rows[0];
-      if(existing){if(existing.query!==query)throw new BusinessError('REQUEST_ID_CONFLICT','同一请求 ID 不可用于不同消息。');if(existing.kind==='routing'&&existing.status==='queued'&&Date.now()-Date.parse(existing.intent_plan.routing_started_at||existing.created_at)>30000){await tx.query('UPDATE domain_operations SET intent_plan=$2 WHERE id=$1',[existing.id,JSON.stringify({routing_started_at:new Date().toISOString()})]);return {op:existing.id,snapshot:structuredClone(s)};}return null;}
+      if(existing){if(existing.query!==query)throw new BusinessError('REQUEST_ID_CONFLICT',"The same request ID cannot be used for different messages.");if(existing.kind==='routing'&&existing.status==='queued'&&Date.now()-Date.parse(existing.intent_plan.routing_started_at||existing.created_at)>30000){await tx.query('UPDATE domain_operations SET intent_plan=$2 WHERE id=$1',[existing.id,JSON.stringify({routing_started_at:new Date().toISOString()})]);return {op:existing.id,snapshot:structuredClone(s)};}return null;}
       const op=randomUUID(),snapshot=structuredClone(s);await tx.query("INSERT INTO domain_operations(id,session_id,request_id,query,kind,source_request_id,intent_plan) VALUES($1,$2,$3,$4,'routing',$5,$6)",[op,sessionId,requestId,query,sourceRequestId||null,JSON.stringify({routing_started_at:new Date().toISOString()})]);this.store.message(s,'user',query);await this.store.saveState(tx,s);return {op,snapshot};
     });
-    if(!reservation)return {assignments:[],answer:'该消息已受理，可以在会话中继续查看结果。'};
+    if(!reservation)return {assignments:[],answer:"Your message was accepted. Results will appear in this conversation."};
     const intent=await this.orchestrator.recognizeIntent(query,reservation.snapshot),plan=this.orchestrator.plan(intent);
     try{return await this.store.transaction(async tx=>{
       const s=await this.store.lock(tx,sessionId),op=reservation.op,{kind,agent,deferred_summary}=plan;
@@ -66,27 +66,27 @@ export class WorkflowService{
       await tx.query('INSERT INTO tool_traces(id,session_id,operation_id,body) VALUES($1,$2,$3,$4)',[randomUUID(),sessionId,op,JSON.stringify({tool:'orchestrator_intent',agent:'orchestrator',intent})]);
       const staleDataset=s.recommendation&&s.recommendation.state.coverage.dataset_version!==this.dataset;
       if(staleDataset&&['explain','summary','message','viewing'].includes(kind)){
-        const answer='房源数据已更新为完整快照。请先发送“按当前需求重新搜索”，再基于新结果解释或跟进；旧会话与草稿仍保留。';
+        const answer="The full listing dataset has been updated. Search again using your current requirements before requesting explanations or follow-up. Earlier conversations and drafts are retained.";
         this.store.message(s,'assistant',answer);await tx.query("UPDATE domain_operations SET status='completed' WHERE id=$1",[op]);await this.store.saveState(tx,s);await this.store.event(tx,sessionId,{type:'workflow_result',payload:{intent,answer}},`dataset-changed:${op}`);return {assignments:[],answer};
       }
       if(kind==='clarify'||((kind==='explain'||kind==='summary')&&!s.recommendation)){
-        const answer=kind==='clarify'?'我可以帮你找房、解答新加坡租房知识、解释已有推荐，或准备联系、看房与总结。请说明你这次希望做哪一项。':'请先搜索房源或回到已有推荐会话，再选择需要解释或总结的房源。';
+        const answer=kind==='clarify'?"I can help find homes, answer Singapore rental questions, explain recommendations or prepare enquiries, viewings and summaries. Tell me what you would like to do.":"Search for homes or return to a conversation with recommendations, then choose which homes to explain or summarise.";
         this.store.message(s,'assistant',answer);await tx.query("UPDATE domain_operations SET status='completed' WHERE id=$1",[op]);await this.store.saveState(tx,s);await this.store.event(tx,sessionId,{type:'workflow_result',payload:{intent,answer}},`intent-clarify:${op}`);return {assignments:[],answer};
       }
-      if(kind==='search'&&(await tx.query("SELECT 1 FROM domain_operations newer,domain_operations current WHERE current.id=$1 AND newer.session_id=current.session_id AND newer.kind='search' AND (newer.created_at,newer.id)>(current.created_at,current.id) LIMIT 1",[op])).rowCount){await tx.query("UPDATE domain_operations SET status='superseded' WHERE id=$1",[op]);return {assignments:[],answer:'较新的找房请求已受理，这条较早的请求不会覆盖新条件。'};}
+      if(kind==='search'&&(await tx.query("SELECT 1 FROM domain_operations newer,domain_operations current WHERE current.id=$1 AND newer.session_id=current.session_id AND newer.kind='search' AND (newer.created_at,newer.id)>(current.created_at,current.id) LIMIT 1",[op])).rowCount){await tx.query("UPDATE domain_operations SET status='superseded' WHERE id=$1",[op]);return {assignments:[],answer:"A newer search has been accepted. This earlier request will not overwrite its requirements."};}
       let context:{message_id:string;text:string}[]=[];
       if(kind==='search'&&s.active_operation_id){const previous=(await tx.query('SELECT status,context FROM domain_operations WHERE id=$1',[s.active_operation_id])).rows[0];if(previous&&(previous.status==='queued'||s.pending))context=previous.context;}
       if(kind==='search'){const older=(await tx.query("SELECT earlier.request_id,earlier.query FROM domain_operations earlier,domain_operations current WHERE current.id=$1 AND earlier.session_id=current.session_id AND earlier.kind='routing' AND earlier.status='queued' AND (earlier.created_at,earlier.id)<(current.created_at,current.id) ORDER BY earlier.created_at,earlier.id LIMIT 32",[op])).rows;context.push(...older.map(r=>({message_id:r.request_id,text:r.query})));}
       context=[...new Map([...context,{message_id:requestId,text:query}].map(c=>[c.message_id,c])).values()];
-      if(context.length>32||context.reduce((n,m)=>n+m.text.length,0)>16000)throw new BusinessError('CONTEXT_LIMIT','本轮待确认的需求过长，请将完整需求整理为一条消息后在新会话提交。',422);
+      if(context.length>32||context.reduce((n,m)=>n+m.text.length,0)>16000)throw new BusinessError('CONTEXT_LIMIT',"The requirements awaiting clarification are too long. Combine them into one message and submit it in a new conversation.",422);
       await tx.query('UPDATE domain_operations SET context=$2 WHERE id=$1',[op,JSON.stringify(context)]);
       if(kind==='search'){
         if(s.active_operation_id)await tx.query("UPDATE domain_operations SET status='superseded' WHERE id=$1 AND status='queued'",[s.active_operation_id]);
         s.active_operation_id=op;
       }
-      const body={query:kind==='search'?context.map((m,i)=>(i?'用户后续修正：':'')+m.text).join('\n'):query,latest_query:query,context,kind,input_mode:'extract',source_request_id:sourceRequestId??null,active_search_operation_id:s.active_operation_id,requirements:s.requirements,pending:s.pending,recommendation:s.recommendation};
+      const body={query:kind==='search'?context.map((m,i)=>(i?"User’s subsequent update: ":'')+m.text).join('\n'):query,latest_query:query,context,kind,input_mode:'extract',source_request_id:sourceRequestId??null,active_search_operation_id:s.active_operation_id,requirements:s.requirements,pending:s.pending,recommendation:s.recommendation};
       const assignments=await this.store.queue(tx,s,op,agent,body,'initial');await this.store.saveState(tx,s);
-      return {assignments,answer:kind==='search'?'正在整理需求，并按硬条件逐项核查。':'正在根据当前会话资料处理。'};
+      return {assignments,answer:kind==='search'?"Organising your requirements and checking each hard condition.":"Working with information in this conversation."};
     });}catch(error){
       // A rejected plan must not remain a queued routing lease and retry forever after recovery.
       // If the commit actually succeeded, kind is no longer routing: leave its queued agent task intact.
@@ -94,7 +94,7 @@ export class WorkflowService{
         const s=await this.store.lock(tx,sessionId);
         const row=await tx.query("UPDATE domain_operations SET status='failed' WHERE id=$1 AND kind='routing' AND status='queued' RETURNING id",[reservation.op]);
         if(!row.rowCount)return;
-        const code=error instanceof BusinessError?error.code:'ORCHESTRATOR_PLAN_FAILED',message=error instanceof BusinessError?error.message:'本次请求暂时无法编排，请稍后重新提交。';
+        const code=error instanceof BusinessError?error.code:'ORCHESTRATOR_PLAN_FAILED',message=error instanceof BusinessError?error.message:"This request could not be scheduled. Please resubmit it later.";
         this.store.message(s,'assistant',message);await this.store.saveState(tx,s);
         await this.store.event(tx,sessionId,{type:'workflow_error',payload:{code,message,operation_id:reservation.op}},`routing-failed:${reservation.op}`);
       }).catch(()=>{/* Preserve the original failure if the database itself is unavailable. */});
@@ -115,7 +115,7 @@ export class WorkflowService{
       const pending=body.pending||null;
       const base=pending?mergeRequirements(body.requirements,pending):body.requirements;
       const query=body.query;
-      const instructions=profile.instructions+(pending?'\n待澄清问题（仅作上下文，用户最新消息是对这些问题的回答）：'+JSON.stringify(pending.clarifications):'');
+      const instructions=profile.instructions+(pending?"\nPending clarifications (context only; the latest message answers these questions): "+JSON.stringify(pending.clarifications):'');
       let draft=await extractRequirements(query,base,this.model,instructions,{
         prepareDraft:async draft=>{
           await this.resolveRequirementLocations(draft,base,ctx);
@@ -131,7 +131,7 @@ export class WorkflowService{
     }else if(agent==='b'){
       const req=recommendationRequestSchema.parse(body.request);const rec=await this.recommender.recommend(req,ctx,body.cold_start??NOT_EXITED);rec.warnings.push(...(body.interpretation_notes||[]).map((message:string)=>({code:'GEO_INTERPRETATION',message})));payload=rec;
     }else if(agent==='c'){
-      if(!body.recommendation)throw new BusinessError('NO_RECOMMENDATION','请先检索房源。');
+      if(!body.recommendation)throw new BusinessError('NO_RECOMMENDATION',"Please search for homes first.");
       const rec=body.recommendation;
       const archive=rec.native?await this.store.loadPayload(rec.native.exchange_ref,sessionId):undefined;
       const enrichment=await this.explanationEnricher.load(rec,ctx);
@@ -140,15 +140,15 @@ export class WorkflowService{
     else if(body.kind==='knowledge'||body.kind==='status'){
       if(body.kind==='status'){
         const rows=(await this.store.pool.query('SELECT body FROM workflow_actions WHERE session_id=$1 ORDER BY updated_at DESC LIMIT 5',[sessionId])).rows;
-        const labels:Record<string,string>={MANUAL_SENT:'用户确认已自行发送；没有平台回执',MANUAL_REPLIED:'用户已粘贴回复；请查看跟进工作台的理解与待办',DRAFT:'尚未发送：草稿',PENDING_REVIEW:'尚未发送：等待审批',APPROVED:'尚未发送：已批准，待点击执行',SIMULATED:'仅本地模拟，没有真实发送',QUEUED:'正在排队，尚未提交平台',SENDING:'正在提交平台，等待结果',ACCEPTED:'平台已受理，不代表已读或看房确认',DELIVERED:'收到送达回执',READ:'收到已读回执',REPLIED:'已收到经纪人回复，房源条件仍需核实',CONFIRMED:'已记录双方明确同意；模式以记录为准',UNKNOWN:'发送结果不明，请先核对平台记录，不要直接重发',FAILED:'未成功提交或平台报告失败',CANCELLED:'已取消'};
-        payload={kind:'knowledge',knowledge:{answer:rows.length?rows.map(({body:a})=>`房源 ${a.listing_ids.join('、')}：${labels[a.status]||a.status}（${a.mode==='manual'?'用户手动记录':a.mode==='live'?'真实平台':'模拟'}）。`).join('\n'):'还没有联系记录。请先在房源卡片选择咨询或看房，编辑并审批草稿。',citations:[],retrieval:'owned_action_records',vector_enabled:false}};
+        const labels:Record<string,string>={MANUAL_SENT:"You confirmed sending it yourself; no platform receipt is available",MANUAL_REPLIED:"You pasted a reply; see Follow-up for its analysis and next steps",DRAFT:"Not sent: draft",PENDING_REVIEW:"Not sent: awaiting approval",APPROVED:"Not sent: approved, awaiting execution",SIMULATED:"Local simulation only; no message was sent",QUEUED:"Queued; not yet submitted to the platform",SENDING:"Submitting to the platform; awaiting result",ACCEPTED:"Accepted by platform; this does not mean read or viewing confirmed",DELIVERED:"Delivery receipt received",READ:"Read receipt received",REPLIED:"Agent’s reply received; listing conditions still need confirmation",CONFIRMED:"Both parties’ explicit agreement recorded; see the record for its mode",UNKNOWN:"Sending result unknown. Check the platform record before sending again",FAILED:"Submission failed or the platform reported failure",CANCELLED:"Cancelled"};
+        payload={kind:'knowledge',knowledge:{answer:rows.length?rows.map(({body:a})=>`Listing ${a.listing_ids.join(", ")}: ${labels[a.status]||a.status} (${a.mode==='manual'?"Manually recorded by you":a.mode==='live'?"Live platform":"Simulation"}).`).join('\n'):"There are no contact records. Choose an enquiry or viewing from a listing, then edit and approve the draft.",citations:[],retrieval:'owned_action_records',vector_enabled:false}};
       }else payload={kind:'knowledge',knowledge:await this.tools.run(ctx,'knowledge',{query:body.query},()=>this.knowledge.query(body.query))};
     }
     else if(body.kind==='summary'){
-      if(!body.recommendation)throw new BusinessError('NO_RECOMMENDATION','请先检索房源，再生成总结。');payload={kind:'summary',document:renderSummary(body.requirements,body.recommendation,this.dataset)};
+      if(!body.recommendation)throw new BusinessError('NO_RECOMMENDATION',"Search for homes before generating a summary.");payload={kind:'summary',document:renderSummary(body.requirements,body.recommendation,this.dataset)};
     }else{
       const s=await this.store.state(sessionId);
-      if(!body.source_request_id||body.source_request_id!==s.latest_request_id||body.active_search_operation_id!==s.active_operation_id)throw new BusinessError('SELECTION_STALE','请从当前推荐列表选房后，再提出跟进请求。');
+      if(!body.source_request_id||body.source_request_id!==s.latest_request_id||body.active_search_operation_id!==s.active_operation_id)throw new BusinessError('SELECTION_STALE',"Choose a home from the current recommendations before requesting follow-up.");
       try{const id=resolveListingSelection(s.recommendation,String(body.query)).listing.listing_id;payload={kind:'action',action:await this.manual.draftFromHistory(s,[id],body.kind==='viewing'?'VIEWING':'MESSAGE',notesFromFollowupQuery(String(body.query)).slice(0,2000))};}
       catch(error){if(error instanceof BusinessError&&['SELECTION_REQUIRED','SELECTION_NOT_IN_RESULT'].includes(error.code))payload={kind:'selection_needed',message:error.message};else throw error;}
     }
@@ -161,7 +161,7 @@ export class WorkflowService{
           draft.upsert.push(criterion('place_proximity',intent.operator||'lte',intent.range_m??intent.radius_m??DEFAULT_PROXIMITY_SCALE_M,'m',intent.strength==='soft',{target,distance_type:intent.distance_type,distance_preference:intent.radius_m!==undefined||intent.range_m?'bounded':'nearer',...(intent.strength==='soft'?{weight:intent.weight??1}:{})}));
           if(intent.strength==='hard'&&intent.prefer_closer===true)draft.upsert.push(criterion('place_proximity','lte',DEFAULT_PROXIMITY_SCALE_M,'m',true,{target,distance_type:intent.distance_type,distance_preference:'nearer'}));
           draft.sources.push({field:'place_proximity',quote:intent.quote});
-          draft.interpretation_notes=[...(draft.interpretation_notes||[]),`“${intent.name}”已保留为${intent.strength==='soft'?'软偏好':'硬条件'}；站点数据或路线证据不可用时将标为待确认，不会忽略此条件。`];
+          draft.interpretation_notes=[...(draft.interpretation_notes||[]),`“${intent.name}” has been retained as a ${intent.strength==='soft'?"soft preference":"hard requirement"}; missing station data or route evidence leaves it unverified rather than ignored.`];
           continue;
         }
         const resolved=await this.locations.resolve(ctx,intent.name,intent.explicit_station);
@@ -171,13 +171,13 @@ export class WorkflowService{
         draft.upsert.push(criterion('place_proximity',intent.operator||'lte',intent.range_m??intent.radius_m??DEFAULT_PROXIMITY_SCALE_M,'m',intent.strength==='soft',{target,distance_type:intent.distance_type,distance_preference:intent.radius_m!==undefined||intent.range_m?'bounded':'nearer',...(intent.strength==='soft'?{weight:intent.weight??1}:{})}));
         if(intent.strength==='hard'&&intent.prefer_closer===true)draft.upsert.push(criterion('place_proximity','lte',DEFAULT_PROXIMITY_SCALE_M,'m',true,{target,distance_type:intent.distance_type,distance_preference:'nearer'}));
         draft.sources.push({field:'place_proximity',quote:intent.quote});
-        draft.interpretation_notes=[...(draft.interpretation_notes||[]),resolved.note,intent.radius_m?`距离范围 ${intent.radius_m} 米按${intent.distance_type==='straight_line'?'直线':intent.distance_type}口径处理。${intent.prefer_closer?'在范围内优先更近的房源。':''}`:'未指定距离上限，采用“越近越好”的软偏好，不因默认半径排除房源。'];
+        draft.interpretation_notes=[...(draft.interpretation_notes||[]),resolved.note,intent.radius_m?`The distance range of ${intent.radius_m} metres uses ${intent.distance_type==='straight_line'?"straight line":intent.distance_type} measurements.${intent.prefer_closer?"Closer homes are preferred within this range.":''}`:"No distance cap was specified. Closer is preferred, without excluding homes using a default radius."];
       }
   }
   private interpretFeedback(query:string,rec:any,source:string|null,op:string):Feedback[]{
     if(!rec||source!==rec.request_id)return [];
     const m=query.match(/第([一二三四五\d])套.*?(太小|不喜欢|喜欢|面积小)/);if(!m)return [];
-    const map:Record<string,number>={'一':1,'二':2,'三':3,'四':4,'五':5};const candidate=displayedCandidates(rec)[(map[m[1]]??Number(m[1]))-1];if(!candidate)return [];
+    const map:Record<string,number>={"一":1,"二":2,"三":3,"四":4,"五":5};const candidate=displayedCandidates(rec)[(map[m[1]]??Number(m[1]))-1];if(!candidate)return [];
     return [feedbackSchema.parse({event_id:`explicit:${op}`,listing_id:candidate.listing.listing_id,occurred_at:new Date().toISOString(),event_type:'explicit_attribute_feedback',payload:{attribute:/小/.test(m[2])?'floor_area_sqft':'listing',sentiment:m[2]==='喜欢'?'positive':'negative',quote:m[0]}})];
   }
   async emitDueReminders(){
@@ -188,8 +188,8 @@ export class WorkflowService{
       const s=current.rows[0] as DomainState|undefined;if(!s||s.deleted_at)return;
       const a=row.body,key=`reminder:${row.id}:${a.revision}:${a.next_followup_at}`;
       if((await tx.query('SELECT 1 FROM session_events WHERE session_id=$1 AND event_key=$2',[s.session_id,key])).rowCount)return;
-      this.store.message(s,'assistant',`跟进提醒已到期：${a.subject}。请在工作台检查下一步；系统没有自动发送消息。`);
-      await this.store.event(tx,s.session_id,{type:'action_update',payload:{action_id:row.id,reminder:'due',message:'跟进提醒已到期；没有自动发送外部消息。',mode:'simulation'}},key);await this.store.saveState(tx,s);
+      this.store.message(s,'assistant',`Follow-up reminder due: ${a.subject}. Check the next step in the workspace. No message was sent automatically.`);
+      await this.store.event(tx,s.session_id,{type:'action_update',payload:{action_id:row.id,reminder:'due',message:"Follow-up reminder due; no external message was sent automatically.",mode:'simulation'}},key);await this.store.saveState(tx,s);
     });
   }
   async apply(task:AgentTask):Promise<{sessionId:string;agent:TaskEnvelope['agent']}[]>{
@@ -210,7 +210,7 @@ export class WorkflowService{
         const next=async(agent:TaskEnvelope['agent'],body:unknown,stage:string)=>{const a=await this.store.queue(tx,s,env.operation_id,agent,body,stage);wake.push(...a.map(x=>({sessionId:s.session_id,agent:x.agent})));};
         if(task.agent==='a'){
           const draft=draftSchema.parse(payload.draft);
-          if(draft.clarifications.length||!draft.supported){s.pending=draft;const known=mergeRequirements(s.requirements,draft).criteria;const text=(known.length?'已暂存的明确条件（尚未开始推荐）：\n'+known.map(c=>'• '+criterionText(c)).join('\n')+'\n\n':'')+'还需确认：\n'+draft.clarifications.join('\n');this.store.message(s,'assistant',text);await this.store.event(tx,s.session_id,{type:'clarification',payload:{questions:draft.clarifications,operation_id:env.operation_id}},`clarify:${task.id}`);}
+          if(draft.clarifications.length||!draft.supported){s.pending=draft;const known=mergeRequirements(s.requirements,draft).criteria;const text=(known.length?"Clear conditions saved provisionally (search has not started):\n"+known.map(c=>'• '+criterionText(c)).join('\n')+'\n\n':'')+"Please clarify:\n"+draft.clarifications.join('\n');this.store.message(s,'assistant',text);await this.store.event(tx,s.session_id,{type:'clarification',payload:{questions:draft.clarifications,operation_id:env.operation_id}},`clarify:${task.id}`);}
           else{
             const requirements=mergeRequirements(s.requirements,draft);if(hash(requirements)!==hash(s.requirements)){s.requirements_version++;s.requirements=requirements;await tx.query('INSERT INTO requirement_revisions(session_id,version,body,sources) VALUES($1,$2,$3,$4)',[s.session_id,s.requirements_version,JSON.stringify(requirements),JSON.stringify(draft.sources)]);}
             s.pending=null;
@@ -235,23 +235,23 @@ export class WorkflowService{
           if(response.status==='needs_clarification'){const questions=response.clarifications.map(x=>x.question);this.store.message(s,'assistant',questions.join('\n'));await this.store.event(tx,s.session_id,{type:'clarification',payload:{questions}},`clarify:${task.id}`);}
           else{s.recommendation=response;s.recommendation_cold_start=coldStartAfterAdoption(s.recommendation_cold_start,response);await next('c',{requirements:s.requirements,recommendation:response,query:operation.query},'explain');}
         }else if(task.agent==='c'){
-          const source=payload.explanation.source_request_id;const sourceOperation=(await tx.query('SELECT operation_id FROM recommendation_calls WHERE id=$1',[source])).rows[0]?.operation_id;if(source!==s.latest_request_id||sourceOperation!==s.active_operation_id)throw new BusinessError('RESULT_STALE','推荐已变化，此解释已失效。');s.explanation=payload.explanation;this.store.message(s,'assistant',payload.explanation.summary);
+          const source=payload.explanation.source_request_id;const sourceOperation=(await tx.query('SELECT operation_id FROM recommendation_calls WHERE id=$1',[source])).rows[0]?.operation_id;if(source!==s.latest_request_id||sourceOperation!==s.active_operation_id)throw new BusinessError('RESULT_STALE',"Recommendations have changed; this explanation is no longer current.");s.explanation=payload.explanation;this.store.message(s,'assistant',payload.explanation.summary);
           const refinementId=await this.refinement.generate(tx,s);if(refinementId)s.messages.at(-1)!.refinement_id=refinementId;
           await this.store.event(tx,s.session_id,{type:'workflow_result',payload:{explanation:payload.explanation,source_request_id:source}},`result:${task.id}`);
           if(isSearch&&operation.intent_plan?.deferred_summary)await next('d',{kind:'summary',requirements:s.requirements,recommendation:s.recommendation},'followup-summary');
         }else if(payload.kind==='knowledge'){this.store.message(s,'assistant',payload.knowledge.answer,payload.knowledge);await this.store.event(tx,s.session_id,{type:'workflow_result',payload:{knowledge:payload.knowledge}},`knowledge:${task.id}`);}
         else if(payload.kind==='selection_needed'){this.store.message(s,'assistant',payload.message);await this.store.event(tx,s.session_id,{type:'workflow_result',payload:{selection_needed:true,message:payload.message}},`selection:${task.id}`);}
-        else if(payload.kind==='daily'){await this.followup.daily(s.session_id,payload.date,tx);this.store.message(s,'assistant',`已生成 ${payload.date} 的会话与跟进总结，可到总结文档下载。日期按 Asia/Singapore 计算。`);}
+        else if(payload.kind==='daily'){await this.followup.daily(s.session_id,payload.date,tx);this.store.message(s,'assistant',`Generated ${payload.date} conversation and follow-up summary. Download it from Documents. Dates use Asia/Singapore.`);}
         else if(payload.kind==='summary'){
-          const source=payload.document.model.source_request_id;const sourceOperation=(await tx.query('SELECT operation_id FROM recommendation_calls WHERE id=$1',[source])).rows[0]?.operation_id;if(source!==s.latest_request_id||sourceOperation!==s.active_operation_id)throw new BusinessError('RESULT_STALE','推荐已变化或正在更新，请重新生成总结。');
-          const id=randomUUID();await tx.query('INSERT INTO workflow_artifacts(id,session_id,source_request_id,requirements_version,content,sha256) VALUES($1,$2,$3,$4,$5,$6)',[id,s.session_id,source,s.requirements_version,JSON.stringify(payload.document),hash(payload.document)]);const text='总结已生成，可下载 Markdown 和 HTML。';this.store.message(s,'assistant',text);await this.store.event(tx,s.session_id,{type:'workflow_result',payload:{artifact_id:id,message:text}},`artifact:${task.id}`);
+          const source=payload.document.model.source_request_id;const sourceOperation=(await tx.query('SELECT operation_id FROM recommendation_calls WHERE id=$1',[source])).rows[0]?.operation_id;if(source!==s.latest_request_id||sourceOperation!==s.active_operation_id)throw new BusinessError('RESULT_STALE',"Recommendations have changed or are updating. Generate the summary again.");
+          const id=randomUUID();await tx.query('INSERT INTO workflow_artifacts(id,session_id,source_request_id,requirements_version,content,sha256) VALUES($1,$2,$3,$4,$5,$6)',[id,s.session_id,source,s.requirements_version,JSON.stringify(payload.document),hash(payload.document)]);const text="Summary generated. Markdown and HTML downloads are available.";this.store.message(s,'assistant',text);await this.store.event(tx,s.session_id,{type:'workflow_result',payload:{artifact_id:id,message:text}},`artifact:${task.id}`);
         }else if(payload.kind==='action'){
-          const a=payload.action;const sourceCall=(await tx.query('SELECT operation_id FROM recommendation_calls WHERE id=$1',[a.source_request_id])).rows[0];if(a.source_request_id!==s.latest_request_id||sourceCall?.operation_id!==s.active_operation_id)throw new BusinessError('ACTION_STALE','推荐已变化，请重新生成草稿。');await tx.query('INSERT INTO workflow_actions(id,session_id,body) VALUES($1,$2,$3)',[a.id,s.session_id,JSON.stringify(a)]);this.store.message(s,'assistant',`已为房源 ${a.listing_ids.join('、')} 准备${a.action_type==='VIEWING'?'看房询问':'联系核实'}草稿。${a.verification_context?.some((v:any)=>v.group==='unverified')?'待核实事项已逐项写入草稿，房源仍保持待核实状态。':''}请到跟进工作台编辑并复制草稿，自行发送后点击“确认已发送”；收到回复后粘贴并确认，系统会继续理解和总结。看房仍须双方明确同意。`);await this.store.event(tx,s.session_id,{type:'action_update',payload:{action_id:a.id,status:a.status,mode:'simulation'}},`draft:${task.id}`);
+          const a=payload.action;const sourceCall=(await tx.query('SELECT operation_id FROM recommendation_calls WHERE id=$1',[a.source_request_id])).rows[0];if(a.source_request_id!==s.latest_request_id||sourceCall?.operation_id!==s.active_operation_id)throw new BusinessError('ACTION_STALE',"Recommendations have changed. Create a new draft.");await tx.query('INSERT INTO workflow_actions(id,session_id,body) VALUES($1,$2,$3)',[a.id,s.session_id,JSON.stringify(a)]);this.store.message(s,'assistant',`Prepared for listing ${a.listing_ids.join(", ")}: ${a.action_type==='VIEWING'?"viewing enquiry":"verification enquiry"} draft.${a.verification_context?.some((v:any)=>v.group==='unverified')?"Every unresolved condition is included in the draft; the home’s verification status is unchanged.":''}Edit and copy the draft in Follow-up, send it yourself and select Confirm sent. Paste and confirm the agent’s reply for analysis and a summary. Viewings still need both parties’ explicit agreement.`);await this.store.event(tx,s.session_id,{type:'action_update',payload:{action_id:a.id,status:a.status,mode:'simulation'}},`draft:${task.id}`);
         }
         await tx.query("INSERT INTO handled_results(task_id,status) VALUES($1,'applied')",[task.id]);await tx.query('UPDATE domain_operations SET status=$2 WHERE id=$1',[env.operation_id,wake.length?'queued':'completed']);
       }catch(error){
         if(error&&typeof error==='object'&&'severity' in error)throw error;
-        const detail=error instanceof Error?error.message:'业务校验失败';const message=error instanceof z.ZodError?'内部结果未通过业务格式校验，本轮已停止。请重新提交或补充需求。':detail;await tx.query("INSERT INTO handled_results(task_id,status,error) VALUES($1,'rejected',$2)",[task.id,detail]);await tx.query("UPDATE domain_operations SET status='failed' WHERE id=$1",[env.operation_id]);this.store.message(s,'assistant',`本轮未完成：${message}`);await this.store.event(tx,s.session_id,{type:'workflow_error',payload:{code:error instanceof BusinessError?error.code:'BUSINESS_VALIDATION_FAILED',message,operation_id:env.operation_id}},`failure:${task.id}`);wake.length=0;
+        const detail=error instanceof Error?error.message:"Business validation failed";const message=error instanceof z.ZodError?"The internal result failed business-format validation, so this turn has stopped. Resubmit or clarify your requirements.":detail;await tx.query("INSERT INTO handled_results(task_id,status,error) VALUES($1,'rejected',$2)",[task.id,detail]);await tx.query("UPDATE domain_operations SET status='failed' WHERE id=$1",[env.operation_id]);this.store.message(s,'assistant',`This turn could not be completed: ${message}`);await this.store.event(tx,s.session_id,{type:'workflow_error',payload:{code:error instanceof BusinessError?error.code:'BUSINESS_VALIDATION_FAILED',message,operation_id:env.operation_id}},`failure:${task.id}`);wake.length=0;
       }
       await this.store.saveState(tx,s);return wake;
     });

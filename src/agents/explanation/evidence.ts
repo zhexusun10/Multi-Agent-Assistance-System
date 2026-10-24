@@ -6,9 +6,10 @@ import {criterionText} from '../../domain/explanation.js';
 import {displayedCandidates} from '../../domain/selection.js';
 import type {ExplanationBundle,ExplanationFact} from './contracts.js';
 
-const placeNames:Record<string,string>={'Nanyang Technological University':'南洋理工大学','National University of Singapore':'新加坡国立大学',CLEMENTI:'金文泰'};
-const featureNames:Record<string,string>={price:'月租',property_type:'房型',bedrooms:'卧室数量',floor_area_sqft:'面积',geography:'位置'};
+const placeNames:Record<string,string>={'Nanyang Technological University':"Nanyang Technological University",'National University of Singapore':"National University of Singapore",CLEMENTI:"Clementi",'MRT或公交站':"MRT or bus stop",'超市':"Supermarket"};
+const featureNames:Record<string,string>={price:"Monthly rent",property_type:"Property type",bedrooms:"Number of bedrooms",floor_area_sqft:"Floor area",geography:"Location"};
 const numeric=(v:unknown):number[]=>typeof v==='number'&&Number.isFinite(v)?[v]:Array.isArray(v)?v.flatMap(numeric):[];
+// Source-format aliases remain multilingual for exact provenance checks.
 function dateLiterals(value:string):string[]{
   const match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(value);if(!match)return [value];
   const [,year,month,day]=match,m=Number(month),d=Number(day),date=new Date(value+'T00:00:00Z');
@@ -21,7 +22,7 @@ export function makeExplanationBundle(req:Requirements,rec:RecommendationRespons
   const facts:ExplanationFact[]=[],required_refs:string[]=[];
   const add=(ref:string,kind:ExplanationFact['kind'],text:string,listing_ids:string[]=[],source_refs:string[]=[],numbers:number[]=[])=>{facts.push({ref,kind,text,listing_ids,source_refs,numbers});return ref;};
   const clean=(s:string)=>Object.entries(placeNames).reduce((t,[a,b])=>t.replaceAll(a,b),s);
-  const desc=(c:Criterion)=>clean(criterionText(c)).replace(/，偏好权重 [\d.]+/,'，希望尽量满足').replace('SGD/month','新币/月').replace('count','间').replace('sqft','平方英尺');
+  const desc=(c:Criterion)=>clean(criterionText(c)).replace(/(?:，偏好权重|, preference weight) [\d.]+/,", preferred where possible").replace('SGD/month',"SGD/month").replace('count'," rooms").replace('sqft'," sq ft");
   const nearer=(c:Criterion)=>c.field==='place_proximity'&&c.strength==='soft'&&c.distance_preference!=='bounded';
   const criterionNumbers=(c:Criterion)=>nearer(c)?[]:numeric(c.value);
   // A district/postcode/date is an exact string, never a measurable quantity.
@@ -32,28 +33,28 @@ export function makeExplanationBundle(req:Requirements,rec:RecommendationRespons
   const rows=displayedCandidates(rec),byId=new Map(req.criteria.map(c=>[c.criterion_id,c]));
   const ranked=rows.filter(r=>rec.recommendations.includes(r)),pending=rows.filter(r=>rec.unverified_candidates.includes(r));
   const rankedIds=ranked.map(r=>r.listing.listing_id);
-  if(req.criteria.some(c=>c.field==='bathrooms')&&!req.criteria.some(c=>c.field==='amenities'&&c.value==='private_bathroom'))add('bathroom-count-not-privacy','limitation','本次卫浴要求仅为卫生间数量，不是专用或独立使用权。数量尚未确认时应说“卫生间数量待确认”，不能把它称为“独卫待确认”。1B1B不证明独卫，也不等于用户要求独卫。');
+  if(req.criteria.some(c=>c.field==='bathrooms')&&!req.criteria.some(c=>c.field==='amenities'&&c.value==='private_bathroom'))add('bathroom-count-not-privacy','limitation',"This bathroom requirement concerns count, not exclusive use. If unverified, say bathroom count needs confirmation, not private bathroom needs confirmation. 1B1B does not prove a private bathroom or mean the user requested one.");
   const lists=rows.map((item,index)=>{
     const id=item.listing.listing_id,refs:string[]=[],unverified=rec.unverified_candidates.includes(item);
-    refs.push(add('listing:'+id,'listing',`第${index+1}套：${item.listing.title}。${unverified?'部分必须条件缺少资料，还不能确认这套房是否全部符合用户要求；不属于本次入选排名，即使有已知距离，也只是补充展示。':'已提供资料满足本次必须条件，属于本次入选排名。'}`,[id],[],[index+1]));
-    if(item.listing.price!==null)refs.push(add('price:'+id,'listing',`记录月租${item.listing.price}新币；现在价格还需联系确认。`,[id],[],[item.listing.price]));
+    refs.push(add('listing:'+id,'listing',`No. ${index+1}: ${item.listing.title}.${unverified?"Some hard requirements lack evidence, so full compliance is unconfirmed. This home is supplementary, outside the selected ranking, even if some distances are known.":"Available information satisfies the current hard requirements and this home belongs to the selected ranking."}`,[id],[],[index+1]));
+    if(item.listing.price!==null)refs.push(add('price:'+id,'listing',`Recorded monthly rent: ${item.listing.price} SGD; confirm the current price with the agent.`,[id],[],[item.listing.price]));
     // Zero is a source placeholder in this dataset, never assert a zero-bedroom home.
-    if(item.listing.bedrooms!==null&&item.listing.bedrooms>0)refs.push(add('beds:'+id,'listing',`卧室数${item.listing.bedrooms}。`,[id],[],[item.listing.bedrooms]));
-    if(item.listing.floor_area_sqft&&item.listing.floor_area_sqft>0)refs.push(add('area:'+id,'listing',`室内面积${item.listing.floor_area_sqft}平方英尺。`,[id],[],[item.listing.floor_area_sqft]));
+    if(item.listing.bedrooms!==null&&item.listing.bedrooms>0)refs.push(add('beds:'+id,'listing',`Bedroom count: ${item.listing.bedrooms}.`,[id],[],[item.listing.bedrooms]));
+    if(item.listing.floor_area_sqft&&item.listing.floor_area_sqft>0)refs.push(add('area:'+id,'listing',`Floor area${item.listing.floor_area_sqft} sq ft.`,[id],[],[item.listing.floor_area_sqft]));
     for(const r of item.criterion_results){
       const c=byId.get(r.criterion_id);if(!c)throw Error('EXPLANATION_UNKNOWN_CRITERION');
       const observed=numeric(r.observed_value),distance=c.field==='place_proximity';
-      let text=desc(c)+'；'+(r.status==='unknown'?'尚不能确认。':nearer(c)?'已用于比较离目的地的远近，没有另一达标半径。':r.status==='pass'?'符合。':c.strength==='hard'?'未达到这项必须要求。':'未达到这项偏好。');
+      let text=desc(c)+"; "+(r.status==='unknown'?"Not yet confirmed.":nearer(c)?"Used to compare proximity to the destination, without another qualifying radius.":r.status==='pass'?"Matches.":c.strength==='hard'?"Does not satisfy this hard requirement.":"Does not meet this preference.");
       if(r.status!=='unknown'&&r.observed_value!==null){
         const area=distance&&/^URA:/.test(c.target?.place_id||'');
-        const value=distance&&typeof r.observed_value==='number'?area?(r.observed_value===0?'位于该区域内，到区域的距离记为0米；不表示到同名车站或区域中心点0米':`距该区域边界${Math.round(r.observed_value)}米（最近直线距离，不能推断步行时间）`):`${Math.round(r.observed_value)}米（直线距离，不能推断步行时间）`:String(r.observed_value)+(r.unit==='SGD/month'?'新币/月':r.unit||'');
-        text+='已知记录：'+value+'。';
+        const value=distance&&typeof r.observed_value==='number'?area?(r.observed_value===0?"Inside this area: area distance is zero, not zero distance to a namesake station or the area centre":`Distance to the area boundary: ${Math.round(r.observed_value)} m (nearest straight-line distance; no walking time can be inferred)`):`${Math.round(r.observed_value)} m (straight-line distance; no walking time can be inferred)`:String(r.observed_value)+(r.unit==='SGD/month'?"SGD/month":r.unit||'');
+        text+="Known record: "+value+".";
       }
-      if(r.status==='unknown')text+='资料不足不代表该设施不存在；不能据此说交通方便或条件已满足。';
+      if(r.status==='unknown')text+="Missing data does not mean the amenity is absent and does not establish convenient transport or a satisfied condition.";
       const nums=[...criterionNumbers(c),...observed];
       if(typeof c.value==='number'&&typeof r.observed_value==='number'){
         nums.push(Math.abs(c.value-r.observed_value));
-        if(c.field==='price'&&c.operator==='lte')text+=`记录租金比这一上限${r.observed_value>c.value?'高':'低'}${Math.abs(c.value-r.observed_value)}新币。`;
+        if(c.field==='price'&&c.operator==='lte')text+=`Compared with the cap, recorded rent is ${r.observed_value>c.value?"higher by ":"lower by "}${Math.abs(c.value-r.observed_value)} SGD.`;
       }
       if(distance)nums.push(...nums.map(n=>n/1000));
       refs.push(add('condition:'+id+':'+c.criterion_id,r.status==='unknown'?'limitation':'condition',text,[id],r.evidence_ids,nums));
@@ -74,7 +75,7 @@ export function makeExplanationBundle(req:Requirements,rec:RecommendationRespons
   }
   const requirements=[...grouped.entries()].map(([id,criteria])=>{
     const primary=criteria.find(c=>!nearer(c))||criteria[0];
-    const label=desc(primary)+(criteria.some(nearer)&&!nearer(primary)?'；在此范围内希望离目的地更近':'');
+    const label=desc(primary)+(criteria.some(nearer)&&!nearer(primary)?"; closer to the destination is preferred within this range":'');
     const numbers=criteria.flatMap(criterionNumbers);if(primary.field==='place_proximity')numbers.push(...numbers.map(n=>n/1000));
     const ref=add('requirement:'+id,'requirement',label,[],[],numbers);
     facts.at(-1)!.literals=[...new Set(criteria.flatMap(c=>literalValues(c,c.value)))];
@@ -93,7 +94,7 @@ export function makeExplanationBundle(req:Requirements,rec:RecommendationRespons
   });
   if(missing.length){
     const refs=missing.flatMap(x=>x.unknown.flatMap(r=>r.fact_refs));
-    add('coverage:missing','limitation','逐项缺资料清单（各条件的房源集合不同，禁止合并成同一组）：'+missing.map(x=>x.requirement.label+'：仅'+x.unknown.map(r=>r.title).join('、')+'尚不能确认').join('；')+'。不在某项缺资料清单中的房源，不能被说成该项也无记录。',[...new Set(missing.flatMap(x=>x.unknown.map(r=>r.listing_id)))]);
+    add('coverage:missing','limitation',"Missing evidence by condition (each condition may involve a different set of homes; do not merge the groups): "+missing.map(x=>x.requirement.label+": only "+x.unknown.map(r=>r.title).join(", ")+"not yet confirmed").join("; ")+". A home outside a condition’s missing-data list must not be described as lacking that record.",[...new Set(missing.flatMap(x=>x.unknown.map(r=>r.listing_id)))]);
     facts.at(-1)!.derived_from=refs;
   }
   let native;
@@ -106,7 +107,7 @@ export function makeExplanationBundle(req:Requirements,rec:RecommendationRespons
       if(!rows.some(r=>r.listing.listing_id===item.listing.listing_id))continue;
       const source=[...item.strengths,...item.trade_offs,...item.unknowns].filter(id=>byId.has(id));
       const matching=facts.filter(f=>source.some(id=>f.ref==='condition:'+item.listing.listing_id+':'+id));
-      if(matching.length)add('native-rationale:'+item.listing.listing_id,'listing','推荐方给出的符合项、取舍项和待确认项已对应到本套房的逐项条件。',[item.listing.listing_id],matching.flatMap(f=>f.source_refs));
+      if(matching.length)add('native-rationale:'+item.listing.listing_id,'listing',"The recommender’s matches, compromises and unknowns are linked to this home’s individual conditions.",[item.listing.listing_id],matching.flatMap(f=>f.source_refs));
     }
   }
   const scores=rec.native?ranked.flatMap(r=>rec.native!.scores[r.listing.listing_id]?[rec.native!.scores[r.listing.listing_id]]:[]):[],active=new Set<string>(),behavior=new Set<string>();
@@ -126,39 +127,39 @@ export function makeExplanationBundle(req:Requirements,rec:RecommendationRespons
   const exploratory=selection?.mode==='cold_start_exploration'||selection?.mode==='near_tie_sampling';
   const appointment=scores.some(s=>'appointment_score' in s&&s.appointment_score!==null&&s.appointment_weight>0);
   const browsing=scores.some(s=>'browsing_score' in s&&s.browsing_score!==null&&s.browsing_weight>0);
-  const behaviorSource=v2?[...(browsing?['已有浏览记录']:[]),...(appointment?['已保存的看房意向']:[])].join('和')||'已有行为线索':sampleOnly?'本轮提供的浏览样例':'已有浏览记录';
-  let rankText=rows.length?(ranked.length?(pending.length?'部分房源的已有资料满足必须要求；另一些房源资料不完整，不能笼统声称所有房源都符合全部要求。':'这些房源的已有资料满足本次必须要求。'):'这几套房源有部分必须要求缺少资料，还不能确定全部符合用户要求。'):'本次没有可展示的房源，不能推断整个市场没有合适房源。';
+  const behaviorSource=v2?[...(browsing?["previous viewing activity"]:[]),...(appointment?["saved viewing intentions"]:[])].join(" and ")||"existing behaviour signals":sampleOnly?"viewing samples supplied for this round":"previous viewing activity";
+  let rankText=rows.length?(ranked.length?(pending.length?"Some homes have evidence for the hard requirements; others have incomplete data. Do not claim every home satisfies all requirements.":"Available information for these homes satisfies the current hard requirements."):"Some hard requirements lack evidence for these homes, so full compliance remains unconfirmed."):"No homes can be displayed for this request; this does not mean none exist in the market.";
   // Selection is already described by the requirement/result pairs. Keep this
   // fact about the actual order, so it does not prime repetitive disclaimers.
-  if(activeText.length)rankText+='有资料可比较的排序偏好是：'+activeText.join('；')+'。';
-  if(active.size===1&&!behavior.size&&!exploratory)rankText+='在已评分且有资料可比的房源之间，这就是唯一实际生效的排序偏好；相同匹配程度时保持固定次序，不能据此说谁更优。';
-  if(active.size>1)rankText+=exploratory?'这些偏好共同计算匹配程度，但最终名单还经过下述选择策略。':'这些偏好共同决定顺序，不能简化成只按其中一个排序。';
+  if(activeText.length)rankText+="The ranking preferences with comparable data are: "+activeText.join("; ")+".";
+  if(active.size===1&&!behavior.size&&!exploratory)rankText+="Among scored homes with comparable data, this is the only effective ranking preference. Equal matches retain a stable order without proving one is better.";
+  if(active.size>1)rankText+=exploratory?"These preferences jointly determine the match score; the final list also follows the selection policy described below.":"These preferences jointly determine the order; do not reduce it to only one factor.";
   const filterOnly=req.criteria.filter(c=>c.strength==='hard');
-  if(filterOnly.length)rankText+='仅用于筛选、不用于奖励排名的条件：'+filterOnly.map(desc).join('；')+'。不能因为某套租金更低就把它追加为排序原因。';
-  if(behavior.size)rankText+=`${activeText.length?'同时参考':'排序参考'}${behaviorSource}中相似的${[...behavior].map(x=>featureNames[x]).join('、')}；只作为兴趣线索，不能说成用户已经明确要求或已确认预约。`;
-  if(active.size&&behavior.size&&scores.every(s=>statedWeight(s)>interestWeight(s)))rankText+='明确说出的偏好占主要作用，浏览兴趣起辅助作用。';
-  if(!active.size&&!behavior.size&&rows.length)rankText+='目前资料还不足以根据用户偏好判断哪套更合适，前后顺序仅供浏览；用这一句话说明即可，无须再说租金不是原因。';
+  if(filterOnly.length)rankText+="Conditions used only as filters, without ranking rewards: "+filterOnly.map(desc).join("; ")+". Do not add lower rent as a ranking cause if it was not used.";
+  if(behavior.size)rankText+=`${activeText.length?"Also considers ":"Ranking considers "}${behaviorSource} similarities in ${[...behavior].map(x=>featureNames[x]).join(", ")}; these are interest signals, not explicit user requirements or confirmed bookings.`;
+  if(active.size&&behavior.size&&scores.every(s=>statedWeight(s)>interestWeight(s)))rankText+="Explicit preferences have the main role; viewing interests provide secondary evidence.";
+  if(!active.size&&!behavior.size&&rows.length)rankText+="Current data cannot reliably distinguish suitability from the user’s preferences. The order is for browsing; say this once without separately repeating that rent is not a ranking cause.";
   const rankedRows=rows.filter(r=>rec.native?.scores[r.listing.listing_id]);
-  if(rankedRows.length>1&&rankedRows.every(r=>Math.abs(r.score-rankedRows[0].score)<1e-12))rankText+=exploratory?'当前匹配分没有拉开差距，不能把展示在前说成明显更好。':'当前展示的已评分房源排序依据没有拉开差距，沿用固定次序，不应称第一套明显更好。';
-  if(selection?.mode==='near_tie_sampling')rankText+='匹配程度非常接近的房源中进行抽样选择，先后位置不表示每套都比后面更合适。';
-  if(selection?.mode==='cold_start_exploration')rankText+='为了帮助用户比较不同价位，保留部分匹配较好的房源，并从不同价格层次选取补充选择。展示次序不等于纯匹配分排名，不保证第一套更适合；保存看房草稿只是兴趣线索，不是实际预约。';
+  if(rankedRows.length>1&&rankedRows.every(r=>Math.abs(r.score-rankedRows[0].score)<1e-12))rankText+=exploratory?"Current match scores do not distinguish the homes; earlier display does not mean clearly better.":"The displayed scored homes are not distinguished by their ranking evidence. A stable order is retained, not proof the first is better.";
+  if(selection?.mode==='near_tie_sampling')rankText+="Homes with very close matches are sampled. Display position does not establish superiority over later homes.";
+  if(selection?.mode==='cold_start_exploration')rankText+="To help compare price levels, some strong matches are retained and supplementary homes are drawn from price strata. Display order is not pure score rank or a guarantee the first is best. A saved viewing draft is an interest signal, not a booking.";
   const unscored=(rec.native?.unscored_listing_ids||[]).filter(id=>rows.some(r=>r.listing.listing_id===id));
-  if(rankedIds.length)rankText+='入选排名的比较范围仅为：'+ranked.map(r=>r.listing.title).join('、')+'。';
-  if(pending.length)rankText+='其余补充展示的房源未进入这组排名；它们可能仍有学校、超市等已知距离。已知资料可供用户比较，但不代表通过全部必须条件或参与排名；不能用其某一项距离更短来否定入选排名。';
+  if(rankedIds.length)rankText+="The selected-ranking comparison includes only: "+ranked.map(r=>r.listing.title).join(", ")+".";
+  if(pending.length)rankText+="Supplementary displayed homes are outside this ranking. They may still have known school/supermarket distances for comparison, without satisfying every hard requirement or participating in ranking. A shorter supplementary distance does not invalidate the selected ranking.";
   add('ranking:method','ranking',rankText,rows.map(r=>r.listing.listing_id),rec.native?[rec.native.exchange_ref]:[],[...active].flatMap(id=>{const c=byId.get(id)!;return c.field==='place_proximity'?[...criterionNumbers(c),...criterionNumbers(c).map(n=>n/1000)]:criterionNumbers(c);}));
   if(v2)for(const row of rows){
     const id=row.listing.listing_id,picked=rec.native?.selection_reasons?.[id];if(!picked)continue;
-    const reason=({ranked:'按原生匹配分顺序选入。',leader:'匹配程度领先而保留。',tie_group_sample:'从匹配程度很接近的房源中抽样选入，不表示比同组其他房源更合适。',price_exploration_sample:'作为不同价位的补充选择选入，帮助了解用户的取舍，不是单纯因为分数更高。',small_pool:'全部合格房源不超过展示数量，因而全部返回。'})[picked.selection_reason];
-    add(`selection:${id}`,'ranking',`${row.listing.title}：${reason}展示编号与完整候选池按分数的编号可以不同。`,[id],[rec.native!.exchange_ref]);
+    const reason=({ranked:"Selected in native match-score order.",leader:"Retained as a leading match.",tie_group_sample:"Sampled from near-equal matches, without implying greater suitability than its peers.",price_exploration_sample:"Included as a supplementary price-level choice to understand trade-offs, not simply because its score is higher.",small_pool:"All eligible homes fit within the display limit, so all were returned."})[picked.selection_reason];
+    add(`selection:${id}`,'ranking',`${row.listing.title}: ${reason}Display numbers may differ from score positions in the full candidate pool.`,[id],[rec.native!.exchange_ref]);
   }
   required_refs.push('ranking:method');
-  if(behavior.size){add('ranking:behavior','ranking',`本轮确实还使用了${behaviorSource}中的${[...behavior].map(x=>featureNames[x]).join('、')}作兴趣线索；解释排序时须简短提到，不能只讲明确偏好。`);required_refs.push('ranking:behavior');}
-  if(rows.length){add('availability:current','availability','这些记录不能证明现在仍可租；当前可租情况和价格需向经纪人确认。');required_refs.push('availability:current');}
-  if(!rows.length)add('results:empty','limitation',rec.status==='needs_clarification'?'需要先补充：'+rec.clarifications.map(x=>x.question).join('；'):'本次条件下没有找到能展示的选项；可以和用户讨论想调整哪项条件，不能自动放宽要求或声称全市场无房。');
+  if(behavior.size){add('ranking:behavior','ranking',`This round also used ${behaviorSource} from ${[...behavior].map(x=>featureNames[x]).join(", ")}as interest signals. Mention this briefly when explaining ranking rather than discussing only explicit preferences.`);required_refs.push('ranking:behavior');}
+  if(rows.length){add('availability:current','availability',"These records do not establish current availability. Confirm present availability and price with the agent.");required_refs.push('availability:current');}
+  if(!rows.length)add('results:empty','limitation',rec.status==='needs_clarification'?"First provide: "+rec.clarifications.map(x=>x.question).join("; "):"No homes can be displayed for these conditions. Discuss which condition the user would change; do not automatically relax requirements or claim the entire market has none.");
   for(let a=0;a<rows.length;a++)for(let b=a+1;b<rows.length;b++){
     const x=rows[a],y=rows[b];
     if(x.listing.price!==null&&y.listing.price!==null){
-      const ref=add(`compare:${a+1}:${b+1}`,'comparison',`第${a+1}套记录月租${x.listing.price}新币，第${b+1}套${y.listing.price}新币；后者比前者${y.listing.price>=x.listing.price?'高':'低'}${Math.abs(y.listing.price-x.listing.price)}新币；价格差异本身不代表排名原因。`,[x.listing.listing_id,y.listing.listing_id],[],[a+1,b+1,x.listing.price,y.listing.price,Math.abs(y.listing.price-x.listing.price)]);
+      const ref=add(`compare:${a+1}:${b+1}`,'comparison',`No. ${a+1} recorded monthly rent is ${x.listing.price} SGD; No. ${b+1} is ${y.listing.price} SGD; compared with the first, the latter is ${y.listing.price>=x.listing.price?"higher by ":"lower by "}${Math.abs(y.listing.price-x.listing.price)} SGD; a price difference alone is not a ranking cause.`,[x.listing.listing_id,y.listing.listing_id],[],[a+1,b+1,x.listing.price,y.listing.price,Math.abs(y.listing.price-x.listing.price)]);
       facts.find(f=>f.ref===ref)!.derived_from=[`price:${x.listing.listing_id}`,`price:${y.listing.listing_id}`,...req.criteria.filter(c=>c.field==='price').flatMap(c=>[x,y].filter(row=>row.criterion_results.find(r=>r.criterion_id===c.criterion_id)?.observed_value===row.listing.price).map(row=>`condition:${row.listing.listing_id}:${c.criterion_id}`))];
     }
     const sx=rec.native?.scores[x.listing.listing_id],sy=rec.native?.scores[y.listing.listing_id];
@@ -166,23 +167,23 @@ export function makeExplanationBundle(req:Requirements,rec:RecommendationRespons
       const factors=[...active].flatMap(id=>{
         const cx=sx.contributions.find(v=>v.feature===id&&v.reference===null&&!v.unknown&&v.similarity!==null),cy=sy.contributions.find(v=>v.feature===id&&v.reference===null&&!v.unknown&&v.similarity!==null);
         if(!cx||!cy)return [];
-        const direction=cx.contribution===cy.contribution?'两套在此项对排名的贡献相同':cx.contribution>cy.contribution?`此项更有利于第${a+1}套`:`此项更有利于第${b+1}套`;
+        const direction=cx.contribution===cy.contribution?"Both homes have the same ranking contribution from this factor":cx.contribution>cy.contribution?`This factor favours home No. ${a+1} `:`This factor favours home No. ${b+1} `;
         return [desc(byId.get(id)!)+':'+direction];
       });
-      if(factors.length)add(`compare-ranking:${a+1}:${b+1}`,'comparison',`仅比较本次入选排名：第${a+1}套${x.listing.title}在第${b+1}套${y.listing.title}之前。推荐方实际逐项贡献显示：${factors.join('；')}。各项允许取舍；不要求排前的房源在每一项都最好，不把这些比较扩展到未进入排名的补充房源。`,[x.listing.listing_id,y.listing.listing_id],rec.native?[rec.native.exchange_ref]:[],[a+1,b+1]);
+      if(factors.length)add(`compare-ranking:${a+1}:${b+1}`,'comparison',`Within the selected ranking only: home No. ${a+1} ${x.listing.title} precedes No. ${b+1} ${y.listing.title}. The recommender’s actual per-factor contributions show: ${factors.join("; ")}. Trade-offs are allowed; an earlier home need not lead every factor. Do not extend these comparisons to supplementary homes outside the ranking.`,[x.listing.listing_id,y.listing.listing_id],rec.native?[rec.native.exchange_ref]:[],[a+1,b+1]);
     }
     const usedBehavior=[sx,sy].map(score=>score?.contributions.filter(c=>c.reference!==null&&!c.unknown&&c.similarity!==null&&c.weight>0&&featureNames[c.feature]&&!score.suppressed_features.includes(c.feature)).map(c=>c.feature)||[]);
     if(behavior.size&&sx&&sy&&usedBehavior.every(features=>features.length>0)&&interestWeight(sx)>0&&interestWeight(sy)>0&&interestScore(sx)!==null&&interestScore(sy)!==null){
-      const ix=interestScore(sx)!,iy=interestScore(sy)!;const matching=ix===iy?'两套的浏览兴趣整体匹配程度相同':ix>iy?`第${a+1}套${x.listing.title}整体上比第${b+1}套${y.listing.title}更贴近已使用的浏览兴趣线索`:`第${b+1}套${y.listing.title}整体上比第${a+1}套${x.listing.title}更贴近已使用的浏览兴趣线索`;
-      const features=[...new Set(usedBehavior.flat())].map(key=>featureNames[key]).join('、');
-      add(`compare-interest:${a+1}:${b+1}`,'comparison',`推荐方实际返回的浏览兴趣比较：${matching}。这是${features}等已参与因素的整体匹配结果；不代表每项特征都单独更相似，也不说明用户偏爱某个具体面积或房型值。不重新计算或改变原顺序。`,[x.listing.listing_id,y.listing.listing_id],rec.native?[rec.native.exchange_ref]:[],[a+1,b+1]);
+      const ix=interestScore(sx)!,iy=interestScore(sy)!;const matching=ix===iy?"The two homes have equal overall viewing-interest similarity":ix>iy?`No. ${a+1} ${x.listing.title} has greater overall similarity than No. ${b+1} ${y.listing.title} to the viewing-interest signals used`:`No. ${b+1} ${y.listing.title} has greater overall similarity than No. ${a+1} ${x.listing.title} to the viewing-interest signals used`;
+      const features=[...new Set(usedBehavior.flat())].map(key=>featureNames[key]).join(", ");
+      add(`compare-interest:${a+1}:${b+1}`,'comparison',`The recommender’s actual viewing-interest comparison: ${matching}. This is the overall match from ${features} and other participating features. It does not establish similarity on every feature or a user preference for a specific size/type. Do not recalculate or change the original order.`,[x.listing.listing_id,y.listing.listing_id],rec.native?[rec.native.exchange_ref]:[],[a+1,b+1]);
     }
     for(const c of req.criteria.filter(c=>c.field==='place_proximity')){
       const rx=x.criterion_results.find(r=>r.criterion_id===c.criterion_id),ry=y.criterion_results.find(r=>r.criterion_id===c.criterion_id);
       if(!rx||!ry||rx.status==='unknown'||ry.status==='unknown'||typeof rx.observed_value!=='number'||typeof ry.observed_value!=='number')continue;
       const difference=Math.abs(rx.observed_value-ry.observed_value),roundedDifference=Math.abs(Math.round(rx.observed_value)-Math.round(ry.observed_value));
-      const direction=rx.observed_value===ry.observed_value?'两套直线距离相同':rx.observed_value<ry.observed_value?`第${a+1}套更近，第${b+1}套更远`:`第${b+1}套更近，第${a+1}套更远`;
-      const ref=add(`compare-distance:${a+1}:${b+1}:${c.criterion_id}`,'comparison',`到${clean(c.target?.name||c.target?.category||'该地点')}的直线距离：第${a+1}套${x.listing.title}为${rx.observed_value}米；第${b+1}套${y.listing.title}为${ry.observed_value}米。${direction}，距离相差${Number(difference.toFixed(2))}米。推荐次序不因这段比较改变；不能推断实际步行或通勤的差别。`,[x.listing.listing_id,y.listing.listing_id],[...rx.evidence_ids,...ry.evidence_ids],[a+1,b+1,rx.observed_value,ry.observed_value,difference,roundedDifference,difference/1000,roundedDifference/1000]);
+      const direction=rx.observed_value===ry.observed_value?"Both homes have the same straight-line distance":rx.observed_value<ry.observed_value?`No. ${a+1} is closer; No. ${b+1} is farther`:`No. ${b+1} is closer; No. ${a+1} is farther`;
+      const ref=add(`compare-distance:${a+1}:${b+1}:${c.criterion_id}`,'comparison',`Distance to ${clean(c.target?.name||c.target?.category||"this place")} straight-line distance: No. ${a+1} ${x.listing.title} is ${rx.observed_value} m; No. ${b+1} ${y.listing.title} is ${ry.observed_value} m.${direction}; the distance differs by ${Number(difference.toFixed(2))} m. This comparison does not change recommendation order or establish actual walking/commute differences.`,[x.listing.listing_id,y.listing.listing_id],[...rx.evidence_ids,...ry.evidence_ids],[a+1,b+1,rx.observed_value,ry.observed_value,difference,roundedDifference,difference/1000,roundedDifference/1000]);
       facts.find(f=>f.ref===ref)!.derived_from=[`condition:${x.listing.listing_id}:${c.criterion_id}`,`condition:${y.listing.listing_id}:${c.criterion_id}`];
     }
   }

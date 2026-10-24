@@ -3,7 +3,7 @@ export class RequirementRefinementUI{
   constructor(deps){Object.assign(this,deps);this.cards=new Map();}
   mount(id,parent){
     const plan=this.getState()?.refinement_plans?.find(p=>p.id===id);if(!plan)return;
-    const root=this.el('section','requirement-refinement');root.dataset.refinementId=id;root.setAttribute('aria-label','补充找房偏好');parent.append(root);
+    const root=this.el('section','requirement-refinement');root.dataset.refinementId=id;root.setAttribute('aria-label',"Refine your rental preferences");parent.append(root);
     const key='rental.refinement.'+this.scope+'.'+plan.session_id+'.'+id;let draft={index:0,answers:{}};
     try{const saved=JSON.parse(localStorage.getItem(key)||'null');if(saved&&saved.answers&&Number.isInteger(saved.index))draft=saved;}catch{}
     draft.index=Math.max(0,Math.min(plan.questions.length-1,draft.index));
@@ -15,9 +15,9 @@ export class RequirementRefinementUI{
   btn(text,fn,cls=''){const b=this.el('button',cls,text);b.type='button';b.onclick=fn;return b;}
   paint(card){
     const {root,plan}=card;root.replaceChildren();card.view=plan.status==='OPEN'&&!this.active(card)?'STALE':plan.status;
-    root.append(this.el('h4','','再补充一点找房偏好'));
+    root.append(this.el('h4','',"Refine your search"));
     if(card.view!=='OPEN'){
-      root.append(this.el('p','refinement-status',card.view==='SUBMITTED'?'已记录您的选择':card.view==='DISMISSED'?'暂不补充':'找房条件已更新，这张卡片已结束'));
+      root.append(this.el('p','refinement-status',card.view==='SUBMITTED'?"Your choices have been saved":card.view==='DISMISSED'?"Not now":"Your requirements have changed. This card is now closed."));
       const lines=plan.answer_summary?.length?plan.answer_summary:plan.questions.map(q=>this.describe(q,card.draft.answers[q.id])).filter(Boolean);
       if(lines.length){const list=this.el('ul','refinement-summary');for(const line of lines)list.append(this.el('li','',line));root.append(list);}return;
     }
@@ -26,7 +26,7 @@ export class RequirementRefinementUI{
     if(q.help)root.append(this.el('p','refinement-help',q.help));
     const choices=this.el('div','refinement-choices');
     const choose=action=>{card.draft.answers[q.id]={...card.draft.answers[q.id],action};this.save(card);this.paint(card);};
-    for(const [action,label] of [['set',q.kind==='closer'?'更近优先':q.kind==='ideal_rent'?'填写理想月租':'设置条件'],['any',q.kind==='closer'?'范围内即可':q.kind==='ideal_rent'?'目前预算即可':'不限'],['skip','暂未想好']]){
+    for(const [action,label] of [['set',q.kind==='closer'?"Prefer closer":q.kind==='ideal_rent'?"Set a preferred rent":"Set a requirement"],['any',q.kind==='closer'?"Anywhere within the range":q.kind==='ideal_rent'?"Keep my current budget":"No preference"],['skip',"Not sure yet"]]){
       const b=this.btn(label,()=>choose(action));b.setAttribute('aria-pressed',String(answer.action===action));choices.append(b);
     }root.append(choices);
     const update=(key,value)=>{card.draft.answers[q.id]={...card.draft.answers[q.id],action:'set',[key]:value};this.save(card);error.textContent='';updateSummary();};
@@ -34,51 +34,51 @@ export class RequirementRefinementUI{
       const fields=this.el('div','refinement-fields');
       const select=(label,key,options)=>{const wrap=this.el('label','',label),input=this.el('select');input.setAttribute('aria-label',label);for(const [value,text] of options){const o=this.el('option','',text);o.value=value;input.append(o);}input.value=answer[key]??(key==='unit'?'sqm':'');input.onchange=()=>update(key,input.value);wrap.append(input);fields.append(wrap);};
       const number=(label,key,min=0)=>{const wrap=this.el('label','',label),input=this.el('input');input.type='number';input.min=String(min);input.step=q.kind==='area'?'0.1':'1';input.inputMode='decimal';input.value=answer[key]??'';input.setAttribute('aria-label',label);input.oninput=()=>update(key,input.value);wrap.append(input);fields.append(wrap);};
-      if(q.kind==='budget'){number('月租下限（选填，新币）','min');number('月租上限（新币）','max',1);}
-      if(q.kind==='ideal_rent')number('理想月租上限（新币）','max',1);
-      if(q.kind==='bedrooms'){select('数量要求','operator',[['','请选择'],['eq','恰好'],['gte','至少'],['lte','最多']]);number('卧室数量','count',1);}
+      if(q.kind==='budget'){number("Minimum monthly rent (optional, SGD)",'min');number("Maximum monthly rent (SGD)",'max',1);}
+      if(q.kind==='ideal_rent')number("Preferred maximum rent (SGD)",'max',1);
+      if(q.kind==='bedrooms'){select("Number requirement",'operator',[['',"Please select"],['eq',"Exactly"],['gte',"At least"],['lte',"At most"]]);number("Number of bedrooms",'count',1);}
       if(q.kind==='property_type')for(const option of q.options||[]){const label=this.el('label','refinement-checkbox'),input=this.el('input');input.type='checkbox';input.checked=answer.values?.includes(option.value)||false;input.onchange=()=>update('values',[...fields.querySelectorAll('input:checked')].map(i=>i.value));input.value=option.value;label.append(input,document.createTextNode(option.label));fields.append(label);}
-      if(q.kind==='area'){number('面积下限（选填）','min',.1);number('面积上限（选填）','max',.1);select('面积单位','unit',[['sqm','㎡'],['sqft','sqft']]);}
-      if(['bedrooms','property_type','area'].includes(q.kind))select('重要程度','strength',[['','请选择'],['hard','必须满足'],['soft','有更好']]);
+      if(q.kind==='area'){number("Minimum area (optional)",'min',.1);number("Maximum area (optional)",'max',.1);select("Area unit",'unit',[['sqm','㎡'],['sqft','sqft']]);}
+      if(['bedrooms','property_type','area'].includes(q.kind))select("Importance",'strength',[['',"Please select"],['hard',"Must have"],['soft',"Nice to have"]]);
       root.append(fields);
     }
     const error=this.el('p','refinement-error');error.setAttribute('role','alert');root.append(error);
     const summary=this.el('ul','refinement-summary');const last=card.draft.index===plan.questions.length-1;
     const updateSummary=()=>{if(!last)return;summary.replaceChildren();for(const question of plan.questions)summary.append(this.el('li','',this.describe(question,card.draft.answers[question.id])));};
-    if(last){root.append(this.el('p','refinement-review-title','本次补充'),summary);updateSummary();}
-    const nav=this.el('div','refinement-navigation'),prev=this.btn('← 上一项',()=>{card.draft.index--;this.save(card);this.paint(card);});prev.disabled=card.draft.index===0;
+    if(last){root.append(this.el('p','refinement-review-title',"Your choices"),summary);updateSummary();}
+    const nav=this.el('div','refinement-navigation'),prev=this.btn("← Previous",()=>{card.draft.index--;this.save(card);this.paint(card);});prev.disabled=card.draft.index===0;
     const hasChoices=plan.questions.some(q=>card.draft.answers[q.id]?.action==='set');
-    const next=this.btn(last?(hasChoices?'补充好了，重新推荐':'保留当前推荐'):'下一项 →',async()=>{
+    const next=this.btn(last?(hasChoices?"Apply choices and recommend again":"Keep current recommendations"):"Next →",async()=>{
       try{this.answer(q,card.draft.answers[q.id]);if(last)await this.submit(card);else{card.draft.index++;this.save(card);this.paint(card);}}catch(e){error.textContent=e.message;}
-    },last?'refinement-primary':'');nav.append(prev,next);root.append(nav,this.btn('暂不补充',()=>this.dismiss(card),'refinement-dismiss'));
+    },last?'refinement-primary':'');nav.append(prev,next);root.append(nav,this.btn("Not now",()=>this.dismiss(card),'refinement-dismiss'));
     if(card.busy)for(const control of root.querySelectorAll('button,input,select'))control.disabled=true;
   }
   answer(q,a={}){
     if(a.action!=='set')return {question_id:q.id,action:a.action==='any'?'any':'skip'};
-    const result={question_id:q.id,action:'set'},numeric=key=>{if(a[key]===undefined||a[key]==='')return undefined;const n=Number(a[key]);if(!Number.isFinite(n)||n<0)throw Error('请输入有效的数字。');return n;};
-    if(q.kind==='bedrooms'){const count=numeric('count');if(!Number.isInteger(count)||count<1||count>20||!['eq','gte','lte'].includes(a.operator))throw Error('请选择卧室数量及数量要求。');Object.assign(result,{count,operator:a.operator});}
-    if(q.kind==='property_type'){if(!a.values?.length)throw Error('请至少选择一种房屋类型。');result.values=a.values;}
+    const result={question_id:q.id,action:'set'},numeric=key=>{if(a[key]===undefined||a[key]==='')return undefined;const n=Number(a[key]);if(!Number.isFinite(n)||n<0)throw Error("Enter a valid number.");return n;};
+    if(q.kind==='bedrooms'){const count=numeric('count');if(!Number.isInteger(count)||count<1||count>20||!['eq','gte','lte'].includes(a.operator))throw Error("Choose a bedroom count and whether it is exact, minimum or maximum.");Object.assign(result,{count,operator:a.operator});}
+    if(q.kind==='property_type'){if(!a.values?.length)throw Error("Select at least one property type.");result.values=a.values;}
     if(['budget','ideal_rent','area'].includes(q.kind)){
       const min=q.kind==='ideal_rent'?undefined:numeric('min'),max=numeric('max');
-      if(q.kind==='area'?(min===undefined&&max===undefined):max===undefined)throw Error(q.kind==='area'?'请至少填写面积下限或上限。':'请填写月租上限。');
-      if(min!==undefined&&max!==undefined&&min>max)throw Error('下限不能高于上限。');if(max!==undefined&&max<=0||q.kind==='area'&&min!==undefined&&min<=0)throw Error('数值需大于零。');
-      if(q.kind==='ideal_rent'&&max>q.upper_bound)throw Error('理想月租不能超过原预算上限。');
+      if(q.kind==='area'?(min===undefined&&max===undefined):max===undefined)throw Error(q.kind==='area'?"Enter a minimum or maximum area.":"Enter a maximum monthly rent.");
+      if(min!==undefined&&max!==undefined&&min>max)throw Error("The minimum cannot exceed the maximum.");if(max!==undefined&&max<=0||q.kind==='area'&&min!==undefined&&min<=0)throw Error("The value must be greater than zero.");
+      if(q.kind==='ideal_rent'&&max>q.upper_bound)throw Error("The preferred rent cannot exceed your existing budget.");
       if(min!==undefined)result.min=min;if(max!==undefined)result.max=max;if(q.kind==='area')result.unit=a.unit||'sqm';
     }
-    if(['bedrooms','property_type','area'].includes(q.kind)){if(!['hard','soft'].includes(a.strength))throw Error('请选择必须满足或有更好。');result.strength=a.strength;}
+    if(['bedrooms','property_type','area'].includes(q.kind)){if(!['hard','soft'].includes(a.strength))throw Error("Choose Must have or Nice to have.");result.strength=a.strength;}
     return result;
   }
   describe(q,a){
-    if(!a?.action||a.action==='skip')return q.title+' 暂未补充';if(a.action==='any')return q.kind==='ideal_rent'?`保留原预算${q.upper_bound?`上限 ${q.upper_bound.toLocaleString('en-SG')} 新币`:''}，不新增理想月租偏好`:q.title+' '+(q.kind==='closer'?'范围内即可':'不限');
-    const level=a.strength==='hard'?'必须满足':a.strength==='soft'?'有更好':'未选择重要程度';
-    if(q.kind==='bedrooms')return `卧室：${{eq:'恰好',gte:'至少',lte:'最多'}[a.operator]||''}${a.count||'待填写'}间，${level}`;
-    if(q.kind==='property_type')return `房屋类型：${a.values?.map(v=>q.options.find(o=>o.value===v)?.label).join('、')||'待选择'}，${level}`;
-    if(q.kind==='closer')return q.title.replace('您希望','希望').replace('吗？','，更近优先');
-    if(q.kind==='area')return `挂牌面积：${a.min?`至少${a.min}`:''}${a.min&&a.max?'，':''}${a.max?`最多${a.max}`:''}${a.unit==='sqft'?' sqft':'㎡'}，${level}`;
-    return `${q.kind==='ideal_rent'?'理想月租':'月租'}：${a.min?`${a.min} 至 `:'最多'}${a.max||'待填写'}新币${q.kind==='ideal_rent'?'，有更好':'，必须满足'}`;
+    if(!a?.action||a.action==='skip')return q.title+" Not provided yet";if(a.action==='any')return q.kind==='ideal_rent'?`Keep the existing budget${q.upper_bound?` limit of ${q.upper_bound.toLocaleString('en-SG')} SGD`:''}; no additional preferred-rent condition`:q.title+' '+(q.kind==='closer'?"Anywhere within the range":"No preference");
+    const level=a.strength==='hard'?"Must have":a.strength==='soft'?"Nice to have":"Importance not selected";
+    if(q.kind==='bedrooms')return `Bedrooms: ${{eq:"Exactly",gte:"At least",lte:"At most"}[a.operator]||''} ${a.count||"Not entered"} ${Number(a.count)===1?"bedroom":"bedrooms"}, ${level}`;
+    if(q.kind==='property_type')return `Property type: ${a.values?.map(v=>q.options.find(o=>o.value===v)?.label).join(", ")||"Not selected"}, ${level}`;
+    if(q.kind==='closer')return q.title.replace(/^Within the range, would you prefer to be closer to /,'Prefer to be closer to ').replace(/\?$/,'; closer is preferred');
+    if(q.kind==='area')return `Listed area: ${a.min?`At least${a.min}`:''}${a.min&&a.max?", ":''}${a.max?`At most${a.max}`:''}${a.unit==='sqft'?' sqft':'㎡'}, ${level}`;
+    return `${q.kind==='ideal_rent'?"Preferred rent":"Monthly rent"}: ${a.min?`${a.min} to `:"At most"}${a.max||"Not entered"} SGD${q.kind==='ideal_rent'?", nice to have":", must have"}`;
   }
   async submit(card){
-    if(card.busy||!this.active(card))throw Error('条件已更新，请使用最新卡片。');
+    if(card.busy||!this.active(card))throw Error("Your requirements have changed. Please use the latest card.");
     const answers=card.plan.questions.map(q=>this.answer(q,card.draft.answers[q.id]));
     card.busy=true;this.paint(card);card.draft.submission_id||=crypto.randomUUID();this.save(card);
     try{await this.beforeSubmit();const result=await this.api(`refinements/${card.plan.id}/submit`,{session_id:card.plan.session_id,submission_id:card.draft.submission_id,answers});await this.onSubmitted(result);}

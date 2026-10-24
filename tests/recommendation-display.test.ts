@@ -29,9 +29,9 @@ test('five formal plus four pending homes expose exactly five IDs everywhere wit
   assert.equal(structured.verified.length,5);assert.equal(structured.unverified.length,0);
   for(const hidden of rec.unverified_candidates)assert(!doc.markdown.includes(hidden.listing.title));
   assert.equal(resolveListingSelection(rec,'我要看第5套').listing.listing_id,ids[4]);
-  assert.throws(()=>resolveListingSelection(rec,'我要看第6套'),/点击房源卡片/);
-  assert.throws(()=>resolveListingSelection(rec,'请联系待核实第1套'),/点击房源卡片/);
-  assert.throws(()=>resolveListingSelection(rec,'房源ID '+rec.unverified_candidates[0].listing.listing_id),/不在当前列表/);
+  assert.throws(()=>resolveListingSelection(rec,'我要看第6套'),/Select Contact agent/i);
+  assert.throws(()=>resolveListingSelection(rec,'请联系待核实第1套'),/Select Contact agent/i);
+  assert.throws(()=>resolveListingSelection(rec,'房源ID '+rec.unverified_candidates[0].listing.listing_id),/not in the current list/i);
   assert.equal(JSON.stringify(rec),before);
 });
 
@@ -39,7 +39,7 @@ test('pending homes only fill remaining places, retain unknown status, and use g
   const {req,rec}=fixture(2,4),rows=displayedCandidates(rec);
   assert.equal(rows.length,5);assert.equal(resolveListingSelection(rec,'看第5套').listing.listing_id,rec.unverified_candidates[2].listing.listing_id);
   assert.equal(resolveListingSelection(rec,'待核实第3套').listing.listing_id,rows[4].listing.listing_id);
-  assert.throws(()=>resolveListingSelection(rec,'待核实第4套'),/点击房源卡片/);
+  assert.throws(()=>resolveListingSelection(rec,'待核实第4套'),/Select Contact agent/i);
   const b=makeExplanationBundle(req,rec,'介绍');assert.deepEqual(b.listings.map(l=>l.group),['hard_pass','hard_pass','hard_unknown','hard_unknown','hard_unknown']);
   assert.deepEqual(b.listings.map(l=>l.position),[1,2,3,4,5]);
   assert.equal(displayedCandidates(fixture(0,4).rec).length,4);

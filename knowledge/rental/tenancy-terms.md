@@ -1,27 +1,27 @@
 ---
 id: tenancy-terms
-title: 租约、押金、家具、水电费与协商清单
+title: Tenancy agreements, deposits, furnishings, utilities and negotiations
 scope: policy_guidance
-revision: '2026-10-20.1'
+revision: 2026-10-20.1
 checked_at: '2026-10-20'
 review_after: '2027-01-20'
 sources:
-  - title: CEA Renting or Renting Out
-    url: https://www.cea.gov.sg/consumers/engaging-a-property-agent/renting-or-renting-out/
+- title: CEA Renting or Renting Out
+  url: https://www.cea.gov.sg/consumers/engaging-a-property-agent/renting-or-renting-out/
 ---
-# 租约与日常条款
+# Tenancy agreements and everyday terms
 
-## 租约和经纪服务协议
-CEA 提供租赁协议模板供参考，双方可在签署前协商租约条款。租客与房东的 tenancy agreement，和客户与经纪人的 estate agency agreement，是不同的文件。前者约定租赁关系，后者约定经纪服务范围与佣金。不要只看消息里一句“都包了”，就认为完整条款已写进双方签署的协议。
+## Tenancy and estate agency agreements
+CEA supplies tenancy templates for reference and parties may negotiate before signing. A tenant-landlord tenancy agreement differs from the client-agent estate agency agreement. The former governs the rental relationship; the latter covers agency services and commission. A chat message saying everything is included does not establish that full terms appear in the signed agreement.
 
-## 押金怎样问清楚
-以下为本项目的协商清单，不是统一法定金额：押金是多少、什么时候支付、由谁收取、正常退租何时退还、可以扣除哪些费用、需要什么凭据。知识库没有支持“所有住宅必须押一付一”或“所有押金必定等于一个月房租”的依据，因此不能把这种说法答成强制标准。请把约定写清楚，保存付款与退款记录；不要根据本系统的历史挂牌价格决定应付押金。
+## Clarifying the deposit
+Project negotiation checklist, not a uniform statutory amount: how much deposit, when it is paid, who receives it, when it is returned after ordinary move-out, allowable deductions and supporting proof. The knowledge base does not support a rule that every residential rental requires a one-month deposit or a universal one-deposit/one-advance arrangement. Record the agreement and payment/refund evidence. Do not infer the deposit from a historical listing price.
 
-## 家具与被褥分开核实
-本项目建议逐项询问床架、床垫、书桌、椅子、衣柜、冰箱、洗衣机及空调，而不是只问 furnished。“配床和桌椅”不能推导出包被褥，家具齐全也不能证明物品完好。把愿意保留或移走的物品写进清单，看房和交接时对照。已经得到明确答复的条目，下一次跟进应表示收到并确认，而不是从头再问同样的问题。
+## Furniture and bedding are separate
+Project advice: ask separately about bedframe, mattress, desk, chair, wardrobe, refrigerator, washing machine and air conditioning rather than only saying furnished. A bed, table and chairs do not establish bedding; fully furnished does not prove good condition. Record what will remain or be removed and compare the list at viewing and handover. A later follow-up should acknowledge explicit answers rather than asking the same questions from scratch.
 
-## 水电网络和其他费用
-本项目建议把电费、水费、网络、空调清洗、维修、清洁和管理相关收费分别询问：是否包含、是否有上限、超出如何分摊、何时结算。经纪人说“水电包含在房租”只明确了该项，不能自动推导免费网络或无其他费用。比较预算时，要同时看月租和已确认的额外支出；尚未确认的费用不能擅自填零。
+## Utilities, internet and other charges
+Ask separately about electricity, water, internet, air-conditioning cleaning, repairs, cleaning and management charges: inclusion, caps, excess allocation and settlement dates. Included utilities confirms only that item, not free internet or no other charges. Compare monthly rent with confirmed additional spending; unknown charges cannot be filled with zero.
 
-## 提前离开与日常使用
-本项目建议核对入住日、退租通知期、提前解约、续租、访客、做饭、养宠物和维修联系流程。任何口头承诺若会影响决定，应请对方用书面再次确认，并核对最终租约是否一致。这些是待双方确认的协商事项，不应被系统表述为已预约、已同意或已获得法律保障。
+## Early departure and daily use
+Check move-in date, notice period, early termination, renewal, guests, cooking, pets and repair contacts. Ask for written confirmation of oral promises affecting the decision and ensure the final lease agrees. These are matters for both parties to confirm, not an already booked, agreed or legally guaranteed outcome.

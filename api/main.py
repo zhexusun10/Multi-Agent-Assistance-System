@@ -141,7 +141,7 @@ class LocalBoundaries:
         except ValueError:
             length = 65537
         if length > 65536:
-            return await JSONResponse({"detail": "请求内容过大"}, status_code=413)(scope, receive, send)
+            return await JSONResponse({"detail": "Request body is too large."}, status_code=413)(scope, receive, send)
 
         async def bounded_send(message):
             if message["type"] == "http.response.start":
@@ -174,12 +174,12 @@ async def business_proxy(path: str, request: Request):
             headers[name] = request.headers[name]
     data = await request.body()
     if len(data) > 65536:
-        raise HTTPException(413, "请求内容过大")
+        raise HTTPException(413, "Request body is too large.")
     async with httpx.AsyncClient(base_url=GRAPH_SERVICE_URL, timeout=30) as client:
         try:
             result = await client.request(request.method, "/" + path, params=request.query_params, content=data, headers={**headers, "Content-Type": "application/json"})
         except httpx.HTTPError:
-            raise HTTPException(503, "业务服务暂不可用")
+            raise HTTPException(503, "The application service is temporarily unavailable.")
         forwarded = {name: value for name, value in result.headers.items() if name.lower() in {"content-type", "content-disposition", "cache-control"}}
         if path == "state":
             forwarded["cache-control"] = "no-store"

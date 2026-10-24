@@ -61,7 +61,7 @@ export class FollowupService implements DeliveryQueue{
           const a=(await tx.query('SELECT body FROM workflow_actions WHERE id=$1 FOR UPDATE',[j.action_id])).rows[0].body as Action;
           const op=(await tx.query('SELECT operation_id FROM recommendation_calls WHERE id=$1',[a.source_request_id])).rows[0]?.operation_id;
           if(a.status!=='QUEUED'||s.latest_request_id!==a.source_request_id||s.requirements_version!==a.requirements_version||op!==s.active_operation_id||actionHash(a)!==j.payload.hash||a.approval?.hash!==j.payload.hash){
-            await tx.query("UPDATE message_outbox SET state='CANCELLED',error_code='STALE_BEFORE_SEND',updated_at=now() WHERE execution_key=$1",[j.execution_key]);a.status='CANCELLED';await tx.query('UPDATE workflow_actions SET body=$2 WHERE id=$1',[a.id,JSON.stringify(a)]);await tx.query('DELETE FROM viewing_reservations WHERE execution_key=$1',[j.execution_key]);await this.log(tx,s.session_id,a.id,'cancelled',{reason:'需求、审批或选择已变化，未发送'});return null;
+            await tx.query("UPDATE message_outbox SET state='CANCELLED',error_code='STALE_BEFORE_SEND',updated_at=now() WHERE execution_key=$1",[j.execution_key]);a.status='CANCELLED';await tx.query('UPDATE workflow_actions SET body=$2 WHERE id=$1',[a.id,JSON.stringify(a)]);await tx.query('DELETE FROM viewing_reservations WHERE execution_key=$1',[j.execution_key]);await this.log(tx,s.session_id,a.id,'cancelled',{reason:"Requirements, approval or selection changed; not sent"});return null;
           }
           await tx.query("UPDATE message_outbox SET state='SENDING',started_at=now(),updated_at=now() WHERE execution_key=$1",[j.execution_key]);a.status='SENDING';await tx.query('UPDATE workflow_actions SET body=$2 WHERE id=$1',[a.id,JSON.stringify(a)]);await this.log(tx,s.session_id,a.id,'sending',{mode:'live'});return {a,j};
         });
@@ -78,24 +78,24 @@ export class FollowupService implements DeliveryQueue{
       const a=(await tx.query('SELECT body FROM workflow_actions WHERE id=$1 FOR UPDATE',[j.action_id])).rows[0].body as Action;if((stateOrder[a.status]??-1)<=(stateOrder[status]??1))a.status=status;if(messageId)a.execution={external_id:messageId,mode:'live',executed_at:new Date().toISOString()};
       await tx.query('UPDATE workflow_actions SET body=$2,updated_at=now() WHERE id=$1',[a.id,JSON.stringify(a)]);
       if(status==='FAILED')await tx.query('DELETE FROM viewing_reservations WHERE execution_key=$1',[key]);
-      await this.log(tx,session,a.id,'provider_result',{status,message_id:messageId,error_code:error||null,meaning:status==='ACCEPTED'?'平台已受理，不能据此判断送达、已读或预约成功':status==='UNKNOWN'?'结果不明，禁止自动重发，请核对平台记录':'未成功提交'});
+      await this.log(tx,session,a.id,'provider_result',{status,message_id:messageId,error_code:error||null,meaning:status==='ACCEPTED'?"Accepted by platform; this does not establish delivery, reading or a confirmed booking":status==='UNKNOWN'?"Result unknown. Do not resend automatically; check the platform record":"Submission failed"});
       // An unusually fast webhook may precede persistence of the provider message id.
       const inbound=(await tx.query('SELECT event_key,body FROM messaging_inbound WHERE channel=$1 AND address=$2 AND reply_to=$3 AND session_id IS NULL',[j.channel,j.address,messageId])).rows;
       for(const m of inbound){await tx.query('UPDATE messaging_inbound SET action_id=$2,session_id=$3 WHERE event_key=$1',[m.event_key,a.id,session]);await this.reply(tx,a,m.body,m.event_key);}
     });
     if(messageId){const receipts=(await this.store.pool.query('SELECT channel,body FROM messaging_status_receipts WHERE message_id=$1 AND processed=false',[messageId])).rows;for(const r of receipts)await this.delivery(r.channel,r.body);}
   }
-  verifyChallenge(query:URLSearchParams){const e=this.gateway.env;if(!e.WHATSAPP_VERIFY_TOKEN||query.get('hub.mode')!=='subscribe'||!equal(query.get('hub.verify_token')||'',e.WHATSAPP_VERIFY_TOKEN))throw new BusinessError('WEBHOOK_AUTH','Webhook 验证失败',403);return query.get('hub.challenge')||'';}
+  verifyChallenge(query:URLSearchParams){const e=this.gateway.env;if(!e.WHATSAPP_VERIFY_TOKEN||query.get('hub.mode')!=='subscribe'||!equal(query.get('hub.verify_token')||'',e.WHATSAPP_VERIFY_TOKEN))throw new BusinessError('WEBHOOK_AUTH',"Webhook verification failed",403);return query.get('hub.challenge')||'';}
   async webhook(channel:Channel,raw:Buffer,signature:string){
     const e=this.gateway.env;
     if(channel==='whatsapp'){
-      if(!e.WHATSAPP_APP_SECRET||!equal(signature,'sha256='+createHmac('sha256',e.WHATSAPP_APP_SECRET).update(raw).digest('hex')))throw new BusinessError('WEBHOOK_AUTH','Webhook 签名无效',403);
-    }else if(!e.TELEGRAM_WEBHOOK_SECRET||!equal(signature,e.TELEGRAM_WEBHOOK_SECRET))throw new BusinessError('WEBHOOK_AUTH','Webhook secret 无效',403);
-    let body:any;try{body=JSON.parse(raw.toString('utf8'));}catch{throw new BusinessError('INVALID_JSON','Webhook JSON 无效',400);}
+      if(!e.WHATSAPP_APP_SECRET||!equal(signature,'sha256='+createHmac('sha256',e.WHATSAPP_APP_SECRET).update(raw).digest('hex')))throw new BusinessError('WEBHOOK_AUTH',"Invalid webhook signature",403);
+    }else if(!e.TELEGRAM_WEBHOOK_SECRET||!equal(signature,e.TELEGRAM_WEBHOOK_SECRET))throw new BusinessError('WEBHOOK_AUTH',"Invalid webhook secret",403);
+    let body:any;try{body=JSON.parse(raw.toString('utf8'));}catch{throw new BusinessError('INVALID_JSON',"Invalid webhook JSON",400);}
     if(channel==='telegram'){
       await this.telegramUpdate(body);
     }else{
-      if(body.object!=='whatsapp_business_account')throw new BusinessError('WEBHOOK_OBJECT','不支持的 WhatsApp Webhook 对象',400);
+      if(body.object!=='whatsapp_business_account')throw new BusinessError('WEBHOOK_OBJECT',"Unsupported WhatsApp webhook object",400);
       for(const entry of body.entry||[])for(const change of entry.changes||[]){const v=change.value;if(String(v?.metadata?.phone_number_id)!==e.WHATSAPP_PHONE_NUMBER_ID)continue;
         for(const m of v.messages||[])if(m.type==='text'&&typeof m.text?.body==='string')await this.inbound(channel,normalizeAddress(channel,m.from),m.id,m.context?.id||null,m.text.body,`wa:${m.id}`,Number(m.timestamp));
         for(const st of v.statuses||[])if(['sent','delivered','read','failed'].includes(st.status))await this.delivery(channel,st);
@@ -117,7 +117,7 @@ export class FollowupService implements DeliveryQueue{
   private async reply(tx:PoolClient,a:Action,text:string,key:string){
     if(a.status!=='CONFIRMED')a.status='REPLIED';await tx.query('UPDATE workflow_actions SET body=$2,updated_at=now() WHERE id=$1',[a.id,JSON.stringify(a)]);
     await tx.query("UPDATE followup_tasks SET status='DONE',revision=revision+1 WHERE action_id=$1 AND kind='await_reply' AND status IN ('OPEN','DUE')",[a.id]);
-    await this.log(tx,a.session_id,a.id,'reply',{text,meaning:'收到回复；条件与看房是否满足仍需人工核实'},`reply:${key}`);
+    await this.log(tx,a.session_id,a.id,'reply',{text,meaning:"Reply received; listing requirements and viewing arrangements still need manual confirmation"},`reply:${key}`);
   }
   private async delivery(channel:Channel,status:any){
     const receiptKey=`delivery:${channel}:${status.id}:${status.status}`;await this.store.pool.query('INSERT INTO messaging_status_receipts(event_key,channel,message_id,body) VALUES($1,$2,$3,$4) ON CONFLICT DO NOTHING',[receiptKey,channel,String(status.id),JSON.stringify(status)]);
@@ -131,10 +131,10 @@ export class FollowupService implements DeliveryQueue{
   }
   async task(session:string,input:unknown){
     const v=z.object({action_id:z.string().uuid(),id:z.string().uuid().optional(),revision:z.number().int().positive().optional(),kind:z.enum(['await_reply','viewing_reminder','general']).default('await_reply'),due_at:z.string().datetime({offset:true}).optional(),note:z.string().max(1000).default(''),status:z.enum(['OPEN','DONE','CANCELLED']).default('OPEN')}).strict().parse(input);
-    if(v.status==='OPEN'&&(!v.due_at||Date.parse(v.due_at)<=Date.now()))throw new BusinessError('FOLLOWUP_DATE','提醒时间须晚于服务器当前时间。',422);
+    if(v.status==='OPEN'&&(!v.due_at||Date.parse(v.due_at)<=Date.now()))throw new BusinessError('FOLLOWUP_DATE',"Reminder time must be later than the current server time.",422);
     return this.store.transaction(async tx=>{
-      await this.store.lock(tx,session);const action=(await tx.query('SELECT body FROM workflow_actions WHERE id=$1 AND session_id=$2',[v.action_id,session])).rows[0];if(!action)throw new BusinessError('ACTION_NOT_FOUND','动作不存在',404);
-      const id=v.id||randomUUID();if(v.id){const r=await tx.query('UPDATE followup_tasks SET due_at=COALESCE($4,due_at),kind=$5,note=$6,status=$7,revision=revision+1 WHERE id=$1 AND session_id=$2 AND action_id=$8 AND revision=$3 RETURNING *',[id,session,v.revision,v.due_at,v.kind,v.note,v.status,v.action_id]);if(!r.rowCount)throw new BusinessError('REVISION_CONFLICT','提醒已变化，请刷新。');}
+      await this.store.lock(tx,session);const action=(await tx.query('SELECT body FROM workflow_actions WHERE id=$1 AND session_id=$2',[v.action_id,session])).rows[0];if(!action)throw new BusinessError('ACTION_NOT_FOUND',"Action not found",404);
+      const id=v.id||randomUUID();if(v.id){const r=await tx.query('UPDATE followup_tasks SET due_at=COALESCE($4,due_at),kind=$5,note=$6,status=$7,revision=revision+1 WHERE id=$1 AND session_id=$2 AND action_id=$8 AND revision=$3 RETURNING *',[id,session,v.revision,v.due_at,v.kind,v.note,v.status,v.action_id]);if(!r.rowCount)throw new BusinessError('REVISION_CONFLICT',"The reminder has changed. Refresh it.");}
       else await tx.query('INSERT INTO followup_tasks(id,session_id,action_id,kind,due_at,note,status) VALUES($1,$2,$3,$4,$5,$6,$7)',[id,session,v.action_id,v.kind,v.due_at,v.note,v.status]);
       await this.log(tx,session,v.action_id,'task_update',{id,status:v.status,due_at:v.due_at});return {id};
     });
@@ -143,24 +143,24 @@ export class FollowupService implements DeliveryQueue{
     const due=(await this.store.pool.query("SELECT id,session_id FROM followup_tasks WHERE status IN ('OPEN','DUE') AND due_at<=now() AND reminded_revision<revision LIMIT 100")).rows;
     for(const row of due)await this.store.transaction(async tx=>{
       const s=await this.store.lock(tx,row.session_id),t=(await tx.query("SELECT * FROM followup_tasks WHERE id=$1 AND reminded_revision<revision AND status IN ('OPEN','DUE') FOR UPDATE",[row.id])).rows[0];if(!t)return;
-      await tx.query("UPDATE followup_tasks SET status='DUE',reminded_revision=revision WHERE id=$1",[t.id]);this.store.message(s,'assistant',`跟进提醒：${t.note||'请查看经纪人回复或准备下一封询问草稿'}（动作 ${t.action_id}）。提醒不会自动向外发送消息。`);await this.store.saveState(tx,s);await this.log(tx,s.session_id,t.action_id,'reminder',{task_id:t.id,note:t.note},`task-reminder:${t.id}:${t.revision}`);
+      await tx.query("UPDATE followup_tasks SET status='DUE',reminded_revision=revision WHERE id=$1",[t.id]);this.store.message(s,'assistant',`Follow-up reminder: ${t.note||"Check the agent’s reply or prepare the next enquiry draft"} (action ${t.action_id}). Reminders do not send external messages automatically.`);await this.store.saveState(tx,s);await this.log(tx,s.session_id,t.action_id,'reminder',{task_id:t.id,note:t.note},`task-reminder:${t.id}:${t.revision}`);
     });
   }
   async calendar(session:string,month:string){
-    if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(month))throw new BusinessError('MONTH_INVALID','月份格式须为 YYYY-MM',422);
+    if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(month))throw new BusinessError('MONTH_INVALID',"The month must use YYYY-MM format",422);
     const rows=(await this.store.pool.query("SELECT a.body FROM workflow_actions a JOIN session_domain_state s ON s.session_id=a.session_id WHERE s.owner_hash=(SELECT owner_hash FROM session_domain_state WHERE session_id=$1) AND a.body->'slots' IS NOT NULL AND a.body->>'status' NOT IN ('CANCELLED','FAILED') ORDER BY a.updated_at",[session])).rows;
     return {now:new Date().toISOString(),today:singaporeDate(),time_zone:'Asia/Singapore',month,items:rows.map(r=>r.body as Action).filter(a=>a.slots&&singaporeDate(new Date(a.slots.starts_at)).startsWith(month)).map(a=>({id:a.id,session_id:a.session_id,subject:a.subject,listing_ids:a.listing_ids,slots:a.slots,status:a.status,mode:a.mode,confirmed:a.status==='CONFIRMED'}))};
   }
   async daily(session:string,date:string,client?:PoolClient){
-    if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||Number.isNaN(Date.parse(date+'T00:00:00+08:00'))||singaporeDate(new Date(date+'T00:00:00+08:00'))!==date)throw new BusinessError('DATE_INVALID','日期无效',422);
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||Number.isNaN(Date.parse(date+'T00:00:00+08:00'))||singaporeDate(new Date(date+'T00:00:00+08:00'))!==date)throw new BusinessError('DATE_INVALID',"Invalid date",422);
     const work=async(tx:PoolClient)=>{
       const s=await this.store.lock(tx,session);
       const messages=(await tx.query("SELECT role,body,at FROM conversation_log WHERE session_id=$1 AND (at AT TIME ZONE 'Asia/Singapore')::date=$2::date ORDER BY at,id",[session,date])).rows;
       const events=(await tx.query("SELECT kind,body,action_id,created_at FROM followup_events WHERE session_id=$1 AND (created_at AT TIME ZONE 'Asia/Singapore')::date=$2::date ORDER BY id",[session,date])).rows;
       const actions=(await tx.query('SELECT body FROM workflow_actions WHERE session_id=$1 ORDER BY updated_at',[session])).rows.map(r=>r.body as Action),tasks=(await tx.query("SELECT * FROM followup_tasks WHERE session_id=$1 AND status IN ('OPEN','DUE') ORDER BY due_at",[session])).rows;
-      const lines=[`# ${date} 会话与跟进总结`,'',`时区：Asia/Singapore；生成于 ${new Date().toISOString()}`,`会话：${session}`,'','## 当天对话（原文，非事实核验）',...messages.map(m=>`- ${new Date(m.at).toISOString()} ${m.role}：${m.body}`),'','## 当前需求快照',...s.requirements.criteria.map(c=>'- '+criterionText(c)),'','## 当前跟进状态快照',...actions.flatMap(a=>[`- ${a.subject}；房源 ${a.listing_ids.join(', ')}；状态 ${a.status}；模式 ${a.mode}`,`  协商诉求：${a.negotiation_notes||'见消息正文'}；${a.slots?'候选时间：'+a.slots.starts_at+' 至 '+a.slots.ends_at:'无看房时间'}`,`  尚待核实：${a.verification_context?.flatMap(v=>v.unresolved.map(u=>u.requirement)).join('；')||'仍需确认当前可租状态'}`]),'','## 当天事件与来信',...events.map(e=>`- ${new Date(e.created_at).toISOString()} ${e.kind}（${e.action_id}）：${JSON.stringify(e.body)}`),'','## 当前未完成提醒',...tasks.map(t=>`- ${new Date(t.due_at).toISOString()} ${t.kind} ${t.note}（${t.status}）`),'','## 记录边界','- 当天对话与事件按新加坡日期筛选；需求、动作与未完成提醒为生成时快照。','- 平台受理、送达、回复和双方确认分别记录；收到回复不自动证明房源条件满足。','- 旧版本应用只保留最近 200 条对话；升级前已经丢弃的历史无法恢复。'];
-      const markdown=lines.join('\n'),document={markdown,html:`<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>会话跟进总结</title><style>body{max-width:960px;margin:40px auto;font:16px/1.8 system-ui;padding:24px}pre{white-space:pre-wrap;overflow-wrap:anywhere}</style><h1>${escapeHtml(date)} 会话跟进总结</h1><pre>${escapeHtml(markdown)}</pre></html>`,model:{source_request_id:s.latest_request_id,date,session_id:session},template_version:'daily-followup-v1'};
-      const id=randomUUID();await tx.query("INSERT INTO workflow_artifacts(id,session_id,source_request_id,requirements_version,content,sha256,title,artifact_type) VALUES($1,$2,$3,$4,$5,$6,$7,'daily')",[id,session,s.latest_request_id,s.requirements_version,JSON.stringify(document),hash(document),date+' 会话与跟进总结']);await this.store.event(tx,session,{type:'workflow_result',payload:{artifact_id:id}},`daily:${id}`);return {id};
+      const lines=[`# ${date} conversation and follow-up summary`,'',`Time zone: Asia/Singapore; generated at ${new Date().toISOString()}`,`Conversation: ${session}`,'',"## Conversation that day (original text, not factual verification)",...messages.map(m=>`- ${new Date(m.at).toISOString()} ${m.role}: ${m.body}`),'',"## Current requirements snapshot",...s.requirements.criteria.map(c=>'- '+criterionText(c)),'',"## Current follow-up state snapshot",...actions.flatMap(a=>[`- ${a.subject}; listing ${a.listing_ids.join(', ')}; status ${a.status}; mode ${a.mode}`,`  Requests for discussion: ${a.negotiation_notes||"See message body"}; ${a.slots?"Proposed time: "+a.slots.starts_at+" to "+a.slots.ends_at:"No viewing time"}`,`  To confirm: ${a.verification_context?.flatMap(v=>v.unresolved.map(u=>u.requirement)).join("; ")||"Current availability still needs confirmation"}`]),'',"## Events and incoming messages that day",...events.map(e=>`- ${new Date(e.created_at).toISOString()} ${e.kind} (${e.action_id}): ${JSON.stringify(e.body)}`),'',"## Current open reminders",...tasks.map(t=>`- ${new Date(t.due_at).toISOString()} ${t.kind} ${t.note} (${t.status})`),'',"## Record limitations","- Conversations and events use Singapore dates; requirements, actions and open reminders reflect the generation-time snapshot.","- Acceptance, delivery, replies and agreement are recorded separately. A reply does not automatically verify listing requirements.","- Earlier versions retained only the latest 200 messages. Previously discarded history cannot be restored."];
+      const markdown=lines.join('\n'),document={markdown,html:`<!doctype html><html lang="en-SG"><meta charset="utf-8"><title>Conversation and follow-up summary</title><style>body{max-width:960px;margin:40px auto;font:16px/1.8 system-ui;padding:24px}pre{white-space:pre-wrap;overflow-wrap:anywhere}</style><h1>${escapeHtml(date)} conversation and follow-up summary</h1><pre>${escapeHtml(markdown)}</pre></html>`,model:{source_request_id:s.latest_request_id,date,session_id:session},template_version:'daily-followup-v1'};
+      const id=randomUUID();await tx.query("INSERT INTO workflow_artifacts(id,session_id,source_request_id,requirements_version,content,sha256,title,artifact_type) VALUES($1,$2,$3,$4,$5,$6,$7,'daily')",[id,session,s.latest_request_id,s.requirements_version,JSON.stringify(document),hash(document),date+" conversation and follow-up summary"]);await this.store.event(tx,session,{type:'workflow_result',payload:{artifact_id:id}},`daily:${id}`);return {id};
     };return client?work(client):this.store.transaction(work);
   }
 }

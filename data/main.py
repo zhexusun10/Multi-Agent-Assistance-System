@@ -250,9 +250,9 @@ def handle_stats(args):
     # Table 1: Separated Images Breakdown
     if stats.get("image_breakdown"):
         t1 = Table(title="Separated Images Breakdown (Homepage vs Detail Page)", show_header=True, header_style="bold green")
-        t1.add_column("Source Page (来源页面)", style="cyan", width=22)
-        t1.add_column("Image Type (图片类型)", style="magenta", width=20)
-        t1.add_column("Image Count (图片总数)", justify="right")
+        t1.add_column("Source page", style="cyan", width=22)
+        t1.add_column("Image type", style="magenta", width=20)
+        t1.add_column("Image count", justify="right")
         for row in stats["image_breakdown"]:
             t1.add_row(
                 row.get("source_page"),
@@ -329,8 +329,8 @@ def handle_export(args):
                 df_props[df_props["listing_type"] == "SALE"].to_csv(sale_file, index=False)
                 df_props[df_props["listing_type"] == "RENT"].to_csv(rent_file, index=False)
                 console.print(f"[bold green][OK] Exported {len(df_props)} total properties to {out_file}[/bold green]")
-                console.print(f"[bold green]  - 买房 (SALE): {len(df_props[df_props['listing_type'] == 'SALE'])} records -> {sale_file}[/bold green]")
-                console.print(f"[bold green]  - 租房 (RENT): {len(df_props[df_props['listing_type'] == 'RENT'])} records -> {rent_file}[/bold green]")
+                console.print(f"[bold green]  - For sale (SALE): {len(df_props[df_props['listing_type'] == 'SALE'])} records -> {sale_file}[/bold green]")
+                console.print(f"[bold green]  - For rent (RENT): {len(df_props[df_props['listing_type'] == 'RENT'])} records -> {rent_file}[/bold green]")
             else:
                 df_props.to_json(out_file, orient="records", indent=2)
                 console.print(f"[bold green][OK] Exported {len(df_props)} properties to {out_file}[/bold green]")
@@ -482,7 +482,7 @@ def handle_check_sparsity(args):
     field_categories = {
         "listing_id": ("Core Key", "Primary Key, 100% Unique"),
         "listing_type": ("Core Key", "RENT / SALE"),
-        "transaction_category": ("Core Key", "买房/出售 或 租房/出租"),
+        "transaction_category": ("Core Key", "Sale or rental category"),
         "title": ("Listing Info", "Listing title / condo name"),
         "property_type": ("Listing Info", "Condo, HDB, Landed, etc."),
         "price": ("Financial", "Monthly rent in SGD"),

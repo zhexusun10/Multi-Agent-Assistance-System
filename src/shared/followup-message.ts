@@ -1,19 +1,21 @@
 /** Pure shared presentation: used by both the browser preview and server copy/send. */
 export type ViewingSlot={starts_at:string;ends_at:string;time_zone:string};
 const zone='Asia/Singapore';
-const dateFormat=new Intl.DateTimeFormat('zh-CN',{timeZone:zone,year:'numeric',month:'long',day:'numeric',weekday:'short'});
+const dateFormat=new Intl.DateTimeFormat('en-SG',{timeZone:zone,year:'numeric',month:'long',day:'numeric',weekday:'short'});
 const clockFormat=new Intl.DateTimeFormat('en-US',{timeZone:zone,hour:'numeric',minute:'2-digit',hour12:true});
 const dayFormat=new Intl.DateTimeFormat('en-CA',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit'});
-const date=(d:Date)=>{const p=dateFormat.formatToParts(d),get=(t:string)=>p.find(x=>x.type===t)?.value||'';return `${get('year')}年${get('month')}月${get('day')}日（${get('weekday')}）`;};
+const date=(d:Date)=>dateFormat.format(d);
 const clock=(d:Date)=>clockFormat.format(d).replace(/\s+/g,' ');
 export function formatViewingTime(slot:ViewingSlot){
   const start=new Date(slot.starts_at),end=new Date(slot.ends_at);
   if(!Number.isFinite(start.getTime())||!Number.isFinite(end.getTime()))return '';
-  return (dayFormat.format(start)===dayFormat.format(end)?`${date(start)} ${clock(start)}–${clock(end)}`:`${date(start)} ${clock(start)} 至 ${date(end)} ${clock(end)}`)+'（新加坡时间）';
+  return (dayFormat.format(start)===dayFormat.format(end)?`${date(start)} ${clock(start)}–${clock(end)}`:`${date(start)} ${clock(start)} to ${date(end)} ${clock(end)}`)+' (Singapore time)';
 }
 /** Remove known application commands, never echo router text as the customer's message. */
 export function customerNotes(text=''){
   return text
+    .replace(/(?:Please\s+)?For listing ID\s+\d+,?\s*prepare a (?:viewing|verification) enquiry draft asking about each unverified condition[.\s]*/gi,'')
+    .replace(/(?:Please\s+)?(?:draft|prepare|write) (?:a )?(?:viewing|contact|verification|enquiry)?\s*(?:enquiry |message )?draft (?:for|about) (?:listing|property)\s*(?:ID\s*)?\d+[.\s]*/gi,'')
     .replace(/(?:请|麻烦)?(?:帮我)?(?:为|给)?\s*房源\s*ID\s*\d+\s*生成(?:看房询问|联系核实|联系|看房)?草稿/gi,'')
     .replace(/逐项询问尚未核实的条件[。！]?/g,'')
     .replace(/(?:请|麻烦)?(?:帮我)?(?:为|给)\s*第?[一二三四五六七八九十\d]+套(?:房源|房子)?\s*(?:生成|起草)(?:看房询问|联系核实|联系|看房)?草稿/g,'')
@@ -23,6 +25,7 @@ export function customerNotes(text=''){
 }
 export function notesFromFollowupQuery(query:string){
   const rest=customerNotes(query)
+    .replace(/^(?:please\s+)?(?:contact|enquire about|arrange a viewing for|I would like to view)\s+(?:(?:listing|property)\s*(?:ID\s*)?\d+|the (?:first|second|third|fourth|fifth) (?:home|property|listing))[,.\s]*/i,'')
     .replace(/^(?:请|麻烦)?(?:帮我)?(?:联系|咨询|约看|预约看房|我(?:想要|想|要)?(?:看|了解|咨询|联系))\s*(?:房源\s*ID\s*\d+|第?[一二三四五六七八九十\d]+套|这(?:个房子|套房子|套|个)|那(?:个房子|套))\s*[，,。：:\s]*/i,'')
     .replace(/^(?:帮我|请帮我)?(?:问问|问一下|问下|询问一下|顺便问下|顺便问一下)[，,。：:\s]*/,'');
   // Selection/routing alone has no customer-authored negotiation terms.
@@ -33,10 +36,10 @@ export function legacyDraftNotes(body:string){const match=body.match(/我的咨�
 export function composeCustomerMessage(body:string,notes='',slots:ViewingSlot|null=null,templated=false){
   if(templated)return body;
   const cleaned=customerNotes(notes),parts=[body.trim()];
-  if(cleaned&&!body.includes(cleaned))parts.push('协商诉求：'+cleaned);
-  if(slots){const time=formatViewingTime(slots);if(time)parts.push(`我想在 ${time} 去看房，请问你方便吗？`);}
+  if(cleaned&&!body.includes(cleaned))parts.push("Requests for discussion: "+cleaned);
+  if(slots){const time=formatViewingTime(slots);if(time)parts.push(`I would like to view the home at ${time}. Would that work for you?`);}
   if(parts.length===1)return body;
-  const thanks=/(?:\s*谢谢[。！!]?\s*)$/;
-  if(thanks.test(parts[0])){parts[0]=parts[0].replace(thanks,'').trim();parts.push('谢谢！');}
+  const thanks=/(?:\s*(?:谢谢[。！!]?|thank you[.!]?|thanks[.!]?)\s*)$/i;
+  if(thanks.test(parts[0])){parts[0]=parts[0].replace(thanks,'').trim();parts.push("Thank you!");}
   return parts.filter(Boolean).join('\n\n');
 }

@@ -50,7 +50,7 @@ export async function extractModelRequirements(query:string,base:Requirements,mo
       if(!structural||attempt===INTAKE_PARAMETERS.max_attempts)throw new Error(`REQUIREMENT_EXTRACTION_FAILED: ${message.slice(0,1800)}`,{cause:error});
       const issues=error instanceof z.ZodError?error.issues.map(i=>({path:i.path,message:i.message})):message.slice(0,1800);
       repairs.push(JSON.stringify(issues).slice(0,2200));
-      correction='上次输出未通过校验。示例不是当前用户输入，不能复制示例的数字、语句或条件。请只针对下面唯一的实际用户输入，重新提交完整输出，不得靠删掉真实诉求来通过校验。真正不明确时用clarifications。校验问题='+JSON.stringify(issues)+'；上次输出='+JSON.stringify(proposal??null).slice(0,12000)+'；当前唯一实际输入='+JSON.stringify({query,base_requirements:base});
+      correction="The previous output failed validation. Examples are not the current input; do not copy their values, wording or conditions. Resubmit a complete output for the single actual input below, without dropping genuine requests to pass validation. Use clarifications for real ambiguity. Validation issue="+JSON.stringify(issues)+"; previous output="+JSON.stringify(proposal??null).slice(0,12000)+"; single actual current input="+JSON.stringify({query,base_requirements:base});
     }finally{
       event.duration_ms=Date.now()-attemptStarted;
       await options.onAttempt?.(event);

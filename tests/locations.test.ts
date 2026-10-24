@@ -28,7 +28,7 @@ test('Chinatown and Holland Village neighbourhoods resolve bilingually without b
     [['牛车水','Chinatown','China Town','Chinatown Singapore'],'OSM:node:2511049756','LTA:MRT:CHINATOWN'],
     [['荷兰村','Holland Village','Holland V'],'OSM:node:8777049478','LTA:MRT:HOLLAND_VILLAGE'],
   ] as const){
-    for(const name of names){const r=await locations.resolve(ctx(),name,false);assert.equal(r.entity?.entity_id,id);assert.equal(r.entity?.label,'Neighbourhood');assert.match(r.note,/参考点/);}
+    for(const name of names){const r=await locations.resolve(ctx(),name,false);assert.equal(r.entity?.entity_id,id);assert.equal(r.entity?.label,'Neighbourhood');assert.match(r.note,/reference point/i);}
     assert.equal((await locations.resolve(ctx(),names[0]+'地铁站',true)).entity?.entity_id,station);
     const readContext=ctx();readContext.agent='b';const found=await locations.get(readContext,id);assert.equal(found.entity.entity_id,id);
     assert.equal((await locations.describe(id))?.entity.entity_id,id);

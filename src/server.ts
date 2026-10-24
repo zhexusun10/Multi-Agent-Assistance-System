@@ -70,11 +70,11 @@ const host=process.env.GRAPH_HOST||'127.0.0.1',port=Number(process.env.GRAPH_POR
 
 async function readRaw(req:IncomingMessage){
   const chunks:Buffer[]=[];let size=0;
-  for await(const chunk of req){size+=chunk.length;if(size>65536)throw new BusinessError('BODY_TOO_LARGE','请求内容过大',413);chunks.push(Buffer.from(chunk));}
+  for await(const chunk of req){size+=chunk.length;if(size>65536)throw new BusinessError('BODY_TOO_LARGE',"Request body too large",413);chunks.push(Buffer.from(chunk));}
   return Buffer.concat(chunks);
 }
-async function readBody(req:IncomingMessage):Promise<any>{try{return JSON.parse((await readRaw(req)).toString('utf8'));}catch(e){if(e instanceof BusinessError)throw e;throw new BusinessError('INVALID_JSON','JSON 格式错误',400);}}
-const token=(req:IncomingMessage)=>{const raw=req.headers.authorization?.replace(/^Bearer /,'');if(!raw||!/^[A-Za-z0-9_-]{32,256}$/.test(raw))throw new BusinessError('AUTH_REQUIRED','需要有效的本机会话凭证',401);return raw;};
+async function readBody(req:IncomingMessage):Promise<any>{try{return JSON.parse((await readRaw(req)).toString('utf8'));}catch(e){if(e instanceof BusinessError)throw e;throw new BusinessError('INVALID_JSON',"Invalid JSON",400);}}
+const token=(req:IncomingMessage)=>{const raw=req.headers.authorization?.replace(/^Bearer /,'');if(!raw||!/^[A-Za-z0-9_-]{32,256}$/.test(raw))throw new BusinessError('AUTH_REQUIRED',"A valid local session credential is required",401);return raw;};
 function startSse(res:ServerResponse){res.writeHead(200,{'content-type':'text/event-stream; charset=utf-8','cache-control':'no-cache',connection:'keep-alive','x-accel-buffering':'no'});res.flushHeaders();const heartbeat=setInterval(()=>{if(!res.destroyed)res.write(': heartbeat\n\n');},15000);res.on('close',()=>clearInterval(heartbeat));return heartbeat;}
 
 const server=createServer(async(req,res)=>{
@@ -103,11 +103,11 @@ const server=createServer(async(req,res)=>{
     if(workflow&&req.method==='GET'&&/^\/listings\/\d+\/presentation$/.test(url.pathname)){
       const id=z.string().regex(/^\d{1,20}$/).parse(url.pathname.split('/')[2]),session=z.string().min(1).parse(url.searchParams.get('session_id')),request=z.string().uuid().parse(url.searchParams.get('source_request_id'));await store.assertOwner(session,owner);
       const current=await store.state(session);
-      if(current.recommendation?.state.coverage.dataset_version!==workflow.dataset)throw new BusinessError('DATASET_CHANGED','房源数据已更新，请按当前需求重新搜索。');
-      if(current.latest_request_id!==request||current.recommendation?.request_id!==request||current.recommendation.requirements_version!==current.requirements_version||current.recommendation_operation_id!==current.active_operation_id)throw new BusinessError('PRESENTATION_STALE','推荐已更新，请查看当前房源。');
-      if(!displayedCandidates(current.recommendation).some(c=>c.listing.listing_id===id))throw new BusinessError('LISTING_NOT_IN_RESULT','该房源不在当前推荐列表中。',404);
+      if(current.recommendation?.state.coverage.dataset_version!==workflow.dataset)throw new BusinessError('DATASET_CHANGED',"Listing data has changed. Search again with your current requirements.");
+      if(current.latest_request_id!==request||current.recommendation?.request_id!==request||current.recommendation.requirements_version!==current.requirements_version||current.recommendation_operation_id!==current.active_operation_id)throw new BusinessError('PRESENTATION_STALE',"Recommendations have changed. View the current homes.");
+      if(!displayedCandidates(current.recommendation).some(c=>c.listing.listing_id===id))throw new BusinessError('LISTING_NOT_IN_RESULT',"This home is not in the current recommendation list.",404);
       const result=await workflow.listingPresentation.get(id),latest=await store.state(session);
-      if(latest.latest_request_id!==request||latest.requirements_version!==current.requirements_version||latest.active_operation_id!==current.active_operation_id)throw new BusinessError('PRESENTATION_STALE','推荐已更新，请查看当前房源。');
+      if(latest.latest_request_id!==request||latest.requirements_version!==current.requirements_version||latest.active_operation_id!==current.active_operation_id)throw new BusinessError('PRESENTATION_STALE',"Recommendations have changed. View the current homes.");
       return send(200,{...result,source_request_id:request});
     }
     if(workflow&&req.method==='GET'&&url.pathname==='/integrations/templates'){const id=z.string().min(1).parse(url.searchParams.get('session_id'));await store.assertOwner(id,owner);return send(200,{templates:await workflow.followup.gateway.templates()});}
@@ -116,10 +116,10 @@ const server=createServer(async(req,res)=>{
     if(workflow&&req.method==='POST'&&url.pathname==='/summaries/daily'){const input=z.object({session_id:z.string().min(1),date:z.string()}).strict().parse(await readBody(req));await store.assertOwner(input.session_id,owner);return send(201,await workflow.followup.daily(input.session_id,input.date));}
     if(workflow&&req.method==='GET'&&/^\/actions\/[^/]+\/context$/.test(url.pathname)){
       const id=z.string().uuid().parse(url.pathname.split('/')[2]),sid=z.string().min(1).parse(url.searchParams.get('session_id'));await store.assertOwner(sid,owner);
-      const a=(await pool.query('SELECT body FROM workflow_actions WHERE id=$1 AND session_id=$2',[id,sid])).rows[0]?.body as Action|undefined;if(!a)throw new BusinessError('ACTION_NOT_FOUND','动作不存在',404);
+      const a=(await pool.query('SELECT body FROM workflow_actions WHERE id=$1 AND session_id=$2',[id,sid])).rows[0]?.body as Action|undefined;if(!a)throw new BusinessError('ACTION_NOT_FOUND',"Action not found",404);
       let listing:any=null;if(contactPool)try{listing=(await contactPool.query('SELECT listing_id,agent_name,agency_name,agent_phone,url FROM properties WHERE listing_id=$1',[a.listing_ids[0]])).rows[0]||null;}catch{/* Contact hints unavailable must not block manual verified entry. */}
       const contacts=(await pool.query("SELECT DISTINCT a.body->'recipient' AS recipient FROM workflow_actions a JOIN session_domain_state s ON s.session_id=a.session_id WHERE s.owner_hash=$1 AND a.body->'listing_ids' ? $2 AND a.body->'recipient'->>'verified'='true' AND a.body->'recipient'->>'channel' IN ('whatsapp','telegram') LIMIT 3",[hash(owner),a.listing_ids[0]])).rows.map(r=>r.recipient);
-      return send(200,{listing,contacts,wire_body:wireBody(a),note:'历史挂牌电话仅供核对，不能据此判断 WhatsApp 或 Telegram 渠道。已核实渠道仅复用当前用户对同一房源保存的资料。'});
+      return send(200,{listing,contacts,wire_body:wireBody(a),note:"Historical listing phones are for checking and do not establish WhatsApp/Telegram access. Verified channels are reused only for the same user and listing."});
     }
     if(workflow&&req.method==='POST'&&/^\/actions\/[^/]+\/manual-(prepare|sent|reply|analyze|next)$/.test(url.pathname)){
       const id=z.string().uuid().parse(url.pathname.split('/')[2]),body=await readBody(req),session=z.string().min(1).parse(body.session_id);await store.assertOwner(session,owner);const {session_id,...input}=body;
@@ -128,18 +128,18 @@ const server=createServer(async(req,res)=>{
       if(kind==='manual-sent')return send(200,await workflow.manual.sent(session,id,input));
       if(kind==='manual-next')return send(201,await workflow.manual.nextDraft(session,id,input));
       if(kind==='manual-reply'){const reply=await workflow.manual.receive(session,id,input);void workflow.manual.analyze(session,reply.id).catch(()=>console.error('Manual reply analysis deferred'));return send(202,reply);}
-      const v=z.object({reply_id:z.string().uuid()}).strict().parse(input);const row=(await pool.query('SELECT id FROM manual_followup_replies WHERE id=$1 AND session_id=$2 AND action_id=$3',[v.reply_id,session,id])).rows[0];if(!row)throw new BusinessError('REPLY_NOT_FOUND','回复不存在',404);
+      const v=z.object({reply_id:z.string().uuid()}).strict().parse(input);const row=(await pool.query('SELECT id FROM manual_followup_replies WHERE id=$1 AND session_id=$2 AND action_id=$3',[v.reply_id,session,id])).rows[0];if(!row)throw new BusinessError('REPLY_NOT_FOUND',"Reply not found",404);
       void workflow.manual.analyze(session,v.reply_id,true).catch(()=>console.error('Manual reply analysis deferred'));return send(202,{status:'processing'});
     }
     if(workflow&&req.method==='POST'&&/^\/actions\/[^/]+\/compose$/.test(url.pathname)){
       const id=z.string().uuid().parse(url.pathname.split('/')[2]),v=z.object({session_id:z.string().min(1),revision:z.number().int(),notes:z.string().max(2000)}).strict().parse(await readBody(req));await store.assertOwner(v.session_id,owner);
-      const a=(await pool.query('SELECT body FROM workflow_actions WHERE id=$1 AND session_id=$2',[id,v.session_id])).rows[0]?.body as Action|undefined;if(!a)throw new BusinessError('ACTION_NOT_FOUND','动作不存在',404);if(a.revision!==v.revision)throw new BusinessError('REVISION_CONFLICT','草稿已变化，请刷新。');
-      const draft=await workflow.manual.draftFromHistory(await store.state(v.session_id),a.listing_ids,a.action_type,v.notes);return send(200,{body:draft.body,negotiation_notes:draft.negotiation_notes||'',notice:'尚未保存。请核对正文、时间和协商诉求后保存当前修订。'});
+      const a=(await pool.query('SELECT body FROM workflow_actions WHERE id=$1 AND session_id=$2',[id,v.session_id])).rows[0]?.body as Action|undefined;if(!a)throw new BusinessError('ACTION_NOT_FOUND',"Action not found",404);if(a.revision!==v.revision)throw new BusinessError('REVISION_CONFLICT',"The draft has changed. Refresh it.");
+      const draft=await workflow.manual.draftFromHistory(await store.state(v.session_id),a.listing_ids,a.action_type,v.notes);return send(200,{body:draft.body,negotiation_notes:draft.negotiation_notes||'',notice:"Not saved yet. Review the message, time and requests, then save this revision."});
     }
     if(workflow&&req.method==='GET'&&url.pathname==='/evidence'){const id=z.string().min(1).parse(url.searchParams.get('session_id')),ref=z.string().uuid().parse(url.searchParams.get('ref'));await store.assertOwner(id,owner);return send(200,{ref,data:await store.loadPayload(ref,id)});}
     if(workflow&&req.method==='GET'&&url.pathname.startsWith('/artifacts/')){
       const id=z.string().uuid().parse(url.pathname.split('/')[2]),sessionId=z.string().min(1).parse(url.searchParams.get('session_id'));await store.assertOwner(sessionId,owner);
-      const row=(await pool.query('SELECT content,sha256 FROM workflow_artifacts WHERE id=$1 AND session_id=$2',[id,sessionId])).rows[0];if(!row)throw new BusinessError('ARTIFACT_NOT_FOUND','文档不存在',404);if(hash(row.content)!==row.sha256)throw Error('Artifact integrity mismatch');
+      const row=(await pool.query('SELECT content,sha256 FROM workflow_artifacts WHERE id=$1 AND session_id=$2',[id,sessionId])).rows[0];if(!row)throw new BusinessError('ARTIFACT_NOT_FOUND',"Document not found",404);if(hash(row.content)!==row.sha256)throw Error('Artifact integrity mismatch');
       const html=url.searchParams.get('format')==='html';res.writeHead(200,{'content-type':html?'text/html; charset=utf-8':'text/markdown; charset=utf-8','content-disposition':`attachment; filename="rental-summary-${id}.${html?'html':'md'}"`,'x-content-type-options':'nosniff'});return res.end(row.content[html?'html':'markdown']);
     }
     if(workflow&&req.method==='POST'&&/^\/actions\/[^/]+\/(edit|approve|execute|cancel|confirm)$/.test(url.pathname)){
@@ -147,13 +147,13 @@ const server=createServer(async(req,res)=>{
     }
     if(workflow&&req.method==='POST'&&url.pathname==='/feedback'){
       const body=z.object({session_id:z.string().min(1),source_request_id:z.string().uuid(),event:feedbackSchema}).strict().parse(await readBody(req));await store.assertOwner(body.session_id,owner);
-      if(body.event.payload.source==='web_detail')throw new BusinessError('BEHAVIOR_ENDPOINT_REQUIRED','真实浏览数据必须通过浏览采集接口校验。',422);
+      if(body.event.payload.source==='web_detail')throw new BusinessError('BEHAVIOR_ENDPOINT_REQUIRED',"Actual viewing activity must be validated through its dedicated endpoint.",422);
       if(process.env.RECOMMENDATION_MODE==='native'&&body.event.event_type==='active_view'&&body.event.payload.source==='sample'){
         const p=z.object({source:z.literal('sample'),recommendation_request_id:z.string().uuid(),view_session_id:z.string().uuid(),active_duration_ms:z.number().finite().positive().max(3600000)}).strict().parse(body.event.payload);
         const current=await store.state(body.session_id);
-        if(p.recommendation_request_id!==body.source_request_id||!current.recommendation?.native?.ranking.includes(body.event.listing_id))throw new BusinessError('INVALID_FEEDBACK','浏览样例必须引用当前原生推荐中的已验证房源。');
+        if(p.recommendation_request_id!==body.source_request_id||!current.recommendation?.native?.ranking.includes(body.event.listing_id))throw new BusinessError('INVALID_FEEDBACK',"Viewing samples must reference a verified home in the current native recommendations.");
       }
-      await store.transaction(async tx=>{const s=await store.lock(tx,body.session_id);if(s.latest_request_id!==body.source_request_id||![...(s.recommendation?.recommendations||[]),...(s.recommendation?.unverified_candidates||[])].some(c=>c.listing.listing_id===body.event.listing_id))throw new BusinessError('FEEDBACK_STALE','反馈必须关联当前列表中的房源。');if(Date.parse(body.event.occurred_at)>Date.now()+60000)throw new BusinessError('INVALID_TIMESTAMP','反馈时间不能在未来。');const old=(await tx.query('SELECT body FROM listing_feedback WHERE session_id=$1 AND event_id=$2',[body.session_id,body.event.event_id])).rows[0];if(old&&hash(old.body)!==hash(body.event))throw new BusinessError('EVENT_ID_CONFLICT','相同反馈 ID 的内容不能改变。');await tx.query('INSERT INTO listing_feedback(session_id,event_id,body) VALUES($1,$2,$3) ON CONFLICT DO NOTHING',[body.session_id,body.event.event_id,JSON.stringify(body.event)]);});return send(202,{status:'recorded',ranking_applied:false});
+      await store.transaction(async tx=>{const s=await store.lock(tx,body.session_id);if(s.latest_request_id!==body.source_request_id||![...(s.recommendation?.recommendations||[]),...(s.recommendation?.unverified_candidates||[])].some(c=>c.listing.listing_id===body.event.listing_id))throw new BusinessError('FEEDBACK_STALE',"Feedback must refer to a home in the current list.");if(Date.parse(body.event.occurred_at)>Date.now()+60000)throw new BusinessError('INVALID_TIMESTAMP',"Feedback timestamps cannot be in the future.");const old=(await tx.query('SELECT body FROM listing_feedback WHERE session_id=$1 AND event_id=$2',[body.session_id,body.event.event_id])).rows[0];if(old&&hash(old.body)!==hash(body.event))throw new BusinessError('EVENT_ID_CONFLICT',"The contents of a feedback ID cannot change.");await tx.query('INSERT INTO listing_feedback(session_id,event_id,body) VALUES($1,$2,$3) ON CONFLICT DO NOTHING',[body.session_id,body.event.event_id,JSON.stringify(body.event)]);});return send(202,{status:'recorded',ranking_applied:false});
     }
     if(req.method==='GET'&&url.pathname==='/events'){
       const sessionId=url.searchParams.get('session_id')?.trim();const last=req.headers['last-event-id'];const rawCursor=url.searchParams.get('after')??(Array.isArray(last)?last[0]:last)??'0';const after=Number(rawCursor);
@@ -168,16 +168,16 @@ const server=createServer(async(req,res)=>{
       try{for await(const event of master.stream(parsed.query,sessionId,{requestId:parsed.request_id,sourceRequestId:parsed.source_request_id})){if(!res.destroyed)res.write(`event: ${event.type}\ndata: ${JSON.stringify(event)}\n\n`);}}finally{clearInterval(heartbeat);if(!res.destroyed)res.end();}return;
     }
     if(req.method==='POST'&&url.pathname==='/runtime/events'){
-      if(workflow)throw new BusinessError('RUNTIME_INGRESS_DISABLED','业务模式不接受外部注入内部任务结果',403);
+      if(workflow)throw new BusinessError('RUNTIME_INGRESS_DISABLED',"External injection of internal task results is disabled in business mode",403);
       const body=runtimeEventSchema.parse(await readBody(req));await master.acceptRuntimeEvent(body.session_id,{type:'runtime_event',name:body.name,payload:body.payload});return send(202,{status:'accepted',session_id:body.session_id});
     }
     return send(404,{detail:'Not found'});
   }catch(e){
-    if(res.headersSent){if(!res.destroyed){res.write(`event: error\ndata: ${JSON.stringify({type:'error',detail:'请求处理失败，请重新加载会话查看状态。'})}\n\n`);res.end();}return;}
+    if(res.headersSent){if(!res.destroyed){res.write(`event: error\ndata: ${JSON.stringify({type:'error',detail:"Request processing failed. Reload the conversation to see its status."})}\n\n`);res.end();}return;}
     if(e instanceof BusinessError)return send(e.status,{code:e.code,detail:e.message});
-    if(e instanceof DeliveryError)return send(502,{code:e.code,detail:'平台请求未成功完成，请检查配置；发送结果不明时请先核对平台记录。'});
+    if(e instanceof DeliveryError)return send(502,{code:e.code,detail:"The platform request did not complete. Check the configuration; if sending status is unknown, check the platform record first."});
     if(e instanceof z.ZodError)return send(422,{code:'VALIDATION_FAILED',detail:e.issues.map(x=>x.message).join('; ')});
-    console.error('Request failed',e instanceof Error?e.name:'UnknownError');return send(500,{code:'INTERNAL_ERROR',detail:'服务处理失败，请检查服务日志。'});
+    console.error('Request failed',e instanceof Error?e.name:'UnknownError');return send(500,{code:'INTERNAL_ERROR',detail:"Service processing failed. Check the service logs."});
   }
 });
 const manualReplies=setInterval(()=>{void workflow?.manual.recover().catch(()=>console.error('Manual followup recovery deferred'));},15000);

@@ -15,7 +15,7 @@ export function browserInterestNotice(ready:boolean,response:RecommendationRespo
   if(!ready)return null;
   // Native response 2.0 reports behaviour as behavior_score (browsing_score: cumulative browsing); archived 1.0 scores use implicit_score.
   const applied=Object.values(response.native?.scores||{}).some((s:any)=>'behavior_score' in s?s.behavior_score!==null:s.implicit_score!==null);
-  return applied?{code:'WEB_INTEREST',message:'本次也参考了你之前有效浏览的房源；明确要求仍然优先。'}:{code:'WEB_INTEREST_NOT_APPLIED',message:'浏览记录已保存；本轮没有可用的隐式评分，仍按你的明确条件推荐。'};
+  return applied?{code:'WEB_INTEREST',message:"Your earlier active viewing was also considered. Explicit requirements still take priority."}:{code:'WEB_INTEREST_NOT_APPLIED',message:"Viewing activity is saved. No usable behavioural score is available this round; explicit requirements determine recommendations."};
 }
 
 export class BehaviorService{
@@ -25,11 +25,11 @@ export class BehaviorService{
     return this.store.transaction(async tx=>{
       const s=await this.store.lock(tx,e.session_id),fingerprint=hash(e);
       const receipt=(await tx.query('SELECT payload_hash,response FROM browser_behavior_receipts WHERE session_id=$1 AND event_id=$2',[e.session_id,e.event_id])).rows[0];
-      if(receipt){if(receipt.payload_hash!==fingerprint)throw new BusinessError('EVENT_ID_CONFLICT','同一浏览事件不能改变内容。');return receipt.response;}
+      if(receipt){if(receipt.payload_hash!==fingerprint)throw new BusinessError('EVENT_ID_CONFLICT',"A viewing event’s contents cannot be changed.");return receipt.response;}
       // Source proof is immutable and session-owned; delayed events may reference an older result.
       const call=(await tx.query('SELECT request,response FROM recommendation_calls WHERE id=$1 AND session_id=$2',[e.source_request_id,e.session_id])).rows[0];
       const rec=call?.response,items=[...(rec?.recommendations||[]),...(rec?.unverified_candidates||[])];
-      if(!rec||call.request.requirements_version!==e.requirements_version||!items.some(x=>x.listing.listing_id===e.listing_id))throw new BusinessError('BEHAVIOR_SOURCE_INVALID','浏览必须关联本会话实际展示过的房源。',422);
+      if(!rec||call.request.requirements_version!==e.requirements_version||!items.some(x=>x.listing.listing_id===e.listing_id))throw new BusinessError('BEHAVIOR_SOURCE_INVALID',"Viewing activity must refer to a home actually displayed in this conversation.",422);
       const verified=!!rec.native?.ranking?.includes(e.listing_id)&&rec.recommendations.some((x:any)=>x.listing.listing_id===e.listing_id);
       let result:any={status:'recorded',ranking_applied:false};
       if(e.kind==='exposure'){
@@ -40,8 +40,8 @@ export class BehaviorService{
         const lease=(await tx.query('SELECT *,expires_at>clock_timestamp() AS alive FROM browser_reading_leases WHERE owner_hash=$1 FOR UPDATE',[s.owner_hash])).rows[0];
         const row=(await tx.query('SELECT * FROM listing_view_segments WHERE segment_id=$1 FOR UPDATE',[e.segment_id])).rows[0];
         if(e.kind==='begin'){
-          if(e.sequence!==0||e.active_duration_ms!==0)throw new BusinessError('INVALID_VIEW_BEGIN','浏览开始必须从零计时。',422);
-          if(row){if(row.session_id!==e.session_id||row.tab_id!==e.tab_id||row.source_request_id!==e.source_request_id||row.listing_id!==e.listing_id)throw new BusinessError('VIEW_ID_CONFLICT','浏览标识已被使用。');result={...result,granted:!row.completed_at&&lease?.alive&&lease.segment_id===e.segment_id};}
+          if(e.sequence!==0||e.active_duration_ms!==0)throw new BusinessError('INVALID_VIEW_BEGIN',"A viewing segment must start at zero elapsed time.",422);
+          if(row){if(row.session_id!==e.session_id||row.tab_id!==e.tab_id||row.source_request_id!==e.source_request_id||row.listing_id!==e.listing_id)throw new BusinessError('VIEW_ID_CONFLICT',"This viewing identifier is already in use.");result={...result,granted:!row.completed_at&&lease?.alive&&lease.segment_id===e.segment_id};}
           else if(lease?.alive&&lease.segment_id!==e.segment_id){return {status:'paused',granted:false,ranking_applied:false};}
           else{
             await tx.query('INSERT INTO listing_view_segments(segment_id,view_session_id,session_id,source_request_id,requirements_version,listing_id,tab_id,verified,last_hash) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)',[e.segment_id,e.view_session_id,e.session_id,e.source_request_id,e.requirements_version,e.listing_id,e.tab_id,verified,fingerprint]);
@@ -49,14 +49,14 @@ export class BehaviorService{
             result={...result,granted:true};
           }
         }else{
-          if(!row||row.session_id!==e.session_id||row.source_request_id!==e.source_request_id||row.listing_id!==e.listing_id||row.tab_id!==e.tab_id||row.view_session_id!==e.view_session_id)throw new BusinessError('VIEW_NOT_FOUND','浏览记录不存在或来源不一致。',422);
+          if(!row||row.session_id!==e.session_id||row.source_request_id!==e.source_request_id||row.listing_id!==e.listing_id||row.tab_id!==e.tab_id||row.view_session_id!==e.view_session_id)throw new BusinessError('VIEW_NOT_FOUND',"The viewing record does not exist or its source does not match.",422);
           if(row.completed_at||e.sequence<row.last_sequence)result={...result,active_duration_ms:row.active_duration_ms,completed:!!row.completed_at};
-          else if(e.sequence===row.last_sequence){if(row.last_hash!==fingerprint)throw new BusinessError('VIEW_SEQUENCE_CONFLICT','同一浏览序号内容不能变化。');}
+          else if(e.sequence===row.last_sequence){if(row.last_hash!==fingerprint)throw new BusinessError('VIEW_SEQUENCE_CONFLICT',"The contents of the same viewing sequence cannot change.");}
           else{
-            if(e.active_duration_ms<row.active_duration_ms)throw new BusinessError('VIEW_DURATION_REVERSED','有效浏览时间不能倒退。',422);
+            if(e.active_duration_ms<row.active_duration_ms)throw new BusinessError('VIEW_DURATION_REVERSED',"Active viewing time cannot decrease.",422);
             const owns=lease?.alive&&lease.segment_id===e.segment_id&&lease.tab_id===e.tab_id;
             const now=Date.now(),elapsed=Math.max(0,now-new Date(row.started_at).getTime());
-            if(e.active_duration_ms>elapsed+1500)throw new BusinessError('VIEW_DURATION_INVALID','浏览时长超过该记录实际经过时间。',422);
+            if(e.active_duration_ms>elapsed+1500)throw new BusinessError('VIEW_DURATION_INVALID',"The reported duration exceeds actual elapsed time.",422);
             // Expired/unowned intervals are not invented on reconnection.
             const accepted=owns?e.active_duration_ms:row.active_duration_ms,completed=e.kind==='complete'||!owns;
             await tx.query('UPDATE listing_view_segments SET active_duration_ms=$2,last_sequence=$3,last_hash=$4,updated_at=clock_timestamp(),completed_at=CASE WHEN $5 THEN clock_timestamp() ELSE NULL END,end_reason=$6,quality_note=$7 WHERE segment_id=$1',[e.segment_id,accepted,e.sequence,fingerprint,completed,e.end_reason||null,owns?null:'lease_expired_or_replaced']);

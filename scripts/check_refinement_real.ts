@@ -24,7 +24,7 @@ import {nativeSelectionSchema} from '../src/contracts/recommendation-native.js';
 if(process.env.REFINEMENT_REAL_TEST!=='1')throw Error('Opt in with REFINEMENT_REAL_TEST=1; see the acceptance document.');
 const root=process.cwd(),runId=randomUUID().replaceAll('-',''),runtime=resolve(root,'data/.runtime/refinement-real-'+runId);
 await mkdir(runtime,{recursive:true});
-const nativePort=Number(process.env.REFINEMENT_NATIVE_PORT||8094),graphPort=Number(process.env.REFINEMENT_GRAPH_PORT||3004),webPort=Number(process.env.REFINEMENT_WEB_PORT||8011);
+const nativePort=Number(process.env.REFINEMENT_NATIVE_PORT||8114),graphPort=Number(process.env.REFINEMENT_GRAPH_PORT||3024),webPort=Number(process.env.REFINEMENT_WEB_PORT||8031);
 const schema='refinement_real_'+runId,owner=randomUUID()+randomUUID(),children:ChildProcess[]=[],logs:ReturnType<typeof createWriteStream>[]=[],calls:string[]=[];
 const admin=new pg.Pool({connectionString:process.env.DATABASE_URL});
 let pool:pg.Pool|undefined,server:ReturnType<typeof createServer>|undefined,worker:Promise<void>|undefined,paidEnabled=false;
@@ -45,7 +45,7 @@ async function ready(url:string,proc?:ChildProcess){
 }
 async function finished(proc:ChildProcess){return await new Promise<number|null>((ok,no)=>{proc.once('error',no);proc.once('exit',ok);});}
 try{
-  assert.equal((await ready('http://127.0.0.1:8092/health')).controller,'live','production controller must stay live');
+  assert.equal((await ready('http://127.0.0.1:8102/health')).controller,'live','production controller must stay live');
   await admin.query(`CREATE SCHEMA "${schema}"`);
   pool=new pg.Pool({connectionString:process.env.DATABASE_URL,options:`-c search_path=${schema}`});
   const tasks=new PostgresAgentTaskStore(pool),events=new PostgresSessionEventStore(pool),store=new DomainStore(pool,tasks,events);
@@ -69,12 +69,12 @@ try{
   // Regression for real runtime error: deleted conversation must not poison
   // the reminder batch or receive a new message; active reminders stay idempotent.
   const active=await store.create(owner),deleted=await store.create(owner);
-  for(const sid of [active,deleted])await pool.query('INSERT INTO workflow_actions(id,session_id,body) VALUES($1,$2,$3)',[randomUUID(),sid,JSON.stringify({status:'DRAFT',revision:1,subject:'隔离验收提醒',next_followup_at:'2026-01-01T00:00:00Z'})]);
+  for(const sid of [active,deleted])await pool.query('INSERT INTO workflow_actions(id,session_id,body) VALUES($1,$2,$3)',[randomUUID(),sid,JSON.stringify({status:'DRAFT',revision:1,subject:'Isolated acceptance reminder',next_followup_at:'2026-01-01T00:00:00Z'})]);
   await store.deleteSession(deleted,owner);await workflow.emitDueReminders();await workflow.emitDueReminders();
   assert.equal((await store.state(active)).messages.length,1);
   assert.equal((await pool.query('SELECT jsonb_array_length(messages) AS n FROM session_domain_state WHERE session_id=$1',[deleted])).rows[0].n,0);
   report.checks.push('deleted-session reminders skipped; active reminder delivered once');
-  const session=await store.create(owner),op=randomUUID(),query='我要找NUS附近3公里内的房子，预算2500新币每月';
+  const session=await store.create(owner),op=randomUUID(),query='Find homes within 3 km of NUS for at most SGD 2500 per month';
   const draft=draftSchema.parse({upsert:[
     {criterion_id:'monthly-rent',field:'price',operator:'lte',value:2500,unit:'SGD/month',strength:'hard'},
     {criterion_id:'nus-radius',field:'place_proximity',operator:'lte',value:3000,unit:'m',strength:'hard',target:{place_id:'OSM:way:54519165',name:'National University of Singapore'},distance_type:'straight_line',distance_preference:'bounded'}
@@ -141,21 +141,21 @@ try{
   assert.equal(after.refinement_plans.length,1);assert.equal(after.refinement_plans[0].status,'SUBMITTED');
   assert.equal(after.requirements.criteria.find(c=>c.field==='price'&&c.strength==='hard')!.value,2500);
   assert(!after.requirements.criteria.some(c=>c.field==='price'&&c.strength==='soft'));
-  assert(!after.messages.some(m=>m.text.includes('本轮未完成')));assert.equal(after.pending_operations.length,0);
+  assert(!after.messages.some(m=>m.text.includes('This turn could not be completed')));assert.equal(after.pending_operations.length,0);
   const exchange:any=await store.loadPayload(after.recommendation!.native!.exchange_ref,session);
   assert(exchange.request.previous_state_id,'second native request must continue the persisted state');
   const initialExchange:any=await store.loadPayload(before.recommendation!.native!.exchange_ref,session);
   assert.equal(exchange.request.previous_state_id,initialExchange.response.state.state_id);
   assert.equal(exchange.response.execution.model_calls,0);assert.equal(initialExchange.response.execution.model_calls,0);
   assert.deepEqual(await workflow.refinement.submit(session,before.refinement_plans[0].id,submitted[0]),{status:'queued',operation_id:after.active_operation_id});
-  await assert.rejects(()=>workflow.refinement.submit(session,before.refinement_plans[0].id,{...submitted[0],submission_id:randomUUID()}),/已经提交/);
+  await assert.rejects(()=>workflow.refinement.submit(session,before.refinement_plans[0].id,{...submitted[0],submission_id:randomUUID()}),/already been submitted/);
   const statuses=(await pool.query('SELECT status FROM domain_operations WHERE session_id=$1',[session])).rows;assert(statuses.every(r=>r.status==='completed'));
   // Retain diagnostics before dropping the schema, even if a strict live-model
   // acceptance assertion fails. This avoids paying to reproduce lost evidence.
   const explanation=after.explanation as any;
   await writeFile(resolve(runtime,'after-state.json'),JSON.stringify(after));
   if(explanation.generation.diagnostic_ref)await writeFile(resolve(runtime,'explanation-diagnostic.json'),JSON.stringify(await store.loadPayload(explanation.generation.diagnostic_ref,session),null,2));
-  assert.equal((await ready('http://127.0.0.1:8092/health')).controller,'live');
+  assert.equal((await ready('http://127.0.0.1:8102/health')).controller,'live');
   report.final={pool:5,displayed:5,cold_start:lastSelection.cold_start,explanation_generation:explanation.generation};
   report.model_requests=calls;report.browser=JSON.parse(await readFile(resolve(runtime,'browser-report.json'),'utf8'));
   report.checks.push('real browser POST -> structured A -> native HTTP B -> source-backed C -> SSE state refresh','native SQLite chain continues across rounds','budget retained without unwanted rent preference','active=false stops further questions','one submission and server idempotency; conflicting replay rejected','both operations completed, no unfinished message','production live controller unchanged');

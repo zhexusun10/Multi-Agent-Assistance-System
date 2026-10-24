@@ -20,9 +20,9 @@ test('native 2.0 exploration reaches ranking evidence without being described as
  const {req,rec,bundle}=await setup('解释一下这次房源为什么这样排序');
  assert.equal(rec.native!.selection!.mode,'cold_start_exploration');
  const method=bundle.facts.find(f=>f.ref==='ranking:method')!;
- assert.match(method.text,/不同价格层次/);assert.match(method.text,/不等于纯匹配分排名/);assert(!method.text.includes('沿用固定次序'));
+ assert.match(method.text,/price strata/i);assert.match(method.text,/not pure score rank/);assert(!method.text.includes('沿用固定次序'));
  assert.equal(bundle.decision_support!.target_listing_ids.length,5);
- assert(explanationModelInput(bundle).input.facts.some((f:any)=>f.text.includes('不同价格层次')));
+ assert(explanationModelInput(bundle).input.facts.some((f:any)=>f.text.includes('compare price levels')));
  const output=recoverExplanation(bundle,req.requirements,rec);
  for(const id of output.focus_listing_ids)assert(output.paragraphs.find(p=>p.listing_id===id)!.support_refs.includes(`selection:${id}`));
 });
@@ -30,6 +30,6 @@ test('native 2.0 exploration reaches ranking evidence without being described as
 test('ordinary property guidance keeps the latest local role and does not force ranking diagnostics into every introduction',async()=>{
  const {bundle}=await setup('介绍一下这几套有什么特点');
  assert.equal(bundle.decision_support!.explain_order,false);
- assert(explanationModelInput(bundle).input.facts.every((f:any)=>!f.text.includes('不同价格层次')));
+ assert(explanationModelInput(bundle).input.facts.every((f:any)=>!f.text.includes('compare price levels')));
  assert(bundle.decision_support!.profiles.every(p=>p.core_refs!.length>0));
 });

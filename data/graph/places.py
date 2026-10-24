@@ -61,7 +61,7 @@ CALL (l) {
         r.distance_type = 'geodesic', r.distance_unit = 'm', r.route_verified = false,
         r.measurement_method = 'neo4j.point.distance.WGS84', r.radius_m = $radius_m,
         r.computed_at = $computed_at, r.listing_source_updated_at = l.source_updated_at,
-        r.place_observed_at = p.observed_at, r.distance_label = '直线距离（非步行路线）'
+        r.place_observed_at = p.observed_at, r.distance_label = 'Straight-line distance (not a walking route)'
     RETURN count(r) AS relationships
 }
 RETURN max(l.listing_id) AS last_id, count(l) AS listings, sum(relationships) AS relationships

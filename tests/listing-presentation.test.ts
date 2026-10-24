@@ -22,5 +22,5 @@ test('surrounding amenities preserve zero distances and separate OSM straight-li
 });
 test('partial data failure is displayed as unavailable, not an empty/no-facilities fact; duplicate requests share one load',async()=>{
  let calls=0;const service=new ListingPresentationService({async request(path){calls++;if(path.endsWith('/context'))throw Error('Neo4j unavailable');if(path.includes('/images'))return {items:[],has_more:false,next_cursor:null};return {item:{entity_id:'Listing:1',label:'Listing',properties:{listing_id:1,bathrooms:2}}};}},'test-dataset');
- const [a,b]=await Promise.all([service.get('1'),service.get('1')]);assert.equal(calls,3);assert.deepEqual(a,b);assert.equal(a.details!.bathrooms,2);assert.equal(a.sections.nearby,'unavailable');assert(a.warnings.some(x=>x.includes('不代表附近没有设施')));assert.equal(a.sections.photos,'available');await service.get('1');assert.equal(calls,3);await assert.rejects(service.get('../secret'));
+ const [a,b]=await Promise.all([service.get('1'),service.get('1')]);assert.equal(calls,3);assert.deepEqual(a,b);assert.equal(a.details!.bathrooms,2);assert.equal(a.sections.nearby,'unavailable');assert(a.warnings.some(x=>x.includes('does not mean no amenities')));assert.equal(a.sections.photos,'available');await service.get('1');assert.equal(calls,3);await assert.rejects(service.get('../secret'));
 });

@@ -1,12 +1,12 @@
 /** Public errors never expose SDK payloads, Zod arrays or provider diagnostics. */
 export function recommendationFailureMessage(code:string){
-  if(code==='MODEL_UNAVAILABLE')return '找房服务暂时无法连接，请稍后重试。你的找房条件已保留。';
-  if(code==='DATA_UNAVAILABLE')return '房源资料暂时读取失败，请稍后重试。你的找房条件已保留。';
-  return '这次找房暂时没能完成，请稍后重试。你的找房条件已保留。';
+  if(code==='MODEL_UNAVAILABLE')return "The search service is temporarily unreachable. Try again later; your requirements are saved.";
+  if(code==='DATA_UNAVAILABLE')return "Listing details could not be read. Try again later; your requirements are saved.";
+  return "The search could not be completed. Try again later; your requirements are saved.";
 }
 export function describeAgentFailure(agent:string,error:string){
-  if(agent==='a')return {code:'REQUIREMENT_STAGE_FAILED',message:'需求理解暂未完成，请稍后重试。本轮尚未进入房源推荐。'};
-  if(agent==='c')return {code:'EXPLANATION_STAGE_FAILED',message:'推荐理由暂时没能整理好，请再试一次。你可以继续查看当前房源。'};
-  if(error.startsWith('DATA_'))return {code:'DATA_SERVICE_UNAVAILABLE',message:'数据服务暂不可用，请检查数据服务后重试。'};
-  return {code:'AGENT_FAILED',message:'当前处理阶段暂未完成，请稍后重试。原始诊断已保留在任务记录中。'};
+  if(agent==='a')return {code:'REQUIREMENT_STAGE_FAILED',message:"Requirement understanding could not be completed. Please try again; no recommendation search has started this turn."};
+  if(agent==='c')return {code:'EXPLANATION_STAGE_FAILED',message:"The property introduction could not be prepared. Try again; you can still browse the current homes."};
+  if(error.startsWith('DATA_'))return {code:'DATA_SERVICE_UNAVAILABLE',message:"The data service is unavailable. Check it and try again."};
+  return {code:'AGENT_FAILED',message:"This stage could not be completed. Try again later. Diagnostics are retained in the task record."};
 }

@@ -1,27 +1,27 @@
 ---
 id: system-evidence
-title: 本系统的推荐、距离、待核实与房源事实
+title: Understanding recommendations, distances and unverified listing facts
 scope: system_help
-revision: '2026-10-20.1'
+revision: 2026-10-20.1
 checked_at: '2026-10-20'
 review_after: '2027-01-20'
 sources:
-  - title: 项目资料 knowledge/rental/system-evidence.md
-    url: project://knowledge/rental/system-evidence.md
+- title: Project guide knowledge/rental/system-evidence.md
+  url: project://knowledge/rental/system-evidence.md
 ---
-# 如何理解推荐证据
+# Understanding recommendation evidence
 
-## 硬条件和偏好
-明确的“必须、至少、不超过”形成硬条件；“最好、越近越好、附近”可以形成偏好。推荐先判断硬条件，再按软条件排序。“金文泰附近”可解析 Clementi 地区或地点，以距离作为更近优先的排序信号，无需用户凭空编造半径。“三公里内”是明确上限，不能被悄悄降为单纯偏好。无法唯一识别的地点仍需要有针对性的澄清。
+## Hard requirements and preferences
+Explicit must, minimum and maximum statements form hard requirements; ideally, closer is better and nearby can form preferences. Recommendations check hard requirements before ranking soft preferences. Near Clementi can resolve to the area or place and use closer-first distance without asking the user to invent a radius. Within three kilometres is an explicit cap and must not silently become only a preference. Places that cannot be identified uniquely still need a targeted clarification.
 
-## 待核实不是通过，也不一定是原始字段为空
-待核实可能因为历史数据缺失、描述不能证明该具体条件、数据能力不支持，或外部服务尚未接通。一个卫生间、1B1B、主卧等标注不能单独证明卫生间专用、不与他人共用。“配备独立卫浴”在经纪人回复理解中可以明确该项肯定陈述，但仍属于用户提供的回复内容，不是平台独立查验的房源事实。
+## Unverified is not passed, and does not always mean an empty field
+A condition may be unverified because historical data is missing, a description does not prove that particular condition, the data capability is unsupported or an external service is not connected. One bathroom, 1B1B or a master-room label alone does not prove exclusive, unshared bathroom use. An agent’s explicit statement that a private bathroom is provided can be extracted as an affirmative statement, but remains user-supplied reply content rather than an independently platform-verified property fact.
 
-## OSM、geodesic 与校园关系
-OSM 是开放地图数据来源；Neo4j 保存项目导入的地点和关系。geodesic 在本项目指球面直线距离，既不是公共交通 API 的耗时，也不是实际步行路线。校园内关系是地图点位与校园多边形之间的几何证据，不证明行政隶属、入口位置或实际通达。“靠近 NUS”不能自动算成坐公交三十分钟以内。
+## OSM, geodesic distance and campus relationships
+OSM supplies open-map data, and Neo4j stores the imported places and relationships. Here geodesic means a spherical straight-line distance, not a public-transport API journey time or actual walking route. Inside-campus relationships are geometric evidence between a map point and campus polygon, not proof of administrative affiliation, entrance location or actual access. Near NUS cannot automatically become within thirty minutes by bus.
 
-## 区域距离为零的含义
-使用 URA 区域多边形作为参照时，位于区域内部的房源可按区域距离记为零；它表示在区域内，不是距离地铁站或某个精确地标零米。参照具体 MRT、校园点位或其他位置时，需要展示对应参照对象，不能把地区中心、区域边界和车站坐标混用。
+## What zero distance to an area means
+With a URA area polygon as reference, a home inside the area can have zero area distance. This means inside the area, not zero metres from a station or precise landmark. For a particular MRT, campus reference point or other location, show the actual reference used. Do not mix an area centre, boundary and station coordinates.
 
-## 历史快照和当前状态
-卡片显示历史价格、照片和字段，并优先展示用户条件的匹配情况；其他已收录资料也可展开。历史挂牌不是当前仍可租的证明。搜索证据、用户需求、经纪人口头或文字答复分别保存，知识问答不会据此改写房源数据库。部分硬条件待核实的候选仍可生成咨询草稿，目的是补充问题，而不是把待核实当成满足。
+## Historical snapshots and current status
+Cards show historical prices, photos and fields, prioritising requirement matches; other recorded details can be expanded. A historical listing does not prove current availability. Search evidence, user requirements and agents’ spoken/written replies are stored separately; knowledge answers do not rewrite the property database. Homes with unverified hard requirements may still receive enquiry drafts to clarify those questions, without treating unknown conditions as satisfied.

@@ -6,7 +6,7 @@ export const PLACE_CATEGORIES=['MRTStation','BusStop','PublicTransport','Superma
 export const locationIntentSchema=z.object({name:z.string().min(1).max(150),quote:z.string().min(1),radius_m:z.number().nonnegative().max(1000000).optional(),range_m:z.tuple([z.number().nonnegative(),z.number().nonnegative()]).optional(),operator:z.enum(['lte','gte','between']).optional(),weight:z.number().positive().optional(),strength:z.enum(['hard','soft']),distance_type:z.enum(['straight_line','walking','driving','transit']),explicit_station:z.boolean(),prefer_closer:z.boolean().optional(),category:z.enum(PLACE_CATEGORIES).optional()}).strict();
 export type LocationIntent=z.infer<typeof locationIntentSchema>;
 export const CATEGORY_NAMES:[RegExp,string][]=[[/^(?:超市|supermarket)$/i,'Supermarket'],[/^(?:学校|school)$/i,'School'],[/^(?:公园|park)$/i,'Park'],[/^(?:食阁|food court)$/i,'FoodCourt'],[/^(?:商场|mall)$/i,'Mall']];
-const digits:Record<string,number>={'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10,'半':0.5};
+const digits:Record<string,number>={"一":1,"二":2,'两':2,"三":3,"四":4,"五":5,"六":6,'七':7,'八':8,'九':9,'十':10,'半':0.5};
 /** A listing is the subject of a proximity relation, never its geographic destination. */
 export function isListingReference(name:string){return /^(?:(?:这套|那套|这|那|该|所租的|我租的|我要租的|想租的)\s*)?(?:房子|房屋|房源|住房|住宅|房间|单间|公寓|房|property|listing|home|house|apartment|room)$/i.test(name.trim());}
 /** A mention naming a rail station explicitly; otherwise URA areas/regions are matched first (shared fixture tests/fixtures/place-mention-rules.json, mirrored by recommendation/geography/normalize.py). */
@@ -22,7 +22,7 @@ export function parseLocationIntents(query:string):LocationIntent[]{
   const intents:LocationIntent[]=[];
   for(const clause of query.split(/[，,。；;\n]/).map(s=>s.trim()).filter(Boolean)){
     let name='',tail='',bareDistance=false;
-    // Resolve the destination on the other side of "房子...附近有MRT", before the general nearby rule.
+    // Resolve the destination in a home-nearby-MRT expression before the general nearby rule.
     const subject=clause.replace(/^(?:(?:要求|必须|希望|最好|我想要|我想租|我想找)\s*)+/,'');
     const relative=subject.match(/^(?:(?:这套|那套|该|所租的|我租的)\s*)?(?:房子|房屋|房源|住房|住宅|房间|单间|公寓)(.*?)(?:附近|周边|靠近|距离|离|距|内有|有)\s*(?:有|要有)?\s*(.+)$/i);
     const nearby=clause.match(/(.+?)(?:附近|周边|\s+nearby\b)(.*)/i),near=clause.match(/(?:靠近|接近|\bnear\s+|\baround\s+)(.+)/i);

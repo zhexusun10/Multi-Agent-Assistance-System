@@ -1,29 +1,29 @@
 ---
 id: stamp-duty
-title: 租约印花税的计算、期限与凭证
+title: 'Lease stamp duty: calculations, deadlines and certificates'
 scope: policy_guidance
-revision: '2026-10-20.1'
+revision: 2026-10-20.1
 checked_at: '2026-10-20'
 review_after: '2027-01-20'
 sources:
-  - title: IRAS Renting a Property
-    url: https://www.iras.gov.sg/taxes/stamp-duty/for-property/renting-a-property
-  - title: IRAS Renting Out My Property
-    url: https://www.iras.gov.sg/taxes/property-tax/property-owners/your-situation/renting-out-my-property
+- title: IRAS Renting a Property
+  url: https://www.iras.gov.sg/taxes/stamp-duty/for-property/renting-a-property
+- title: IRAS Renting Out My Property
+  url: https://www.iras.gov.sg/taxes/property-tax/property-owners/your-situation/renting-out-my-property
 ---
-# 租约印花税 Stamp Duty
+# Lease stamp duty
 
-## 税率和计税基础
-IRAS 的租赁印花税以合同租金与市场租金两者较高者作为相关计算基础。平均年租 AAR 不超过1,000新币时免税；超过1,000新币，租期不超过四年时，税额为整个租期总租金的0.4%。租期超过四年或不定期时，按四倍平均年租的0.4%计算。税额向下取整到新币整数，最低应纳税额为1新币。家具、服务等相关对价可能计入基础，GST 不计入；不能把分拆收费一概排除。
+## Rate and calculation basis
+The curated IRAS guidance uses the higher of contractual and market rent as the relevant basis. Average annual rent (AAR) of no more than S$1,000 is exempt. Above S$1,000, a lease not exceeding four years uses 0.4% of total rent for the whole term. Longer or indefinite leases use 0.4% of four times AAR. Round duty down to whole Singapore dollars, with minimum payable duty of S$1. Related consideration for furniture or services may be included, while GST is excluded; split charges are not automatically outside the basis.
 
-## 一个仅用于理解的计算例子
-以下为项目自编例子：假定计税月租固定为2,000新币，租期十二个月，没有其他应计对价且市场租金不更高，总租金为24,000新币，按0.4%得96新币。这个例子不是税单。如果租金阶梯变化、另有收费、合同修改或续租，不能直接照抄96。需要先取得完整金额与期限，再使用 IRAS 官方服务核对。
+## An illustrative calculation only
+Project example: assume fixed assessable monthly rent of S$2,000 for twelve months, no other assessable consideration and no higher market rent. Total rent is S$24,000 and 0.4% is S$96. This is not a tax bill. Do not reuse S$96 for stepped rent, additional charges, amendments or renewals. Obtain complete amounts and dates, then verify using IRAS’s official service.
 
-## 签署地点影响缴纳期限
-在新加坡签署的应税文件，应在签署后十四天内办理并缴付印花税；在海外签署，则是在文件收到于新加坡后三十天内。不要把这两个期限都说成“入住后十四天”，也不要从看房预约日开始计算。实际涉及电子签署或复杂变更时，应查阅 IRAS 对相应文件的说明。
+## Signing location affects the deadline
+For chargeable documents signed in Singapore, stamp and pay within fourteen days after signing. For documents signed overseas, the deadline is thirty days after receipt in Singapore. Neither means fourteen days after moving in, nor starts from a viewing appointment. For electronic execution or complex amendments, consult the applicable IRAS guidance.
 
-## 本项目的资料准备建议
-以下是项目操作建议：准备双方姓名、完整地址、租期起止、各阶段租金、其他收费以及签署信息。通过官方 e-Stamping / myTax Portal 办理后保存 stamp certificate，并核对地址、日期和金额。经纪人发来的付款截图不是印花税凭证的替代物。本系统不会要求用户把税务登录口令或支付凭证中的完整身份信息贴到公开聊天。
+## Project preparation advice
+Prepare both parties’ names, full property address, lease dates, each rent stage, other charges and execution details. Use official e-Stamping/myTax Portal, save the stamp certificate and check the address, dates and amounts. An agent’s payment screenshot is not a replacement for the certificate. The system does not ask users to paste tax login credentials or full identity details from payment documents into public chat.
 
-## 与其他费用分开理解
-印花税不等于押金、经纪佣金或每月水电费。项目可解释计算方法和列出缺失输入，但没有完整合同和适用事实时不能保证最终税额。发生补充协议、延长租期或租金变化，应重新对照 IRAS，而不是因为原合同曾经盖印就认定以后不再需要处理。
+## Keep stamp duty separate from other charges
+Stamp duty is not the deposit, agent commission or monthly utilities. The project can explain the method and identify missing inputs, but cannot guarantee a final duty without the contract and applicable facts. Recheck IRAS when agreements are supplemented, extended or repriced; an earlier stamped contract does not mean later changes need no action.

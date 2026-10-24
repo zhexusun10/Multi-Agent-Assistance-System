@@ -3,7 +3,7 @@ import {DEFAULT_PROXIMITY_SCALE_M,PLACE_CATEGORIES} from '../../domain/geo-intak
 import {INTAKE_ENUMS,modelIntakeSchema,requirementDraftSchema,type ModelIntake,type RequirementDraft} from './contracts.js';
 
 const ids:Record<string,string>={price:'monthly-rent',bedrooms:'minimum-bedrooms',district:'preferred-district'};
-const categoryNames:Record<string,string>={MRTStation:'最近的MRT地铁站',BusStop:'最近的公交站',PublicTransport:'最近的MRT或公交站',Supermarket:'超市',School:'学校',Park:'公园',FoodCourt:'食阁',Mall:'商场',Market:'市场',Hospital:'医院',Clinic:'诊所',Library:'图书馆'};
+const categoryNames:Record<string,string>={MRTStation:"Nearest MRT station",BusStop:"Nearest bus stop",PublicTransport:"Nearest MRT or bus stop",Supermarket:"Supermarket",School:"School",Park:"Park",FoodCourt:"Food court",Mall:"Shopping mall",Market:"Market",Hospital:"Hospital",Clinic:"Clinic",Library:"Library"};
 const SQM_TO_SQFT=10.763910416709722;
 function numericConvert(value:ModelIntake['upsert'][number]['value'],factor:number){const f=(v:unknown)=>{if(typeof v!=='number')throw Error('UNIT: numeric conversion requires a number');return Math.round(v*factor*1000000)/1000000;};return Array.isArray(value)?value.map(f):f(value);}
 

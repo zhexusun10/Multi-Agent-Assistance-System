@@ -26,21 +26,21 @@ test('Clementi MRT details may record bathrooms while native conditions remain u
   const f=cases[1],b=bundle(f),first=b.decision_support!.profiles[0],id=first.listing_id;
   const bathroom=f.requirements.criteria.find((c:any)=>c.field==='bathrooms');assert(first.caution_refs.includes(`condition:${id}:${bathroom.criterion_id}`));
   const detail=b.facts.find(f=>f.ref===`profile:${id}:bathrooms`)!;assert.equal(detail.numbers[0],2);
-  assert.match(detail.text,/不改变推荐阶段尚未验证的条件/);
+  assert.match(detail.text,/upgrade an unverified recommendation condition/i);
   assert(b.facts.some(f=>f.cohort?.field==='place_proximity'&&f.subject_listing_id===id&&f.cohort.position==='lowest'));
 });
 
 test('construction years remain exact even though measured distances allow rounding',()=>{
   const f=cases[0],b=bundle(f),out=recoverExplanation(b,f.requirements,f.recommendation),p=out.paragraphs.find(p=>p.listing_id==='500228649')!;
   p.support_refs.push('profile:500228649:build_year');p.text+='这栋楼1975年建成。';validateExplanation(out,b);
-  p.text=p.text.replace('1975年建成','1978年建成');assert.throws(()=>validateExplanation(out,b),/建成年份|construction year/);
+  p.text=p.text.replace('1975年建成','1978年建成');assert.throws(()=>validateExplanation(out,b),/construction year/i);
 });
 
 test('mixed rent, area and distance positions cannot all be described as middle',()=>{
   const f=cases[1],b=bundle(f),out=recoverExplanation(b,f.requirements,f.recommendation),p=out.paragraphs.find(p=>p.listing_id==='500215736')!;
   const profile=b.decision_support!.profiles.find(x=>x.listing_id===p.listing_id)!;p.support_refs.push(...profile.highlight_refs);
   p.text+='房源面积721平方英尺、月租1,450新币、直线约873米，都处在中间位置。';
-  assert.throws(()=>validateExplanation(out,b),/本套月租的整体位置/);
+  assert.throws(()=>validateExplanation(out,b),/Monthly rent has cohort position/);
   p.text=p.text.replace('都处在中间位置','面积和距离都处在中间位置，月租则并列最高');validateExplanation(out,b);
 });
 
@@ -48,11 +48,11 @@ test('saved cases recover with several useful amenities and integrated price/spa
   for(const f of cases){
     const before=JSON.stringify(f),b=bundle(f),out=recoverExplanation(b,f.requirements,f.recommendation);
     for(const p of out.paragraphs.filter(p=>p.listing_id)){
-      assert.equal(p.text.match(/距(?:National University of Singapore|CLEMENTI MRT STATION)直线约/g)?.length,1);
+      assert.equal(p.text.match(/metres in a straight line from (?:National University of Singapore|CLEMENTI MRT STATION)/gi)?.length,1);
       assert(p.support_refs.filter(r=>r.includes(':nearby:')).length>=2);
-      assert(!/直线约[^。]+。距[^。]+直线约/.test(p.text));
+      assert(!/straight line[^.]+[.]It is[^.]+straight line/i.test(p.text));
     }
-    assert(out.paragraphs.some(p=>/能少占一些预算|看看是否够用/.test(p.text)));
+    assert(out.paragraphs.some(p=>/leaving more of your budget|space you need/i.test(p.text)));
     assert.equal(JSON.stringify(f),before);
   }
 });

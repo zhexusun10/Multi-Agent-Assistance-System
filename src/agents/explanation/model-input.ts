@@ -6,7 +6,7 @@ import type {ExplanationBundle,ExplanationOutput} from './contracts.js';
  */
 export function explanationModelInput(bundle:ExplanationBundle){
   const selected=new Set(bundle.decision_support?.target_listing_ids||bundle.listings.filter(l=>bundle.question.includes(l.title)||bundle.question.includes(l.listing_id)).map(l=>l.listing_id));
-  const ordinals:Record<string,number>={'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10};
+  const ordinals:Record<string,number>={"一":1,"二":2,'两':2,"三":3,"四":4,"五":5,"六":6,'七':7,'八':8,'九':9,'十':10};
   for(const match of bundle.question.matchAll(/第\s*([一二三四五六七八九十\d]+)\s*套|(?:property|listing)\s*#?\s*(\d+)\b/gi)){
     const index=(ordinals[match[1]]??Number(match[1]||match[2]))-1;
     if(bundle.listings[index])selected.add(bundle.listings[index].listing_id);

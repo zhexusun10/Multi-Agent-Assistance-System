@@ -10,7 +10,7 @@ import {intakeAuditRequirements} from '../src/agents/requirement/audit-context.j
 
 const base:Requirements={listing_type:'RENT',criteria:[
   criterion('bedrooms','eq',1,'count'),criterion('bathrooms','eq',1,'count'),criterion('price','lte',2500,'SGD/month'),
-  criterion('place_proximity','lte',1000,'m',true,{target:{category:'PublicTransport',name:'最近的MRT或公交站'},distance_type:'straight_line',distance_preference:'bounded',criterion_id:'transport'}),
+  criterion('place_proximity','lte',1000,'m',true,{target:{category:'PublicTransport',name:'Nearest MRT or bus stop'},distance_type:'straight_line',distance_preference:'bounded',criterion_id:'transport'}),
   criterion('place_proximity','lte',5000,'m',false,{target:{place_id:'URA:AREA:JURONG_EAST',name:'JURONG EAST'},distance_type:'straight_line',distance_preference:'bounded',criterion_id:'area'}),
   criterion('place_proximity','lte',1000,'m',true,{target:{place_id:'URA:AREA:JURONG_EAST',name:'JURONG EAST'},distance_type:'straight_line',distance_preference:'nearer',criterion_id:'closer'}),
 ]};
@@ -28,7 +28,7 @@ test('semantic auditor sees the actual resolved and merged state, including reta
     audits++;const input=JSON.parse(String(messages.at(-1).content));
     assert.deepEqual(input.effective_requirements,intakeAuditRequirements(unchanged()));
     assert.equal(input.compiled_draft.location_intents[1].category,'PublicTransport');
-    assert.match(String(messages[0].content),/评分尺度/);
+    assert.match(String(messages[0].content),/scoring scale/i);
     const closer=input.effective_requirements.criteria.find((c:any)=>c.criterion_id==='closer');
     assert.equal(closer.meaning,'prefer_closer');assert.equal(closer.distance_cutoff,null);assert(!('value' in closer));
     return {valid:true,issues:[]};
