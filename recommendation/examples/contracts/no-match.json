@@ -1,25 +1,60 @@
 {
-  "contract_version": "1.0",
+  "contract_version": "2.0",
   "request_id": "no-match",
   "conversation_id": "no-match",
   "requirements_version": 1,
   "status": "no_match",
   "recommendations": [],
-  "unverified_candidates": [],
   "evidence": [],
+  "resolution": [],
+  "pool": {
+    "pool_key": "e0d83c9d4d1557db8f5d9241781cfcf4dfeff7f73cd149093a6227cd19b66476",
+    "pool_version": "279a1446a14cad534ec36fbd8b23065a80d09a9975a9371715ece90dc053be00",
+    "data_version": "24ddafa745523a348ebddc96a1e632214c8127f772d46ba69d15dc34497177b9",
+    "cache": "built",
+    "size": 0,
+    "source_count": 12,
+    "excluded_hard_fail": 12,
+    "excluded_hard_unknown": 0,
+    "unknown_reasons": {}
+  },
+  "selection": {
+    "mode": "empty",
+    "algorithm_version": "select-v1",
+    "seed": "89455618675be0de356fc573c74fc86508aa637ef76585b48e4eeb10ed384d43",
+    "result_limit": 10,
+    "leaders": 0,
+    "tie_group": null,
+    "exploration": null,
+    "cold_start": {
+      "evaluated": false,
+      "active": false,
+      "reason": "empty_pool",
+      "coverage_c": null,
+      "boundary_group_b": null,
+      "stability_s": null,
+      "thresholds": {
+        "c": 0.8,
+        "b": 5,
+        "s": 0.9
+      },
+      "exit_conditions_met": false,
+      "pool_key": "e0d83c9d4d1557db8f5d9241781cfcf4dfeff7f73cd149093a6227cd19b66476"
+    }
+  },
   "clarifications": [],
   "relaxation_suggestions": [
     "Submit an explicitly revised full requirements snapshot."
   ],
   "warnings": [
     "Sample viewing durations are simulated observations.",
+    "Viewing drafts with a saved time are interest signals, not confirmed appointments.",
     "Posting time does not establish current availability."
   ],
   "state": {
-    "state_id": "89db8e7e-6078-4d2c-9bc4-07cbed39af78",
-    "candidate_pool_ref": "11ed8c26-6ffd-44bd-89a8-212b9edf6390/pool",
+    "state_id": "f58b0dcf-cacb-4be7-95ad-2f17d85a814e",
+    "candidate_pool_ref": "aa805181-eee8-4b29-9d27-6a5c2fabe926/pool",
     "run_sequence": 1,
-    "feedback_version": 0,
     "scope": "all RENT listings",
     "truncated": false,
     "source_count": 12,
@@ -27,14 +62,18 @@
     "assessed_count": 0
   },
   "execution": {
-    "trace_id": "11ed8c26-6ffd-44bd-89a8-212b9edf6390",
-    "trace_ref": "sqlite:11ed8c26-6ffd-44bd-89a8-212b9edf6390",
-    "strategy": "complete-pool weighted ranking",
-    "scoring_version": "weighted-v1",
+    "trace_id": "aa805181-eee8-4b29-9d27-6a5c2fabe926",
+    "trace_ref": "sqlite:aa805181-eee8-4b29-9d27-6a5c2fabe926",
+    "strategy": "full-pool fused-v2 scoring + select-v1 selection",
+    "scoring_version": "fused-v2:cc051e535df4",
+    "selection_algorithm": "select-v1",
+    "config_version": 1,
+    "config_hash": "9a7477ea9224baf775654841f7a3808f539c116b3cde9a9f2a3e2785ea69f41b",
+    "selection_hash": "cc051e535df4be969ac533c865020a622f63651da3be65183b0dc84a1591b93d",
     "model_identifier": null,
     "model_calls": 0,
     "tool_calls": 4,
-    "duration_ms": 0.9733329934533685,
+    "duration_ms": 1.7716250149533153,
     "tokens": null,
     "data_mode": "fixture",
     "controller_mode": "scripted"

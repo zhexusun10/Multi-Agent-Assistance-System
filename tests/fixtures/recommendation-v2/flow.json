@@ -1,0 +1,493 @@
+{
+ "description": "Three orchestrator rounds (main contract): round 2 sends the session-cumulative behavior_context (two interest_eligible summaries, one not eligible, one saved viewing draft) and a web_detail event (validated, not scored); round 3 sends summaries with the gate closed and the draft withdrawn, so it is scored like round 1 (nothing accumulated natively). TS: nativeRequest(v1_request, cold_start) == native_body after fixture-NN -> 910000NN.",
+ "conversation_id": "v2-flow",
+ "rounds": [
+  {
+   "name": "initial",
+   "v1_request": {
+    "contract_version": "1.0",
+    "conversation_id": "v2-flow",
+    "requirements_version": 0,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "unit": "SGD/month",
+       "strength": "hard"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "unit": "count",
+       "strength": "hard"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1
+      }
+     ]
+    },
+    "result_limit": 10,
+    "request_id": "v2-flow-r1",
+    "feedback": []
+   },
+   "cold_start": {
+    "exited": false,
+    "exited_pool_key": null
+   },
+   "native_body": {
+    "contract_version": "1.0",
+    "request_id": "v2-flow-r1",
+    "conversation_id": "v2-flow",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "feedback": [],
+    "previous_state_id": null,
+    "result_limit": 10,
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "expect": {
+    "status": "success",
+    "browsing_weighted": [],
+    "appointment_listing_ids": []
+   }
+  },
+  {
+   "name": "cumulative-browsing-and-draft",
+   "v1_request": {
+    "contract_version": "1.0",
+    "conversation_id": "v2-flow",
+    "requirements_version": 0,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "unit": "SGD/month",
+       "strength": "hard"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "unit": "count",
+       "strength": "hard"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1
+      }
+     ]
+    },
+    "result_limit": 10,
+    "request_id": "v2-flow-r2",
+    "feedback": [
+     {
+      "event_id": "web-r1-1",
+      "listing_id": "fixture-01",
+      "occurred_at": "2026-10-23T08:00:00.000Z",
+      "event_type": "active_view",
+      "payload": {
+       "source": "web_detail",
+       "recommendation_request_id": "6d662941-4a58-572b-993e-441917864b7d",
+       "view_session_id": "view-web-r1-1",
+       "active_duration_ms": 90000
+      }
+     }
+    ],
+    "behavior_context": {
+     "version": "1.0",
+     "as_of": "2026-10-23T08:00:00.000Z",
+     "listing_view_durations": [
+      {
+       "listing_id": "fixture-01",
+       "duration_seconds": 90,
+       "view_count": 1,
+       "last_viewed_at": "2026-10-23T08:00:00.000Z",
+       "source_request_ids": [
+        "6d662941-4a58-572b-993e-441917864b7d"
+       ],
+       "interest_eligible": true
+      },
+      {
+       "listing_id": "fixture-07",
+       "duration_seconds": 30,
+       "view_count": 1,
+       "last_viewed_at": "2026-10-23T08:00:00.000Z",
+       "source_request_ids": [
+        "6d662941-4a58-572b-993e-441917864b7d"
+       ],
+       "interest_eligible": true
+      },
+      {
+       "listing_id": "fixture-09",
+       "duration_seconds": 12,
+       "view_count": 1,
+       "last_viewed_at": "2026-10-23T08:00:00.000Z",
+       "source_request_ids": [
+        "6d662941-4a58-572b-993e-441917864b7d"
+       ],
+       "interest_eligible": false
+      }
+     ],
+     "book_viewing_listings": [
+      {
+       "listing_id": "fixture-03",
+       "action_id": "03fe9801-a284-5324-95e8-482d9b8924e6",
+       "source_request_id": "6d662941-4a58-572b-993e-441917864b7d",
+       "requirements_version": 0,
+       "starts_at": "2026-10-24T06:00:00.000Z",
+       "ends_at": "2026-10-24T07:00:00.000Z",
+       "time_zone": "Asia/Singapore",
+       "recorded_at": "2026-10-23T08:00:00.000Z",
+       "signal": "viewing_draft_saved",
+       "appointment_confirmed": false
+      }
+     ]
+    },
+    "previous_state_id": "native:5b4de549-b786-4daa-9873-ee2fc1d9c983"
+   },
+   "cold_start": {
+    "exited": false,
+    "exited_pool_key": null
+   },
+   "native_body": {
+    "contract_version": "1.0",
+    "request_id": "v2-flow-r2",
+    "conversation_id": "v2-flow",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "feedback": [
+     {
+      "event_id": "web-r1-1",
+      "conversation_id": "v2-flow",
+      "recommendation_request_id": "6d662941-4a58-572b-993e-441917864b7d",
+      "listing_id": "fixture-01",
+      "event_type": "listing_view_duration",
+      "source": "web_detail",
+      "occurred_at": "2026-10-23T08:00:00.000Z",
+      "payload": {
+       "view_session_id": "view-web-r1-1",
+       "duration_seconds": 90
+      }
+     }
+    ],
+    "behavior_context": {
+     "version": "1.0",
+     "as_of": "2026-10-23T08:00:00.000Z",
+     "listing_view_durations": [
+      {
+       "listing_id": "fixture-01",
+       "duration_seconds": 90,
+       "view_count": 1,
+       "last_viewed_at": "2026-10-23T08:00:00.000Z",
+       "source_request_ids": [
+        "6d662941-4a58-572b-993e-441917864b7d"
+       ],
+       "interest_eligible": true
+      },
+      {
+       "listing_id": "fixture-07",
+       "duration_seconds": 30,
+       "view_count": 1,
+       "last_viewed_at": "2026-10-23T08:00:00.000Z",
+       "source_request_ids": [
+        "6d662941-4a58-572b-993e-441917864b7d"
+       ],
+       "interest_eligible": true
+      },
+      {
+       "listing_id": "fixture-09",
+       "duration_seconds": 12,
+       "view_count": 1,
+       "last_viewed_at": "2026-10-23T08:00:00.000Z",
+       "source_request_ids": [
+        "6d662941-4a58-572b-993e-441917864b7d"
+       ],
+       "interest_eligible": false
+      }
+     ],
+     "book_viewing_listings": [
+      {
+       "listing_id": "fixture-03",
+       "action_id": "03fe9801-a284-5324-95e8-482d9b8924e6",
+       "source_request_id": "6d662941-4a58-572b-993e-441917864b7d",
+       "requirements_version": 0,
+       "starts_at": "2026-10-24T06:00:00.000Z",
+       "ends_at": "2026-10-24T07:00:00.000Z",
+       "time_zone": "Asia/Singapore",
+       "recorded_at": "2026-10-23T08:00:00.000Z",
+       "signal": "viewing_draft_saved",
+       "appointment_confirmed": false
+      }
+     ]
+    },
+    "previous_state_id": "5b4de549-b786-4daa-9873-ee2fc1d9c983",
+    "result_limit": 10,
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "expect": {
+    "status": "success",
+    "browsing_weighted": [
+     "fixture-01",
+     "fixture-07"
+    ],
+    "appointment_listing_ids": [
+     "fixture-03"
+    ]
+   }
+  },
+  {
+   "name": "gate-closed-draft-withdrawn",
+   "v1_request": {
+    "contract_version": "1.0",
+    "conversation_id": "v2-flow",
+    "requirements_version": 0,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "unit": "SGD/month",
+       "strength": "hard"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "unit": "count",
+       "strength": "hard"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1
+      }
+     ]
+    },
+    "result_limit": 10,
+    "request_id": "v2-flow-r3",
+    "feedback": [],
+    "behavior_context": {
+     "version": "1.0",
+     "as_of": "2026-10-23T08:00:00.000Z",
+     "listing_view_durations": [
+      {
+       "listing_id": "fixture-01",
+       "duration_seconds": 95,
+       "view_count": 2,
+       "last_viewed_at": "2026-10-23T08:00:00.000Z",
+       "source_request_ids": [
+        "6d662941-4a58-572b-993e-441917864b7d",
+        "a543388d-274b-5284-95d1-adb254927336"
+       ],
+       "interest_eligible": false
+      },
+      {
+       "listing_id": "fixture-07",
+       "duration_seconds": 30,
+       "view_count": 1,
+       "last_viewed_at": "2026-10-23T08:00:00.000Z",
+       "source_request_ids": [
+        "6d662941-4a58-572b-993e-441917864b7d"
+       ],
+       "interest_eligible": false
+      }
+     ],
+     "book_viewing_listings": []
+    },
+    "previous_state_id": "native:c916afe5-c5e7-4b55-9184-0d1a1c00de8d"
+   },
+   "cold_start": {
+    "exited": false,
+    "exited_pool_key": null
+   },
+   "native_body": {
+    "contract_version": "1.0",
+    "request_id": "v2-flow-r3",
+    "conversation_id": "v2-flow",
+    "requirements_version": 1,
+    "requirements": {
+     "listing_type": "RENT",
+     "criteria": [
+      {
+       "criterion_id": "budget",
+       "field": "price",
+       "operator": "lte",
+       "value": 3000,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold",
+       "unit": "SGD/month"
+      },
+      {
+       "criterion_id": "bedrooms",
+       "field": "bedrooms",
+       "operator": "gte",
+       "value": 2,
+       "strength": "hard",
+       "weight": 1,
+       "utility": "threshold"
+      },
+      {
+       "criterion_id": "district",
+       "field": "district_code",
+       "operator": "in",
+       "value": [
+        "D05"
+       ],
+       "strength": "soft",
+       "weight": 1,
+       "utility": "threshold"
+      }
+     ]
+    },
+    "feedback": [],
+    "behavior_context": {
+     "version": "1.0",
+     "as_of": "2026-10-23T08:00:00.000Z",
+     "listing_view_durations": [
+      {
+       "listing_id": "fixture-01",
+       "duration_seconds": 95,
+       "view_count": 2,
+       "last_viewed_at": "2026-10-23T08:00:00.000Z",
+       "source_request_ids": [
+        "6d662941-4a58-572b-993e-441917864b7d",
+        "a543388d-274b-5284-95d1-adb254927336"
+       ],
+       "interest_eligible": false
+      },
+      {
+       "listing_id": "fixture-07",
+       "duration_seconds": 30,
+       "view_count": 1,
+       "last_viewed_at": "2026-10-23T08:00:00.000Z",
+       "source_request_ids": [
+        "6d662941-4a58-572b-993e-441917864b7d"
+       ],
+       "interest_eligible": false
+      }
+     ],
+     "book_viewing_listings": []
+    },
+    "previous_state_id": "c916afe5-c5e7-4b55-9184-0d1a1c00de8d",
+    "result_limit": 10,
+    "cold_start": {
+     "exited": false,
+     "exited_pool_key": null
+    }
+   },
+   "expect": {
+    "status": "success",
+    "browsing_weighted": [],
+    "appointment_listing_ids": []
+   }
+  }
+ ]
+}

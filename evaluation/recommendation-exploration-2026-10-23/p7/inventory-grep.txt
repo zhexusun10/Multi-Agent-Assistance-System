@@ -1,0 +1,42 @@
+== 1 python 4-limits
+recommendation/tests/test_terminal_debug.py:134:        assert [r["listing_id"] for r in scores["top"]] == first_ranked[:4]
+== 2 schema 4-limits
+== 3 TS 4/5-limits
+src/adapters/locations.ts:67:      return {entity:null,ref:osm.ref,note:osm.items.length?`“${name}”匹配到多个地点，请选择：${osm.items.slice(0,4).map(e=>String(e.properties.name)).join('、')}。`:`地点目录暂未找到“${name}”，
+src/agents/orchestrator/intent-recognizer.ts:7:export const candidateSchema=z.object({intent:z.enum(categories),confidence:z.number().min(0).max(1).finite(),reasoning:z.string().max(500).optional(),re
+src/domain/knowledge.ts:11:const responseSchema=z.object({supported:z.boolean(),claims:z.array(z.object({text:z.string().min(1).max(700),evidence:z.array(z.object({chunk_id:z.string(),quote:z.string()
+src/domain/knowledge.ts:39:    if(this.model)try{const raw=z.object({queries:z.array(z.string().min(2).max(1000)).max(RAG_PARAMETERS.rewrite_count)}).parse(await this.ask(this.options.rewriteModel||th
+src/types.ts:13:  assignments: z.array(assignmentSchema).min(1).max(4).refine(
+tests/business.test.ts:111:  assert(!recommendationRequestSchema.safeParse({contract_version:'1.0',request_id:'x',conversation_id:'s',requirements_version:1,requirements:{...empty,criteria:[criterion(
+tests/business.test.ts:133:  const request=recommendationRequestSchema.parse({contract_version:'1.0',request_id:raw.request_id,conversation_id:raw.conversation_id,requirements_version:1,requirements:{
+tests/native-geography-live.test.ts:15:   const req=recommendationRequestSchema.parse({contract_version:'1.0',request_id:randomUUID(),conversation_id:randomUUID(),requirements_version:1,result_limit:5
+== 4 ranked prefix
+== 5 explicit/implicit
+frontend/native-ranking.js:16:    if(score.explicit_score!==null)parts.push(`显式偏好 ${score.explicit_score.toFixed(4)} × ${score.explicit_weight}`);
+frontend/native-ranking.js:17:    if(score.implicit_score!==null)parts.push(`样例浏览兴趣 ${score.implicit_score.toFixed(4)} × ${score.implicit_weight}`);
+src/contracts/recommendation-native.ts:50:export const legacyNativeScoresSchema=z.object({explicit_score:unit.nullable(),implicit_score:unit.nullable(),combined_score:unit,explicit_weight:unit,implici
+src/domain/explanation.ts:18:    if(score.explicit_score!==null)parts.push(`显式偏好 ${score.explicit_score.toFixed(4)} × ${score.explicit_weight}`);
+src/domain/explanation.ts:19:    if(score.implicit_score!==null)parts.push(`样例浏览兴趣 ${score.implicit_score.toFixed(4)} × ${score.implicit_weight}`);
+== 6 live prefixes/counts
+src/adapters/locations.ts:67:      return {entity:null,ref:osm.ref,note:osm.items.length?`“${name}”匹配到多个地点，请选择：${osm.items.slice(0,4).map(e=>String(e.properties.name)).join('、')}。`:`地点目录暂未找到“${name}”，
+src/domain/knowledge.ts:39:    if(this.model)try{const raw=z.object({queries:z.array(z.string().min(2).max(1000)).max(RAG_PARAMETERS.rewrite_count)}).parse(await this.ask(this.options.rewriteModel||th
+tests/select-v1-oracle.test.ts:61:  assert(selectV1Violations({...small,recommendations:small.recommendations.slice(0,5)},order,10).length>0);
+== 7 native ranking / formulas
+"docs/Recommendation_Agent_\345\217\214\345\220\221\346\216\245\345\217\243\344\270\216V1\345\267\256\345\274\202.md":21:| response.native.ranking | string[] | 不改写的原生已验证推荐ID顺序 |
+src/domain/feedback-sidecar.ts:22:  if(rec&&native?.contract==='2.0'&&native.ranking.length){
+src/domain/feedback-sidecar.ts:23:    const shown=[...native.ranking],total=new Map<string,number>();
+src/server.ts:141:        if(p.recommendation_request_id!==body.source_request_id||!current.recommendation?.native?.ranking.includes(body.event.listing_id))throw new BusinessError('INVALID_FEEDBACK','
+tests/advanced-live.test.ts:44:      assert.deepEqual(shown,native.ranking);
+tests/native-geography-live.test.ts:30:   const scores=new Map(eligible.map(p=>[String(p.listing_id),softWeight*(1/(1+p.d!/1000))]));
+tests/native-geography-live.test.ts:33:   for(const c of native.recommendations){const p=eligible.find(p=>String(p.listing_id)===c.listing.listing_id)!;assert(Math.abs(c.scores.combined_score-c.scores
+tests/native-recommendation-live.test.ts:42:   assert.deepEqual(rec.native.ranking,first.recommendations.map((c:any)=>c.listing.listing_id));assert.deepEqual(rec.recommendations.map((c:any)=>c.listing
+tests/native-recommendation-live.test.ts:65:   assert.deepEqual(rec.native.ranking,second.recommendations.map((c:any)=>c.listing.listing_id));
+== 8 v1 feedback in examples
+recommendation/examples/generate_contract_examples.py:13:from ..terminal.__main__ import feedback_example
+recommendation/examples/generate_contract_examples.py:45:                "feedback": FeedbackSnapshot.model_validate(feedback_example(first)),
+recommendation/examples/run.py:13:from ..terminal.__main__ import feedback_example
+recommendation/examples/run.py:34:            "feedback": FeedbackSnapshot.model_validate(feedback_example(first)),
+== 9 legacy weighted-v1 module
+legacy.py absent
+== 10 not-in-effect markers
+== end

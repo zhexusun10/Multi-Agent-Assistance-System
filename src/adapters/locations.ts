@@ -7,6 +7,8 @@ import type {Polygon,MultiPolygon} from 'geojson';
 type Station={place_id:string;name:string;reference_points:{exit_code:string|null;object_id:number;latitude:number;longitude:number}[]};
 type Catalog={version:string;source_url:string;raw_sha256:string;retrieved_at:string;measurement:string;stations:Station[]};
 type AreaCatalog={version:string;source_url:string;raw_sha256:string;retrieved_at:string;areas:{place_id:string;name:string;region:string;geometry_index:number}[]};
+/** Rail mode named in a mention: LRT first, then MRT (shared fixture tests/fixtures/place-mention-rules.json). */
+export function stationMode(name:string):'LRT'|'MRT'|undefined{return /lrt|轻轨/i.test(name)?'LRT':/mrt|地铁|捷运/i.test(name)?'MRT':undefined;}
 export const normalizePlace=(name:string)=>name.normalize('NFKC').toLowerCase().replace(/^(?:the)\s+/,'').replace(/(?:mrt|lrt)(?:\s*station)?$/i,'').replace(/\b(?:mrt|lrt|station)\b|地铁站|地铁|捷运站|站/gi,'').replace(/[\s_\-'’().]+/g,'');
 export class LocationService{
   private loaded?:Promise<{catalog:Catalog;aliases:Record<string,string[]>;areaCatalog:AreaCatalog;areas:Entity[];areaAliases:Record<string,string[]>}>;
@@ -50,7 +52,7 @@ export class LocationService{
     const {catalog,aliases,areas,areaCatalog,areaAliases}=await this.catalog();return this.tools.run(ctx,'resolve_place',{name,explicitStation,catalog:catalog.version,areas:areaCatalog.version},async()=>{
       const key=normalizePlace(name);
       if(!explicitStation){const exactAreas=areas.filter(a=>[String(a.properties.name),...(areaAliases[String(a.properties.name)]||[])].some(v=>normalizePlace(v)===key));if(exactAreas.length===1){const entity=exactAreas[0],ref=await this.save(ctx,{mention:name,resolved:entity,source_url:areaCatalog.source_url,dataset_version:areaCatalog.version,raw_sha256:areaCatalog.raw_sha256});return {entity,ref,note:`“${name}”已解析为 URA ${String(entity.properties.name)} 区域；区内距离记为 0，区外按到区域边界的最近直线距离排序。区内房源在此距离项上并列，不表示到同名地铁站或中心点为0米；需要站点距离时可指定 ${String(entity.properties.name)} MRT。`};}}
-      const requestedMode=/lrt|轻轨/i.test(name)?'LRT':/mrt|地铁|捷运/i.test(name)?'MRT':undefined;
+      const requestedMode=stationMode(name);
       const exact=catalog.stations.filter(s=>(!requestedMode||s.name.endsWith(` ${requestedMode} STATION`))&&[s.name,...(aliases[s.name.replace(/ (?:MRT|LRT) STATION$/,'')]||[]),...(areaAliases[s.name.replace(/ (?:MRT|LRT) STATION$/,'')]||[])].some(v=>normalizePlace(v)===key));
       if(exact.length===1){
         const station=exact[0],entity=this.entity(station),ref=await this.save(ctx,{mention:name,resolved:entity,source_url:catalog.source_url,dataset_version:catalog.version,raw_sha256:catalog.raw_sha256,default_neighbourhood_anchor:!explicitStation});

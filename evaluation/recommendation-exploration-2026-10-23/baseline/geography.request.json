@@ -1,0 +1,44 @@
+{
+  "contract_version": "1.0",
+  "conversation_id": "baseline-geography",
+  "feedback": [],
+  "previous_state_id": null,
+  "request_id": "baseline-geography",
+  "requirements": {
+    "criteria": [
+      {
+        "category": null,
+        "criterion_id": "school-distance",
+        "destination_id": "fixture-school",
+        "destination_name": null,
+        "distance_type": "straight_line",
+        "field": "distance",
+        "operator": "lte",
+        "strength": "hard",
+        "transport_mode": null,
+        "unit": "m",
+        "utility": "threshold",
+        "value": 1500.0,
+        "weight": 1.0
+      },
+      {
+        "category": "School",
+        "criterion_id": "nearer-school",
+        "destination_id": null,
+        "destination_name": null,
+        "distance_type": "straight_line",
+        "field": "distance",
+        "operator": "lte",
+        "strength": "soft",
+        "transport_mode": null,
+        "unit": "m",
+        "utility": "proximity",
+        "value": 1500.0,
+        "weight": 1.0
+      }
+    ],
+    "listing_type": "RENT"
+  },
+  "requirements_version": 1,
+  "result_limit": 4
+}

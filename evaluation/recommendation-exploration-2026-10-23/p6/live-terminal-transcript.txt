@@ -1,0 +1,3849 @@
+# P6 terminal transcript: data-mode=database controller=scripted (no LLM) state=<tmp>/state.sqlite (temporary) settings=/Users/tot/Documents/nus-ais/PR1/dev/Multi-Agent-Assistance-System/recommendation/settings/recommendation.yaml (config_hash 603ed132b7b4)
+# 1. First recommendation (fixed seed; session result limit)
+recommendation> requirements @<tmp>/requirements.json
+Accepted requirements v1; committed result unchanged.
+recommendation> show-config selection
+{
+  "selection": {
+    "tie_max_score_span": 0.02,
+    "random_policy": "uniform_without_replacement",
+    "seed_namespace": "recommendation-selection-v1"
+  }
+}
+recommendation> set-seed p6-transcript
+Seed override 'p6-transcript' for new requests (replaces the R3 base seed; recorded in the trace; terminal test override only, never used by the service API).
+recommendation> validate-input
+Input valid: contract 2.0 schema and run-consistency checks (state reference, requirements version, feedback snapshot, result_limit) pass; nothing was submitted.
+recommendation> recommend
+[progress] tool: resolve_entities start
+[progress] tool: resolve_entities end ok 0.1 ms (pool=0, ranked=0, selected=0, evidence=0)
+[progress] tool: build_pool start
+[progress] tool: build_pool end ok 1285.7 ms (pool=306, ranked=0, selected=0, evidence=0)
+[progress] tool: get_geographic_evidence start
+[progress] tool: get_geographic_evidence end ok 0.2 ms (pool=306, ranked=0, selected=0, evidence=0)
+[progress] tool: rank_candidates start
+[progress] tool: rank_candidates end ok 4.2 ms (pool=306, ranked=306, selected=10, evidence=0)
+[progress] gate: checking proposal of 10 listing(s)
+[progress] gate: final_gate ok (selected=10, rows_read=10) 175.0 ms
+Summary: status=success request_id=302492b1-57e6-44a7-9157-eea09f3b137a config_hash=603ed132b7b4
+  pool: cache=built (MISS) size=306 source_count=21431 excluded_hard_fail=20680 excluded_hard_unknown=445 pool_version=8c772524ece6
+  selection: mode=cold_start_exploration seed=141a39ff3302 leaders=3 tie_group=303 cold_start=active (exit_conditions_met=False)
+  #1 20617351 score_rank=1 combined=0.6000 reason=leader
+  #2 500262756 score_rank=2 combined=0.6000 reason=leader
+  #3 500267173 score_rank=3 combined=0.6000 reason=leader
+  #4 23418209 score_rank=33 combined=0.0000 reason=price_exploration_sample
+  #5 25090106 score_rank=74 combined=0.0000 reason=price_exploration_sample
+  #6 25102646 score_rank=76 combined=0.0000 reason=price_exploration_sample
+  #7 500254998 score_rank=179 combined=0.0000 reason=price_exploration_sample
+  #8 500264961 score_rank=199 combined=0.0000 reason=price_exploration_sample
+  #9 500268999 score_rank=205 combined=0.0000 reason=price_exploration_sample
+  #10 500282928 score_rank=251 combined=0.0000 reason=price_exploration_sample
+Response artifact: <tmp>/exports/6638f2ee-8e2f-4686-9ce4-558a0355b1c4.json
+# 2. Inspection of this run's retained data
+recommendation> show-pool --page 1
+source: run 302492b1-57e6-44a7-9157-eea09f3b137a (data retained in memory from this run)
+{
+  "pool": {
+    "pool_key": "0fef3d834fc679444036a0cd8d7ffa550702ef99967005c70a875fbc944d9d55",
+    "pool_version": "8c772524ece61a7535c3fa43106d9741bb94ead3d7f0a0ea81f9588574bbbdc4",
+    "data_version": "fdfce5220311e85438213d9ee4839969db300708224018b2adce5c069892d726",
+    "cache": "built",
+    "outcome": "miss",
+    "size": 306,
+    "source_count": 21431,
+    "excluded_hard_fail": 20680,
+    "excluded_hard_unknown": 445,
+    "unknown_reasons": {
+      "bedrooms: Missing listing attribute": 445
+    }
+  },
+  "page": 1,
+  "pages": 31,
+  "page_size": 10,
+  "rows": [
+    {
+      "listing_id": "20617351",
+      "price": 3000.0,
+      "bedrooms": 2.0,
+      "floor_area_sqft": 700.0,
+      "property_type": "hdb flat",
+      "district_code": "D05",
+      "latitude": 1.31367814,
+      "longitude": 103.770363,
+      "score_rank": 1,
+      "combined_score": 0.6
+    },
+    {
+      "listing_id": "500262756",
+      "price": 3000.0,
+      "bedrooms": 2.0,
+      "floor_area_sqft": 699.0,
+      "property_type": "hdb flat",
+      "district_code": "D05",
+      "latitude": 1.30309775,
+      "longitude": 103.7827819,
+      "score_rank": 2,
+      "combined_score": 0.6
+    },
+    {
+      "listing_id": "500267173",
+      "price": 3000.0,
+      "bedrooms": 2.0,
+      "floor_area_sqft": 721.0,
+      "property_type": "hdb flat",
+      "district_code": "D05",
+      "latitude": 1.32141822,
+      "longitude": 103.7660733,
+      "score_rank": 3,
+      "combined_score": 0.6
+    },
+    {
+      "listing_id": "15087042",
+      "price": 3000.0,
+      "bedrooms": 2.0,
+      "floor_area_sqft": 800.0,
+      "property_type": "hdb flat",
+      "district_code": "D20",
+      "latitude": 1.36744866,
+      "longitude": 103.8486039,
+      "score_rank": 4,
+      "combined_score": 0.0
+    },
+    {
+      "listing_id": "16634118",
+      "price": 2799.0,
+      "bedrooms": 3.0,
+      "floor_area_sqft": 1130.0,
+      "property_type": "hdb flat",
+      "district_code": "D25",
+      "latitude": 1.44316805,
+      "longitude": 103.7925641,
+      "score_rank": 5,
+      "combined_score": 0.0
+    },
+    {
+      "listing_id": "16673267",
+      "price": 2900.0,
+      "bedrooms": 2.0,
+      "floor_area_sqft": 732.0,
+      "property_type": "hdb flat",
+      "district_code": "D23",
+      "latitude": 1.35990401,
+      "longitude": 103.7477853,
+      "score_rank": 6,
+      "combined_score": 0.0
+    },
+    {
+      "listing_id": "16678444",
+      "price": 2800.0,
+      "bedrooms": 2.0,
+      "floor_area_sqft": 882.0,
+      "property_type": "hdb flat",
+      "district_code": "D23",
+      "latitude": 1.35095831,
+      "longitude": 103.7449618,
+      "score_rank": 7,
+      "combined_score": 0.0
+    },
+    {
+      "listing_id": "18298616",
+      "price": 2900.0,
+      "bedrooms": 2.0,
+      "floor_area_sqft": 635.0,
+      "property_type": "hdb flat",
+      "district_code": "D03",
+      "latitude": 1.29056458,
+      "longitude": 103.8029965,
+      "score_rank": 8,
+      "combined_score": 0.0
+    },
+    {
+      "listing_id": "18819863",
+      "price": 2800.0,
+      "bedrooms": 2.0,
+      "floor_area_sqft": 500.0,
+      "property_type": "hdb flat",
+      "district_code": "D03",
+      "latitude": 1.28930147,
+      "longitude": 103.8092638,
+      "score_rank": 9,
+      "combined_score": 0.0
+    },
+    {
+      "listing_id": "19130233",
+      "price": 3000.0,
+      "bedrooms": 2.0,
+      "floor_area_sqft": 785.0,
+      "property_type": "hdb flat",
+      "district_code": "D23",
+      "latitude": 1.34588181,
+      "longitude": 103.7485673,
+      "score_rank": 10,
+      "combined_score": 0.0
+    }
+  ]
+}
+recommendation> show-resolution
+source: run 302492b1-57e6-44a7-9157-eea09f3b137a (data retained in memory from this run)
+No geographic criteria: nothing to resolve.
+recommendation> show-scores --top 5
+source: run 302492b1-57e6-44a7-9157-eea09f3b137a (data retained in memory from this run)
+{
+  "scored": 306,
+  "weights": {
+    "soft_criteria": {
+      "district": 1.0
+    },
+    "soft_weight": 0.6,
+    "behavior_weight": 0.4,
+    "appointment_weight": 0.6,
+    "browsing_weight": 0.4,
+    "features": {
+      "property_type": 0.2,
+      "floor_area_sqft": 0.2,
+      "geography": 0.24
+    }
+  },
+  "suppressed_features": [
+    "bedrooms",
+    "price"
+  ],
+  "dropped_features": {},
+  "active_features": [
+    "property_type",
+    "floor_area_sqft",
+    "geography"
+  ],
+  "top": [
+    {
+      "listing_id": "20617351",
+      "score_rank": 1,
+      "combined_score": 0.6,
+      "soft_score": 1.0,
+      "behavior_score": null,
+      "appointment_score": null,
+      "browsing_score": null,
+      "soft_evidence_coverage": 1.0,
+      "comparison_coverage": null,
+      "selected": "leader"
+    },
+    {
+      "listing_id": "500262756",
+      "score_rank": 2,
+      "combined_score": 0.6,
+      "soft_score": 1.0,
+      "behavior_score": null,
+      "appointment_score": null,
+      "browsing_score": null,
+      "soft_evidence_coverage": 1.0,
+      "comparison_coverage": null,
+      "selected": "leader"
+    },
+    {
+      "listing_id": "500267173",
+      "score_rank": 3,
+      "combined_score": 0.6,
+      "soft_score": 1.0,
+      "behavior_score": null,
+      "appointment_score": null,
+      "browsing_score": null,
+      "soft_evidence_coverage": 1.0,
+      "comparison_coverage": null,
+      "selected": "leader"
+    },
+    {
+      "listing_id": "15087042",
+      "score_rank": 4,
+      "combined_score": 0.0,
+      "soft_score": 0.0,
+      "behavior_score": null,
+      "appointment_score": null,
+      "browsing_score": null,
+      "soft_evidence_coverage": 1.0,
+      "comparison_coverage": null,
+      "selected": null
+    },
+    {
+      "listing_id": "16634118",
+      "score_rank": 5,
+      "combined_score": 0.0,
+      "soft_score": 0.0,
+      "behavior_score": null,
+      "appointment_score": null,
+      "browsing_score": null,
+      "soft_evidence_coverage": 1.0,
+      "comparison_coverage": null,
+      "selected": null
+    }
+  ]
+}
+recommendation> show-cold-start
+source: run 302492b1-57e6-44a7-9157-eea09f3b137a (data retained in memory from this run)
+{
+  "cold_start": {
+    "evaluated": true,
+    "active": true,
+    "reason": "b_above_max; s_below_min",
+    "coverage_c": 1.0,
+    "boundary_group_b": 303,
+    "stability_s": 0.3149999999999999,
+    "thresholds": {
+      "c": 0.8,
+      "b": 5,
+      "s": 0.9
+    },
+    "exit_conditions_met": false,
+    "pool_key": "0fef3d834fc679444036a0cd8d7ffa550702ef99967005c70a875fbc944d9d55"
+  },
+  "details": {
+    "stability_seed": "109e92cf52fcf4578f05f04169f80c95aaa2acd6c1d7d8a06751ae6fc5bff223",
+    "trials": 20,
+    "weight_perturbation_fraction": 0.2,
+    "request_cold_start": {
+      "exited": false,
+      "exited_pool_key": null
+    },
+    "duration_ms": 1.4381660148501396
+  }
+}
+Cold start is active when enabled, the pool exceeds result_limit and the exit conditions (C >= c, B <= b, S >= s) are not met; without soft criteria C = 0, so cold start cannot be exited.
+recommendation> show-selection
+source: run 302492b1-57e6-44a7-9157-eea09f3b137a (data retained in memory from this run)
+{
+  "selection": {
+    "mode": "cold_start_exploration",
+    "algorithm_version": "select-v1",
+    "seed": "141a39ff3302c4eaeb22e9f00fcb9b096c199d0032bb8fcd49678dcfc03d6f5e",
+    "result_limit": 10,
+    "leaders": 3,
+    "tie_group": {
+      "size": 303,
+      "min_score": 0.0,
+      "max_score": 0.0,
+      "span": 0.0,
+      "epsilon": 0.02
+    },
+    "exploration": {
+      "candidate_count": 303,
+      "sample_size": 30,
+      "bins": [
+        {
+          "lower": 450.0,
+          "upper": 2800.0,
+          "count": 59,
+          "sampled": 1,
+          "quota": 6
+        },
+        {
+          "lower": 2800.0,
+          "upper": 2900.0,
+          "count": 46,
+          "sampled": 1,
+          "quota": 4
+        },
+        {
+          "lower": 2900.0,
+          "upper": 3000.0,
+          "count": 198,
+          "sampled": 5,
+          "quota": 20
+        }
+      ]
+    },
+    "cold_start": {
+      "evaluated": true,
+      "active": true,
+      "reason": "b_above_max; s_below_min",
+      "coverage_c": 1.0,
+      "boundary_group_b": 303,
+      "stability_s": 0.3149999999999999,
+      "thresholds": {
+        "c": 0.8,
+        "b": 5,
+        "s": 0.9
+      },
+      "exit_conditions_met": false,
+      "pool_key": "0fef3d834fc679444036a0cd8d7ffa550702ef99967005c70a875fbc944d9d55"
+    }
+  },
+  "seed_override": true,
+  "items": [
+    {
+      "rank": 1,
+      "listing_id": "20617351",
+      "score_rank": 1,
+      "selection_reason": "leader",
+      "selection_note": "Clear leader: score rank 1 of 306, ahead of the near-tie group at the result cutoff"
+    },
+    {
+      "rank": 2,
+      "listing_id": "500262756",
+      "score_rank": 2,
+      "selection_reason": "leader",
+      "selection_note": "Clear leader: score rank 2 of 306, ahead of the near-tie group at the result cutoff"
+    },
+    {
+      "rank": 3,
+      "listing_id": "500267173",
+      "score_rank": 3,
+      "selection_reason": "leader",
+      "selection_note": "Clear leader: score rank 3 of 306, ahead of the near-tie group at the result cutoff"
+    },
+    {
+      "rank": 4,
+      "listing_id": "23418209",
+      "score_rank": 33,
+      "selection_reason": "price_exploration_sample",
+      "selection_note": "Cold-start price exploration: drawn from the price bin [2900, 3000] among 303 candidates (score ranks 4-306); score rank 33"
+    },
+    {
+      "rank": 5,
+      "listing_id": "25090106",
+      "score_rank": 74,
+      "selection_reason": "price_exploration_sample",
+      "selection_note": "Cold-start price exploration: drawn from the price bin [2900, 3000] among 303 candidates (score ranks 4-306); score rank 74"
+    },
+    {
+      "rank": 6,
+      "listing_id": "25102646",
+      "score_rank": 76,
+      "selection_reason": "price_exploration_sample",
+      "selection_note": "Cold-start price exploration: drawn from the price bin [2800, 2900) among 303 candidates (score ranks 4-306); score rank 76"
+    },
+    {
+      "rank": 7,
+      "listing_id": "500254998",
+      "score_rank": 179,
+      "selection_reason": "price_exploration_sample",
+      "selection_note": "Cold-start price exploration: drawn from the price bin [2900, 3000] among 303 candidates (score ranks 4-306); score rank 179"
+    },
+    {
+      "rank": 8,
+      "listing_id": "500264961",
+      "score_rank": 199,
+      "selection_reason": "price_exploration_sample",
+      "selection_note": "Cold-start price exploration: drawn from the price bin [2900, 3000] among 303 candidates (score ranks 4-306); score rank 199"
+    },
+    {
+      "rank": 9,
+      "listing_id": "500268999",
+      "score_rank": 205,
+      "selection_reason": "price_exploration_sample",
+      "selection_note": "Cold-start price exploration: drawn from the price bin [2900, 3000] among 303 candidates (score ranks 4-306); score rank 205"
+    },
+    {
+      "rank": 10,
+      "listing_id": "500282928",
+      "score_rank": 251,
+      "selection_reason": "price_exploration_sample",
+      "selection_note": "Cold-start price exploration: drawn from the price bin [450, 2800) among 303 candidates (score ranks 4-306); score rank 251"
+    }
+  ]
+}
+# single-listing inspection (retained)
+recommendation> inspect-listing 20617351
+source: run 302492b1-57e6-44a7-9157-eea09f3b137a (data retained in memory from this run)
+{
+  "recomputed": false,
+  "in_pool": true,
+  "row": {
+    "listing_id": "20617351",
+    "price": 3000.0,
+    "bedrooms": 2.0,
+    "floor_area_sqft": 700.0,
+    "property_type": "hdb flat",
+    "district_code": "D05",
+    "latitude": 1.31367814,
+    "longitude": 103.770363
+  },
+  "criterion_results": [
+    {
+      "criterion_id": "budget",
+      "outcome": "pass",
+      "reason": "Exact criterion comparison",
+      "evidence_refs": []
+    },
+    {
+      "criterion_id": "bedrooms",
+      "outcome": "pass",
+      "reason": "Exact criterion comparison",
+      "evidence_refs": []
+    },
+    {
+      "criterion_id": "district",
+      "outcome": "pass",
+      "reason": "Exact criterion comparison",
+      "evidence_refs": []
+    }
+  ],
+  "evidence": [],
+  "score_rank": 1,
+  "scores": {
+    "soft_score": 1.0,
+    "behavior_score": null,
+    "appointment_score": null,
+    "browsing_score": null,
+    "combined_score": 0.6,
+    "soft_weight": 0.6,
+    "behavior_weight": 0.4,
+    "appointment_weight": 0.6,
+    "browsing_weight": 0.4,
+    "soft_evidence_coverage": 1.0,
+    "comparison_coverage": null,
+    "contributions": [
+      {
+        "feature": "district",
+        "branch": "soft",
+        "reference": null,
+        "raw_difference": null,
+        "scale": null,
+        "similarity": 1.0,
+        "weight": 1.0,
+        "contribution": 1.0,
+        "unknown": false,
+        "method": "threshold"
+      }
+    ],
+    "suppressed_features": [
+      "bedrooms",
+      "price"
+    ],
+    "ordering": "fused"
+  },
+  "selected": true,
+  "rank": 1,
+  "selection_reason": "leader",
+  "selection_note": "Clear leader: score rank 1 of 306, ahead of the near-tie group at the result cutoff"
+}
+# listing outside the pool (recomputed, labelled)
+recommendation> inspect-listing 10065953
+source: run 302492b1-57e6-44a7-9157-eea09f3b137a (data retained in memory from this run)
+Listing 10065953 is not in this run's exploration pool: recomputed (fresh by-id read and criterion evaluation; the run itself never stored data for it).
+{
+  "recomputed": true,
+  "listing_id": "10065953",
+  "found": true,
+  "row": {
+    "listing_id": "10065953",
+    "price": 4800.0,
+    "bedrooms": 2.0,
+    "floor_area_sqft": 1021.0,
+    "property_type": "apartment",
+    "district_code": "D08",
+    "latitude": null,
+    "longitude": null
+  },
+  "hard_criteria_pass": false,
+  "criterion_results": [
+    {
+      "criterion_id": "budget",
+      "outcome": "fail",
+      "reason": "Exact criterion comparison",
+      "evidence_refs": []
+    },
+    {
+      "criterion_id": "bedrooms",
+      "outcome": "pass",
+      "reason": "Exact criterion comparison",
+      "evidence_refs": []
+    },
+    {
+      "criterion_id": "district",
+      "outcome": "fail",
+      "reason": "Exact criterion comparison",
+      "evidence_refs": []
+    }
+  ],
+  "hard_failures": [
+    "budget"
+  ],
+  "evidence": []
+}
+# 3. Feedback re-rank (orchestrator-style full snapshot)
+recommendation> feedback-template <tmp>/template.json
+{
+  "previous_round": {
+    "request_id": "302492b1-57e6-44a7-9157-eea09f3b137a",
+    "shown_listing_ids": [
+      "20617351",
+      "500262756",
+      "500267173",
+      "23418209",
+      "25090106",
+      "25102646",
+      "500254998",
+      "500264961",
+      "500268999",
+      "500282928"
+    ],
+    "browsing": [
+      {
+        "listing_id": "20617351",
+        "status": "recorded",
+        "duration_seconds": null
+      },
+      {
+        "listing_id": "500262756",
+        "status": "recorded",
+        "duration_seconds": null
+      },
+      {
+        "listing_id": "500267173",
+        "status": "recorded",
+        "duration_seconds": null
+      },
+      {
+        "listing_id": "23418209",
+        "status": "recorded",
+        "duration_seconds": null
+      },
+      {
+        "listing_id": "25090106",
+        "status": "recorded",
+        "duration_seconds": null
+      },
+      {
+        "listing_id": "25102646",
+        "status": "recorded",
+        "duration_seconds": null
+      },
+      {
+        "listing_id": "500254998",
+        "status": "recorded",
+        "duration_seconds": null
+      },
+      {
+        "listing_id": "500264961",
+        "status": "recorded",
+        "duration_seconds": null
+      },
+      {
+        "listing_id": "500268999",
+        "status": "recorded",
+        "duration_seconds": null
+      },
+      {
+        "listing_id": "500282928",
+        "status": "recorded",
+        "duration_seconds": null
+      }
+    ]
+  },
+  "appointments": []
+}
+recommendation> feedback @<tmp>/feedback.json
+Staged feedback snapshot: previous_round=302492b1-57e6-44a7-9157-eea09f3b137a, 10 browsing records, 0 appointment listings; replaces any staged snapshot.
+recommendation> show-input
+Staged input (not submitted):
+{
+  "contract_version": "2.0",
+  "request_id": "<new request_id minted by recommend>",
+  "conversation_id": "p6-database-transcript",
+  "requirements_version": 1,
+  "requirements": {
+    "listing_type": "RENT",
+    "criteria": [
+      {
+        "criterion_id": "budget",
+        "field": "price",
+        "operator": "lte",
+        "value": 3000.0,
+        "unit": "SGD/month",
+        "strength": "hard",
+        "weight": 1.0,
+        "utility": "threshold",
+        "destination_id": null,
+        "destination_name": null,
+        "category": null,
+        "distance_type": null,
+        "transport_mode": null
+      },
+      {
+        "criterion_id": "bedrooms",
+        "field": "bedrooms",
+        "operator": "gte",
+        "value": 2.0,
+        "unit": null,
+        "strength": "hard",
+        "weight": 1.0,
+        "utility": "threshold",
+        "destination_id": null,
+        "destination_name": null,
+        "category": null,
+        "distance_type": null,
+        "transport_mode": null
+      },
+      {
+        "criterion_id": "district",
+        "field": "district_code",
+        "operator": "in",
+        "value": [
+          "D05"
+        ],
+        "unit": null,
+        "strength": "soft",
+        "weight": 1.0,
+        "utility": "threshold",
+        "destination_id": null,
+        "destination_name": null,
+        "category": null,
+        "distance_type": null,
+        "transport_mode": null
+      }
+    ]
+  },
+  "previous_state_id": "f95e38de-4298-4371-ade6-3ce4f5fea8f2",
+  "result_limit": null,
+  "feedback": {
+    "previous_round": {
+      "request_id": "302492b1-57e6-44a7-9157-eea09f3b137a",
+      "shown_listing_ids": [
+        "20617351",
+        "500262756",
+        "500267173",
+        "23418209",
+        "25090106",
+        "25102646",
+        "500254998",
+        "500264961",
+        "500268999",
+        "500282928"
+      ],
+      "browsing": [
+        {
+          "listing_id": "20617351",
+          "status": "recorded",
+          "duration_seconds": 150.0
+        },
+        {
+          "listing_id": "500262756",
+          "status": "recorded",
+          "duration_seconds": 0.0
+        },
+        {
+          "listing_id": "500267173",
+          "status": "recorded",
+          "duration_seconds": 0.0
+        },
+        {
+          "listing_id": "23418209",
+          "status": "recorded",
+          "duration_seconds": 0.0
+        },
+        {
+          "listing_id": "25090106",
+          "status": "recorded",
+          "duration_seconds": 0.0
+        },
+        {
+          "listing_id": "25102646",
+          "status": "recorded",
+          "duration_seconds": 0.0
+        },
+        {
+          "listing_id": "500254998",
+          "status": "recorded",
+          "duration_seconds": 0.0
+        },
+        {
+          "listing_id": "500264961",
+          "status": "recorded",
+          "duration_seconds": 0.0
+        },
+        {
+          "listing_id": "500268999",
+          "status": "recorded",
+          "duration_seconds": 0.0
+        },
+        {
+          "listing_id": "500282928",
+          "status": "recorded",
+          "duration_seconds": 0.0
+        }
+      ]
+    },
+    "appointments": []
+  },
+  "cold_start": {
+    "exited": false,
+    "exited_pool_key": null
+  }
+}
+seed override: 'p6-transcript'; settings: /Users/tot/Documents/nus-ais/PR1/dev/Multi-Agent-Assistance-System/recommendation/settings/recommendation.yaml (config_hash 603ed132b7b4); session overrides: {}
+recommendation> recommend
+[progress] tool: resolve_entities start
+[progress] tool: resolve_entities end ok 0.1 ms (pool=0, ranked=0, selected=0, evidence=0)
+[progress] tool: build_pool start
+[progress] tool: build_pool end ok 144.9 ms (pool=306, ranked=0, selected=0, evidence=0)
+[progress] tool: get_geographic_evidence start
+[progress] tool: get_geographic_evidence end ok 0.2 ms (pool=306, ranked=0, selected=0, evidence=0)
+[progress] tool: rank_candidates start
+[progress] tool: rank_candidates end ok 24.2 ms (pool=306, ranked=306, selected=10, evidence=0)
+[progress] gate: checking proposal of 10 listing(s)
+[progress] gate: final_gate ok (selected=10, rows_read=10) 149.9 ms
+Summary: status=success request_id=a4da0f5e-e306-4c5e-b910-3382373c85e2 config_hash=603ed132b7b4
+  pool: cache=reused (HIT) size=306 source_count=21431 excluded_hard_fail=20680 excluded_hard_unknown=445 pool_version=8c772524ece6
+  selection: mode=cold_start_exploration seed=141a39ff3302 leaders=4 tie_group=42 cold_start=active (exit_conditions_met=False)
+  #1 500267173 score_rank=1 combined=0.7276 reason=leader
+  #2 500262756 score_rank=2 combined=0.7231 reason=leader
+  #3 20617351 score_rank=3 combined=0.6000 reason=leader
+  #4 24866516 score_rank=4 combined=0.1202 reason=leader
+  #5 25317441 score_rank=8 combined=0.1000 reason=price_exploration_sample
+  #6 25280719 score_rank=28 combined=0.0994 reason=price_exploration_sample
+  #7 500235539 score_rank=30 combined=0.0994 reason=price_exploration_sample
+  #8 500243433 score_rank=31 combined=0.0994 reason=price_exploration_sample
+  #9 22171055 score_rank=38 combined=0.0934 reason=price_exploration_sample
+  #10 500061668 score_rank=39 combined=0.0934 reason=price_exploration_sample
+Response artifact: <tmp>/exports/6cd8da39-56ce-4acd-9400-19787bb70453.json
+Rank/score changes: {"500267173": {"old_rank": 3, "new_rank": 1, "old_combined": 0.6, "combined": 0.7276323963799093, "score_change": 0.1276323963799093}, "500262756": {"old_rank": 2, "new_rank": 2, "old_combined": 0.6, "combined": 0.7231186712042488, "score_change": 0.1231186712042488}, "20617351": {"old_rank": 1, "new_rank": 3, "old_combined": 0.6, "combined": 0.6, "score_change": 0.0}, "24866516": {"old_rank": null, "new_rank": 4, "old_combined": null, "combined": 0.12023269974015256, "score_change": null}, "25317441": {"old_rank": null, "new_rank": 5, "old_combined": null, "combined": 0.1, "score_change": null}, "25280719": {"old_rank": null, "new_rank": 6, "old_combined": null, "combined": 0.09939577039274926, "score_change": null}, "500235539": {"old_rank": null, "new_rank": 7, "old_combined": null, "combined": 0.09939577039274926, "score_change": null}, "500243433": {"old_rank": null, "new_rank": 8, "old_combined": null, "combined": 0.09939577039274926, "score_change": null}, "22171055": {"old_rank": null, "new_rank": 9, "old_combined": null, "combined": 0.09335347432024171, "score_change": null}, "500061668": {"old_rank": null, "new_rank": 10, "old_combined": null, "combined": 0.09335347432024171, "score_change": null}}
+# 4. Config comparison with the fixed seed: same settings + seed, new request_id
+recommendation> recommend
+[progress] tool: resolve_entities start
+[progress] tool: resolve_entities end ok 0.1 ms (pool=0, ranked=0, selected=0, evidence=0)
+[progress] tool: build_pool start
+[progress] tool: build_pool end ok 149.4 ms (pool=306, ranked=0, selected=0, evidence=0)
+[progress] tool: get_geographic_evidence start
+[progress] tool: get_geographic_evidence end ok 0.5 ms (pool=306, ranked=0, selected=0, evidence=0)
+[progress] tool: rank_candidates start
+[progress] tool: rank_candidates end ok 13.3 ms (pool=306, ranked=306, selected=10, evidence=0)
+[progress] gate: checking proposal of 10 listing(s)
+[progress] gate: final_gate ok (selected=10, rows_read=10) 146.9 ms
+Summary: status=success request_id=143e83e4-8f98-4497-b163-2809970a4951 config_hash=603ed132b7b4
+  pool: cache=reused (HIT) size=306 source_count=21431 excluded_hard_fail=20680 excluded_hard_unknown=445 pool_version=8c772524ece6
+  selection: mode=cold_start_exploration seed=141a39ff3302 leaders=3 tie_group=303 cold_start=active (exit_conditions_met=False)
+  #1 20617351 score_rank=1 combined=0.6000 reason=leader
+  #2 500262756 score_rank=2 combined=0.6000 reason=leader
+  #3 500267173 score_rank=3 combined=0.6000 reason=leader
+  #4 23418209 score_rank=33 combined=0.0000 reason=price_exploration_sample
+  #5 25090106 score_rank=74 combined=0.0000 reason=price_exploration_sample
+  #6 25102646 score_rank=76 combined=0.0000 reason=price_exploration_sample
+  #7 500254998 score_rank=179 combined=0.0000 reason=price_exploration_sample
+  #8 500264961 score_rank=199 combined=0.0000 reason=price_exploration_sample
+  #9 500268999 score_rank=205 combined=0.0000 reason=price_exploration_sample
+  #10 500282928 score_rank=251 combined=0.0000 reason=price_exploration_sample
+Response artifact: <tmp>/exports/8c7b80ad-3add-4d82-8e0b-b0ccc6229fa3.json
+Rank/score changes: {"20617351": {"old_rank": 3, "new_rank": 1, "old_combined": 0.6, "combined": 0.6, "score_change": 0.0}, "500262756": {"old_rank": 2, "new_rank": 2, "old_combined": 0.7231186712042488, "combined": 0.6, "score_change": -0.1231186712042488}, "500267173": {"old_rank": 1, "new_rank": 3, "old_combined": 0.7276323963799093, "combined": 0.6, "score_change": -0.1276323963799093}, "23418209": {"old_rank": null, "new_rank": 4, "old_combined": null, "combined": 0.0, "score_change": null}, "25090106": {"old_rank": null, "new_rank": 5, "old_combined": null, "combined": 0.0, "score_change": null}, "25102646": {"old_rank": null, "new_rank": 6, "old_combined": null, "combined": 0.0, "score_change": null}, "500254998": {"old_rank": null, "new_rank": 7, "old_combined": null, "combined": 0.0, "score_change": null}, "500264961": {"old_rank": null, "new_rank": 8, "old_combined": null, "combined": 0.0, "score_change": null}, "500268999": {"old_rank": null, "new_rank": 9, "old_combined": null, "combined": 0.0, "score_change": null}, "500282928": {"old_rank": null, "new_rank": 10, "old_combined": null, "combined": 0.0, "score_change": null}}
+# same seed, cold start disabled (only the settings differ)
+recommendation> set-config cold_start.enabled false
+Session override cold_start.enabled = false (validated; the settings file is not written; applies to new requests only). config_hash 603ed132b7b4 -> dfd329479a5a, selection_hash d0b84d8a3d2c -> 4ec2d64a300f
+recommendation> recommend
+[progress] tool: resolve_entities start
+[progress] tool: resolve_entities end ok 0.1 ms (pool=0, ranked=0, selected=0, evidence=0)
+[progress] tool: build_pool start
+[progress] tool: build_pool end ok 158.0 ms (pool=306, ranked=0, selected=0, evidence=0)
+[progress] tool: get_geographic_evidence start
+[progress] tool: get_geographic_evidence end ok 0.3 ms (pool=306, ranked=0, selected=0, evidence=0)
+[progress] tool: rank_candidates start
+[progress] tool: rank_candidates end ok 6.7 ms (pool=306, ranked=306, selected=10, evidence=0)
+[progress] gate: checking proposal of 10 listing(s)
+[progress] gate: final_gate ok (selected=10, rows_read=10) 155.8 ms
+Summary: status=success request_id=ff4b66a3-591a-4126-ad5b-f1c324c26b6d config_hash=dfd329479a5a
+  pool: cache=reused (HIT) size=306 source_count=21431 excluded_hard_fail=20680 excluded_hard_unknown=445 pool_version=8c772524ece6
+  selection: mode=near_tie_sampling seed=141a39ff3302 leaders=3 tie_group=303 cold_start=inactive (exit_conditions_met=False)
+  #1 20617351 score_rank=1 combined=0.6000 reason=leader
+  #2 500262756 score_rank=2 combined=0.6000 reason=leader
+  #3 500267173 score_rank=3 combined=0.6000 reason=leader
+  #4 24049241 score_rank=44 combined=0.0000 reason=tie_group_sample
+  #5 500029847 score_rank=126 combined=0.0000 reason=tie_group_sample
+  #6 500262073 score_rank=193 combined=0.0000 reason=tie_group_sample
+  #7 500273341 score_rank=218 combined=0.0000 reason=tie_group_sample
+  #8 500277392 score_rank=229 combined=0.0000 reason=tie_group_sample
+  #9 500280968 score_rank=242 combined=0.0000 reason=tie_group_sample
+  #10 500288139 score_rank=287 combined=0.0000 reason=tie_group_sample
+Response artifact: <tmp>/exports/8e64c0ab-c51d-44fe-b8a8-b5a334c4274a.json
+Rank/score changes: {"20617351": {"old_rank": 1, "new_rank": 1, "old_combined": 0.6, "combined": 0.6, "score_change": 0.0}, "500262756": {"old_rank": 2, "new_rank": 2, "old_combined": 0.6, "combined": 0.6, "score_change": 0.0}, "500267173": {"old_rank": 3, "new_rank": 3, "old_combined": 0.6, "combined": 0.6, "score_change": 0.0}, "24049241": {"old_rank": null, "new_rank": 4, "old_combined": null, "combined": 0.0, "score_change": null}, "500029847": {"old_rank": null, "new_rank": 5, "old_combined": null, "combined": 0.0, "score_change": null}, "500262073": {"old_rank": null, "new_rank": 6, "old_combined": null, "combined": 0.0, "score_change": null}, "500273341": {"old_rank": null, "new_rank": 7, "old_combined": null, "combined": 0.0, "score_change": null}, "500277392": {"old_rank": null, "new_rank": 8, "old_combined": null, "combined": 0.0, "score_change": null}, "500280968": {"old_rank": null, "new_rank": 9, "old_combined": null, "combined": 0.0, "score_change": null}, "500288139": {"old_rank": null, "new_rank": 10, "old_combined": null, "combined": 0.0, "score_change": null}}
+# same seed, same feedback, different fusion weights
+recommendation> feedback-template <tmp>/weights-feedback.json
+{
+  "previous_round": {
+    "request_id": "ff4b66a3-591a-4126-ad5b-f1c324c26b6d",
+    "shown_listing_ids": [
+      "20617351",
+      "500262756",
+      "500267173",
+      "24049241",
+      "500029847",
+      "500262073",
+      "500273341",
+      "500277392",
+      "500280968",
+      "500288139"
+    ],
+    "browsing": [
+      {
+        "listing_id": "20617351",
+        "status": "recorded",
+        "duration_seconds": null
+      },
+      {
+        "listing_id": "500262756",
+        "status": "recorded",
+        "duration_seconds": null
+      },
+      {
+        "listing_id": "500267173",
+        "status": "recorded",
+        "duration_seconds": null
+      },
+      {
+        "listing_id": "24049241",
+        "status": "recorded",
+        "duration_seconds": null
+      },
+      {
+        "listing_id": "500029847",
+        "status": "recorded",
+        "duration_seconds": null
+      },
+      {
+        "listing_id": "500262073",
+        "status": "recorded",
+        "duration_seconds": null
+      },
+      {
+        "listing_id": "500273341",
+        "status": "recorded",
+        "duration_seconds": null
+      },
+      {
+        "listing_id": "500277392",
+        "status": "recorded",
+        "duration_seconds": null
+      },
+      {
+        "listing_id": "500280968",
+        "status": "recorded",
+        "duration_seconds": null
+      },
+      {
+        "listing_id": "500288139",
+        "status": "recorded",
+        "duration_seconds": null
+      }
+    ]
+  },
+  "appointments": []
+}
+recommendation> set-config ranking {"soft_weight":0.6,"behavior_weight":0.4}
+Session override ranking = {"soft_weight": 0.6, "behavior_weight": 0.4} (validated; the settings file is not written; applies to new requests only). config_hash dfd329479a5a -> dfd329479a5a, selection_hash 4ec2d64a300f -> 4ec2d64a300f
+recommendation> feedback @<tmp>/weights-feedback.json
+Staged feedback snapshot: previous_round=ff4b66a3-591a-4126-ad5b-f1c324c26b6d, 10 browsing records, 0 appointment listings; replaces any staged snapshot.
+recommendation> recommend
+[progress] tool: resolve_entities start
+[progress] tool: resolve_entities end ok 0.1 ms (pool=0, ranked=0, selected=0, evidence=0)
+[progress] tool: build_pool start
+[progress] tool: build_pool end ok 153.5 ms (pool=306, ranked=0, selected=0, evidence=0)
+[progress] tool: get_geographic_evidence start
+[progress] tool: get_geographic_evidence end ok 0.6 ms (pool=306, ranked=0, selected=0, evidence=0)
+[progress] tool: rank_candidates start
+[progress] tool: rank_candidates end ok 7.9 ms (pool=306, ranked=306, selected=10, evidence=0)
+[progress] gate: checking proposal of 10 listing(s)
+[progress] gate: final_gate ok (selected=10, rows_read=10) 159.8 ms
+Summary: status=success request_id=51d49a23-5ddb-40f5-a20d-5fe96782b988 config_hash=dfd329479a5a
+  pool: cache=reused (HIT) size=306 source_count=21431 excluded_hard_fail=20680 excluded_hard_unknown=445 pool_version=8c772524ece6
+  selection: mode=near_tie_sampling seed=141a39ff3302 leaders=4 tie_group=42 cold_start=inactive (exit_conditions_met=False)
+  #1 500267173 score_rank=1 combined=0.7276 reason=leader
+  #2 500262756 score_rank=2 combined=0.7231 reason=leader
+  #3 20617351 score_rank=3 combined=0.6000 reason=leader
+  #4 24866516 score_rank=4 combined=0.1202 reason=leader
+  #5 25375523 score_rank=10 combined=0.1000 reason=tie_group_sample
+  #6 500273673 score_rank=20 combined=0.1000 reason=tie_group_sample
+  #7 25280719 score_rank=28 combined=0.0994 reason=tie_group_sample
+  #8 500243433 score_rank=31 combined=0.0994 reason=tie_group_sample
+  #9 500269731 score_rank=33 combined=0.0994 reason=tie_group_sample
+  #10 500188102 score_rank=40 combined=0.0934 reason=tie_group_sample
+Response artifact: <tmp>/exports/a180e028-5ac8-4f85-8a74-0a8ba99a53e5.json
+Rank/score changes: {"500267173": {"old_rank": 3, "new_rank": 1, "old_combined": 0.6, "combined": 0.7276323963799093, "score_change": 0.1276323963799093}, "500262756": {"old_rank": 2, "new_rank": 2, "old_combined": 0.6, "combined": 0.7231186712042488, "score_change": 0.1231186712042488}, "20617351": {"old_rank": 1, "new_rank": 3, "old_combined": 0.6, "combined": 0.6, "score_change": 0.0}, "24866516": {"old_rank": null, "new_rank": 4, "old_combined": null, "combined": 0.12023269974015256, "score_change": null}, "25375523": {"old_rank": null, "new_rank": 5, "old_combined": null, "combined": 0.1, "score_change": null}, "500273673": {"old_rank": null, "new_rank": 6, "old_combined": null, "combined": 0.1, "score_change": null}, "25280719": {"old_rank": null, "new_rank": 7, "old_combined": null, "combined": 0.09939577039274926, "score_change": null}, "500243433": {"old_rank": null, "new_rank": 8, "old_combined": null, "combined": 0.09939577039274926, "score_change": null}, "500269731": {"old_rank": null, "new_rank": 9, "old_combined": null, "combined": 0.09939577039274926, "score_change": null}, "500188102": {"old_rank": null, "new_rank": 10, "old_combined": null, "combined": 0.09335347432024171, "score_change": null}}
+recommendation> show-scores --top 5
+source: run 51d49a23-5ddb-40f5-a20d-5fe96782b988 (data retained in memory from this run)
+{
+  "scored": 306,
+  "weights": {
+    "soft_criteria": {
+      "district": 1.0
+    },
+    "soft_weight": 0.6,
+    "behavior_weight": 0.4,
+    "appointment_weight": 0.6,
+    "browsing_weight": 0.4,
+    "features": {
+      "property_type": 0.2,
+      "floor_area_sqft": 0.2,
+      "geography": 0.24
+    }
+  },
+  "suppressed_features": [
+    "bedrooms",
+    "price"
+  ],
+  "dropped_features": {},
+  "active_features": [
+    "property_type",
+    "floor_area_sqft",
+    "geography"
+  ],
+  "top": [
+    {
+      "listing_id": "500267173",
+      "score_rank": 1,
+      "combined_score": 0.7276323963799093,
+      "soft_score": 1.0,
+      "behavior_score": 0.3190809909497732,
+      "appointment_score": null,
+      "browsing_score": 0.797702477374433,
+      "soft_evidence_coverage": 1.0,
+      "comparison_coverage": 1.0,
+      "selected": "leader"
+    },
+    {
+      "listing_id": "500262756",
+      "score_rank": 2,
+      "combined_score": 0.7231186712042488,
+      "soft_score": 1.0,
+      "behavior_score": 0.30779667801062205,
+      "appointment_score": null,
+      "browsing_score": 0.7694916950265551,
+      "soft_evidence_coverage": 1.0,
+      "comparison_coverage": 1.0,
+      "selected": "leader"
+    },
+    {
+      "listing_id": "20617351",
+      "score_rank": 3,
+      "combined_score": 0.6,
+      "soft_score": 1.0,
+      "behavior_score": null,
+      "appointment_score": null,
+      "browsing_score": null,
+      "soft_evidence_coverage": 1.0,
+      "comparison_coverage": null,
+      "selected": "leader"
+    },
+    {
+      "listing_id": "24866516",
+      "score_rank": 4,
+      "combined_score": 0.12023269974015256,
+      "soft_score": 0.0,
+      "behavior_score": 0.3005817493503814,
+      "appointment_score": null,
+      "browsing_score": 0.7514543733759534,
+      "soft_evidence_coverage": 1.0,
+      "comparison_coverage": 1.0,
+      "selected": "leader"
+    },
+    {
+      "listing_id": "24197788",
+      "score_rank": 5,
+      "combined_score": 0.1,
+      "soft_score": 0.0,
+      "behavior_score": 0.25,
+      "appointment_score": null,
+      "browsing_score": 0.625,
+      "soft_evidence_coverage": 1.0,
+      "comparison_coverage": 1.0,
+      "selected": null
+    }
+  ]
+}
+recommendation> set-config ranking {"soft_weight":0.0,"behavior_weight":1.0}
+Session override ranking = {"soft_weight": 0.0, "behavior_weight": 1.0} (validated; the settings file is not written; applies to new requests only). config_hash dfd329479a5a -> b1b567893174, selection_hash 4ec2d64a300f -> c7b9bacbb0f1
+recommendation> feedback @<tmp>/weights-feedback.json
+Staged feedback snapshot: previous_round=ff4b66a3-591a-4126-ad5b-f1c324c26b6d, 10 browsing records, 0 appointment listings; replaces any staged snapshot.
+recommendation> recommend
+[progress] tool: resolve_entities start
+[progress] tool: resolve_entities end ok 0.1 ms (pool=0, ranked=0, selected=0, evidence=0)
+[progress] tool: build_pool start
+[progress] tool: build_pool end ok 149.6 ms (pool=306, ranked=0, selected=0, evidence=0)
+[progress] tool: get_geographic_evidence start
+[progress] tool: get_geographic_evidence end ok 0.4 ms (pool=306, ranked=0, selected=0, evidence=0)
+[progress] tool: rank_candidates start
+[progress] tool: rank_candidates end ok 7.0 ms (pool=306, ranked=306, selected=10, evidence=0)
+[progress] gate: checking proposal of 10 listing(s)
+[progress] gate: final_gate ok (selected=10, rows_read=10) 145.2 ms
+Summary: status=success request_id=c882d924-8104-4fe4-9024-9c8dd480c491 config_hash=b1b567893174
+  pool: cache=reused (HIT) size=306 source_count=21431 excluded_hard_fail=20680 excluded_hard_unknown=445 pool_version=8c772524ece6
+  selection: mode=near_tie_sampling seed=141a39ff3302 leaders=3 tie_group=29 cold_start=inactive (exit_conditions_met=False)
+  #1 500267173 score_rank=1 combined=0.3191 reason=leader
+  #2 500262756 score_rank=2 combined=0.3078 reason=leader
+  #3 24866516 score_rank=3 combined=0.3006 reason=leader
+  #4 24856282 score_rank=6 combined=0.2500 reason=tie_group_sample
+  #5 500029847 score_rank=11 combined=0.2500 reason=tie_group_sample
+  #6 500258197 score_rank=15 combined=0.2500 reason=tie_group_sample
+  #7 500264690 score_rank=17 combined=0.2500 reason=tie_group_sample
+  #8 500271412 score_rank=18 combined=0.2500 reason=tie_group_sample
+  #9 500285764 score_rank=21 combined=0.2500 reason=tie_group_sample
+  #10 500269731 score_rank=32 combined=0.2485 reason=tie_group_sample
+Response artifact: <tmp>/exports/453def39-d894-45e7-8fe7-4e5517f65b46.json
+Rank/score changes: {"500267173": {"old_rank": 1, "new_rank": 1, "old_combined": 0.7276323963799093, "combined": 0.3190809909497732, "score_change": -0.40855140543013607}, "500262756": {"old_rank": 2, "new_rank": 2, "old_combined": 0.7231186712042488, "combined": 0.30779667801062205, "score_change": -0.4153219931936267}, "24866516": {"old_rank": 4, "new_rank": 3, "old_combined": 0.12023269974015256, "combined": 0.3005817493503814, "score_change": 0.18034904961022885}, "24856282": {"old_rank": null, "new_rank": 4, "old_combined": null, "combined": 0.25, "score_change": null}, "500029847": {"old_rank": null, "new_rank": 5, "old_combined": null, "combined": 0.25, "score_change": null}, "500258197": {"old_rank": null, "new_rank": 6, "old_combined": null, "combined": 0.25, "score_change": null}, "500264690": {"old_rank": null, "new_rank": 7, "old_combined": null, "combined": 0.25, "score_change": null}, "500271412": {"old_rank": null, "new_rank": 8, "old_combined": null, "combined": 0.25, "score_change": null}, "500285764": {"old_rank": null, "new_rank": 9, "old_combined": null, "combined": 0.25, "score_change": null}, "500269731": {"old_rank": 9, "new_rank": 10, "old_combined": 0.09939577039274926, "combined": 0.24848942598187312, "score_change": 0.14909365558912385}}
+recommendation> show-scores --top 5
+source: run c882d924-8104-4fe4-9024-9c8dd480c491 (data retained in memory from this run)
+{
+  "scored": 306,
+  "weights": {
+    "soft_criteria": {
+      "district": 1.0
+    },
+    "soft_weight": 0.0,
+    "behavior_weight": 1.0,
+    "appointment_weight": 0.6,
+    "browsing_weight": 0.4,
+    "features": {
+      "property_type": 0.2,
+      "floor_area_sqft": 0.2,
+      "geography": 0.24
+    }
+  },
+  "suppressed_features": [
+    "bedrooms",
+    "price"
+  ],
+  "dropped_features": {},
+  "active_features": [
+    "property_type",
+    "floor_area_sqft",
+    "geography"
+  ],
+  "top": [
+    {
+      "listing_id": "500267173",
+      "score_rank": 1,
+      "combined_score": 0.3190809909497732,
+      "soft_score": 1.0,
+      "behavior_score": 0.3190809909497732,
+      "appointment_score": null,
+      "browsing_score": 0.797702477374433,
+      "soft_evidence_coverage": 1.0,
+      "comparison_coverage": 1.0,
+      "selected": "leader"
+    },
+    {
+      "listing_id": "500262756",
+      "score_rank": 2,
+      "combined_score": 0.30779667801062205,
+      "soft_score": 1.0,
+      "behavior_score": 0.30779667801062205,
+      "appointment_score": null,
+      "browsing_score": 0.7694916950265551,
+      "soft_evidence_coverage": 1.0,
+      "comparison_coverage": 1.0,
+      "selected": "leader"
+    },
+    {
+      "listing_id": "24866516",
+      "score_rank": 3,
+      "combined_score": 0.3005817493503814,
+      "soft_score": 0.0,
+      "behavior_score": 0.3005817493503814,
+      "appointment_score": null,
+      "browsing_score": 0.7514543733759534,
+      "soft_evidence_coverage": 1.0,
+      "comparison_coverage": 1.0,
+      "selected": "leader"
+    },
+    {
+      "listing_id": "24197788",
+      "score_rank": 4,
+      "combined_score": 0.25,
+      "soft_score": 0.0,
+      "behavior_score": 0.25,
+      "appointment_score": null,
+      "browsing_score": 0.625,
+      "soft_evidence_coverage": 1.0,
+      "comparison_coverage": 1.0,
+      "selected": null
+    },
+    {
+      "listing_id": "24433601",
+      "score_rank": 5,
+      "combined_score": 0.25,
+      "soft_score": 0.0,
+      "behavior_score": 0.25,
+      "appointment_score": null,
+      "browsing_score": 0.625,
+      "soft_evidence_coverage": 1.0,
+      "comparison_coverage": 1.0,
+      "selected": null
+    }
+  ]
+}
+recommendation> reset-config
+Session overrides cleared; settings /Users/tot/Documents/nus-ais/PR1/dev/Multi-Agent-Assistance-System/recommendation/settings/recommendation.yaml (config_hash 603ed132b7b4).
+# 5. Cache: hard-criteria change rebuilds the pool (miss)
+recommendation> requirements @<tmp>/hard.json
+Accepted requirements v2; committed result unchanged.
+recommendation> recommend
+[progress] tool: resolve_entities start
+[progress] tool: resolve_entities end ok 0.1 ms (pool=0, ranked=0, selected=0, evidence=0)
+[progress] tool: build_pool start
+[progress] tool: build_pool end ok 871.2 ms (pool=27, ranked=0, selected=0, evidence=0)
+[progress] tool: get_geographic_evidence start
+[progress] tool: get_geographic_evidence end ok 0.1 ms (pool=27, ranked=0, selected=0, evidence=0)
+[progress] tool: rank_candidates start
+[progress] tool: rank_candidates end ok 2.0 ms (pool=27, ranked=27, selected=10, evidence=0)
+[progress] gate: checking proposal of 10 listing(s)
+[progress] gate: final_gate ok (selected=10, rows_read=10) 207.5 ms
+Summary: status=success request_id=a394ef5f-b389-44bf-a8e6-7543ee6032c8 config_hash=603ed132b7b4
+  pool: cache=built (MISS) size=27 source_count=21431 excluded_hard_fail=21164 excluded_hard_unknown=240 pool_version=42c28ce0b06e
+  selection: mode=cold_start_exploration seed=141a39ff3302 leaders=0 tie_group=27 cold_start=active (exit_conditions_met=False)
+  #1 21789856 score_rank=2 combined=0.0000 reason=price_exploration_sample
+  #2 25209933 score_rank=5 combined=0.0000 reason=price_exploration_sample
+  #3 25369032 score_rank=8 combined=0.0000 reason=price_exploration_sample
+  #4 500127611 score_rank=11 combined=0.0000 reason=price_exploration_sample
+  #5 500256762 score_rank=16 combined=0.0000 reason=price_exploration_sample
+  #6 500269618 score_rank=18 combined=0.0000 reason=price_exploration_sample
+  #7 500273485 score_rank=19 combined=0.0000 reason=price_exploration_sample
+  #8 500274301 score_rank=20 combined=0.0000 reason=price_exploration_sample
+  #9 500281545 score_rank=22 combined=0.0000 reason=price_exploration_sample
+  #10 60060332 score_rank=26 combined=0.0000 reason=price_exploration_sample
+Response artifact: <tmp>/exports/4b5330a7-5417-46e1-854b-7994c3ed7d43.json
+Rank/score changes: {"21789856": {"old_rank": null, "new_rank": 1, "old_combined": null, "combined": 0.0, "score_change": null}, "25209933": {"old_rank": null, "new_rank": 2, "old_combined": null, "combined": 0.0, "score_change": null}, "25369032": {"old_rank": null, "new_rank": 3, "old_combined": null, "combined": 0.0, "score_change": null}, "500127611": {"old_rank": null, "new_rank": 4, "old_combined": null, "combined": 0.0, "score_change": null}, "500256762": {"old_rank": null, "new_rank": 5, "old_combined": null, "combined": 0.0, "score_change": null}, "500269618": {"old_rank": null, "new_rank": 6, "old_combined": null, "combined": 0.0, "score_change": null}, "500273485": {"old_rank": null, "new_rank": 7, "old_combined": null, "combined": 0.0, "score_change": null}, "500274301": {"old_rank": null, "new_rank": 8, "old_combined": null, "combined": 0.0, "score_change": null}, "500281545": {"old_rank": null, "new_rank": 9, "old_combined": null, "combined": 0.0, "score_change": null}, "60060332": {"old_rank": null, "new_rank": 10, "old_combined": null, "combined": 0.0, "score_change": null}}
+# 6. Entity ambiguity (ID and name name different entities)
+recommendation> requirements @<tmp>/ambiguous.json
+Accepted requirements v3; committed result unchanged.
+recommendation> recommend
+[progress] tool: resolve_entities start
+[progress] tool: resolve_entities end ok 362.0 ms (pool=0, ranked=0, selected=0, evidence=0)
+[progress] tool: build_pool start
+[progress] tool: build_pool end ok 1647.8 ms (pool=0, ranked=0, selected=0, evidence=0)
+[progress] tool: get_geographic_evidence start
+[progress] tool: get_geographic_evidence end ok 0.1 ms (pool=0, ranked=0, selected=0, evidence=0)
+[progress] tool: rank_candidates start
+[progress] tool: rank_candidates end ok 0.5 ms (pool=0, ranked=0, selected=0, evidence=0)
+[progress] gate: checking proposal of 0 listing(s)
+[progress] gate: final_gate ok (selected=0, rows_read=0) 178.6 ms
+Summary: status=needs_clarification request_id=9c2629ab-be1d-4c5d-b49f-e62b841beb86 config_hash=603ed132b7b4
+  pool: cache=built (MISS) size=0 source_count=21431 excluded_hard_fail=11638 excluded_hard_unknown=9793 pool_version=603947358e1d
+  selection: mode=empty seed=141a39ff3302 leaders=0 tie_group=0 cold_start=inactive (exit_conditions_met=False)
+  resolution: geo ambiguous (id_name_conflict); candidates=['URA:AREA:BEDOK', 'URA:AREA:CLEMENTI']
+  clarification: Hard criterion 'geo' (distance): destination ambiguous (the destination ID and name point to different entities; candidates: BEDOK (URA:AREA:BEDOK), CLEMENTI (URA:AREA:CLEMENTI)).
+Response artifact: <tmp>/exports/944c711a-6050-41ab-818f-ca12630ba5ac.json
+Rank/score changes: {}
+recommendation> show-resolution
+source: run 9c2629ab-be1d-4c5d-b49f-e62b841beb86 (data retained in memory from this run)
+geo: AMBIGUOUS entity=None kind=None method=id+name reason=id_name_conflict -> needs clarification (2 candidate(s))
+[
+  {
+    "criterion_id": "geo",
+    "field": "distance",
+    "original": {
+      "destination_id": "URA:AREA:CLEMENTI",
+      "destination_name": "Bedok",
+      "category": null
+    },
+    "status": "ambiguous",
+    "entity_id": null,
+    "entity_kind": null,
+    "method": "id+name",
+    "reason": "id_name_conflict",
+    "candidates": [
+      {
+        "entity_id": "URA:AREA:BEDOK",
+        "name": "BEDOK",
+        "kind": "ura_area"
+      },
+      {
+        "entity_id": "URA:AREA:CLEMENTI",
+        "name": "CLEMENTI",
+        "kind": "ura_area"
+      }
+    ],
+    "strength": "hard",
+    "bindable": false
+  }
+]
+# 7. Scripted step mode (intermediate results only)
+recommendation> requirements @<tmp>/requirements.json
+Accepted requirements v4; committed result unchanged.
+recommendation> step rank_candidates
+Step session for request c834e357-df73-4c75-a024-5a34f2e58e8a (the request recommend will submit).
+STALE_REFERENCE: Call get_geographic_evidence for the current inputs first (pipeline order: resolve_entities -> build_pool -> get_geographic_evidence -> rank_candidates)
+recommendation> run-until build_pool
+INTERMEDIATE (step session: state writes rolled back, nothing committed; this is not a recommendation)
+stage resolve_entities: ok
+  entity_resolution: ok 0.0 ms outputs={"resolved": 0, "ambiguous": 0, "unresolved": 0, "not_applicable": 0}
+stage build_pool: ok
+  pool_build_or_load: ok 1116.9 ms outputs={"size": 306, "excluded_hard_fail": 20680, "excluded_hard_unknown": 445, "cache": "built", "outcome": "miss", "persisted": false}
+completed: resolve_entities, build_pool | next: get_geographic_evidence
+recommendation> step
+INTERMEDIATE (step session: state writes rolled back, nothing committed; this is not a recommendation)
+stage get_geographic_evidence: ok
+  geographic_evidence: ok 0.1 ms outputs={"evidence": 0, "known": 0}
+completed: resolve_entities, build_pool, get_geographic_evidence | next: rank_candidates
+recommendation> set-seed other-seed
+Seed override 'other-seed' for new requests (replaces the R3 base seed; recorded in the trace; terminal test override only, never used by the service API).
+Step session: input changed -> invalidated: no completed stage; still current: resolve_entities, build_pool, get_geographic_evidence
+recommendation> run-until final_gate
+INTERMEDIATE (step session: state writes rolled back, nothing committed; this is not a recommendation)
+stage rank_candidates: ok
+  scoring: ok 1.6 ms outputs={"scored": 306, "ineligible": 0, "breakdowns_built": 17, "pairs_available": 0, "behavior_available": 0}
+  cold_start_diagnostics: ok 1.4 ms outputs={"evaluated": true, "active": true, "reason": "b_above_max; s_below_min", "coverage_c": 1.0, "boundary_group_b": 303, "stability_s": 0.3149999999999999, "exit_conditions_met": false, "pool_key": "0fef3d834fc679444036a0cd8d7ffa550702ef99967005c70a875fbc944d9d55"}
+  price_sampling: ok 0.3 ms outputs={"stage_a_sample": 30, "drawn": 7, "bins": 3}
+  final_selection: ok 0.2 ms outputs={"mode": "cold_start_exploration", "selected": 10, "leaders": 3, "tie_group": {"size": 303, "min_score": 0.0, "max_score": 0.0, "span": 0.0, "epsilon": 0.02}}
+stage final_gate: ok
+  final_gate: ok 215.2 ms outputs={"selected": 10, "rows_read": 10}
+candidate selection (intermediate, not a recommendation): ['20617351', '500262756', '500267173', '21599780', '24856282', '500271924', '500279968', '500283565', '500283582', '60211687']
+final_gate dry run passed (rolled back). Use recommend to submit request 8feecebf-fd5c-4e23-85c6-a852a9d0a673.
+completed: resolve_entities, build_pool, get_geographic_evidence, rank_candidates, final_gate | next: none (all stages current)
+recommendation> show-selection
+source: INTERMEDIATE (step session: state writes rolled back, nothing committed; this is not a recommendation); request 8feecebf-fd5c-4e23-85c6-a852a9d0a673; completed: resolve_entities, build_pool, get_geographic_evidence, rank_candidates, final_gate
+Candidate selection of the step session: INTERMEDIATE (step session: state writes rolled back, nothing committed; this is not a recommendation)
+{
+  "selection": {
+    "mode": "cold_start_exploration",
+    "algorithm_version": "select-v1",
+    "seed": "8b8c5b1e5d1afb9425579a43b1e927e934712055441f6c2294e2187ebc701494",
+    "result_limit": 10,
+    "leaders": 3,
+    "tie_group": {
+      "size": 303,
+      "min_score": 0.0,
+      "max_score": 0.0,
+      "span": 0.0,
+      "epsilon": 0.02
+    },
+    "exploration": {
+      "candidate_count": 303,
+      "sample_size": 30,
+      "bins": [
+        {
+          "lower": 450.0,
+          "upper": 2800.0,
+          "count": 59,
+          "sampled": 1,
+          "quota": 6
+        },
+        {
+          "lower": 2800.0,
+          "upper": 2900.0,
+          "count": 46,
+          "sampled": 1,
+          "quota": 4
+        },
+        {
+          "lower": 2900.0,
+          "upper": 3000.0,
+          "count": 198,
+          "sampled": 5,
+          "quota": 20
+        }
+      ]
+    },
+    "cold_start": {
+      "evaluated": true,
+      "active": true,
+      "reason": "b_above_max; s_below_min",
+      "coverage_c": 1.0,
+      "boundary_group_b": 303,
+      "stability_s": 0.3149999999999999,
+      "thresholds": {
+        "c": 0.8,
+        "b": 5,
+        "s": 0.9
+      },
+      "exit_conditions_met": false,
+      "pool_key": "0fef3d834fc679444036a0cd8d7ffa550702ef99967005c70a875fbc944d9d55"
+    }
+  },
+  "seed_override": true,
+  "items": [
+    {
+      "rank": 1,
+      "listing_id": "20617351",
+      "score_rank": 1,
+      "selection_reason": "leader",
+      "selection_note": "Clear leader: score rank 1 of 306, ahead of the near-tie group at the result cutoff"
+    },
+    {
+      "rank": 2,
+      "listing_id": "500262756",
+      "score_rank": 2,
+      "selection_reason": "leader",
+      "selection_note": "Clear leader: score rank 2 of 306, ahead of the near-tie group at the result cutoff"
+    },
+    {
+      "rank": 3,
+      "listing_id": "500267173",
+      "score_rank": 3,
+      "selection_reason": "leader",
+      "selection_note": "Clear leader: score rank 3 of 306, ahead of the near-tie group at the result cutoff"
+    },
+    {
+      "rank": 4,
+      "listing_id": "21599780",
+      "score_rank": 22,
+      "selection_reason": "price_exploration_sample",
+      "selection_note": "Cold-start price exploration: drawn from the price bin [2900, 3000] among 303 candidates (score ranks 4-306); score rank 22"
+    },
+    {
+      "rank": 5,
+      "listing_id": "24856282",
+      "score_rank": 68,
+      "selection_reason": "price_exploration_sample",
+      "selection_note": "Cold-start price exploration: drawn from the price bin [2900, 3000] among 303 candidates (score ranks 4-306); score rank 68"
+    },
+    {
+      "rank": 6,
+      "listing_id": "500271924",
+      "score_rank": 215,
+      "selection_reason": "price_exploration_sample",
+      "selection_note": "Cold-start price exploration: drawn from the price bin [2900, 3000] among 303 candidates (score ranks 4-306); score rank 215"
+    },
+    {
+      "rank": 7,
+      "listing_id": "500279968",
+      "score_rank": 238,
+      "selection_reason": "price_exploration_sample",
+      "selection_note": "Cold-start price exploration: drawn from the price bin [2800, 2900) among 303 candidates (score ranks 4-306); score rank 238"
+    },
+    {
+      "rank": 8,
+      "listing_id": "500283565",
+      "score_rank": 254,
+      "selection_reason": "price_exploration_sample",
+      "selection_note": "Cold-start price exploration: drawn from the price bin [450, 2800) among 303 candidates (score ranks 4-306); score rank 254"
+    },
+    {
+      "rank": 9,
+      "listing_id": "500283582",
+      "score_rank": 255,
+      "selection_reason": "price_exploration_sample",
+      "selection_note": "Cold-start price exploration: drawn from the price bin [2900, 3000] among 303 candidates (score ranks 4-306); score rank 255"
+    },
+    {
+      "rank": 10,
+      "listing_id": "60211687",
+      "score_rank": 302,
+      "selection_reason": "price_exploration_sample",
+      "selection_note": "Cold-start price exploration: drawn from the price bin [2900, 3000] among 303 candidates (score ranks 4-306); score rank 302"
+    }
+  ]
+}
+recommendation> step reset
+Step session discarded.
+# 8. Original-request replay (stored response)
+recommendation> replay 302492b1-57e6-44a7-9157-eea09f3b137a
+REPLAY of 302492b1-57e6-44a7-9157-eea09f3b137a (stored response)
+Summary: status=success request_id=302492b1-57e6-44a7-9157-eea09f3b137a config_hash=603ed132b7b4
+  pool: cache=built (MISS) size=306 source_count=21431 excluded_hard_fail=20680 excluded_hard_unknown=445 pool_version=8c772524ece6
+  selection: mode=cold_start_exploration seed=141a39ff3302 leaders=3 tie_group=303 cold_start=active (exit_conditions_met=False)
+  #1 20617351 score_rank=1 combined=0.6000 reason=leader
+  #2 500262756 score_rank=2 combined=0.6000 reason=leader
+  #3 500267173 score_rank=3 combined=0.6000 reason=leader
+  #4 23418209 score_rank=33 combined=0.0000 reason=price_exploration_sample
+  #5 25090106 score_rank=74 combined=0.0000 reason=price_exploration_sample
+  #6 25102646 score_rank=76 combined=0.0000 reason=price_exploration_sample
+  #7 500254998 score_rank=179 combined=0.0000 reason=price_exploration_sample
+  #8 500264961 score_rank=199 combined=0.0000 reason=price_exploration_sample
+  #9 500268999 score_rank=205 combined=0.0000 reason=price_exploration_sample
+  #10 500282928 score_rank=251 combined=0.0000 reason=price_exploration_sample
+(stored response: its pool/cache, selection and execution fields describe the original run)
+Replay returned the stored response unchanged: True (no new run; terminal state unchanged)
+# the newest trace is the replay's (replay gate only)
+recommendation> show-trace
+Note: immutable replay trace of request 302492b1-57e6-44a7-9157-eea09f3b137a (replay gate only); the run's own trace is sqlite:605bde47-7e37-468a-8049-4744571857d3: show-trace 302492b1-57e6-44a7-9157-eea09f3b137a.
+{
+  "format": 2,
+  "trace_id": "b28959fe-3664-4c32-bdb2-c0b8ccfb7178",
+  "request": {
+    "contract_version": "2.0",
+    "request_id": "302492b1-57e6-44a7-9157-eea09f3b137a",
+    "conversation_id": "p6-database-transcript",
+    "requirements_version": 1,
+    "requirements": {
+      "listing_type": "RENT",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 3000.0,
+          "unit": "SGD/month",
+          "strength": "hard",
+          "weight": 1.0,
+          "utility": "threshold",
+          "destination_id": null,
+          "destination_name": null,
+          "category": null,
+          "distance_type": null,
+          "transport_mode": null
+        },
+        {
+          "criterion_id": "bedrooms",
+          "field": "bedrooms",
+          "operator": "gte",
+          "value": 2.0,
+          "unit": null,
+          "strength": "hard",
+          "weight": 1.0,
+          "utility": "threshold",
+          "destination_id": null,
+          "destination_name": null,
+          "category": null,
+          "distance_type": null,
+          "transport_mode": null
+        },
+        {
+          "criterion_id": "district",
+          "field": "district_code",
+          "operator": "in",
+          "value": [
+            "D05"
+          ],
+          "unit": null,
+          "strength": "soft",
+          "weight": 1.0,
+          "utility": "threshold",
+          "destination_id": null,
+          "destination_name": null,
+          "category": null,
+          "distance_type": null,
+          "transport_mode": null
+        }
+      ]
+    },
+    "previous_state_id": null,
+    "result_limit": null,
+    "feedback": {
+      "previous_round": null,
+      "appointments": []
+    },
+    "cold_start": {
+      "exited": false,
+      "exited_pool_key": null
+    }
+  },
+  "data_mode": "database",
+  "controller_mode": "scripted",
+  "layout": "slim-v1",
+  "trace_mode": "summary",
+  "stages": [
+    {
+      "stage": "input_validation",
+      "status": "ok",
+      "duration_ms": 0.7859590114094317,
+      "inputs": {
+        "criteria": 3,
+        "hard_criteria": 2,
+        "previous_state_id": false,
+        "previous_round_browsing": 0,
+        "appointments": 0,
+        "result_limit": null,
+        "cold_start_exited": false
+      },
+      "outputs": {
+        "replay": true
+      },
+      "params": {},
+      "versions": {
+        "config_version": 1,
+        "config_hash": "603ed132b7b40a7f9cb162a01da9cce8f489f0602997dc805c0a5769d4b85914",
+        "selection_hash": "d0b84d8a3d2ce768fbba591a0e7a819470745add1113a8659008d8aa293aa1b8"
+      },
+      "preview": [],
+      "preview_total": 0,
+      "unknown": {}
+    },
+    {
+      "stage": "final_gate",
+      "status": "ok",
+      "duration_ms": 1.1654170230031013,
+      "inputs": {},
+      "outputs": {
+        "selected": 10
+      },
+      "params": {
+        "mode": "immutable_replay"
+      },
+      "versions": {
+        "config_version": 1,
+        "config_hash": "603ed132b7b40a7f9cb162a01da9cce8f489f0602997dc805c0a5769d4b85914",
+        "selection_hash": "d0b84d8a3d2ce768fbba591a0e7a819470745add1113a8659008d8aa293aa1b8"
+      },
+      "preview": [],
+      "preview_total": 0,
+      "unknown": {},
+      "note": "stored response verified against its run snapshot (replay_gate)"
+    }
+  ],
+  "steps": [
+    {
+      "kind": "final_gate",
+      "mode": "immutable_replay",
+      "passed": true,
+      "original_trace_ref": "sqlite:605bde47-7e37-468a-8049-4744571857d3"
+    }
+  ],
+  "configuration": {
+    "config_version": 1,
+    "recommendation": {
+      "default_result_limit": 10,
+      "max_result_limit": 10
+    },
+    "ranking": {
+      "soft_weight": 0.6,
+      "behavior_weight": 0.4,
+      "soft": {
+        "numeric_bounds": {
+          "price": [
+            0.0,
+            20000.0
+          ],
+          "bedrooms": [
+            0.0,
+            10.0
+          ],
+          "floor_area_sqft": [
+            0.0,
+            10000.0
+          ]
+        }
+      },
+      "behavior": {
+        "appointment_weight": 0.6,
+        "browsing_weight": 0.4,
+        "missing_branch_contribution": 0.0,
+        "redistribute_missing_branch_weight": false,
+        "counted_appointment_statuses": [
+          "CONFIRMED",
+          "MANUAL_REPLIED",
+          "MANUAL_SENT"
+        ],
+        "reference_scope": "in_pool"
+      },
+      "browsing": {
+        "transform": "log1p",
+        "duration_cap_seconds": null,
+        "time_scale_seconds": 30.0
+      },
+      "similarity": {
+        "suppression": "hard_criteria",
+        "feature_weights": {
+          "price": 0.2,
+          "property_type": 0.2,
+          "bedrooms": 0.16,
+          "floor_area_sqft": 0.2,
+          "geography": 0.24
+        },
+        "numeric_scaling": "iqr",
+        "geographic_scale_m": 3000.0,
+        "geography_district_fallback": true,
+        "min_comparison_coverage": 0.5
+      }
+    },
+    "geography": {
+      "station_distance_method": "nearest_exit"
+    },
+    "cold_start": {
+      "enabled": true,
+      "reenter_on_pool_rebuild": true,
+      "min_evidence_coverage": 0.8,
+      "max_boundary_tie_group_size": 5,
+      "min_top_k_stability": 0.9,
+      "price_sampling": {
+        "target_sample_size": 30,
+        "quantile_bins": 5
+      },
+      "stability": {
+        "trials": 20,
+        "weight_perturbation_fraction": 0.2
+      }
+    },
+    "selection": {
+      "tie_max_score_span": 0.02,
+      "random_policy": "uniform_without_replacement",
+      "seed_namespace": "recommendation-selection-v1"
+    },
+    "cache": {
+      "enabled": true,
+      "ttl_seconds": 0,
+      "max_entries_per_conversation": 2,
+      "pool_retention_per_conversation": 4,
+      "memory_max_entries": 4
+    },
+    "entity_resolution": {
+      "max_search_attempts": 3,
+      "max_candidates": 5
+    },
+    "controller": {
+      "max_model_turns": 8,
+      "max_tool_calls": 20,
+      "max_resolution_tool_calls": 6,
+      "timeout_seconds": 90.0,
+      "repairs": 2,
+      "model_result_candidates": 100
+    },
+    "trace": {
+      "mode": "summary",
+      "preview_rows": 10,
+      "debug_max_rows": 200
+    }
+  },
+  "config_version": 1,
+  "config_hash": "603ed132b7b40a7f9cb162a01da9cce8f489f0602997dc805c0a5769d4b85914",
+  "selection_hash": "d0b84d8a3d2ce768fbba591a0e7a819470745add1113a8659008d8aa293aa1b8",
+  "config_source": "/Users/tot/Documents/nus-ais/PR1/dev/Multi-Agent-Assistance-System/recommendation/settings/recommendation.yaml",
+  "response": {
+    "contract_version": "2.0",
+    "request_id": "302492b1-57e6-44a7-9157-eea09f3b137a",
+    "conversation_id": "p6-database-transcript",
+    "requirements_version": 1,
+    "status": "success",
+    "recommendations": [
+      {
+        "listing": {
+          "listing_id": "20617351",
+          "listing_type": "RENT",
+          "title": "354 Clementi Avenue 2",
+          "price": 3000.0,
+          "bedrooms": 2.0,
+          "floor_area_sqft": 700.0,
+          "property_type": "hdb flat",
+          "district_code": "D05",
+          "postal_code": "120354",
+          "latitude": 1.31367814,
+          "longitude": 103.770363,
+          "url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-354-clementi-avenue-2-20617351",
+          "observed_at": "2026-10-21 13:07:50.029769+00:00",
+          "source": "postgresql:properties",
+          "normalization_warnings": []
+        },
+        "rank": 1,
+        "score_rank": 1,
+        "scores": {
+          "soft_score": 1.0,
+          "behavior_score": null,
+          "appointment_score": null,
+          "browsing_score": null,
+          "combined_score": 0.6,
+          "soft_weight": 0.6,
+          "behavior_weight": 0.4,
+          "appointment_weight": 0.6,
+          "browsing_weight": 0.4,
+          "soft_evidence_coverage": 1.0,
+          "comparison_coverage": null,
+          "contributions": [
+            {
+              "feature": "district",
+              "branch": "soft",
+              "reference": null,
+              "raw_difference": null,
+              "scale": null,
+              "similarity": 1.0,
+              "weight": 1.0,
+              "contribution": 1.0,
+              "unknown": false,
+              "method": "threshold"
+            }
+          ],
+          "suppressed_features": [
+            "bedrooms",
+            "price"
+          ],
+          "ordering": "fused"
+        },
+        "criterion_results": [
+          {
+            "criterion_id": "budget",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "bedrooms",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "district",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          }
+        ],
+        "evidence_refs": [],
+        "strengths": [
+          "budget",
+          "bedrooms",
+          "district"
+        ],
+        "trade_offs": [],
+        "unknowns": [],
+        "selection_reason": "leader",
+        "selection_note": "Clear leader: score rank 1 of 306, ahead of the near-tie group at the result cutoff"
+      },
+      {
+        "listing": {
+          "listing_id": "500262756",
+          "listing_type": "RENT",
+          "title": "2 Dover Road",
+          "price": 3000.0,
+          "bedrooms": 2.0,
+          "floor_area_sqft": 699.0,
+          "property_type": "hdb flat",
+          "district_code": "D05",
+          "postal_code": "130002",
+          "latitude": 1.30309775,
+          "longitude": 103.7827819,
+          "url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-2-dover-road-500262756",
+          "observed_at": "2026-10-21 13:08:22.914567+00:00",
+          "source": "postgresql:properties",
+          "normalization_warnings": []
+        },
+        "rank": 2,
+        "score_rank": 2,
+        "scores": {
+          "soft_score": 1.0,
+          "behavior_score": null,
+          "appointment_score": null,
+          "browsing_score": null,
+          "combined_score": 0.6,
+          "soft_weight": 0.6,
+          "behavior_weight": 0.4,
+          "appointment_weight": 0.6,
+          "browsing_weight": 0.4,
+          "soft_evidence_coverage": 1.0,
+          "comparison_coverage": null,
+          "contributions": [
+            {
+              "feature": "district",
+              "branch": "soft",
+              "reference": null,
+              "raw_difference": null,
+              "scale": null,
+              "similarity": 1.0,
+              "weight": 1.0,
+              "contribution": 1.0,
+              "unknown": false,
+              "method": "threshold"
+            }
+          ],
+          "suppressed_features": [
+            "bedrooms",
+            "price"
+          ],
+          "ordering": "fused"
+        },
+        "criterion_results": [
+          {
+            "criterion_id": "budget",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "bedrooms",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "district",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          }
+        ],
+        "evidence_refs": [],
+        "strengths": [
+          "budget",
+          "bedrooms",
+          "district"
+        ],
+        "trade_offs": [],
+        "unknowns": [],
+        "selection_reason": "leader",
+        "selection_note": "Clear leader: score rank 2 of 306, ahead of the near-tie group at the result cutoff"
+      },
+      {
+        "listing": {
+          "listing_id": "500267173",
+          "listing_type": "RENT",
+          "title": "306 Clementi Avenue 4",
+          "price": 3000.0,
+          "bedrooms": 2.0,
+          "floor_area_sqft": 721.0,
+          "property_type": "hdb flat",
+          "district_code": "D05",
+          "postal_code": "120306",
+          "latitude": 1.32141822,
+          "longitude": 103.7660733,
+          "url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-306-clementi-avenue-4-500267173",
+          "observed_at": "2026-10-21 13:08:24.206063+00:00",
+          "source": "postgresql:properties",
+          "normalization_warnings": []
+        },
+        "rank": 3,
+        "score_rank": 3,
+        "scores": {
+          "soft_score": 1.0,
+          "behavior_score": null,
+          "appointment_score": null,
+          "browsing_score": null,
+          "combined_score": 0.6,
+          "soft_weight": 0.6,
+          "behavior_weight": 0.4,
+          "appointment_weight": 0.6,
+          "browsing_weight": 0.4,
+          "soft_evidence_coverage": 1.0,
+          "comparison_coverage": null,
+          "contributions": [
+            {
+              "feature": "district",
+              "branch": "soft",
+              "reference": null,
+              "raw_difference": null,
+              "scale": null,
+              "similarity": 1.0,
+              "weight": 1.0,
+              "contribution": 1.0,
+              "unknown": false,
+              "method": "threshold"
+            }
+          ],
+          "suppressed_features": [
+            "bedrooms",
+            "price"
+          ],
+          "ordering": "fused"
+        },
+        "criterion_results": [
+          {
+            "criterion_id": "budget",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "bedrooms",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "district",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          }
+        ],
+        "evidence_refs": [],
+        "strengths": [
+          "budget",
+          "bedrooms",
+          "district"
+        ],
+        "trade_offs": [],
+        "unknowns": [],
+        "selection_reason": "leader",
+        "selection_note": "Clear leader: score rank 3 of 306, ahead of the near-tie group at the result cutoff"
+      },
+      {
+        "listing": {
+          "listing_id": "23418209",
+          "listing_type": "RENT",
+          "title": "535 Ang Mo Kio Avenue 5",
+          "price": 2900.0,
+          "bedrooms": 2.0,
+          "floor_area_sqft": 721.0,
+          "property_type": "hdb flat",
+          "district_code": "D20",
+          "postal_code": "560535",
+          "latitude": 1.37460888,
+          "longitude": 103.8529805,
+          "url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-535-ang-mo-kio-avenue-5-23418209",
+          "observed_at": "2026-10-21 13:07:53.138904+00:00",
+          "source": "postgresql:properties",
+          "normalization_warnings": []
+        },
+        "rank": 4,
+        "score_rank": 33,
+        "scores": {
+          "soft_score": 0.0,
+          "behavior_score": null,
+          "appointment_score": null,
+          "browsing_score": null,
+          "combined_score": 0.0,
+          "soft_weight": 0.6,
+          "behavior_weight": 0.4,
+          "appointment_weight": 0.6,
+          "browsing_weight": 0.4,
+          "soft_evidence_coverage": 1.0,
+          "comparison_coverage": null,
+          "contributions": [
+            {
+              "feature": "district",
+              "branch": "soft",
+              "reference": null,
+              "raw_difference": null,
+              "scale": null,
+              "similarity": 0.0,
+              "weight": 1.0,
+              "contribution": 0.0,
+              "unknown": false,
+              "method": "threshold"
+            }
+          ],
+          "suppressed_features": [
+            "bedrooms",
+            "price"
+          ],
+          "ordering": "fused"
+        },
+        "criterion_results": [
+          {
+            "criterion_id": "budget",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "bedrooms",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "district",
+            "outcome": "fail",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          }
+        ],
+        "evidence_refs": [],
+        "strengths": [
+          "budget",
+          "bedrooms"
+        ],
+        "trade_offs": [
+          "district"
+        ],
+        "unknowns": [],
+        "selection_reason": "price_exploration_sample",
+        "selection_note": "Cold-start price exploration: drawn from the price bin [2900, 3000] among 303 candidates (score ranks 4-306); score rank 33"
+      },
+      {
+        "listing": {
+          "listing_id": "25090106",
+          "listing_type": "RENT",
+          "title": "21 Chai Chee Road",
+          "price": 3000.0,
+          "bedrooms": 2.0,
+          "floor_area_sqft": 729.0,
+          "property_type": "hdb flat",
+          "district_code": "D16",
+          "postal_code": "461021",
+          "latitude": 1.32573761,
+          "longitude": 103.9225651,
+          "url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-21-chai-chee-road-25090106",
+          "observed_at": "2026-10-21 13:07:59.358870+00:00",
+          "source": "postgresql:properties",
+          "normalization_warnings": []
+        },
+        "rank": 5,
+        "score_rank": 74,
+        "scores": {
+          "soft_score": 0.0,
+          "behavior_score": null,
+          "appointment_score": null,
+          "browsing_score": null,
+          "combined_score": 0.0,
+          "soft_weight": 0.6,
+          "behavior_weight": 0.4,
+          "appointment_weight": 0.6,
+          "browsing_weight": 0.4,
+          "soft_evidence_coverage": 1.0,
+          "comparison_coverage": null,
+          "contributions": [
+            {
+              "feature": "district",
+              "branch": "soft",
+              "reference": null,
+              "raw_difference": null,
+              "scale": null,
+              "similarity": 0.0,
+              "weight": 1.0,
+              "contribution": 0.0,
+              "unknown": false,
+              "method": "threshold"
+            }
+          ],
+          "suppressed_features": [
+            "bedrooms",
+            "price"
+          ],
+          "ordering": "fused"
+        },
+        "criterion_results": [
+          {
+            "criterion_id": "budget",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "bedrooms",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "district",
+            "outcome": "fail",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          }
+        ],
+        "evidence_refs": [],
+        "strengths": [
+          "budget",
+          "bedrooms"
+        ],
+        "trade_offs": [
+          "district"
+        ],
+        "unknowns": [],
+        "selection_reason": "price_exploration_sample",
+        "selection_note": "Cold-start price exploration: drawn from the price bin [2900, 3000] among 303 candidates (score ranks 4-306); score rank 74"
+      },
+      {
+        "listing": {
+          "listing_id": "25102646",
+          "listing_type": "RENT",
+          "title": "362A Sembawang Crescent",
+          "price": 2800.0,
+          "bedrooms": 2.0,
+          "floor_area_sqft": 731.0,
+          "property_type": "hdb flat",
+          "district_code": "D27",
+          "postal_code": "751362",
+          "latitude": 1.44719,
+          "longitude": 103.814,
+          "url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-362a-sembawang-crescent-25102646",
+          "observed_at": "2026-10-21 13:07:59.358870+00:00",
+          "source": "postgresql:properties",
+          "normalization_warnings": []
+        },
+        "rank": 6,
+        "score_rank": 76,
+        "scores": {
+          "soft_score": 0.0,
+          "behavior_score": null,
+          "appointment_score": null,
+          "browsing_score": null,
+          "combined_score": 0.0,
+          "soft_weight": 0.6,
+          "behavior_weight": 0.4,
+          "appointment_weight": 0.6,
+          "browsing_weight": 0.4,
+          "soft_evidence_coverage": 1.0,
+          "comparison_coverage": null,
+          "contributions": [
+            {
+              "feature": "district",
+              "branch": "soft",
+              "reference": null,
+              "raw_difference": null,
+              "scale": null,
+              "similarity": 0.0,
+              "weight": 1.0,
+              "contribution": 0.0,
+              "unknown": false,
+              "method": "threshold"
+            }
+          ],
+          "suppressed_features": [
+            "bedrooms",
+            "price"
+          ],
+          "ordering": "fused"
+        },
+        "criterion_results": [
+          {
+            "criterion_id": "budget",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "bedrooms",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "district",
+            "outcome": "fail",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          }
+        ],
+        "evidence_refs": [],
+        "strengths": [
+          "budget",
+          "bedrooms"
+        ],
+        "trade_offs": [
+          "district"
+        ],
+        "unknowns": [],
+        "selection_reason": "price_exploration_sample",
+        "selection_note": "Cold-start price exploration: drawn from the price bin [2800, 2900) among 303 candidates (score ranks 4-306); score rank 76"
+      },
+      {
+        "listing": {
+          "listing_id": "500254998",
+          "listing_type": "RENT",
+          "title": "99 Old Airport Road",
+          "price": 3000.0,
+          "bedrooms": 2.0,
+          "floor_area_sqft": 603.0,
+          "property_type": "hdb flat",
+          "district_code": "D14",
+          "postal_code": "390099",
+          "latitude": 1.30860354,
+          "longitude": 103.8882303,
+          "url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-99-old-airport-road-500254998",
+          "observed_at": "2026-10-21 13:08:19.784880+00:00",
+          "source": "postgresql:properties",
+          "normalization_warnings": []
+        },
+        "rank": 7,
+        "score_rank": 179,
+        "scores": {
+          "soft_score": 0.0,
+          "behavior_score": null,
+          "appointment_score": null,
+          "browsing_score": null,
+          "combined_score": 0.0,
+          "soft_weight": 0.6,
+          "behavior_weight": 0.4,
+          "appointment_weight": 0.6,
+          "browsing_weight": 0.4,
+          "soft_evidence_coverage": 1.0,
+          "comparison_coverage": null,
+          "contributions": [
+            {
+              "feature": "district",
+              "branch": "soft",
+              "reference": null,
+              "raw_difference": null,
+              "scale": null,
+              "similarity": 0.0,
+              "weight": 1.0,
+              "contribution": 0.0,
+              "unknown": false,
+              "method": "threshold"
+            }
+          ],
+          "suppressed_features": [
+            "bedrooms",
+            "price"
+          ],
+          "ordering": "fused"
+        },
+        "criterion_results": [
+          {
+            "criterion_id": "budget",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "bedrooms",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "district",
+            "outcome": "fail",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          }
+        ],
+        "evidence_refs": [],
+        "strengths": [
+          "budget",
+          "bedrooms"
+        ],
+        "trade_offs": [
+          "district"
+        ],
+        "unknowns": [],
+        "selection_reason": "price_exploration_sample",
+        "selection_note": "Cold-start price exploration: drawn from the price bin [2900, 3000] among 303 candidates (score ranks 4-306); score rank 179"
+      },
+      {
+        "listing": {
+          "listing_id": "500264961",
+          "listing_type": "RENT",
+          "title": "304 Yishun Central",
+          "price": 3000.0,
+          "bedrooms": 2.0,
+          "floor_area_sqft": 1000.0,
+          "property_type": "hdb flat",
+          "district_code": "D27",
+          "postal_code": "760304",
+          "latitude": 1.43030345,
+          "longitude": 103.8404704,
+          "url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-304-yishun-central-500264961",
+          "observed_at": "2026-10-21 13:08:22.914567+00:00",
+          "source": "postgresql:properties",
+          "normalization_warnings": []
+        },
+        "rank": 8,
+        "score_rank": 199,
+        "scores": {
+          "soft_score": 0.0,
+          "behavior_score": null,
+          "appointment_score": null,
+          "browsing_score": null,
+          "combined_score": 0.0,
+          "soft_weight": 0.6,
+          "behavior_weight": 0.4,
+          "appointment_weight": 0.6,
+          "browsing_weight": 0.4,
+          "soft_evidence_coverage": 1.0,
+          "comparison_coverage": null,
+          "contributions": [
+            {
+              "feature": "district",
+              "branch": "soft",
+              "reference": null,
+              "raw_difference": null,
+              "scale": null,
+              "similarity": 0.0,
+              "weight": 1.0,
+              "contribution": 0.0,
+              "unknown": false,
+              "method": "threshold"
+            }
+          ],
+          "suppressed_features": [
+            "bedrooms",
+            "price"
+          ],
+          "ordering": "fused"
+        },
+        "criterion_results": [
+          {
+            "criterion_id": "budget",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "bedrooms",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "district",
+            "outcome": "fail",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          }
+        ],
+        "evidence_refs": [],
+        "strengths": [
+          "budget",
+          "bedrooms"
+        ],
+        "trade_offs": [
+          "district"
+        ],
+        "unknowns": [],
+        "selection_reason": "price_exploration_sample",
+        "selection_note": "Cold-start price exploration: drawn from the price bin [2900, 3000] among 303 candidates (score ranks 4-306); score rank 199"
+      },
+      {
+        "listing": {
+          "listing_id": "500268999",
+          "listing_type": "RENT",
+          "title": "807A Choa Chu Kang Avenue 1",
+          "price": 3000.0,
+          "bedrooms": 2.0,
+          "floor_area_sqft": 721.0,
+          "property_type": "hdb flat",
+          "district_code": "D23",
+          "postal_code": "681807",
+          "latitude": 1.3758,
+          "longitude": 103.74479,
+          "url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-807a-choa-chu-kang-avenue-1-500268999",
+          "observed_at": "2026-10-21 13:08:25.318097+00:00",
+          "source": "postgresql:properties",
+          "normalization_warnings": []
+        },
+        "rank": 9,
+        "score_rank": 205,
+        "scores": {
+          "soft_score": 0.0,
+          "behavior_score": null,
+          "appointment_score": null,
+          "browsing_score": null,
+          "combined_score": 0.0,
+          "soft_weight": 0.6,
+          "behavior_weight": 0.4,
+          "appointment_weight": 0.6,
+          "browsing_weight": 0.4,
+          "soft_evidence_coverage": 1.0,
+          "comparison_coverage": null,
+          "contributions": [
+            {
+              "feature": "district",
+              "branch": "soft",
+              "reference": null,
+              "raw_difference": null,
+              "scale": null,
+              "similarity": 0.0,
+              "weight": 1.0,
+              "contribution": 0.0,
+              "unknown": false,
+              "method": "threshold"
+            }
+          ],
+          "suppressed_features": [
+            "bedrooms",
+            "price"
+          ],
+          "ordering": "fused"
+        },
+        "criterion_results": [
+          {
+            "criterion_id": "budget",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "bedrooms",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "district",
+            "outcome": "fail",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          }
+        ],
+        "evidence_refs": [],
+        "strengths": [
+          "budget",
+          "bedrooms"
+        ],
+        "trade_offs": [
+          "district"
+        ],
+        "unknowns": [],
+        "selection_reason": "price_exploration_sample",
+        "selection_note": "Cold-start price exploration: drawn from the price bin [2900, 3000] among 303 candidates (score ranks 4-306); score rank 205"
+      },
+      {
+        "listing": {
+          "listing_id": "500282928",
+          "listing_type": "RENT",
+          "title": "523 Ang Mo Kio Avenue 5",
+          "price": 2688.0,
+          "bedrooms": 2.0,
+          "floor_area_sqft": 732.0,
+          "property_type": "hdb flat",
+          "district_code": "D20",
+          "postal_code": "560523",
+          "latitude": 1.37289782,
+          "longitude": 103.8530769,
+          "url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-523-ang-mo-kio-avenue-5-500282928",
+          "observed_at": "2026-10-21 13:08:31.138405+00:00",
+          "source": "postgresql:properties",
+          "normalization_warnings": []
+        },
+        "rank": 10,
+        "score_rank": 251,
+        "scores": {
+          "soft_score": 0.0,
+          "behavior_score": null,
+          "appointment_score": null,
+          "browsing_score": null,
+          "combined_score": 0.0,
+          "soft_weight": 0.6,
+          "behavior_weight": 0.4,
+          "appointment_weight": 0.6,
+          "browsing_weight": 0.4,
+          "soft_evidence_coverage": 1.0,
+          "comparison_coverage": null,
+          "contributions": [
+            {
+              "feature": "district",
+              "branch": "soft",
+              "reference": null,
+              "raw_difference": null,
+              "scale": null,
+              "similarity": 0.0,
+              "weight": 1.0,
+              "contribution": 0.0,
+              "unknown": false,
+              "method": "threshold"
+            }
+          ],
+          "suppressed_features": [
+            "bedrooms",
+            "price"
+          ],
+          "ordering": "fused"
+        },
+        "criterion_results": [
+          {
+            "criterion_id": "budget",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "bedrooms",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "district",
+            "outcome": "fail",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          }
+        ],
+        "evidence_refs": [],
+        "strengths": [
+          "budget",
+          "bedrooms"
+        ],
+        "trade_offs": [
+          "district"
+        ],
+        "unknowns": [],
+        "selection_reason": "price_exploration_sample",
+        "selection_note": "Cold-start price exploration: drawn from the price bin [450, 2800) among 303 candidates (score ranks 4-306); score rank 251"
+      }
+    ],
+    "evidence": [],
+    "resolution": [],
+    "pool": {
+      "pool_key": "0fef3d834fc679444036a0cd8d7ffa550702ef99967005c70a875fbc944d9d55",
+      "pool_version": "8c772524ece61a7535c3fa43106d9741bb94ead3d7f0a0ea81f9588574bbbdc4",
+      "data_version": "fdfce5220311e85438213d9ee4839969db300708224018b2adce5c069892d726",
+      "cache": "built",
+      "size": 306,
+      "source_count": 21431,
+      "excluded_hard_fail": 20680,
+      "excluded_hard_unknown": 445,
+      "unknown_reasons": {
+        "bedrooms: Missing listing attribute": 445
+      }
+    },
+    "selection": {
+      "mode": "cold_start_exploration",
+      "algorithm_version": "select-v1",
+      "seed": "141a39ff3302c4eaeb22e9f00fcb9b096c199d0032bb8fcd49678dcfc03d6f5e",
+      "result_limit": 10,
+      "leaders": 3,
+      "tie_group": {
+        "size": 303,
+        "min_score": 0.0,
+        "max_score": 0.0,
+        "span": 0.0,
+        "epsilon": 0.02
+      },
+      "exploration": {
+        "candidate_count": 303,
+        "sample_size": 30,
+        "bins": [
+          {
+            "lower": 450.0,
+            "upper": 2800.0,
+            "count": 59,
+            "sampled": 1,
+            "quota": 6
+          },
+          {
+            "lower": 2800.0,
+            "upper": 2900.0,
+            "count": 46,
+            "sampled": 1,
+            "quota": 4
+          },
+          {
+            "lower": 2900.0,
+            "upper": 3000.0,
+            "count": 198,
+            "sampled": 5,
+            "quota": 20
+          }
+        ]
+      },
+      "cold_start": {
+        "evaluated": true,
+        "active": true,
+        "reason": "b_above_max; s_below_min",
+        "coverage_c": 1.0,
+        "boundary_group_b": 303,
+        "stability_s": 0.3149999999999999,
+        "thresholds": {
+          "c": 0.8,
+          "b": 5,
+          "s": 0.9
+        },
+        "exit_conditions_met": false,
+        "pool_key": "0fef3d834fc679444036a0cd8d7ffa550702ef99967005c70a875fbc944d9d55"
+      }
+    },
+    "clarifications": [],
+    "relaxation_suggestions": [],
+    "warnings": [
+      "Sample viewing durations are simulated observations.",
+      "Posting time does not establish current availability.",
+      "445 listings were excluded because hard-criterion data is unknown (see pool.unknown_reasons); they are not verified matches."
+    ],
+    "state": {
+      "state_id": "f95e38de-4298-4371-ade6-3ce4f5fea8f2",
+      "candidate_pool_ref": "605bde47-7e37-468a-8049-4744571857d3/pool",
+      "run_sequence": 1,
+      "scope": "all RENT listings",
+      "truncated": false,
+      "source_count": 21431,
+      "prefilter_excluded": 21125,
+      "assessed_count": 306
+    },
+    "execution": {
+      "trace_id": "605bde47-7e37-468a-8049-4744571857d3",
+      "trace_ref": "sqlite:605bde47-7e37-468a-8049-4744571857d3",
+      "strategy": "full-pool fused-v2 scoring + select-v1 selection",
+      "scoring_version": "fused-v2:d0b84d8a3d2c",
+      "selection_algorithm": "select-v1",
+      "config_version": 1,
+      "config_hash": "603ed132b7b40a7f9cb162a01da9cce8f489f0602997dc805c0a5769d4b85914",
+      "selection_hash": "d0b84d8a3d2ce768fbba591a0e7a819470745add1113a8659008d8aa293aa1b8",
+      "model_identifier": null,
+      "model_calls": 0,
+      "tool_calls": 4,
+      "duration_ms": 1466.3854590035044,
+      "tokens": null,
+      "data_mode": "database",
+      "controller_mode": "scripted"
+    },
+    "error": null
+  },
+  "pool_ref": {
+    "pool_key": "0fef3d834fc679444036a0cd8d7ffa550702ef99967005c70a875fbc944d9d55",
+    "pool_version": "8c772524ece61a7535c3fa43106d9741bb94ead3d7f0a0ea81f9588574bbbdc4",
+    "data_version": "fdfce5220311e85438213d9ee4839969db300708224018b2adce5c069892d726",
+    "cache": "built"
+  }
+}
+# 9. Export of the latest committed run
+recommendation> export <tmp>/export
+Exported run 9c2629ab-be1d-4c5d-b49f-e62b841beb86 to <tmp>/export: request.json, response.json, trace.json, config.json
+recommendation> show-trace --debug
+Note: immutable replay trace of request 302492b1-57e6-44a7-9157-eea09f3b137a (replay gate only); the run's own trace is sqlite:605bde47-7e37-468a-8049-4744571857d3: show-trace 302492b1-57e6-44a7-9157-eea09f3b137a.
+Note: this run was traced with trace.mode='summary': no debug block. Use set-config trace.mode "debug" and recommend again.
+{
+  "format": 2,
+  "trace_id": "b28959fe-3664-4c32-bdb2-c0b8ccfb7178",
+  "request": {
+    "contract_version": "2.0",
+    "request_id": "302492b1-57e6-44a7-9157-eea09f3b137a",
+    "conversation_id": "p6-database-transcript",
+    "requirements_version": 1,
+    "requirements": {
+      "listing_type": "RENT",
+      "criteria": [
+        {
+          "criterion_id": "budget",
+          "field": "price",
+          "operator": "lte",
+          "value": 3000.0,
+          "unit": "SGD/month",
+          "strength": "hard",
+          "weight": 1.0,
+          "utility": "threshold",
+          "destination_id": null,
+          "destination_name": null,
+          "category": null,
+          "distance_type": null,
+          "transport_mode": null
+        },
+        {
+          "criterion_id": "bedrooms",
+          "field": "bedrooms",
+          "operator": "gte",
+          "value": 2.0,
+          "unit": null,
+          "strength": "hard",
+          "weight": 1.0,
+          "utility": "threshold",
+          "destination_id": null,
+          "destination_name": null,
+          "category": null,
+          "distance_type": null,
+          "transport_mode": null
+        },
+        {
+          "criterion_id": "district",
+          "field": "district_code",
+          "operator": "in",
+          "value": [
+            "D05"
+          ],
+          "unit": null,
+          "strength": "soft",
+          "weight": 1.0,
+          "utility": "threshold",
+          "destination_id": null,
+          "destination_name": null,
+          "category": null,
+          "distance_type": null,
+          "transport_mode": null
+        }
+      ]
+    },
+    "previous_state_id": null,
+    "result_limit": null,
+    "feedback": {
+      "previous_round": null,
+      "appointments": []
+    },
+    "cold_start": {
+      "exited": false,
+      "exited_pool_key": null
+    }
+  },
+  "data_mode": "database",
+  "controller_mode": "scripted",
+  "layout": "slim-v1",
+  "trace_mode": "summary",
+  "stages": [
+    {
+      "stage": "input_validation",
+      "status": "ok",
+      "duration_ms": 0.7859590114094317,
+      "inputs": {
+        "criteria": 3,
+        "hard_criteria": 2,
+        "previous_state_id": false,
+        "previous_round_browsing": 0,
+        "appointments": 0,
+        "result_limit": null,
+        "cold_start_exited": false
+      },
+      "outputs": {
+        "replay": true
+      },
+      "params": {},
+      "versions": {
+        "config_version": 1,
+        "config_hash": "603ed132b7b40a7f9cb162a01da9cce8f489f0602997dc805c0a5769d4b85914",
+        "selection_hash": "d0b84d8a3d2ce768fbba591a0e7a819470745add1113a8659008d8aa293aa1b8"
+      },
+      "preview": [],
+      "preview_total": 0,
+      "unknown": {}
+    },
+    {
+      "stage": "final_gate",
+      "status": "ok",
+      "duration_ms": 1.1654170230031013,
+      "inputs": {},
+      "outputs": {
+        "selected": 10
+      },
+      "params": {
+        "mode": "immutable_replay"
+      },
+      "versions": {
+        "config_version": 1,
+        "config_hash": "603ed132b7b40a7f9cb162a01da9cce8f489f0602997dc805c0a5769d4b85914",
+        "selection_hash": "d0b84d8a3d2ce768fbba591a0e7a819470745add1113a8659008d8aa293aa1b8"
+      },
+      "preview": [],
+      "preview_total": 0,
+      "unknown": {},
+      "note": "stored response verified against its run snapshot (replay_gate)"
+    }
+  ],
+  "steps": [
+    {
+      "kind": "final_gate",
+      "mode": "immutable_replay",
+      "passed": true,
+      "original_trace_ref": "sqlite:605bde47-7e37-468a-8049-4744571857d3"
+    }
+  ],
+  "configuration": {
+    "config_version": 1,
+    "recommendation": {
+      "default_result_limit": 10,
+      "max_result_limit": 10
+    },
+    "ranking": {
+      "soft_weight": 0.6,
+      "behavior_weight": 0.4,
+      "soft": {
+        "numeric_bounds": {
+          "price": [
+            0.0,
+            20000.0
+          ],
+          "bedrooms": [
+            0.0,
+            10.0
+          ],
+          "floor_area_sqft": [
+            0.0,
+            10000.0
+          ]
+        }
+      },
+      "behavior": {
+        "appointment_weight": 0.6,
+        "browsing_weight": 0.4,
+        "missing_branch_contribution": 0.0,
+        "redistribute_missing_branch_weight": false,
+        "counted_appointment_statuses": [
+          "CONFIRMED",
+          "MANUAL_REPLIED",
+          "MANUAL_SENT"
+        ],
+        "reference_scope": "in_pool"
+      },
+      "browsing": {
+        "transform": "log1p",
+        "duration_cap_seconds": null,
+        "time_scale_seconds": 30.0
+      },
+      "similarity": {
+        "suppression": "hard_criteria",
+        "feature_weights": {
+          "price": 0.2,
+          "property_type": 0.2,
+          "bedrooms": 0.16,
+          "floor_area_sqft": 0.2,
+          "geography": 0.24
+        },
+        "numeric_scaling": "iqr",
+        "geographic_scale_m": 3000.0,
+        "geography_district_fallback": true,
+        "min_comparison_coverage": 0.5
+      }
+    },
+    "geography": {
+      "station_distance_method": "nearest_exit"
+    },
+    "cold_start": {
+      "enabled": true,
+      "reenter_on_pool_rebuild": true,
+      "min_evidence_coverage": 0.8,
+      "max_boundary_tie_group_size": 5,
+      "min_top_k_stability": 0.9,
+      "price_sampling": {
+        "target_sample_size": 30,
+        "quantile_bins": 5
+      },
+      "stability": {
+        "trials": 20,
+        "weight_perturbation_fraction": 0.2
+      }
+    },
+    "selection": {
+      "tie_max_score_span": 0.02,
+      "random_policy": "uniform_without_replacement",
+      "seed_namespace": "recommendation-selection-v1"
+    },
+    "cache": {
+      "enabled": true,
+      "ttl_seconds": 0,
+      "max_entries_per_conversation": 2,
+      "pool_retention_per_conversation": 4,
+      "memory_max_entries": 4
+    },
+    "entity_resolution": {
+      "max_search_attempts": 3,
+      "max_candidates": 5
+    },
+    "controller": {
+      "max_model_turns": 8,
+      "max_tool_calls": 20,
+      "max_resolution_tool_calls": 6,
+      "timeout_seconds": 90.0,
+      "repairs": 2,
+      "model_result_candidates": 100
+    },
+    "trace": {
+      "mode": "summary",
+      "preview_rows": 10,
+      "debug_max_rows": 200
+    }
+  },
+  "config_version": 1,
+  "config_hash": "603ed132b7b40a7f9cb162a01da9cce8f489f0602997dc805c0a5769d4b85914",
+  "selection_hash": "d0b84d8a3d2ce768fbba591a0e7a819470745add1113a8659008d8aa293aa1b8",
+  "config_source": "/Users/tot/Documents/nus-ais/PR1/dev/Multi-Agent-Assistance-System/recommendation/settings/recommendation.yaml",
+  "response": {
+    "contract_version": "2.0",
+    "request_id": "302492b1-57e6-44a7-9157-eea09f3b137a",
+    "conversation_id": "p6-database-transcript",
+    "requirements_version": 1,
+    "status": "success",
+    "recommendations": [
+      {
+        "listing": {
+          "listing_id": "20617351",
+          "listing_type": "RENT",
+          "title": "354 Clementi Avenue 2",
+          "price": 3000.0,
+          "bedrooms": 2.0,
+          "floor_area_sqft": 700.0,
+          "property_type": "hdb flat",
+          "district_code": "D05",
+          "postal_code": "120354",
+          "latitude": 1.31367814,
+          "longitude": 103.770363,
+          "url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-354-clementi-avenue-2-20617351",
+          "observed_at": "2026-10-21 13:07:50.029769+00:00",
+          "source": "postgresql:properties",
+          "normalization_warnings": []
+        },
+        "rank": 1,
+        "score_rank": 1,
+        "scores": {
+          "soft_score": 1.0,
+          "behavior_score": null,
+          "appointment_score": null,
+          "browsing_score": null,
+          "combined_score": 0.6,
+          "soft_weight": 0.6,
+          "behavior_weight": 0.4,
+          "appointment_weight": 0.6,
+          "browsing_weight": 0.4,
+          "soft_evidence_coverage": 1.0,
+          "comparison_coverage": null,
+          "contributions": [
+            {
+              "feature": "district",
+              "branch": "soft",
+              "reference": null,
+              "raw_difference": null,
+              "scale": null,
+              "similarity": 1.0,
+              "weight": 1.0,
+              "contribution": 1.0,
+              "unknown": false,
+              "method": "threshold"
+            }
+          ],
+          "suppressed_features": [
+            "bedrooms",
+            "price"
+          ],
+          "ordering": "fused"
+        },
+        "criterion_results": [
+          {
+            "criterion_id": "budget",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "bedrooms",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "district",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          }
+        ],
+        "evidence_refs": [],
+        "strengths": [
+          "budget",
+          "bedrooms",
+          "district"
+        ],
+        "trade_offs": [],
+        "unknowns": [],
+        "selection_reason": "leader",
+        "selection_note": "Clear leader: score rank 1 of 306, ahead of the near-tie group at the result cutoff"
+      },
+      {
+        "listing": {
+          "listing_id": "500262756",
+          "listing_type": "RENT",
+          "title": "2 Dover Road",
+          "price": 3000.0,
+          "bedrooms": 2.0,
+          "floor_area_sqft": 699.0,
+          "property_type": "hdb flat",
+          "district_code": "D05",
+          "postal_code": "130002",
+          "latitude": 1.30309775,
+          "longitude": 103.7827819,
+          "url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-2-dover-road-500262756",
+          "observed_at": "2026-10-21 13:08:22.914567+00:00",
+          "source": "postgresql:properties",
+          "normalization_warnings": []
+        },
+        "rank": 2,
+        "score_rank": 2,
+        "scores": {
+          "soft_score": 1.0,
+          "behavior_score": null,
+          "appointment_score": null,
+          "browsing_score": null,
+          "combined_score": 0.6,
+          "soft_weight": 0.6,
+          "behavior_weight": 0.4,
+          "appointment_weight": 0.6,
+          "browsing_weight": 0.4,
+          "soft_evidence_coverage": 1.0,
+          "comparison_coverage": null,
+          "contributions": [
+            {
+              "feature": "district",
+              "branch": "soft",
+              "reference": null,
+              "raw_difference": null,
+              "scale": null,
+              "similarity": 1.0,
+              "weight": 1.0,
+              "contribution": 1.0,
+              "unknown": false,
+              "method": "threshold"
+            }
+          ],
+          "suppressed_features": [
+            "bedrooms",
+            "price"
+          ],
+          "ordering": "fused"
+        },
+        "criterion_results": [
+          {
+            "criterion_id": "budget",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "bedrooms",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "district",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          }
+        ],
+        "evidence_refs": [],
+        "strengths": [
+          "budget",
+          "bedrooms",
+          "district"
+        ],
+        "trade_offs": [],
+        "unknowns": [],
+        "selection_reason": "leader",
+        "selection_note": "Clear leader: score rank 2 of 306, ahead of the near-tie group at the result cutoff"
+      },
+      {
+        "listing": {
+          "listing_id": "500267173",
+          "listing_type": "RENT",
+          "title": "306 Clementi Avenue 4",
+          "price": 3000.0,
+          "bedrooms": 2.0,
+          "floor_area_sqft": 721.0,
+          "property_type": "hdb flat",
+          "district_code": "D05",
+          "postal_code": "120306",
+          "latitude": 1.32141822,
+          "longitude": 103.7660733,
+          "url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-306-clementi-avenue-4-500267173",
+          "observed_at": "2026-10-21 13:08:24.206063+00:00",
+          "source": "postgresql:properties",
+          "normalization_warnings": []
+        },
+        "rank": 3,
+        "score_rank": 3,
+        "scores": {
+          "soft_score": 1.0,
+          "behavior_score": null,
+          "appointment_score": null,
+          "browsing_score": null,
+          "combined_score": 0.6,
+          "soft_weight": 0.6,
+          "behavior_weight": 0.4,
+          "appointment_weight": 0.6,
+          "browsing_weight": 0.4,
+          "soft_evidence_coverage": 1.0,
+          "comparison_coverage": null,
+          "contributions": [
+            {
+              "feature": "district",
+              "branch": "soft",
+              "reference": null,
+              "raw_difference": null,
+              "scale": null,
+              "similarity": 1.0,
+              "weight": 1.0,
+              "contribution": 1.0,
+              "unknown": false,
+              "method": "threshold"
+            }
+          ],
+          "suppressed_features": [
+            "bedrooms",
+            "price"
+          ],
+          "ordering": "fused"
+        },
+        "criterion_results": [
+          {
+            "criterion_id": "budget",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "bedrooms",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "district",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          }
+        ],
+        "evidence_refs": [],
+        "strengths": [
+          "budget",
+          "bedrooms",
+          "district"
+        ],
+        "trade_offs": [],
+        "unknowns": [],
+        "selection_reason": "leader",
+        "selection_note": "Clear leader: score rank 3 of 306, ahead of the near-tie group at the result cutoff"
+      },
+      {
+        "listing": {
+          "listing_id": "23418209",
+          "listing_type": "RENT",
+          "title": "535 Ang Mo Kio Avenue 5",
+          "price": 2900.0,
+          "bedrooms": 2.0,
+          "floor_area_sqft": 721.0,
+          "property_type": "hdb flat",
+          "district_code": "D20",
+          "postal_code": "560535",
+          "latitude": 1.37460888,
+          "longitude": 103.8529805,
+          "url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-535-ang-mo-kio-avenue-5-23418209",
+          "observed_at": "2026-10-21 13:07:53.138904+00:00",
+          "source": "postgresql:properties",
+          "normalization_warnings": []
+        },
+        "rank": 4,
+        "score_rank": 33,
+        "scores": {
+          "soft_score": 0.0,
+          "behavior_score": null,
+          "appointment_score": null,
+          "browsing_score": null,
+          "combined_score": 0.0,
+          "soft_weight": 0.6,
+          "behavior_weight": 0.4,
+          "appointment_weight": 0.6,
+          "browsing_weight": 0.4,
+          "soft_evidence_coverage": 1.0,
+          "comparison_coverage": null,
+          "contributions": [
+            {
+              "feature": "district",
+              "branch": "soft",
+              "reference": null,
+              "raw_difference": null,
+              "scale": null,
+              "similarity": 0.0,
+              "weight": 1.0,
+              "contribution": 0.0,
+              "unknown": false,
+              "method": "threshold"
+            }
+          ],
+          "suppressed_features": [
+            "bedrooms",
+            "price"
+          ],
+          "ordering": "fused"
+        },
+        "criterion_results": [
+          {
+            "criterion_id": "budget",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "bedrooms",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "district",
+            "outcome": "fail",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          }
+        ],
+        "evidence_refs": [],
+        "strengths": [
+          "budget",
+          "bedrooms"
+        ],
+        "trade_offs": [
+          "district"
+        ],
+        "unknowns": [],
+        "selection_reason": "price_exploration_sample",
+        "selection_note": "Cold-start price exploration: drawn from the price bin [2900, 3000] among 303 candidates (score ranks 4-306); score rank 33"
+      },
+      {
+        "listing": {
+          "listing_id": "25090106",
+          "listing_type": "RENT",
+          "title": "21 Chai Chee Road",
+          "price": 3000.0,
+          "bedrooms": 2.0,
+          "floor_area_sqft": 729.0,
+          "property_type": "hdb flat",
+          "district_code": "D16",
+          "postal_code": "461021",
+          "latitude": 1.32573761,
+          "longitude": 103.9225651,
+          "url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-21-chai-chee-road-25090106",
+          "observed_at": "2026-10-21 13:07:59.358870+00:00",
+          "source": "postgresql:properties",
+          "normalization_warnings": []
+        },
+        "rank": 5,
+        "score_rank": 74,
+        "scores": {
+          "soft_score": 0.0,
+          "behavior_score": null,
+          "appointment_score": null,
+          "browsing_score": null,
+          "combined_score": 0.0,
+          "soft_weight": 0.6,
+          "behavior_weight": 0.4,
+          "appointment_weight": 0.6,
+          "browsing_weight": 0.4,
+          "soft_evidence_coverage": 1.0,
+          "comparison_coverage": null,
+          "contributions": [
+            {
+              "feature": "district",
+              "branch": "soft",
+              "reference": null,
+              "raw_difference": null,
+              "scale": null,
+              "similarity": 0.0,
+              "weight": 1.0,
+              "contribution": 0.0,
+              "unknown": false,
+              "method": "threshold"
+            }
+          ],
+          "suppressed_features": [
+            "bedrooms",
+            "price"
+          ],
+          "ordering": "fused"
+        },
+        "criterion_results": [
+          {
+            "criterion_id": "budget",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "bedrooms",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "district",
+            "outcome": "fail",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          }
+        ],
+        "evidence_refs": [],
+        "strengths": [
+          "budget",
+          "bedrooms"
+        ],
+        "trade_offs": [
+          "district"
+        ],
+        "unknowns": [],
+        "selection_reason": "price_exploration_sample",
+        "selection_note": "Cold-start price exploration: drawn from the price bin [2900, 3000] among 303 candidates (score ranks 4-306); score rank 74"
+      },
+      {
+        "listing": {
+          "listing_id": "25102646",
+          "listing_type": "RENT",
+          "title": "362A Sembawang Crescent",
+          "price": 2800.0,
+          "bedrooms": 2.0,
+          "floor_area_sqft": 731.0,
+          "property_type": "hdb flat",
+          "district_code": "D27",
+          "postal_code": "751362",
+          "latitude": 1.44719,
+          "longitude": 103.814,
+          "url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-362a-sembawang-crescent-25102646",
+          "observed_at": "2026-10-21 13:07:59.358870+00:00",
+          "source": "postgresql:properties",
+          "normalization_warnings": []
+        },
+        "rank": 6,
+        "score_rank": 76,
+        "scores": {
+          "soft_score": 0.0,
+          "behavior_score": null,
+          "appointment_score": null,
+          "browsing_score": null,
+          "combined_score": 0.0,
+          "soft_weight": 0.6,
+          "behavior_weight": 0.4,
+          "appointment_weight": 0.6,
+          "browsing_weight": 0.4,
+          "soft_evidence_coverage": 1.0,
+          "comparison_coverage": null,
+          "contributions": [
+            {
+              "feature": "district",
+              "branch": "soft",
+              "reference": null,
+              "raw_difference": null,
+              "scale": null,
+              "similarity": 0.0,
+              "weight": 1.0,
+              "contribution": 0.0,
+              "unknown": false,
+              "method": "threshold"
+            }
+          ],
+          "suppressed_features": [
+            "bedrooms",
+            "price"
+          ],
+          "ordering": "fused"
+        },
+        "criterion_results": [
+          {
+            "criterion_id": "budget",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "bedrooms",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "district",
+            "outcome": "fail",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          }
+        ],
+        "evidence_refs": [],
+        "strengths": [
+          "budget",
+          "bedrooms"
+        ],
+        "trade_offs": [
+          "district"
+        ],
+        "unknowns": [],
+        "selection_reason": "price_exploration_sample",
+        "selection_note": "Cold-start price exploration: drawn from the price bin [2800, 2900) among 303 candidates (score ranks 4-306); score rank 76"
+      },
+      {
+        "listing": {
+          "listing_id": "500254998",
+          "listing_type": "RENT",
+          "title": "99 Old Airport Road",
+          "price": 3000.0,
+          "bedrooms": 2.0,
+          "floor_area_sqft": 603.0,
+          "property_type": "hdb flat",
+          "district_code": "D14",
+          "postal_code": "390099",
+          "latitude": 1.30860354,
+          "longitude": 103.8882303,
+          "url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-99-old-airport-road-500254998",
+          "observed_at": "2026-10-21 13:08:19.784880+00:00",
+          "source": "postgresql:properties",
+          "normalization_warnings": []
+        },
+        "rank": 7,
+        "score_rank": 179,
+        "scores": {
+          "soft_score": 0.0,
+          "behavior_score": null,
+          "appointment_score": null,
+          "browsing_score": null,
+          "combined_score": 0.0,
+          "soft_weight": 0.6,
+          "behavior_weight": 0.4,
+          "appointment_weight": 0.6,
+          "browsing_weight": 0.4,
+          "soft_evidence_coverage": 1.0,
+          "comparison_coverage": null,
+          "contributions": [
+            {
+              "feature": "district",
+              "branch": "soft",
+              "reference": null,
+              "raw_difference": null,
+              "scale": null,
+              "similarity": 0.0,
+              "weight": 1.0,
+              "contribution": 0.0,
+              "unknown": false,
+              "method": "threshold"
+            }
+          ],
+          "suppressed_features": [
+            "bedrooms",
+            "price"
+          ],
+          "ordering": "fused"
+        },
+        "criterion_results": [
+          {
+            "criterion_id": "budget",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "bedrooms",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "district",
+            "outcome": "fail",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          }
+        ],
+        "evidence_refs": [],
+        "strengths": [
+          "budget",
+          "bedrooms"
+        ],
+        "trade_offs": [
+          "district"
+        ],
+        "unknowns": [],
+        "selection_reason": "price_exploration_sample",
+        "selection_note": "Cold-start price exploration: drawn from the price bin [2900, 3000] among 303 candidates (score ranks 4-306); score rank 179"
+      },
+      {
+        "listing": {
+          "listing_id": "500264961",
+          "listing_type": "RENT",
+          "title": "304 Yishun Central",
+          "price": 3000.0,
+          "bedrooms": 2.0,
+          "floor_area_sqft": 1000.0,
+          "property_type": "hdb flat",
+          "district_code": "D27",
+          "postal_code": "760304",
+          "latitude": 1.43030345,
+          "longitude": 103.8404704,
+          "url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-304-yishun-central-500264961",
+          "observed_at": "2026-10-21 13:08:22.914567+00:00",
+          "source": "postgresql:properties",
+          "normalization_warnings": []
+        },
+        "rank": 8,
+        "score_rank": 199,
+        "scores": {
+          "soft_score": 0.0,
+          "behavior_score": null,
+          "appointment_score": null,
+          "browsing_score": null,
+          "combined_score": 0.0,
+          "soft_weight": 0.6,
+          "behavior_weight": 0.4,
+          "appointment_weight": 0.6,
+          "browsing_weight": 0.4,
+          "soft_evidence_coverage": 1.0,
+          "comparison_coverage": null,
+          "contributions": [
+            {
+              "feature": "district",
+              "branch": "soft",
+              "reference": null,
+              "raw_difference": null,
+              "scale": null,
+              "similarity": 0.0,
+              "weight": 1.0,
+              "contribution": 0.0,
+              "unknown": false,
+              "method": "threshold"
+            }
+          ],
+          "suppressed_features": [
+            "bedrooms",
+            "price"
+          ],
+          "ordering": "fused"
+        },
+        "criterion_results": [
+          {
+            "criterion_id": "budget",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "bedrooms",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "district",
+            "outcome": "fail",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          }
+        ],
+        "evidence_refs": [],
+        "strengths": [
+          "budget",
+          "bedrooms"
+        ],
+        "trade_offs": [
+          "district"
+        ],
+        "unknowns": [],
+        "selection_reason": "price_exploration_sample",
+        "selection_note": "Cold-start price exploration: drawn from the price bin [2900, 3000] among 303 candidates (score ranks 4-306); score rank 199"
+      },
+      {
+        "listing": {
+          "listing_id": "500268999",
+          "listing_type": "RENT",
+          "title": "807A Choa Chu Kang Avenue 1",
+          "price": 3000.0,
+          "bedrooms": 2.0,
+          "floor_area_sqft": 721.0,
+          "property_type": "hdb flat",
+          "district_code": "D23",
+          "postal_code": "681807",
+          "latitude": 1.3758,
+          "longitude": 103.74479,
+          "url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-807a-choa-chu-kang-avenue-1-500268999",
+          "observed_at": "2026-10-21 13:08:25.318097+00:00",
+          "source": "postgresql:properties",
+          "normalization_warnings": []
+        },
+        "rank": 9,
+        "score_rank": 205,
+        "scores": {
+          "soft_score": 0.0,
+          "behavior_score": null,
+          "appointment_score": null,
+          "browsing_score": null,
+          "combined_score": 0.0,
+          "soft_weight": 0.6,
+          "behavior_weight": 0.4,
+          "appointment_weight": 0.6,
+          "browsing_weight": 0.4,
+          "soft_evidence_coverage": 1.0,
+          "comparison_coverage": null,
+          "contributions": [
+            {
+              "feature": "district",
+              "branch": "soft",
+              "reference": null,
+              "raw_difference": null,
+              "scale": null,
+              "similarity": 0.0,
+              "weight": 1.0,
+              "contribution": 0.0,
+              "unknown": false,
+              "method": "threshold"
+            }
+          ],
+          "suppressed_features": [
+            "bedrooms",
+            "price"
+          ],
+          "ordering": "fused"
+        },
+        "criterion_results": [
+          {
+            "criterion_id": "budget",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "bedrooms",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "district",
+            "outcome": "fail",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          }
+        ],
+        "evidence_refs": [],
+        "strengths": [
+          "budget",
+          "bedrooms"
+        ],
+        "trade_offs": [
+          "district"
+        ],
+        "unknowns": [],
+        "selection_reason": "price_exploration_sample",
+        "selection_note": "Cold-start price exploration: drawn from the price bin [2900, 3000] among 303 candidates (score ranks 4-306); score rank 205"
+      },
+      {
+        "listing": {
+          "listing_id": "500282928",
+          "listing_type": "RENT",
+          "title": "523 Ang Mo Kio Avenue 5",
+          "price": 2688.0,
+          "bedrooms": 2.0,
+          "floor_area_sqft": 732.0,
+          "property_type": "hdb flat",
+          "district_code": "D20",
+          "postal_code": "560523",
+          "latitude": 1.37289782,
+          "longitude": 103.8530769,
+          "url": "https://www.propertyguru.com.sg/listing/hdb-for-rent-523-ang-mo-kio-avenue-5-500282928",
+          "observed_at": "2026-10-21 13:08:31.138405+00:00",
+          "source": "postgresql:properties",
+          "normalization_warnings": []
+        },
+        "rank": 10,
+        "score_rank": 251,
+        "scores": {
+          "soft_score": 0.0,
+          "behavior_score": null,
+          "appointment_score": null,
+          "browsing_score": null,
+          "combined_score": 0.0,
+          "soft_weight": 0.6,
+          "behavior_weight": 0.4,
+          "appointment_weight": 0.6,
+          "browsing_weight": 0.4,
+          "soft_evidence_coverage": 1.0,
+          "comparison_coverage": null,
+          "contributions": [
+            {
+              "feature": "district",
+              "branch": "soft",
+              "reference": null,
+              "raw_difference": null,
+              "scale": null,
+              "similarity": 0.0,
+              "weight": 1.0,
+              "contribution": 0.0,
+              "unknown": false,
+              "method": "threshold"
+            }
+          ],
+          "suppressed_features": [
+            "bedrooms",
+            "price"
+          ],
+          "ordering": "fused"
+        },
+        "criterion_results": [
+          {
+            "criterion_id": "budget",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "bedrooms",
+            "outcome": "pass",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          },
+          {
+            "criterion_id": "district",
+            "outcome": "fail",
+            "reason": "Exact criterion comparison",
+            "evidence_refs": []
+          }
+        ],
+        "evidence_refs": [],
+        "strengths": [
+          "budget",
+          "bedrooms"
+        ],
+        "trade_offs": [
+          "district"
+        ],
+        "unknowns": [],
+        "selection_reason": "price_exploration_sample",
+        "selection_note": "Cold-start price exploration: drawn from the price bin [450, 2800) among 303 candidates (score ranks 4-306); score rank 251"
+      }
+    ],
+    "evidence": [],
+    "resolution": [],
+    "pool": {
+      "pool_key": "0fef3d834fc679444036a0cd8d7ffa550702ef99967005c70a875fbc944d9d55",
+      "pool_version": "8c772524ece61a7535c3fa43106d9741bb94ead3d7f0a0ea81f9588574bbbdc4",
+      "data_version": "fdfce5220311e85438213d9ee4839969db300708224018b2adce5c069892d726",
+      "cache": "built",
+      "size": 306,
+      "source_count": 21431,
+      "excluded_hard_fail": 20680,
+      "excluded_hard_unknown": 445,
+      "unknown_reasons": {
+        "bedrooms: Missing listing attribute": 445
+      }
+    },
+    "selection": {
+      "mode": "cold_start_exploration",
+      "algorithm_version": "select-v1",
+      "seed": "141a39ff3302c4eaeb22e9f00fcb9b096c199d0032bb8fcd49678dcfc03d6f5e",
+      "result_limit": 10,
+      "leaders": 3,
+      "tie_group": {
+        "size": 303,
+        "min_score": 0.0,
+        "max_score": 0.0,
+        "span": 0.0,
+        "epsilon": 0.02
+      },
+      "exploration": {
+        "candidate_count": 303,
+        "sample_size": 30,
+        "bins": [
+          {
+            "lower": 450.0,
+            "upper": 2800.0,
+            "count": 59,
+            "sampled": 1,
+            "quota": 6
+          },
+          {
+            "lower": 2800.0,
+            "upper": 2900.0,
+            "count": 46,
+            "sampled": 1,
+            "quota": 4
+          },
+          {
+            "lower": 2900.0,
+            "upper": 3000.0,
+            "count": 198,
+            "sampled": 5,
+            "quota": 20
+          }
+        ]
+      },
+      "cold_start": {
+        "evaluated": true,
+        "active": true,
+        "reason": "b_above_max; s_below_min",
+        "coverage_c": 1.0,
+        "boundary_group_b": 303,
+        "stability_s": 0.3149999999999999,
+        "thresholds": {
+          "c": 0.8,
+          "b": 5,
+          "s": 0.9
+        },
+        "exit_conditions_met": false,
+        "pool_key": "0fef3d834fc679444036a0cd8d7ffa550702ef99967005c70a875fbc944d9d55"
+      }
+    },
+    "clarifications": [],
+    "relaxation_suggestions": [],
+    "warnings": [
+      "Sample viewing durations are simulated observations.",
+      "Posting time does not establish current availability.",
+      "445 listings were excluded because hard-criterion data is unknown (see pool.unknown_reasons); they are not verified matches."
+    ],
+    "state": {
+      "state_id": "f95e38de-4298-4371-ade6-3ce4f5fea8f2",
+      "candidate_pool_ref": "605bde47-7e37-468a-8049-4744571857d3/pool",
+      "run_sequence": 1,
+      "scope": "all RENT listings",
+      "truncated": false,
+      "source_count": 21431,
+      "prefilter_excluded": 21125,
+      "assessed_count": 306
+    },
+    "execution": {
+      "trace_id": "605bde47-7e37-468a-8049-4744571857d3",
+      "trace_ref": "sqlite:605bde47-7e37-468a-8049-4744571857d3",
+      "strategy": "full-pool fused-v2 scoring + select-v1 selection",
+      "scoring_version": "fused-v2:d0b84d8a3d2c",
+      "selection_algorithm": "select-v1",
+      "config_version": 1,
+      "config_hash": "603ed132b7b40a7f9cb162a01da9cce8f489f0602997dc805c0a5769d4b85914",
+      "selection_hash": "d0b84d8a3d2ce768fbba591a0e7a819470745add1113a8659008d8aa293aa1b8",
+      "model_identifier": null,
+      "model_calls": 0,
+      "tool_calls": 4,
+      "duration_ms": 1466.3854590035044,
+      "tokens": null,
+      "data_mode": "database",
+      "controller_mode": "scripted"
+    },
+    "error": null
+  },
+  "pool_ref": {
+    "pool_key": "0fef3d834fc679444036a0cd8d7ffa550702ef99967005c70a875fbc944d9d55",
+    "pool_version": "8c772524ece61a7535c3fa43106d9741bb94ead3d7f0a0ea81f9588574bbbdc4",
+    "data_version": "fdfce5220311e85438213d9ee4839969db300708224018b2adce5c069892d726",
+    "cache": "built"
+  }
+}

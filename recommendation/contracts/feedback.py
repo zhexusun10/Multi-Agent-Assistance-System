@@ -10,6 +10,9 @@ class ViewPayload(Contract):
 
 
 class ViewingEvent(Contract):
+    """Incremental, quality-gated duration event (main contract). Validated, not scored:
+    behavior_context.listing_view_durations already holds the same time cumulatively."""
+
     event_id: str = Field(min_length=1)
     conversation_id: str = Field(min_length=1)
     recommendation_request_id: str = Field(min_length=1)

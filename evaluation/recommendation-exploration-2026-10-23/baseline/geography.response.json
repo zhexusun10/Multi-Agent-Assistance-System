@@ -1,0 +1,737 @@
+{
+  "clarifications": [],
+  "contract_version": "1.0",
+  "conversation_id": "baseline-geography",
+  "error": null,
+  "evidence": [
+    {
+      "coverage_m": null,
+      "criterion_id": "school-distance",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "66be9c9582a1db9bd32dd9355dde36fa9344bff6c0e983b966dc37803ef9b6a2",
+      "listing_id": "fixture-01",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.487751+00:00",
+      "snapshot_hash": "66be9c9582a1db9bd32dd9355dde36fa9344bff6c0e983b966dc37803ef9b6a2",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 222.3901604670608
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "school-distance",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "4082091d81eadd633b1ce37517341454aae1cba1a28daf3447707d39d6ad6103",
+      "listing_id": "fixture-02",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.487871+00:00",
+      "snapshot_hash": "4082091d81eadd633b1ce37517341454aae1cba1a28daf3447707d39d6ad6103",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 444.78032093414373
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "school-distance",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "c54de1438133bc7ea5ded76c6a0c4b53359a4fa013ea5abb4ca1b76688369c4d",
+      "listing_id": "fixture-03",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.487886+00:00",
+      "snapshot_hash": "c54de1438133bc7ea5ded76c6a0c4b53359a4fa013ea5abb4ca1b76688369c4d",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 667.1704814012046
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "school-distance",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "d4b336973d8d89096b5edebc22d9eadfa1eda2d1d10ef52d46f3710b4cb48bae",
+      "listing_id": "fixture-04",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.487899+00:00",
+      "snapshot_hash": "d4b336973d8d89096b5edebc22d9eadfa1eda2d1d10ef52d46f3710b4cb48bae",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 889.5606418682654
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "school-distance",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "e8d6bba2a32672791fee9b8f4ef3bba88efbc861e4692fdb571dde7b31b1565c",
+      "listing_id": "fixture-05",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.487911+00:00",
+      "snapshot_hash": "e8d6bba2a32672791fee9b8f4ef3bba88efbc861e4692fdb571dde7b31b1565c",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 1111.9508023353262
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "school-distance",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "063805ba6d4e5a92eaf3ddc32ca6c0b25ec792d7aa96d87bbbbe91fc939e6fac",
+      "listing_id": "fixture-06",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.487923+00:00",
+      "snapshot_hash": "063805ba6d4e5a92eaf3ddc32ca6c0b25ec792d7aa96d87bbbbe91fc939e6fac",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 1334.3409628024092
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "school-distance",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "148971711d139d16952d2c57521db8de1e97d5d2225dce1c972aef004a9db638",
+      "listing_id": "fixture-07",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.487935+00:00",
+      "snapshot_hash": "148971711d139d16952d2c57521db8de1e97d5d2225dce1c972aef004a9db638",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 1556.73112326947
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "school-distance",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "963f850a8bc41c8f89ec5ebadfbb9a8adf7fef0544e47d6a5d3d2da638bf4b2f",
+      "listing_id": "fixture-08",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.487948+00:00",
+      "snapshot_hash": "963f850a8bc41c8f89ec5ebadfbb9a8adf7fef0544e47d6a5d3d2da638bf4b2f",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 1779.1212837365308
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "school-distance",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "73c8fdd9b2f29d6c143b6a14ecc4bd2f31c416d0985c12b0abd294ebd8c36cbe",
+      "listing_id": "fixture-09",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.487960+00:00",
+      "snapshot_hash": "73c8fdd9b2f29d6c143b6a14ecc4bd2f31c416d0985c12b0abd294ebd8c36cbe",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 2001.5114442035915
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "school-distance",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "78409c69cb0fbb597c348affc3d392158451c007fe4969d90adf1eadd9c84af3",
+      "listing_id": "fixture-10",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.487972+00:00",
+      "snapshot_hash": "78409c69cb0fbb597c348affc3d392158451c007fe4969d90adf1eadd9c84af3",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 2223.9016046706524
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "school-distance",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "db11de4a244e2be7f85e4f1ff56e40aa59b243f3e243949a23e434a8458e8d25",
+      "listing_id": "fixture-11",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.487983+00:00",
+      "snapshot_hash": "db11de4a244e2be7f85e4f1ff56e40aa59b243f3e243949a23e434a8458e8d25",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 2446.291765137735
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "school-distance",
+      "destination_id": null,
+      "distance_type": "straight_line",
+      "evidence_id": "1ecea1748abdaa8ba7fba0f6752b5bc122326e45149f8a6e4675d47847d5acf3",
+      "listing_id": "fixture-12",
+      "mapping_status": "not_applicable",
+      "method": "unavailable",
+      "observed_at": "2026-10-22T23:48:23.487994+00:00",
+      "snapshot_hash": "1ecea1748abdaa8ba7fba0f6752b5bc122326e45149f8a6e4675d47847d5acf3",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": "missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity",
+      "value": null
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "nearer-school",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "61fe8e8e6338b5e9d9e14f6dce27a55a186f88322bc7b0cdac852400b1611c95",
+      "listing_id": "fixture-01",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.488007+00:00",
+      "snapshot_hash": "61fe8e8e6338b5e9d9e14f6dce27a55a186f88322bc7b0cdac852400b1611c95",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 222.3901604670608
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "nearer-school",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "6931caf9bcca6fd00537596223c7e44280cb512cc53d8b20a7ce146fbd43851e",
+      "listing_id": "fixture-02",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.488019+00:00",
+      "snapshot_hash": "6931caf9bcca6fd00537596223c7e44280cb512cc53d8b20a7ce146fbd43851e",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 444.78032093414373
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "nearer-school",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "daffc18840a2d7fff0bbe4ed2ae0a77f5bcd4e74730591d7527171b1c26fefc4",
+      "listing_id": "fixture-03",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.488030+00:00",
+      "snapshot_hash": "daffc18840a2d7fff0bbe4ed2ae0a77f5bcd4e74730591d7527171b1c26fefc4",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 667.1704814012046
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "nearer-school",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "f3af9ab1eaa7adfe2990bacd1ab03012e9212a34838b0508f0a6823dc5d173bd",
+      "listing_id": "fixture-04",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.488040+00:00",
+      "snapshot_hash": "f3af9ab1eaa7adfe2990bacd1ab03012e9212a34838b0508f0a6823dc5d173bd",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 889.5606418682654
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "nearer-school",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "4a824fdd8a7ed26b6fba45f89c8d7eaa59253d2140a7fbc92c4194acfb1f12c7",
+      "listing_id": "fixture-05",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.488051+00:00",
+      "snapshot_hash": "4a824fdd8a7ed26b6fba45f89c8d7eaa59253d2140a7fbc92c4194acfb1f12c7",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 1111.9508023353262
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "nearer-school",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "7c911b3dbd6b2873c9b10a61bef28d9d9d86dec46ca8b5a772f7b49ccd279d7f",
+      "listing_id": "fixture-06",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.488062+00:00",
+      "snapshot_hash": "7c911b3dbd6b2873c9b10a61bef28d9d9d86dec46ca8b5a772f7b49ccd279d7f",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 1334.3409628024092
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "nearer-school",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "f87e2d0322fda92fc345ceca4048b663aca503142081fc7a83a6e9f230a59eea",
+      "listing_id": "fixture-07",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.488073+00:00",
+      "snapshot_hash": "f87e2d0322fda92fc345ceca4048b663aca503142081fc7a83a6e9f230a59eea",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 1556.73112326947
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "nearer-school",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "1eea26d22bd75e3bc46c1f288eb115520a102256ca72f0497032dbf9e079acfb",
+      "listing_id": "fixture-08",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.488084+00:00",
+      "snapshot_hash": "1eea26d22bd75e3bc46c1f288eb115520a102256ca72f0497032dbf9e079acfb",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 1779.1212837365308
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "nearer-school",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "d73d2b0e7ca66f1f004bf02dd630f2ee4de2c754a719c1c6f6e9fce1fa3c07c9",
+      "listing_id": "fixture-09",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.488095+00:00",
+      "snapshot_hash": "d73d2b0e7ca66f1f004bf02dd630f2ee4de2c754a719c1c6f6e9fce1fa3c07c9",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 2001.5114442035915
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "nearer-school",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "d96e8e1f5cd09b698bdeff354e990b7971ccd421d6f8d5faf2b223fe47639c79",
+      "listing_id": "fixture-10",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.488106+00:00",
+      "snapshot_hash": "d96e8e1f5cd09b698bdeff354e990b7971ccd421d6f8d5faf2b223fe47639c79",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 2223.9016046706524
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "nearer-school",
+      "destination_id": "fixture-school",
+      "distance_type": "straight_line",
+      "evidence_id": "900be341f7825c8239194f10b271b1a8419454ce5fb965f3e1aa39fee4fdb55a",
+      "listing_id": "fixture-11",
+      "mapping_status": "not_applicable",
+      "method": "coordinate_haversine",
+      "observed_at": "2026-10-22T23:48:23.488117+00:00",
+      "snapshot_hash": "900be341f7825c8239194f10b271b1a8419454ce5fb965f3e1aa39fee4fdb55a",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": null,
+      "value": 2446.291765137735
+    },
+    {
+      "coverage_m": null,
+      "criterion_id": "nearer-school",
+      "destination_id": null,
+      "distance_type": "straight_line",
+      "evidence_id": "a3c9f0f3da44eae8228c1861b2e278cb8f87650a1eb796efef4dd18cea5243d0",
+      "listing_id": "fixture-12",
+      "mapping_status": "not_applicable",
+      "method": "unavailable",
+      "observed_at": "2026-10-22T23:48:23.488127+00:00",
+      "snapshot_hash": "a3c9f0f3da44eae8228c1861b2e278cb8f87650a1eb796efef4dd18cea5243d0",
+      "source": "synthetic-fixture:places",
+      "unit": "m",
+      "unknown_reason": "missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity",
+      "value": null
+    }
+  ],
+  "execution": {
+    "controller_mode": "scripted",
+    "data_mode": "fixture",
+    "duration_ms": 2.120500023011118,
+    "model_calls": 0,
+    "model_identifier": null,
+    "scoring_version": "weighted-v1",
+    "strategy": "complete-pool weighted ranking",
+    "tokens": null,
+    "tool_calls": 4,
+    "trace_id": "5bb74085-40d2-428f-8fae-8379aca83798",
+    "trace_ref": "sqlite:5bb74085-40d2-428f-8fae-8379aca83798"
+  },
+  "recommendations": [
+    {
+      "criterion_results": [
+        {
+          "criterion_id": "school-distance",
+          "evidence_refs": [
+            "66be9c9582a1db9bd32dd9355dde36fa9344bff6c0e983b966dc37803ef9b6a2"
+          ],
+          "outcome": "pass",
+          "reason": "Exact criterion comparison"
+        },
+        {
+          "criterion_id": "nearer-school",
+          "evidence_refs": [
+            "61fe8e8e6338b5e9d9e14f6dce27a55a186f88322bc7b0cdac852400b1611c95"
+          ],
+          "outcome": "pass",
+          "reason": "Exact criterion comparison"
+        }
+      ],
+      "evidence_refs": [
+        "66be9c9582a1db9bd32dd9355dde36fa9344bff6c0e983b966dc37803ef9b6a2",
+        "61fe8e8e6338b5e9d9e14f6dce27a55a186f88322bc7b0cdac852400b1611c95"
+      ],
+      "listing": {
+        "bedrooms": 2.0,
+        "district_code": "D05",
+        "floor_area_sqft": 650.0,
+        "latitude": 1.302,
+        "listing_id": "fixture-01",
+        "listing_type": "RENT",
+        "longitude": 103.8,
+        "normalization_warnings": [],
+        "observed_at": "2026-10-18T00:00:00Z",
+        "postal_code": "012345",
+        "price": 2100.0,
+        "property_type": "condo",
+        "source": "synthetic-fixture",
+        "title": "Synthetic rental 1",
+        "url": "https://example.invalid/listings/1"
+      },
+      "rank": 1,
+      "scores": {
+        "combined_score": 0.8708828199490206,
+        "contributions": [
+          {
+            "contribution": 0.8708828199490206,
+            "feature": "nearer-school",
+            "raw_difference": null,
+            "reference": null,
+            "scale": null,
+            "similarity": 0.8708828199490206,
+            "unknown": false,
+            "weight": 1.0
+          }
+        ],
+        "evidence_coverage": 1.0,
+        "explicit_score": 0.8708828199490206,
+        "explicit_weight": 1.0,
+        "implicit_score": null,
+        "implicit_weight": 0.0,
+        "ordering": "explicit",
+        "suppressed_features": [
+          "geography"
+        ]
+      },
+      "strengths": [
+        "school-distance",
+        "nearer-school"
+      ],
+      "trade_offs": [],
+      "unknowns": []
+    },
+    {
+      "criterion_results": [
+        {
+          "criterion_id": "school-distance",
+          "evidence_refs": [
+            "4082091d81eadd633b1ce37517341454aae1cba1a28daf3447707d39d6ad6103"
+          ],
+          "outcome": "pass",
+          "reason": "Exact criterion comparison"
+        },
+        {
+          "criterion_id": "nearer-school",
+          "evidence_refs": [
+            "6931caf9bcca6fd00537596223c7e44280cb512cc53d8b20a7ce146fbd43851e"
+          ],
+          "outcome": "pass",
+          "reason": "Exact criterion comparison"
+        }
+      ],
+      "evidence_refs": [
+        "4082091d81eadd633b1ce37517341454aae1cba1a28daf3447707d39d6ad6103",
+        "6931caf9bcca6fd00537596223c7e44280cb512cc53d8b20a7ce146fbd43851e"
+      ],
+      "listing": {
+        "bedrooms": 2.0,
+        "district_code": "D21",
+        "floor_area_sqft": 700.0,
+        "latitude": 1.304,
+        "listing_id": "fixture-02",
+        "listing_type": "RENT",
+        "longitude": 103.8,
+        "normalization_warnings": [],
+        "observed_at": "2026-10-18T00:00:00Z",
+        "postal_code": "012345",
+        "price": 2200.0,
+        "property_type": "hdb",
+        "source": "synthetic-fixture",
+        "title": "Synthetic rental 2",
+        "url": "https://example.invalid/listings/2"
+      },
+      "rank": 2,
+      "scores": {
+        "combined_score": 0.7712953405860767,
+        "contributions": [
+          {
+            "contribution": 0.7712953405860767,
+            "feature": "nearer-school",
+            "raw_difference": null,
+            "reference": null,
+            "scale": null,
+            "similarity": 0.7712953405860767,
+            "unknown": false,
+            "weight": 1.0
+          }
+        ],
+        "evidence_coverage": 1.0,
+        "explicit_score": 0.7712953405860767,
+        "explicit_weight": 1.0,
+        "implicit_score": null,
+        "implicit_weight": 0.0,
+        "ordering": "explicit",
+        "suppressed_features": [
+          "geography"
+        ]
+      },
+      "strengths": [
+        "school-distance",
+        "nearer-school"
+      ],
+      "trade_offs": [],
+      "unknowns": []
+    },
+    {
+      "criterion_results": [
+        {
+          "criterion_id": "school-distance",
+          "evidence_refs": [
+            "c54de1438133bc7ea5ded76c6a0c4b53359a4fa013ea5abb4ca1b76688369c4d"
+          ],
+          "outcome": "pass",
+          "reason": "Exact criterion comparison"
+        },
+        {
+          "criterion_id": "nearer-school",
+          "evidence_refs": [
+            "daffc18840a2d7fff0bbe4ed2ae0a77f5bcd4e74730591d7527171b1c26fefc4"
+          ],
+          "outcome": "pass",
+          "reason": "Exact criterion comparison"
+        }
+      ],
+      "evidence_refs": [
+        "c54de1438133bc7ea5ded76c6a0c4b53359a4fa013ea5abb4ca1b76688369c4d",
+        "daffc18840a2d7fff0bbe4ed2ae0a77f5bcd4e74730591d7527171b1c26fefc4"
+      ],
+      "listing": {
+        "bedrooms": 3.0,
+        "district_code": "D05",
+        "floor_area_sqft": 750.0,
+        "latitude": 1.306,
+        "listing_id": "fixture-03",
+        "listing_type": "RENT",
+        "longitude": 103.8,
+        "normalization_warnings": [],
+        "observed_at": "2026-10-18T00:00:00Z",
+        "postal_code": "012345",
+        "price": 2300.0,
+        "property_type": "condo",
+        "source": "synthetic-fixture",
+        "title": "Synthetic rental 3",
+        "url": "https://example.invalid/listings/3"
+      },
+      "rank": 3,
+      "scores": {
+        "combined_score": 0.6921467475092965,
+        "contributions": [
+          {
+            "contribution": 0.6921467475092965,
+            "feature": "nearer-school",
+            "raw_difference": null,
+            "reference": null,
+            "scale": null,
+            "similarity": 0.6921467475092965,
+            "unknown": false,
+            "weight": 1.0
+          }
+        ],
+        "evidence_coverage": 1.0,
+        "explicit_score": 0.6921467475092965,
+        "explicit_weight": 1.0,
+        "implicit_score": null,
+        "implicit_weight": 0.0,
+        "ordering": "explicit",
+        "suppressed_features": [
+          "geography"
+        ]
+      },
+      "strengths": [
+        "school-distance",
+        "nearer-school"
+      ],
+      "trade_offs": [],
+      "unknowns": []
+    },
+    {
+      "criterion_results": [
+        {
+          "criterion_id": "school-distance",
+          "evidence_refs": [
+            "d4b336973d8d89096b5edebc22d9eadfa1eda2d1d10ef52d46f3710b4cb48bae"
+          ],
+          "outcome": "pass",
+          "reason": "Exact criterion comparison"
+        },
+        {
+          "criterion_id": "nearer-school",
+          "evidence_refs": [
+            "f3af9ab1eaa7adfe2990bacd1ab03012e9212a34838b0508f0a6823dc5d173bd"
+          ],
+          "outcome": "pass",
+          "reason": "Exact criterion comparison"
+        }
+      ],
+      "evidence_refs": [
+        "d4b336973d8d89096b5edebc22d9eadfa1eda2d1d10ef52d46f3710b4cb48bae",
+        "f3af9ab1eaa7adfe2990bacd1ab03012e9212a34838b0508f0a6823dc5d173bd"
+      ],
+      "listing": {
+        "bedrooms": 2.0,
+        "district_code": "D21",
+        "floor_area_sqft": 800.0,
+        "latitude": 1.308,
+        "listing_id": "fixture-04",
+        "listing_type": "RENT",
+        "longitude": 103.8,
+        "normalization_warnings": [],
+        "observed_at": "2026-10-18T00:00:00Z",
+        "postal_code": "012345",
+        "price": 2400.0,
+        "property_type": "hdb",
+        "source": "synthetic-fixture",
+        "title": "Synthetic rental 4",
+        "url": "https://example.invalid/listings/4"
+      },
+      "rank": 4,
+      "scores": {
+        "combined_score": 0.6277304596158869,
+        "contributions": [
+          {
+            "contribution": 0.6277304596158869,
+            "feature": "nearer-school",
+            "raw_difference": null,
+            "reference": null,
+            "scale": null,
+            "similarity": 0.6277304596158869,
+            "unknown": false,
+            "weight": 1.0
+          }
+        ],
+        "evidence_coverage": 1.0,
+        "explicit_score": 0.6277304596158869,
+        "explicit_weight": 1.0,
+        "implicit_score": null,
+        "implicit_weight": 0.0,
+        "ordering": "explicit",
+        "suppressed_features": [
+          "geography"
+        ]
+      },
+      "strengths": [
+        "school-distance",
+        "nearer-school"
+      ],
+      "trade_offs": [],
+      "unknowns": []
+    }
+  ],
+  "relaxation_suggestions": [],
+  "request_id": "baseline-geography",
+  "requirements_version": 1,
+  "state": {
+    "assessed_count": 12,
+    "candidate_pool_ref": "5bb74085-40d2-428f-8fae-8379aca83798/pool",
+    "feedback_version": 0,
+    "prefilter_excluded": 0,
+    "run_sequence": 1,
+    "scope": "all RENT listings",
+    "source_count": 12,
+    "state_id": "4dcec011-0a65-409e-a5a4-138d1085047b",
+    "truncated": false
+  },
+  "status": "success",
+  "unverified_candidates": [
+    {
+      "criterion_results": [
+        {
+          "criterion_id": "school-distance",
+          "evidence_refs": [
+            "1ecea1748abdaa8ba7fba0f6752b5bc122326e45149f8a6e4675d47847d5acf3"
+          ],
+          "outcome": "unknown",
+          "reason": "missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity"
+        },
+        {
+          "criterion_id": "nearer-school",
+          "evidence_refs": [
+            "a3c9f0f3da44eae8228c1861b2e278cb8f87650a1eb796efef4dd18cea5243d0"
+          ],
+          "outcome": "unknown",
+          "reason": "missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity"
+        }
+      ],
+      "listing_id": "fixture-12"
+    }
+  ],
+  "warnings": [
+    "Sample viewing durations are simulated observations.",
+    "Posting time does not establish current availability."
+  ]
+}

@@ -1,10 +1,22 @@
+"""Run-consistency checks and behaviour-input summary for one request.
+
+No native accumulation: every request carries the orchestrator's behavior_context (main contract,
+session-cumulative listing_view_durations + book_viewing_listings as of `as_of`). Nothing is merged
+with earlier requests. The `feedback` events are the incremental, quality-gated form of the same
+browsing time; they are validated but not scored (the md forbids adding them to the cumulative
+summary). Scoring is in ranking/scoring_v2.py (references inside the current pool only). Kept here
+from the old context manager: optimistic concurrency (STALE_REFERENCE against the v2 head),
+requirements version checks (STALE_REQUIREMENTS) and run_sequence. Idempotency/replay stay in the
+service.
+"""
+
 from recommendation.contracts.errors import RecommendationError
-from ..models.listing_summary import ListingSummary
 from ..tracing.trace import digest
-import math
+from ..ranking.scoring_v2 import SCORING_VERSION, browsing_enabled, browsing_weight
 
 
-def prepare(request, previous, store):
+def check_state(request, previous):
+    """STALE_REFERENCE / STALE_REQUIREMENTS against the conversation's v2 head (or none)."""
     if previous:
         if request.previous_state_id != previous["state_id"]:
             raise RecommendationError(
@@ -24,64 +36,74 @@ def prepare(request, previous, store):
             )
     elif request.previous_state_id:
         raise RecommendationError("STALE_REFERENCE", "Unknown state reference")
-    events = list(previous.get("events", [])) if previous else []
-    by_id = {e["event_id"]: e for e in events}
-    by_session = {e["payload"]["view_session_id"]: e for e in events}
-    for event in request.feedback:
-        e = event.model_dump(mode="json")
-        existing = by_id.get(e["event_id"]) or by_session.get(
-            e["payload"]["view_session_id"]
-        )
-        if existing:
-            if existing != e:
-                raise RecommendationError(
-                    "FEEDBACK_CONFLICT",
-                    "Conflicting event ID or completed view session",
-                )
-            continue
-        prior = store.cached(request.conversation_id, event.recommendation_request_id)
-        if not prior or not any(
-            r["listing"]["listing_id"] == event.listing_id
-            for r in prior[1]["recommendations"]
-        ):
+
+
+def check_feedback(request, store, config):
+    """Service-level behaviour checks (schema-level checks live in the contracts)."""
+    behavior = request.behavior_context
+    if behavior is None:
+        return
+    counted = set(config.ranking.behavior.counted_appointment_signals)
+    for item in behavior.book_viewing_listings:
+        if item.signal not in counted:
             raise RecommendationError(
                 "INVALID_FEEDBACK",
-                "Event must refer to a verified listing in an earlier response",
+                f"Viewing signal {item.signal!r} for listing {item.listing_id} is not counted "
+                f"(ranking.behavior.counted_appointment_signals: {sorted(counted)})",
             )
-        events.append(e)
-        by_id[e["event_id"]] = e
-        by_session[e["payload"]["view_session_id"]] = e
-    totals = {}
-    records = {}
-    for e in events:
-        prior = store.cached(request.conversation_id, e["recommendation_request_id"])
-        item = next(
-            r["listing"]
-            for r in prior[1]["recommendations"]
-            if r["listing"]["listing_id"] == e["listing_id"]
-        )
-        records[e["listing_id"]] = ListingSummary.model_validate(item)
-        totals[e["listing_id"]] = (
-            totals.get(e["listing_id"], 0) + e["payload"]["duration_seconds"]
-        )
+
+
+def prepare(request, previous, store, config):
+    check_state(request, previous)
+    check_feedback(request, store, config)
+    behavior = request.behavior_context
+    browsing = {}
+    weights = {}
+    appointments = []
+    if behavior is not None:
+        for item in behavior.listing_view_durations:
+            browsing[item.listing_id] = {
+                "duration_seconds": item.duration_seconds,
+                "view_count": item.view_count,
+                "interest_eligible": item.interest_eligible,
+            }
+            eligible = item.interest_eligible or not config.ranking.behavior.browsing_requires_interest_eligible
+            if eligible and item.duration_seconds > 0:
+                # Reference weight before the in-pool filter (applied by the scorer, recorded
+                # in the rank_candidates trace step); None when the browsing branch is disabled.
+                weights[item.listing_id] = (
+                    browsing_weight(item.duration_seconds, config.ranking.browsing)
+                    if browsing_enabled(config)
+                    else None
+                )
+        appointments = sorted({item.listing_id for item in behavior.book_viewing_listings})
     return {
-        "events": events,
-        "viewed": [(records[k], v) for k, v in totals.items()],
+        "appointments": appointments,
         "sequence": previous["sequence"] + 1 if previous else 1,
         "changes": {
             "requirements_changed": not previous
             or digest(request.requirements.model_dump())
             != digest(previous["request"]["requirements"]),
-            "new_events": len(events) - (len(previous["events"]) if previous else 0),
+            "behavior_as_of": behavior.as_of.isoformat() if behavior else None,
+            "browsing_records": len(browsing),
+            "appointment_listings": len(appointments),
+            "feedback_events": len(request.feedback),
         },
         "profile": {
-            "source": ("mixed" if len({e["source"] for e in events}) > 1 else next(iter({e["source"] for e in events}), "sample")),
-            "duration_totals": totals,
-            "interest_weights": {
-                k: math.log1p(min(v, 120)) / math.log(121) for k, v in totals.items()
-            },
-            "duration_cap_seconds": 120,
-            "scoring_version": "weighted-v1",
-            "event_refs": [e["event_id"] for e in events],
+            "source": "behavior_context" if behavior is not None else "none",
+            "as_of": behavior.as_of.isoformat() if behavior else None,
+            "browsing": browsing,
+            "interest_weights": weights,
+            "browsing_transform": config.ranking.browsing.transform,
+            "time_scale_seconds": config.ranking.browsing.time_scale_seconds,
+            "duration_cap_seconds": config.ranking.browsing.duration_cap_seconds,
+            "browsing_requires_interest_eligible": config.ranking.behavior.browsing_requires_interest_eligible,
+            "appointment_listing_ids": appointments,
+            "reference_scope": config.ranking.behavior.reference_scope,
+            # Validated, not scored (no double counting with behavior_context).
+            "feedback_events": {"count": len(request.feedback),
+                                "sources": sorted({e.source for e in request.feedback}),
+                                "scored": False},
+            "scoring_version": SCORING_VERSION,
         },
     }

@@ -2,6 +2,7 @@
 import json
 
 from recommendation.agent.controller import LiveController
+from recommendation.tools.registry import PIPELINE
 from recommendation.tests.test_policy_controller import make_service, request
 
 
@@ -14,9 +15,10 @@ class RankedModel(LiveController):
         self.turn += 1
         if self.turn == 1:
             ref = json.loads(messages[1]["content"])["context_ref"]
+            # The four pipeline tools in order (the query/bind tools take other arguments).
             return {"content": "", "tool_calls": [
                 {"id": f"tool-{i}", "name": tool["name"], "args": {"context_ref": ref}}
-                for i, tool in enumerate(tools)
+                for i, tool in enumerate(t for t in tools if t["name"] in PIPELINE)
             ]}
         raise AssertionError("An assessed empty ranking needs no invented final IDs")
 
@@ -44,6 +46,8 @@ def test_assessed_empty_ranking_finishes_and_still_runs_final_gate(tmp_path):
 
 
 def test_empty_verified_ranking_keeps_unknown_candidates_unverified(tmp_path):
+    # Contract 2.0 (R8): unknown hard data is a data problem, not a criterion problem. The
+    # listings stay unverified (excluded, counted with reasons, warned), status no_match.
     model = RankedModel()
     service = make_service(tmp_path, model)
     rows = [r.model_copy(update={"bedrooms": None}) for r in service.listing.retrieve()]
@@ -55,10 +59,12 @@ def test_empty_verified_ranking_keeps_unknown_candidates_unverified(tmp_path):
     })]
     try:
         result = service.recommend(req)
-        assert result.status == "needs_clarification"
+        assert result.status == "no_match"
         assert result.recommendations == []
-        assert result.unverified_candidates
-        assert all(any(r.outcome == "unknown" for r in c.criterion_results) for c in result.unverified_candidates)
+        assert result.pool.size == 0 and result.pool.excluded_hard_unknown > 0
+        assert result.pool.excluded_hard_unknown + result.pool.excluded_hard_fail == len(rows)
+        assert result.pool.unknown_reasons == {"bedrooms: Missing listing attribute": result.pool.excluded_hard_unknown}
+        assert any("hard-criterion data is unknown" in w for w in result.warnings)
         assert result.execution.model_calls == 1
     finally:
         service.close()
@@ -75,7 +81,8 @@ def test_invalid_final_ids_are_repaired_with_existing_tool_history(tmp_path):
             assert any(m["role"] == "tool" for m in messages), "Repair discarded the validated tool history"
             assert "INVALID_PROPOSAL" in messages[-1]["content"]
             ranking = [json.loads(m["content"])["ranked_ids"] for m in messages if m["role"] == "tool"][-1]
-            return {"content": json.dumps({"listing_ids": ranking[:4]}), "tool_calls": []}
+            limit = json.loads(messages[1]["content"])["request"]["result_limit"]
+            return {"content": json.dumps({"listing_ids": ranking[:limit]}), "tool_calls": []}
 
     service = make_service(tmp_path, RepairModel())
     try:

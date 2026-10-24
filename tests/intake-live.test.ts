@@ -4,6 +4,7 @@ import {randomUUID} from 'node:crypto';
 import {writeFile,mkdir,readFile} from 'node:fs/promises';
 import pg from 'pg';
 import {extractRules} from '../src/domain/requirements.js';
+import {selectV1Violations,scoreOrder,oracleSettings} from './helpers/select-v1-oracle.js';
 
 test('nearby ranks without a hidden radius; actual MRT follow-up replaces the area, converts 3km and preserves transit/30min',{skip:process.env.BUSINESS_LIVE!=='1',timeout:180000},async()=>{
   const origin=process.env.TEST_APP_URL||'http://127.0.0.1:8010',headers={authorization:'Bearer '+randomUUID()+randomUUID(),'content-type':'application/json'};
@@ -31,9 +32,19 @@ test('nearby ranks without a hidden radius; actual MRT follow-up replaces the ar
     for(const c of s.recommendation.unverified_candidates){const cr=c.criterion_results.find((r:any)=>r.criterion_id===geo.find((g:any)=>g.strength==='hard').criterion_id);assert(cr.status==='unknown'||cr.observed_value<=3000);}
     checks.push('Exact follow-up resolves MRT, converts 3km to 3000m, clears the old area target and preserves budget/private-bathroom/transit/30min');
     const nearSid=await create(),near=await run(nearSid,'预算2500新币，Clementi MRT附近');assert.equal(near.recommendation.state.counts.eligible,budgetCount);
-    const sorted=rows.filter(p=>distance(p)!==null).map(p=>({...p,d:distance(p)!})).sort((a,b)=>a.d-b.d||Number(a.price)-Number(b.price)||(BigInt(a.listing_id)>BigInt(b.listing_id)?1:-1));assert.deepEqual(near.recommendation.recommendations.map((c:any)=>c.listing.listing_id),sorted.slice(0,5).map(p=>String(p.listing_id)));
-    for(const c of near.recommendation.recommendations){const actual=c.criterion_results.find((r:any)=>r.criterion_id.startsWith('place_proximity')).observed_value;assert(Math.abs(actual-sorted.find(p=>String(p.listing_id)===c.listing.listing_id)!.d)<.01);}
-    checks.push('Independent SQL plus official exit coordinates reproduce exact top-5 nearest ranking; eligible count is unchanged by an unspecified nearby preference');
+    const sorted=rows.filter(p=>distance(p)!==null).map(p=>({...p,d:distance(p)!})).sort((a,b)=>a.d-b.d||Number(a.price)-Number(b.price)||(BigInt(a.listing_id)>BigInt(b.listing_id)?1:-1));
+    const nearIds=near.recommendation.recommendations.map((c:any)=>c.listing.listing_id),nativeBlock=near.recommendation.native;
+    if(nativeBlock){
+      // Native contract 2.0 (select-v1): soft proximity utility 1/(1+d/r) with r = the criterion's reference value,
+      // fused-v2 score = soft_weight x utility (no coordinates -> 0); O = score desc, then listing_id code-point order.
+      // Leaders must be O's prefix; the other items come from the tie group / exploration window right after them.
+      const r=near.requirements.criteria.find((c:any)=>c.field==='place_proximity').value,softWeight=oracleSettings(await readFile('recommendation/settings/recommendation.yaml','utf8')).soft_weight;
+      const scores=new Map(rows.map(p=>{const d=distance(p);return [String(p.listing_id),d===null?0:softWeight/(1+d/r)];}));
+      const exchange=await (await fetch(origin+`/api/evidence?session_id=${nearSid}&ref=${nativeBlock.exchange_ref}`,{headers})).json();
+      assert.deepEqual(selectV1Violations(exchange.data.response,scoreOrder(scores),10,scores),[],JSON.stringify(exchange.data.response.selection));
+    }else assert.deepEqual(nearIds,sorted.slice(0,10).map(p=>String(p.listing_id))); // baseline adapter: exact top-10 (app result_limit 10) with its price tie-break
+    for(const c of near.recommendation.recommendations){const actual=c.criterion_results.find((r:any)=>r.criterion_id.startsWith('place_proximity')).observed_value;const expectedDistance=sorted.find(p=>String(p.listing_id)===c.listing.listing_id)?.d;if(expectedDistance===undefined)continue;assert(Math.abs(actual-expectedDistance)<.01);}
+    checks.push(nativeBlock?'Independent SQL plus official exit coordinates reproduce the nearest-exit distances and a valid select-v1 selection (native); eligible count is unchanged by an unspecified nearby preference':'Independent SQL plus official exit coordinates reproduce the exact top-10 nearest ranking (baseline); eligible count is unchanged by an unspecified nearby preference');
     const legacySid=await create(),legacy={...extractRules('我要找金文泰附近，预算2500每月的房子，要求有独立卫浴，离新国立大学通勤30分钟以内',{listing_type:'RENT',criteria:[]}),location_intents:[],clarifications:['请明确“金文泰附近”的参照地点、范围（米或公里）。','请明确“就是Clementi MRT附近”的参照地点、范围（米或公里）。']};
     await pool.query('UPDATE session_domain_state SET pending=$2 WHERE session_id=$1',[legacySid,JSON.stringify(legacy)]);
     const resumed=await run(legacySid,'通勤指定方式为公交\n就是Clementi MRT附近3公里');assert.equal(resumed.pending,null);assert.equal(resumed.requirements.criteria.find((c:any)=>c.field==='commute_time').transport_mode,'transit');assert(resumed.requirements.criteria.some((c:any)=>c.field==='place_proximity'&&c.strength==='hard'&&c.value===3000));

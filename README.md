@@ -16,9 +16,9 @@ Explanation Agent现为有依据的房源介绍与选房顾问：保留Recommend
 
 历史对话右侧的箭头可展开红色“删除对话”按钮；删除当前对话后切换到其他对话或创建空对话。后端按所有者校验并逻辑删除，停止该会话后续排队工作，已删除记录不能重新访问。详情浏览增加视口及焦点检查；用户选择有效未来看房时间并显式保存草稿后记录看房意向，取消或移除时间会撤回。下轮主动推荐的`behavior_context`携带累计浏览摘要和`book_viewing_listings`；当前列表不自动改变。完整字段、新增标记、触发规则及原生评分接入边界见[Recommendation Contract：浏览时长与看房意向](docs/Recommendation_Contract_浏览时长与看房意向.md)。
 
-当前交付已接入 GitHub main `907cfa8` 中崔江山的原生 Recommendation Agent：完整候选池、四工具 Agent、硬条件验证、显式/浏览兴趣融合评分、最终重读校验和 SQLite 状态恢复均保留。真实浏览只扩展反馈来源契约和来源提示，原生评分、权重与排序不变。默认 `RECOMMENDATION_MODE=native`；原基线仅供显式配置的回归使用。接入边界、算法、接口和验收见 [原生推荐接入说明](docs/Recommendation_Agent_原生接入说明.md)。
+当前交付接入 GitHub main `907cfa8` 中崔江山的原生 Recommendation Agent，并在本分支扩展为原生契约 2.0：编排器每轮按 main 契约发送 `behavior_context`（会话累计浏览摘要 + 已保存的看房意向 `book_viewing_listings`）与 `cold_start` 状态，原生端由代码解析地点实体，建立或复用只含硬条件全部通过房源的探索池，对完整探索池做软需求匹配 + 行为相似度融合评分（fused-v2），再由代码按 select-v1 选择：明显领先的保留，难以区分的近似同分组内不放回随机抽样，冷启动时按价格分层探索。最终重读校验、不可变重放和 SQLite 状态恢复均保留。默认 `RECOMMENDATION_MODE=native`；原基线仅供显式配置的回归使用。接入边界、算法、接口和验收见 [原生推荐接入说明](docs/Recommendation_Agent_原生接入说明.md)，1.0 → 2.0 迁移见 [MIGRATION.md](evaluation/recommendation-exploration-2026-10-23/MIGRATION.md)。
 
-原生接口不能表达独立卫浴等部分原有需求，也不能解析 URA 区域边界 / LTA 出口目录；这些条件保留并显示待核实，原生报文不改写、不用旧基线补排。原生每组最多4条；不把其待核实候选的占位0分解释为原生评分。
+原生接口不能表达独立卫浴等部分原有需求；这些条件保留并显示待核实（原生已选房源转入待核实分组），原生报文不改写、不用旧基线补排。URA 规划区 / 大区和 LTA 站点（按最近已收录出口计直线距离）由原生地理目录解析。原生契约 2.0 默认返回10套已验证推荐（探索池不足时返回实际数量），不再返回待核实候选；硬条件未知的房源不进入探索池，只计数说明。所有可调算法参数集中在 `recommendation/settings/recommendation.yaml`，取值依据见 [TUNING.md](evaluation/recommendation-exploration-2026-10-23/TUNING.md)。
 
 已修复“裕廊东、交通站点与1B1B”组合在空排名后耗尽模型轮数的问题：应用层约束最终输出，并解析单个符合原生 Schema 的 JSON；不替换房源编号、不修改排序或最终校验。该组合目前正常返回待确认选项，仍不表示全部条件已满足。原因、实际测试与未接通边界见[推荐空排名循环修复](docs/推荐空排名循环_原因与修复.md)。
 
@@ -65,14 +65,14 @@ Set-Location 'D:\Real Estate Agent\Multi-Agent-Assistance-System'
 | 当前图谱 | 正式 Neo4j：21,431 个 Listing、3,716 个 OSM Place、710,468 条 NEAR_PLACE；另有 URA 区域、LTA 出口和校园关系 |
 | 距离 | 官方区域边界、站点出口或 OSM 参考点的 geodesic / 直线距离；不能证明真实步行或通勤路线 |
 | 地名目录 | 55 规划区、5 大区、188 站及 613 个有效具名出口；区域与站点分开解析，附近默认更近优先 |
-| 推荐 | 江山原生服务 `8092`，LLM 四工具 + 完整候选池 + weighted-v1 融合评分；原生请求/返回保留在会话隔离的证据存档 |
+| 推荐 | 江山原生服务 `8092`，契约 2.0：四个流水线工具 + 地点查询 / 绑定工具、探索池缓存、完整探索池 fused-v2 融合评分、select-v1 选择（每轮最多10套）；原生请求/返回保留在会话隔离的证据存档 |
 | 跟进与看房 | 可编辑草稿与协商诉求、审核实际正文；WhatsApp Cloud / Telegram Bot 适配器、持久发送队列、回执与回复、月历及ICS、双方确认、独立跟进提醒与日总结；未配凭证时仅模拟 |
 | 总结 | 可下载 Markdown、HTML，包含需求版本、结果、未知项及证据索引 |
 | 意图与编排 | Orchestrator 三路融合：LLM 70%、Chroma 模板向量20%、关键词10%；可直接解释、知识问答与跟进 |
 | 知识检索 | 8篇Markdown、Docker Chroma向量 + BM25、RRF融合、模型重排与逐句出处核验；资料整理自URA/HDB/IRAS/CEA/警方/法院 |
 | 完整快照验收 | SQL/Neo4j 逐条核对、HTTP 全量分页与真实业务排序均已通过；数据结构见 [完整数据说明](docs/完整数据结构与接入说明.md) |
 
-快照价格和页面来源不证明房源现在仍可租。家具、租期、整租范围、当前可租和真实路线等缺少证据的条件保留为 `unknown`；硬条件未知的房源单列为待核实，不能进入已验证推荐。
+快照价格和页面来源不证明房源现在仍可租。家具、租期、整租范围、当前可租和真实路线等缺少证据的条件保留为 `unknown`；硬条件未知的房源不能进入已验证推荐（原生模式只计数说明，baseline 单列为待核实）。
 
 本轮已完成实际字段审计、120 条租房话术的前后评估、25 个真实对话的独立 SQL 业务核对及 58 项自动测试。`1B1B` 可按精确卧室/卫浴数量检索；独立卫浴仍需专用使用权证据。详情与评估限制见 [租房需求语义评估与字段审计](docs/租房需求语义评估与字段审计.md)。
 
@@ -103,7 +103,8 @@ data/                     原团队数据模块：采集、SQL、图谱、只读
 npm run typecheck
 npm run typecheck:recommendation
 npm test
-.venv\Scripts\python.exe -m pytest recommendation/tests tests/test_native_transport.py -q
+.venv\Scripts\python.exe -m pytest recommendation/tests tests/test_native_transport.py tests/test_recommendation_provenance.py -q
+.venv\Scripts\python.exe -m recommendation.schemas --check
 .venv\Scripts\python.exe scripts/import-recommendation-upstream.py --check
 node --env-file=.env --import tsx --test tests/postgres-session.test.ts
 .venv\Scripts\python.exe -m pytest tests/test_api.py -q

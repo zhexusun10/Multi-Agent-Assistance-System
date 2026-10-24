@@ -1,6 +1,6 @@
 import type {Criterion,RecommendationResponse,Requirements} from '../../contracts/recommendation-v1.js';
 import {FIELD_RULES} from '../../contracts/recommendation-v1.js';
-import {nativeResponseSchema} from '../../contracts/recommendation-native.js';
+import {nativeResponseSchema,statedWeight,interestWeight,interestScore} from '../../contracts/recommendation-native.js';
 import {criterionText} from '../../domain/explanation.js';
 import {displayedCandidates} from '../../domain/selection.js';
 import type {ExplanationBundle,ExplanationFact} from './contracts.js';
@@ -109,8 +109,8 @@ export function makeExplanationBundle(req:Requirements,rec:RecommendationRespons
   for(const score of scores){
     for(const c of score.contributions){
       if(c.unknown||c.similarity===null||c.weight<=0)continue;
-      if(c.reference===null&&score.explicit_weight>0&&byId.get(c.feature)?.strength==='soft')active.add(c.feature);
-      if(c.reference!==null&&score.implicit_weight>0&&featureNames[c.feature]&&!score.suppressed_features.includes(c.feature))behavior.add(c.feature);
+      if(c.reference===null&&statedWeight(score)>0&&byId.get(c.feature)?.strength==='soft')active.add(c.feature);
+      if(c.reference!==null&&interestWeight(score)>0&&featureNames[c.feature]&&!score.suppressed_features.includes(c.feature))behavior.add(c.feature);
     }
   }
   if(!rec.native)for(const row of rows)for(const b of row.score_breakdown)if(b.origin==='stated_preference'&&row.criterion_results.find(r=>r.criterion_id===b.criterion_id)?.status!=='unknown')active.add(b.criterion_id);
@@ -127,7 +127,7 @@ export function makeExplanationBundle(req:Requirements,rec:RecommendationRespons
   const filterOnly=req.criteria.filter(c=>c.strength==='hard');
   if(filterOnly.length)rankText+='仅用于筛选、不用于奖励排名的条件：'+filterOnly.map(desc).join('；')+'。不能因为某套租金更低就把它追加为排序原因。';
   if(behavior.size)rankText+=`${activeText.length?'同时参考':'排序参考'}${sampleOnly?'本轮提供的浏览样例':'已有浏览记录'}中相似的${[...behavior].map(x=>featureNames[x]).join('、')}；只作为兴趣线索，不能说成用户已经明确要求。`;
-  if(active.size&&behavior.size&&scores.every(s=>s.explicit_weight>s.implicit_weight))rankText+='明确说出的偏好占主要作用，浏览兴趣起辅助作用。';
+  if(active.size&&behavior.size&&scores.every(s=>statedWeight(s)>interestWeight(s)))rankText+='明确说出的偏好占主要作用，浏览兴趣起辅助作用。';
   if(!active.size&&!behavior.size&&rows.length)rankText+='目前资料还不足以根据用户偏好判断哪套更合适，前后顺序仅供浏览；用这一句话说明即可，无须再说租金不是原因。';
   const rankedRows=rows.filter(r=>rec.native?.scores[r.listing.listing_id]);
   if(rankedRows.length>1&&rankedRows.every(r=>Math.abs(r.score-rankedRows[0].score)<1e-12))rankText+='当前展示的已评分房源排序依据没有拉开差距，沿用固定次序，不应称第一套明显更好。';
@@ -156,8 +156,8 @@ export function makeExplanationBundle(req:Requirements,rec:RecommendationRespons
       if(factors.length)add(`compare-ranking:${a+1}:${b+1}`,'comparison',`仅比较本次入选排名：第${a+1}套${x.listing.title}在第${b+1}套${y.listing.title}之前。推荐方实际逐项贡献显示：${factors.join('；')}。各项允许取舍；不要求排前的房源在每一项都最好，不把这些比较扩展到未进入排名的补充房源。`,[x.listing.listing_id,y.listing.listing_id],rec.native?[rec.native.exchange_ref]:[],[a+1,b+1]);
     }
     const usedBehavior=[sx,sy].map(score=>score?.contributions.filter(c=>c.reference!==null&&!c.unknown&&c.similarity!==null&&c.weight>0&&featureNames[c.feature]&&!score.suppressed_features.includes(c.feature)).map(c=>c.feature)||[]);
-    if(behavior.size&&sx&&sy&&usedBehavior.every(features=>features.length>0)&&sx.implicit_weight>0&&sy.implicit_weight>0&&sx.implicit_score!==null&&sy.implicit_score!==null){
-      const matching=sx.implicit_score===sy.implicit_score?'两套的浏览兴趣整体匹配程度相同':sx.implicit_score>sy.implicit_score?`第${a+1}套${x.listing.title}整体上比第${b+1}套${y.listing.title}更贴近已使用的浏览兴趣线索`:`第${b+1}套${y.listing.title}整体上比第${a+1}套${x.listing.title}更贴近已使用的浏览兴趣线索`;
+    if(behavior.size&&sx&&sy&&usedBehavior.every(features=>features.length>0)&&interestWeight(sx)>0&&interestWeight(sy)>0&&interestScore(sx)!==null&&interestScore(sy)!==null){
+      const ix=interestScore(sx)!,iy=interestScore(sy)!;const matching=ix===iy?'两套的浏览兴趣整体匹配程度相同':ix>iy?`第${a+1}套${x.listing.title}整体上比第${b+1}套${y.listing.title}更贴近已使用的浏览兴趣线索`:`第${b+1}套${y.listing.title}整体上比第${a+1}套${x.listing.title}更贴近已使用的浏览兴趣线索`;
       const features=[...new Set(usedBehavior.flat())].map(key=>featureNames[key]).join('、');
       add(`compare-interest:${a+1}:${b+1}`,'comparison',`推荐方实际返回的浏览兴趣比较：${matching}。这是${features}等已参与因素的整体匹配结果；不代表每项特征都单独更相似，也不说明用户偏爱某个具体面积或房型值。不重新计算或改变原顺序。`,[x.listing.listing_id,y.listing.listing_id],rec.native?[rec.native.exchange_ref]:[],[a+1,b+1]);
     }

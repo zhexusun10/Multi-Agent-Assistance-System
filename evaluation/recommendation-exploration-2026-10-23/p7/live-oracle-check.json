@@ -1,0 +1,147 @@
+{
+ "started_at": "2026-10-23T10:40:24.071Z",
+ "service": "http://127.0.0.1:8192",
+ "checks": [
+  {
+   "name": "round 1: no soft criterion, no feedback -> all scores 0, O = listing-ID order",
+   "mode": "cold_start_exploration",
+   "leaders": 0,
+   "tie_group": 161,
+   "exploration": 161,
+   "violations": []
+  },
+  {
+   "name": "round 2: one browsing reference (90 s) -> fused-v2 single-reference scores",
+   "mode": "cold_start_exploration",
+   "leaders": 0,
+   "tie_group": 34,
+   "exploration": 34,
+   "violations": []
+  },
+  {
+   "name": "round 2 fused-v2 oracle: max |native - oracle| over returned items",
+   "max_abs_difference": 2.7755575615628914e-17,
+   "reference": "20617351"
+  },
+  {
+   "name": "round 3: tighter hard budget -> pool rebuilt; all records missing -> all scores 0",
+   "mode": "cold_start_exploration",
+   "leaders": 0,
+   "tie_group": 129,
+   "exploration": 129,
+   "violations": []
+  }
+ ],
+ "rounds": [
+  {
+   "request_id": "0efdc389-3123-44b6-abd0-953f650d873c",
+   "status": "success",
+   "pool": {
+    "size": 161,
+    "cache": "built"
+   },
+   "selection_mode": "cold_start_exploration",
+   "ids": [
+    "20617351",
+    "21406855",
+    "24134292",
+    "500212470",
+    "500281606",
+    "500283851",
+    "500288048",
+    "60011302",
+    "60167549",
+    "60176712"
+   ],
+   "score_ranks": [
+    13,
+    20,
+    39,
+    87,
+    131,
+    134,
+    143,
+    147,
+    157,
+    159
+   ],
+   "wall_ms": 1513,
+   "service_ms": 1156.397958053276,
+   "controller": "scripted"
+  },
+  {
+   "request_id": "6d3077a8-30b2-4451-a720-b4082585c599",
+   "status": "success",
+   "pool": {
+    "size": 161,
+    "cache": "reused"
+   },
+   "selection_mode": "cold_start_exploration",
+   "ids": [
+    "21406855",
+    "22987383",
+    "24194570",
+    "25224990",
+    "500137450",
+    "500267173",
+    "500271419",
+    "21595049",
+    "500286637",
+    "25371911"
+   ],
+   "score_ranks": [
+    2,
+    9,
+    10,
+    12,
+    15,
+    19,
+    20,
+    28,
+    32,
+    34
+   ],
+   "wall_ms": 329,
+   "service_ms": 319.42704191897064,
+   "controller": "scripted"
+  },
+  {
+   "request_id": "1693f825-cf5b-4a08-9c75-339ad448f163",
+   "status": "success",
+   "pool": {
+    "size": 129,
+    "cache": "built"
+   },
+   "selection_mode": "cold_start_exploration",
+   "ids": [
+    "20052544",
+    "20369392",
+    "20617351",
+    "25300986",
+    "25371911",
+    "500006339",
+    "500263089",
+    "500265058",
+    "60155193",
+    "6995669"
+   ],
+   "score_ranks": [
+    8,
+    10,
+    13,
+    53,
+    54,
+    62,
+    84,
+    86,
+    125,
+    129
+   ],
+   "wall_ms": 1077,
+   "service_ms": 1068.8273329287767,
+   "controller": "scripted"
+  }
+ ],
+ "status": "passed",
+ "finished_at": "2026-10-23T10:40:27.124Z"
+}

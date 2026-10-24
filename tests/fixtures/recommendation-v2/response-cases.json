@@ -1,0 +1,383 @@
+{
+ "description": "Native contract 2.0 response invariants. Base = ten-results.json envelope.response; each case applies ops in order (merge: shallow-merge an object at path; append: push value onto the list at path). Python: Response.model_validate (valid <-> accepted; error is a substring of the message). TS: nativeResponseSchema.safeParse (valid <-> success).",
+ "base": "ten-results.json#/envelope/response",
+ "cases": [
+  {
+   "name": "base",
+   "valid": true,
+   "ops": []
+  },
+  {
+   "name": "evidence-closed",
+   "valid": true,
+   "ops": [
+    {
+     "op": "append",
+     "path": [
+      "evidence"
+     ],
+     "value": {
+      "evidence_id": "ev-1",
+      "listing_id": "fixture-01",
+      "criterion_id": "district",
+      "source": "fixture",
+      "observed_at": "2026-10-23T00:00:00Z",
+      "value": 1200.0,
+      "unit": "m",
+      "distance_type": "straight_line",
+      "method": "repository_lookup",
+      "coverage_m": null,
+      "destination_id": "OSM:node:1",
+      "unknown_reason": null,
+      "mapping_status": "not_applicable",
+      "snapshot_hash": "fixture"
+     }
+    },
+    {
+     "op": "append",
+     "path": [
+      "recommendations",
+      0,
+      "evidence_refs"
+     ],
+     "value": "ev-1"
+    }
+   ]
+  },
+  {
+   "name": "resolution-unresolved-without-entity",
+   "valid": true,
+   "ops": [
+    {
+     "op": "append",
+     "path": [
+      "resolution"
+     ],
+     "value": {
+      "criterion_id": "near",
+      "field": "distance",
+      "original": {
+       "destination_id": null,
+       "destination_name": "Somewhere",
+       "category": null
+      },
+      "status": "unresolved",
+      "entity_id": null,
+      "entity_kind": null,
+      "method": "repository_lookup",
+      "reason": "no match",
+      "candidates": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "unknown-reasons-with-unknown-exclusions",
+   "valid": true,
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "pool"
+     ],
+     "value": {
+      "size": 12,
+      "source_count": 13,
+      "excluded_hard_fail": 0,
+      "excluded_hard_unknown": 1,
+      "unknown_reasons": {
+       "missing_coordinates": 1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "unknown-reasons-at-cap",
+   "valid": true,
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "pool"
+     ],
+     "value": {
+      "size": 12,
+      "source_count": 23,
+      "excluded_hard_unknown": 11,
+      "unknown_reasons": {
+       "reason_00": 1,
+       "reason_01": 1,
+       "reason_02": 1,
+       "reason_03": 1,
+       "reason_04": 1,
+       "reason_05": 1,
+       "reason_06": 1,
+       "reason_07": 1,
+       "reason_08": 1,
+       "reason_09": 1,
+       "other": 1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "resolved-without-entity-id",
+   "valid": false,
+   "error": "entity_id is required exactly when status is resolved",
+   "ops": [
+    {
+     "op": "append",
+     "path": [
+      "resolution"
+     ],
+     "value": {
+      "criterion_id": "near",
+      "field": "distance",
+      "original": {
+       "destination_id": null,
+       "destination_name": "Somewhere",
+       "category": null
+      },
+      "status": "resolved",
+      "entity_id": null,
+      "entity_kind": null,
+      "method": "repository_lookup",
+      "reason": null,
+      "candidates": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "unresolved-with-entity-id",
+   "valid": false,
+   "error": "entity_id is required exactly when status is resolved",
+   "ops": [
+    {
+     "op": "append",
+     "path": [
+      "resolution"
+     ],
+     "value": {
+      "criterion_id": "near",
+      "field": "distance",
+      "original": {
+       "destination_id": null,
+       "destination_name": "Somewhere",
+       "category": null
+      },
+      "status": "unresolved",
+      "entity_id": "OSM:node:1",
+      "entity_kind": "osm_place",
+      "method": "repository_lookup",
+      "reason": null,
+      "candidates": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "more-recommendations-than-pool",
+   "valid": false,
+   "error": "more recommendations than eligible pool listings",
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "pool"
+     ],
+     "value": {
+      "size": 9,
+      "source_count": 12,
+      "excluded_hard_fail": 3
+     }
+    }
+   ]
+  },
+  {
+   "name": "unknown-reasons-without-unknown-exclusions",
+   "valid": false,
+   "error": "unknown_reasons require unknown exclusions",
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "pool"
+     ],
+     "value": {
+      "unknown_reasons": {
+       "missing_coordinates": 1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "unknown-reasons-over-cap",
+   "valid": false,
+   "error": "unknown_reasons",
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "pool"
+     ],
+     "value": {
+      "size": 12,
+      "source_count": 24,
+      "excluded_hard_unknown": 12,
+      "unknown_reasons": {
+       "reason_00": 1,
+       "reason_01": 1,
+       "reason_02": 1,
+       "reason_03": 1,
+       "reason_04": 1,
+       "reason_05": 1,
+       "reason_06": 1,
+       "reason_07": 1,
+       "reason_08": 1,
+       "reason_09": 1,
+       "reason_10": 1,
+       "reason_11": 1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "duplicate-score-rank",
+   "valid": false,
+   "error": "Duplicate score_rank",
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "recommendations",
+      1
+     ],
+     "value": {
+      "score_rank": 1
+     }
+    }
+   ]
+  },
+  {
+   "name": "unresolved-evidence-ref",
+   "valid": false,
+   "error": "Unresolved evidence reference",
+   "ops": [
+    {
+     "op": "append",
+     "path": [
+      "recommendations",
+      0,
+      "evidence_refs"
+     ],
+     "value": "missing-ref"
+    }
+   ]
+  },
+  {
+   "name": "unreferenced-evidence",
+   "valid": false,
+   "error": "Evidence not referenced by a returned recommendation",
+   "ops": [
+    {
+     "op": "append",
+     "path": [
+      "evidence"
+     ],
+     "value": {
+      "evidence_id": "ev-1",
+      "listing_id": "fixture-01",
+      "criterion_id": "district",
+      "source": "fixture",
+      "observed_at": "2026-10-23T00:00:00Z",
+      "value": 1200.0,
+      "unit": "m",
+      "distance_type": "straight_line",
+      "method": "repository_lookup",
+      "coverage_m": null,
+      "destination_id": "OSM:node:1",
+      "unknown_reason": null,
+      "mapping_status": "not_applicable",
+      "snapshot_hash": "fixture"
+     }
+    }
+   ]
+  },
+  {
+   "name": "cold-start-active-without-evaluation",
+   "valid": false,
+   "error": "cold start cannot be active without evaluated diagnostics",
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "selection",
+      "cold_start"
+     ],
+     "value": {
+      "evaluated": false,
+      "active": true
+     }
+    }
+   ]
+  },
+  {
+   "name": "rank-above-contract-maximum",
+   "valid": false,
+   "error": "rank",
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "recommendations",
+      9
+     ],
+     "value": {
+      "rank": 11
+     }
+    }
+   ]
+  },
+  {
+   "name": "cold-start-exit-claim-without-stability",
+   "valid": false,
+   "error": "exit_conditions_met requires evaluated diagnostics with stability_s",
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "selection",
+      "cold_start"
+     ],
+     "value": {
+      "exit_conditions_met": true,
+      "active": false,
+      "stability_s": null
+     }
+    }
+   ]
+  },
+  {
+   "name": "cold-start-exit-with-evaluated-diagnostics",
+   "valid": true,
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "selection",
+      "cold_start"
+     ],
+     "value": {
+      "exit_conditions_met": true,
+      "active": false
+     }
+    }
+   ]
+  }
+ ]
+}

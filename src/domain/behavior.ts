@@ -13,7 +13,8 @@ export const INTEREST_POLICY={minimum_listing_ms:15000,minimum_listings:2,minimu
 
 export function browserInterestNotice(ready:boolean,response:RecommendationResponse){
   if(!ready)return null;
-  const applied=Object.values(response.native?.scores||{}).some(s=>s.implicit_score!==null);
+  // Native response 2.0 reports behaviour as behavior_score (browsing_score: cumulative browsing); archived 1.0 scores use implicit_score.
+  const applied=Object.values(response.native?.scores||{}).some((s:any)=>'behavior_score' in s?s.behavior_score!==null:s.implicit_score!==null);
   return applied?{code:'WEB_INTEREST',message:'本次也参考了你之前有效浏览的房源；明确要求仍然优先。'}:{code:'WEB_INTEREST_NOT_APPLIED',message:'浏览记录已保存；本轮没有可用的隐式评分，仍按你的明确条件推荐。'};
 }
 

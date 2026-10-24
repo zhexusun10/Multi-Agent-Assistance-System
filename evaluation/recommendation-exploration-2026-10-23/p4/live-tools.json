@@ -1,0 +1,952 @@
+{
+ "live_state_md5_before": "247b2503ac952c17f8676443f5f8355a",
+ "end_to_end": {
+  "clementi-mrt-1500": {
+   "status": "success",
+   "wall_ms": 1478.6,
+   "tool_order": [
+    "resolve_entities",
+    "build_pool",
+    "get_geographic_evidence",
+    "rank_candidates"
+   ],
+   "tool_order_is_pipeline": true,
+   "pool_size": 210,
+   "returned": 10,
+   "resolution": [
+    {
+     "criterion_id": "mrt",
+     "status": "resolved",
+     "entity_id": "LTA:MRT:CLEMENTI",
+     "method": "name",
+     "reason": "unique_exact_station_match",
+     "candidates": []
+    }
+   ],
+   "clarifications": []
+  },
+  "nus-iss-unresolved": {
+   "status": "needs_clarification",
+   "wall_ms": 1112.6,
+   "tool_order": [
+    "resolve_entities",
+    "build_pool",
+    "get_geographic_evidence",
+    "rank_candidates"
+   ],
+   "tool_order_is_pipeline": true,
+   "pool_size": 0,
+   "returned": 0,
+   "resolution": [
+    {
+     "criterion_id": "iss",
+     "status": "unresolved",
+     "entity_id": null,
+     "method": "name",
+     "reason": "no_exact_match",
+     "candidates": []
+    }
+   ],
+   "clarifications": [
+    "Hard criterion 'iss' (distance): destination unresolved (no catalog entity matches the name exactly)."
+   ]
+  },
+  "bukit-panjang-station-ambiguous": {
+   "status": "needs_clarification",
+   "wall_ms": 1121.6,
+   "tool_order": [
+    "resolve_entities",
+    "build_pool",
+    "get_geographic_evidence",
+    "rank_candidates"
+   ],
+   "tool_order_is_pipeline": true,
+   "pool_size": 0,
+   "returned": 0,
+   "resolution": [
+    {
+     "criterion_id": "bp",
+     "status": "ambiguous",
+     "entity_id": null,
+     "method": "name",
+     "reason": "multiple_exact_matches (2)",
+     "candidates": [
+      "LTA:LRT:BUKIT_PANJANG",
+      "LTA:MRT:BUKIT_PANJANG"
+     ]
+    }
+   ],
+   "clarifications": [
+    "Hard criterion 'bp' (distance): destination ambiguous (several catalog entities match the name exactly; candidates: BUKIT PANJANG LRT STATION (LTA:LRT:BUKIT_PANJANG), BUKIT PANJANG MRT STATION (LTA:MRT:BUKIT_PANJANG))."
+   ]
+  },
+  "soft-jinwentai": {
+   "status": "success",
+   "wall_ms": 2699.0,
+   "tool_order": [
+    "resolve_entities",
+    "build_pool",
+    "get_geographic_evidence",
+    "rank_candidates"
+   ],
+   "tool_order_is_pipeline": true,
+   "pool_size": 12883,
+   "returned": 10,
+   "resolution": [
+    {
+     "criterion_id": "cl",
+     "status": "resolved",
+     "entity_id": "URA:AREA:CLEMENTI",
+     "method": "name",
+     "reason": "unique_exact_area_match",
+     "candidates": []
+    }
+   ],
+   "clarifications": []
+  }
+ },
+ "unbound": {
+  "pool_key": "84ab5d4b304be7e1a45721367ed2aca1418e632955f0d8b6acdafb7a271e501d",
+  "partition": {
+   "source_count": 21431,
+   "size": 0,
+   "excluded_hard_fail": 8548,
+   "excluded_hard_unknown": 12883,
+   "unknown_reasons": {
+    "distance: destination ambiguous: several catalog entities match the name exactly; candidates: BUKIT PANJANG LRT STATION (LTA:LRT:BUKIT_PANJANG), BUKIT PANJANG MRT STATION (LTA:MRT:BUKIT_PANJANG)": 12883
+   }
+  },
+  "resolution": {
+   "status": "ambiguous",
+   "entity_id": null,
+   "entity_kind": null,
+   "method": "name",
+   "reason": "multiple_exact_matches (2)",
+   "candidates": [
+    [
+     "LTA:LRT:BUKIT_PANJANG",
+     "BUKIT PANJANG LRT STATION",
+     "lta_station"
+    ],
+    [
+     "LTA:MRT:BUKIT_PANJANG",
+     "BUKIT PANJANG MRT STATION",
+     "lta_station"
+    ]
+   ]
+  }
+ },
+ "bound": {
+  "pool_key": "1641dac928f64fa3205682893f413a7eca5fa43cb2883787646ad6795eb027a4",
+  "partition": {
+   "source_count": 21431,
+   "size": 277,
+   "excluded_hard_fail": 15644,
+   "excluded_hard_unknown": 5510,
+   "unknown_reasons": {
+    "distance: missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity": 5510
+   }
+  },
+  "resolution": {
+   "status": "resolved",
+   "entity_id": "LTA:MRT:BUKIT_PANJANG",
+   "entity_kind": "lta_station",
+   "method": "bound_search",
+   "reason": "single_search_candidate (search #3)",
+   "candidates": []
+  },
+  "selected": [
+   "17643843",
+   "19954468",
+   "20343516",
+   "20412998",
+   "20867016",
+   "20870894",
+   "21334039",
+   "21339163",
+   "21466605",
+   "21593635"
+  ]
+ },
+ "budget_only_pool": {
+  "size": 12883,
+  "without_coordinates": 5510
+ },
+ "calls": {
+  "resolve_entities": {
+   "ms": 11.1,
+   "status": "ok",
+   "error": null,
+   "stages": [
+    "resolve_entities"
+   ],
+   "data": {
+    "resolution": [
+     {
+      "criterion_id": "bp",
+      "field": "distance",
+      "original": {
+       "destination_id": null,
+       "destination_name": "Bukit Panjang Station",
+       "category": null
+      },
+      "status": "ambiguous",
+      "entity_id": null,
+      "entity_kind": null,
+      "method": "name",
+      "reason": "multiple_exact_matches (2)",
+      "candidates": [
+       {
+        "entity_id": "LTA:LRT:BUKIT_PANJANG",
+        "name": "BUKIT PANJANG LRT STATION",
+        "kind": "lta_station"
+       },
+       {
+        "entity_id": "LTA:MRT:BUKIT_PANJANG",
+        "name": "BUKIT PANJANG MRT STATION",
+        "kind": "lta_station"
+       }
+      ],
+      "strength": "hard",
+      "bindable": true
+     }
+    ]
+   }
+  },
+  "build_pool": {
+   "ms": 953.7,
+   "status": "ok",
+   "error": null,
+   "stages": [
+    "resolve_entities",
+    "build_pool"
+   ],
+   "data": {
+    "pool": {
+     "pool_key": "84ab5d4b304be7e1a45721367ed2aca1418e632955f0d8b6acdafb7a271e501d",
+     "pool_version": "44f158cee77f233e1e5665bb8ac35eb842b197c0029b9db1aaba34aba96e000e",
+     "data_version": "fdfce5220311e85438213d9ee4839969db300708224018b2adce5c069892d726",
+     "cache": "bypassed",
+     "outcome": "no_store"
+    },
+    "partition": {
+     "source_count": 21431,
+     "size": 0,
+     "excluded_hard_fail": 8548,
+     "excluded_hard_unknown": 12883,
+     "unknown_reasons": {
+      "distance: destination ambiguous: several catalog entities match the name exactly; candidates: BUKIT PANJANG LRT STATION (LTA:LRT:BUKIT_PANJANG), BUKIT PANJANG MRT STATION (LTA:MRT:BUKIT_PANJANG)": 12883
+     }
+    }
+   }
+  },
+  "get_geographic_evidence": {
+   "ms": 0.1,
+   "status": "ok",
+   "error": null,
+   "stages": [
+    "resolve_entities",
+    "build_pool",
+    "get_geographic_evidence"
+   ],
+   "data": {
+    "soft_criteria": [],
+    "records": []
+   }
+  },
+  "rank_candidates": {
+   "ms": 0.0,
+   "status": "ok",
+   "error": null,
+   "stages": [
+    "resolve_entities",
+    "build_pool",
+    "get_geographic_evidence",
+    "rank_candidates"
+   ],
+   "data": {
+    "algorithm_version": "ranked-prefix-v1",
+    "pool_size": 0
+   }
+  },
+  "search_cold_storage": {
+   "ms": 6.7,
+   "status": "ok",
+   "error": null,
+   "stages": [
+    "resolve_entities",
+    "build_pool",
+    "get_geographic_evidence",
+    "rank_candidates"
+   ],
+   "data": {
+    "search_no": 1,
+    "match": "exact normalised name/alias",
+    "total": 38,
+    "truncated": true,
+    "candidates": [
+     {
+      "entity_id": "OSM:node:12143316854",
+      "kind": "osm_place",
+      "name": "Cold Storage",
+      "category": "Supermarket",
+      "has_coordinates": true
+     },
+     {
+      "entity_id": "OSM:node:1264537429",
+      "kind": "osm_place",
+      "name": "Cold Storage",
+      "category": "Supermarket",
+      "has_coordinates": true
+     },
+     {
+      "entity_id": "OSM:node:1699440753",
+      "kind": "osm_place",
+      "name": "Cold Storage",
+      "category": "Supermarket",
+      "has_coordinates": true
+     },
+     {
+      "entity_id": "OSM:node:1711105937",
+      "kind": "osm_place",
+      "name": "Cold Storage",
+      "category": "Supermarket",
+      "has_coordinates": true
+     },
+     {
+      "entity_id": "OSM:node:1839603987",
+      "kind": "osm_place",
+      "name": "Cold Storage",
+      "category": "Supermarket",
+      "has_coordinates": true
+     }
+    ],
+    "bindable": false,
+    "note": "Candidates match the query text; the query is a hypothesis, not verified intent. Several candidates: do not pick one; narrow with kind/category or leave the criterion unresolved."
+   }
+  },
+  "search_bp_multi": {
+   "ms": 0.1,
+   "status": "ok",
+   "error": null,
+   "stages": [
+    "resolve_entities",
+    "build_pool",
+    "get_geographic_evidence",
+    "rank_candidates"
+   ],
+   "data": {
+    "search_no": 2,
+    "match": "exact normalised name/alias",
+    "total": 2,
+    "truncated": false,
+    "candidates": [
+     {
+      "entity_id": "LTA:LRT:BUKIT_PANJANG",
+      "kind": "lta_station",
+      "name": "BUKIT PANJANG LRT STATION",
+      "mode": "LRT"
+     },
+     {
+      "entity_id": "LTA:MRT:BUKIT_PANJANG",
+      "kind": "lta_station",
+      "name": "BUKIT PANJANG MRT STATION",
+      "mode": "MRT"
+     }
+    ],
+    "bindable": false,
+    "note": "Candidates match the query text; the query is a hypothesis, not verified intent. Several candidates: do not pick one; narrow with kind/category or leave the criterion unresolved."
+   }
+  },
+  "bind_multi_rejected": {
+   "ms": 0.0,
+   "status": "error",
+   "error": {
+    "code": "BIND_REJECTED",
+    "message": "The search result contained 2 candidates; bind only the single candidate of a (kind/category-filtered) search, never the first of several",
+    "retryable": false
+   },
+   "stages": [
+    "resolve_entities",
+    "build_pool",
+    "get_geographic_evidence",
+    "rank_candidates"
+   ],
+   "data": {}
+  },
+  "search_bp_mrt": {
+   "ms": 0.0,
+   "status": "ok",
+   "error": null,
+   "stages": [
+    "resolve_entities",
+    "build_pool",
+    "get_geographic_evidence",
+    "rank_candidates"
+   ],
+   "data": {
+    "search_no": 3,
+    "match": "exact normalised name/alias",
+    "total": 1,
+    "truncated": false,
+    "candidates": [
+     {
+      "entity_id": "LTA:MRT:BUKIT_PANJANG",
+      "kind": "lta_station",
+      "name": "BUKIT PANJANG MRT STATION",
+      "mode": "MRT"
+     }
+    ],
+    "bindable": true,
+    "note": "Candidates match the query text; the query is a hypothesis, not verified intent. Several candidates: do not pick one; narrow with kind/category or leave the criterion unresolved."
+   }
+  },
+  "bind_single": {
+   "ms": 0.1,
+   "status": "ok",
+   "error": null,
+   "stages": [
+    "resolve_entities"
+   ],
+   "data": {
+    "criterion_id": "bp",
+    "resolution": {
+     "criterion_id": "bp",
+     "field": "distance",
+     "original": {
+      "destination_id": null,
+      "destination_name": "Bukit Panjang Station",
+      "category": null
+     },
+     "status": "resolved",
+     "entity_id": "LTA:MRT:BUKIT_PANJANG",
+     "entity_kind": "lta_station",
+     "method": "bound_search",
+     "reason": "single_search_candidate (search #3)",
+     "candidates": [],
+     "strength": "hard",
+     "bindable": false
+    },
+    "invalidated": [
+     "build_pool",
+     "get_geographic_evidence",
+     "rank_candidates"
+    ]
+   }
+  },
+  "rank_after_bind_stale": {
+   "ms": 0.0,
+   "status": "error",
+   "error": {
+    "code": "STALE_REFERENCE",
+    "message": "Call get_geographic_evidence for the current inputs first (pipeline order: resolve_entities -> build_pool -> get_geographic_evidence -> rank_candidates)",
+    "retryable": false
+   },
+   "stages": [
+    "resolve_entities"
+   ],
+   "data": {}
+  },
+  "build_pool_after_bind": {
+   "ms": 1041.4,
+   "status": "ok",
+   "error": null,
+   "stages": [
+    "resolve_entities",
+    "build_pool"
+   ],
+   "data": {
+    "pool": {
+     "pool_key": "1641dac928f64fa3205682893f413a7eca5fa43cb2883787646ad6795eb027a4",
+     "pool_version": "1fad355a9c7df939a54e1df91262bbe9900f79f53090883fae9d06c2a4bbd5e5",
+     "data_version": "fdfce5220311e85438213d9ee4839969db300708224018b2adce5c069892d726",
+     "cache": "bypassed",
+     "outcome": "no_store"
+    },
+    "partition": {
+     "source_count": 21431,
+     "size": 277,
+     "excluded_hard_fail": 15644,
+     "excluded_hard_unknown": 5510,
+     "unknown_reasons": {
+      "distance: missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity": 5510
+     }
+    }
+   }
+  },
+  "get_geographic_evidence_after_bind": {
+   "ms": 5.7,
+   "status": "ok",
+   "error": null,
+   "stages": [
+    "resolve_entities",
+    "build_pool",
+    "get_geographic_evidence"
+   ],
+   "data": {
+    "soft_criteria": [],
+    "records": []
+   }
+  },
+  "rank_candidates_after_bind": {
+   "ms": 9.5,
+   "status": "ok",
+   "error": null,
+   "stages": [
+    "resolve_entities",
+    "build_pool",
+    "get_geographic_evidence",
+    "rank_candidates"
+   ],
+   "data": {
+    "algorithm_version": "ranked-prefix-v1",
+    "pool_size": 277
+   }
+  },
+  "nearest_mrt_selected": {
+   "ms": 6.5,
+   "status": "ok",
+   "error": null,
+   "stages": [
+    "resolve_entities",
+    "build_pool",
+    "get_geographic_evidence",
+    "rank_candidates"
+   ],
+   "data": {
+    "results": [
+     {
+      "listing_id": "17643843",
+      "mode": "MRT",
+      "station": {
+       "entity_id": "LTA:MRT:BUKIT_PANJANG",
+       "kind": "lta_station",
+       "name": "BUKIT PANJANG MRT STATION",
+       "mode": "MRT"
+      },
+      "distance_m": 461.3,
+      "method": "haversine.nearest_recorded_exit",
+      "nearest_exit": {
+       "exit_id": "LTA:EXIT:25087",
+       "exit_code": "Exit A"
+      }
+     },
+     {
+      "listing_id": "19954468",
+      "mode": "MRT",
+      "station": {
+       "entity_id": "LTA:MRT:BUKIT_PANJANG",
+       "kind": "lta_station",
+       "name": "BUKIT PANJANG MRT STATION",
+       "mode": "MRT"
+      },
+      "distance_m": 378.3,
+      "method": "haversine.nearest_recorded_exit",
+      "nearest_exit": {
+       "exit_id": "LTA:EXIT:24828",
+       "exit_code": "Exit A"
+      }
+     },
+     {
+      "listing_id": "20343516",
+      "mode": "MRT",
+      "station": {
+       "entity_id": "LTA:MRT:CHOA_CHU_KANG",
+       "kind": "lta_station",
+       "name": "CHOA CHU KANG MRT STATION",
+       "mode": "MRT"
+      },
+      "distance_m": 713.0,
+      "method": "haversine.nearest_recorded_exit",
+      "nearest_exit": {
+       "exit_id": "LTA:EXIT:24976",
+       "exit_code": "Exit B"
+      }
+     },
+     {
+      "listing_id": "20412998",
+      "mode": "MRT",
+      "station": {
+       "entity_id": "LTA:MRT:BUKIT_PANJANG",
+       "kind": "lta_station",
+       "name": "BUKIT PANJANG MRT STATION",
+       "mode": "MRT"
+      },
+      "distance_m": 652.2,
+      "method": "haversine.nearest_recorded_exit",
+      "nearest_exit": {
+       "exit_id": "LTA:EXIT:25087",
+       "exit_code": "Exit A"
+      }
+     },
+     {
+      "listing_id": "20867016",
+      "mode": "MRT",
+      "station": {
+       "entity_id": "LTA:MRT:BUKIT_PANJANG",
+       "kind": "lta_station",
+       "name": "BUKIT PANJANG MRT STATION",
+       "mode": "MRT"
+      },
+      "distance_m": 693.5,
+      "method": "haversine.nearest_recorded_exit",
+      "nearest_exit": {
+       "exit_id": "LTA:EXIT:24828",
+       "exit_code": "Exit A"
+      }
+     }
+    ]
+   }
+  },
+  "district_membership": {
+   "ms": 6.3,
+   "status": "ok",
+   "error": null,
+   "stages": [
+    "resolve_entities",
+    "build_pool",
+    "get_geographic_evidence",
+    "rank_candidates"
+   ],
+   "data": {
+    "results": [
+     {
+      "listing_id": "17643843",
+      "district_code": "D23",
+      "district_code_source": "postgresql:properties: listing row district_code (postal district; canonical)",
+      "planning_area_method": "ura_polygon.point_in_polygon_even_odd_all_rings",
+      "planning_area": {
+       "entity_id": "URA:AREA:CHOA_CHU_KANG",
+       "name": "CHOA CHU KANG",
+       "region_id": "URA:REGION:WEST",
+       "region": "WEST REGION"
+      }
+     },
+     {
+      "listing_id": "19954468",
+      "district_code": "D23",
+      "district_code_source": "postgresql:properties: listing row district_code (postal district; canonical)",
+      "planning_area_method": "ura_polygon.point_in_polygon_even_odd_all_rings",
+      "planning_area": {
+       "entity_id": "URA:AREA:BUKIT_PANJANG",
+       "name": "BUKIT PANJANG",
+       "region_id": "URA:REGION:WEST",
+       "region": "WEST REGION"
+      }
+     },
+     {
+      "listing_id": "20343516",
+      "district_code": "D23",
+      "district_code_source": "postgresql:properties: listing row district_code (postal district; canonical)",
+      "planning_area_method": "ura_polygon.point_in_polygon_even_odd_all_rings",
+      "planning_area": {
+       "entity_id": "URA:AREA:CHOA_CHU_KANG",
+       "name": "CHOA CHU KANG",
+       "region_id": "URA:REGION:WEST",
+       "region": "WEST REGION"
+      }
+     },
+     {
+      "listing_id": "20412998",
+      "district_code": "D23",
+      "district_code_source": "postgresql:properties: listing row district_code (postal district; canonical)",
+      "planning_area_method": "ura_polygon.point_in_polygon_even_odd_all_rings",
+      "planning_area": {
+       "entity_id": "URA:AREA:BUKIT_PANJANG",
+       "name": "BUKIT PANJANG",
+       "region_id": "URA:REGION:WEST",
+       "region": "WEST REGION"
+      }
+     },
+     {
+      "listing_id": "20867016",
+      "district_code": "D23",
+      "district_code_source": "postgresql:properties: listing row district_code (postal district; canonical)",
+      "planning_area_method": "ura_polygon.point_in_polygon_even_odd_all_rings",
+      "planning_area": {
+       "entity_id": "URA:AREA:BUKIT_PANJANG",
+       "name": "BUKIT PANJANG",
+       "region_id": "URA:REGION:WEST",
+       "region": "WEST REGION"
+      }
+     }
+    ],
+    "note": "district_code and planning area are independent partitions; neither is derived from the other"
+   }
+  },
+  "nearby_supermarkets": {
+   "ms": 6.1,
+   "status": "ok",
+   "error": null,
+   "stages": [
+    "resolve_entities",
+    "build_pool",
+    "get_geographic_evidence",
+    "rank_candidates"
+   ],
+   "data": {
+    "radius_m": 800.0,
+    "categories": [
+     "Supermarket"
+    ],
+    "categories_without_places": [],
+    "results": [
+     {
+      "listing_id": "17643843",
+      "total_within_radius": 7,
+      "truncated": true,
+      "amenities": [
+       {
+        "entity_id": "OSM:node:3300494746",
+        "name": "Sheng Siong",
+        "category": "Supermarket",
+        "distance_m": 210.9,
+        "method": "coordinate_haversine"
+       },
+       {
+        "entity_id": "OSM:node:3315764761",
+        "name": "FairPrice",
+        "category": "Supermarket",
+        "distance_m": 308.2,
+        "method": "coordinate_haversine"
+       },
+       {
+        "entity_id": "OSM:node:9391515250",
+        "name": "U Stars Supermarket",
+        "category": "Supermarket",
+        "distance_m": 456.8,
+        "method": "coordinate_haversine"
+       }
+      ]
+     },
+     {
+      "listing_id": "19954468",
+      "total_within_radius": 10,
+      "truncated": true,
+      "amenities": [
+       {
+        "entity_id": "OSM:node:1932275057",
+        "name": "FairPrice Finest",
+        "category": "Supermarket",
+        "distance_m": 130.8,
+        "method": "coordinate_haversine"
+       },
+       {
+        "entity_id": "OSM:node:4552437537",
+        "name": "FairPrice",
+        "category": "Supermarket",
+        "distance_m": 211.1,
+        "method": "coordinate_haversine"
+       },
+       {
+        "entity_id": "OSM:node:9019981344",
+        "name": "YeoExpress",
+        "category": "Supermarket",
+        "distance_m": 500.5,
+        "method": "coordinate_haversine"
+       }
+      ]
+     },
+     {
+      "listing_id": "20343516",
+      "total_within_radius": 9,
+      "truncated": true,
+      "amenities": [
+       {
+        "entity_id": "OSM:node:6082899987",
+        "name": "U Stars Mega Mart",
+        "category": "Supermarket",
+        "distance_m": 214.5,
+        "method": "coordinate_haversine"
+       },
+       {
+        "entity_id": "OSM:node:5828043085",
+        "name": "U Stars Super Market",
+        "category": "Supermarket",
+        "distance_m": 220.4,
+        "method": "coordinate_haversine"
+       },
+       {
+        "entity_id": "OSM:node:3305306962",
+        "name": "Prime",
+        "category": "Supermarket",
+        "distance_m": 424.4,
+        "method": "coordinate_haversine"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "distance_to_station": {
+   "ms": 6.2,
+   "status": "ok",
+   "error": null,
+   "stages": [
+    "resolve_entities",
+    "build_pool",
+    "get_geographic_evidence",
+    "rank_candidates"
+   ],
+   "data": {
+    "destination": {
+     "entity_id": "LTA:MRT:BUKIT_PANJANG",
+     "kind": "lta_station",
+     "name": "BUKIT PANJANG MRT STATION",
+     "mode": "MRT"
+    },
+    "method": "haversine.nearest_recorded_exit",
+    "results": [
+     {
+      "listing_id": "17643843",
+      "distance_m": 461.3,
+      "method": "haversine.nearest_recorded_exit",
+      "nearest_exit": {
+       "exit_id": "LTA:EXIT:25087"
+      }
+     },
+     {
+      "listing_id": "19954468",
+      "distance_m": 378.3,
+      "method": "haversine.nearest_recorded_exit",
+      "nearest_exit": {
+       "exit_id": "LTA:EXIT:24828"
+      }
+     },
+     {
+      "listing_id": "20343516",
+      "distance_m": 1265.6,
+      "method": "haversine.nearest_recorded_exit",
+      "nearest_exit": {
+       "exit_id": "LTA:EXIT:25087"
+      }
+     }
+    ]
+   }
+  },
+  "distance_to_invented": {
+   "ms": 5.8,
+   "status": "error",
+   "error": {
+    "code": "INVALID_ARGUMENT",
+    "message": "destination_id was not returned by a tool in this run (use IDs from resolve_entities, search_places or other tool results)",
+    "retryable": false
+   },
+   "stages": [
+    "resolve_entities",
+    "build_pool",
+    "get_geographic_evidence",
+    "rank_candidates"
+   ],
+   "data": {}
+  },
+  "listing_not_in_pool": {
+   "ms": 5.8,
+   "status": "error",
+   "error": {
+    "code": "INVALID_ARGUMENT",
+    "message": "Listing IDs not in the current pool (use IDs returned by build_pool/rank_candidates): 999999999",
+    "retryable": false
+   },
+   "stages": [
+    "resolve_entities",
+    "build_pool",
+    "get_geographic_evidence",
+    "rank_candidates"
+   ],
+   "data": {}
+  },
+  "resolve_budget_only": {
+   "ms": 0.0,
+   "status": "ok",
+   "error": null,
+   "stages": [
+    "resolve_entities"
+   ],
+   "data": {
+    "resolution": []
+   }
+  },
+  "build_pool_budget_only": {
+   "ms": 789.9,
+   "status": "ok",
+   "error": null,
+   "stages": [
+    "resolve_entities",
+    "build_pool"
+   ],
+   "data": {
+    "pool": {
+     "pool_key": "88ec2f1dd09620cfd18e3284c44033d1319ed2dd0d0a05cbf8dfc703f619b0c1",
+     "pool_version": "6fe26a13409776dd95d2c91bed0e7e15d1e45f93d3e25ed4499623a36fd4e208",
+     "data_version": "fdfce5220311e85438213d9ee4839969db300708224018b2adce5c069892d726",
+     "cache": "bypassed",
+     "outcome": "no_store"
+    },
+    "partition": {
+     "source_count": 21431,
+     "size": 12883,
+     "excluded_hard_fail": 8548,
+     "excluded_hard_unknown": 0,
+     "unknown_reasons": {}
+    }
+   }
+  },
+  "nearest_mrt_without_coordinates": {
+   "ms": 175.5,
+   "status": "ok",
+   "error": null,
+   "stages": [
+    "resolve_entities",
+    "build_pool"
+   ],
+   "data": {
+    "results": [
+     {
+      "listing_id": "10694883",
+      "mode": "MRT",
+      "station": null,
+      "distance_m": null,
+      "unknown_reason": "listing has no valid coordinates (unknown; never 0 m)",
+      "platform_reported": {
+       "label": "platform_reported: listing text from the platform (NEAR_MRT); not verified, not a straight-line distance, never used for criteria",
+       "available": true,
+       "nearest_mrt": "NS23 Somerset MRT",
+       "mrt_distance_m": 1000.0,
+       "mrt_walking_mins": 12.0
+      }
+     },
+     {
+      "listing_id": "11918481",
+      "mode": "MRT",
+      "station": null,
+      "distance_m": null,
+      "unknown_reason": "listing has no valid coordinates (unknown; never 0 m)",
+      "platform_reported": {
+       "label": "platform_reported: listing text from the platform (NEAR_MRT); not verified, not a straight-line distance, never used for criteria",
+       "available": true,
+       "nearest_mrt": "TE24 Katong Park MRT",
+       "mrt_distance_m": 320.0,
+       "mrt_walking_mins": 4.0
+      }
+     },
+     {
+      "listing_id": "12693878",
+      "mode": "MRT",
+      "station": null,
+      "distance_m": null,
+      "unknown_reason": "listing has no valid coordinates (unknown; never 0 m)",
+      "platform_reported": {
+       "label": "platform_reported: listing text from the platform (NEAR_MRT); not verified, not a straight-line distance, never used for criteria",
+       "available": true,
+       "nearest_mrt": "NE8 Farrer Park MRT",
+       "mrt_distance_m": 540.0,
+       "mrt_walking_mins": 7.0
+      }
+     }
+    ]
+   }
+  }
+ },
+ "live_state_md5_after": "247b2503ac952c17f8676443f5f8355a"
+}
