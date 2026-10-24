@@ -4,7 +4,7 @@
   "source_main": "635abf9b67d58d36ae199f1cbaf2b7b81c9482aa",
   "cleanup_date": "2026-10-24",
   "purpose": "Simplify QA reading paths while preserving every pre-cleanup file identity.",
-  "acceptance_status": "DEFERRED",
+  "acceptance_status": "COMPLETED FOR THE AGREED PROJECT SCOPE",
   "summary": {
     "original_user_material_files": 91,
     "original_files_including_two_entry_readmes": 93,
@@ -1258,13 +1258,13 @@
   "current_files": [
     {
       "path": "README.md",
-      "bytes": 11536,
-      "sha256": "f1062d5033ec87e4e76388c46df3bd2db80335d7c6521dd9eb41ccfcf2c5dbd1"
+      "bytes": 12215,
+      "sha256": "0a0b430f3315a8f4c9a00fdbd76f1aece88e3c651c74c6a7a0416db095a17fdf"
     },
     {
       "path": "evaluation/README.md",
-      "bytes": 3138,
-      "sha256": "2d3f49f0e00cc3fea743e0d6bf33b7f1ed09e7107b2d53ce897a55cebdb096e8"
+      "bytes": 4248,
+      "sha256": "d975b83385d28aabba0297833ef0fc43e9c35f6d50971b86d3fbdf31ccf5b0f5"
     },
     {
       "path": "evaluation/acceptance-history/Group42_Latest_Acceptance_8913189.zip",
@@ -1359,12 +1359,12 @@
     {
       "path": "evaluation/expanded-final-acceptance-2026-10-24/PUBLICATION_SHA256SUMS.txt",
       "bytes": 648,
-      "sha256": "05949a6efc0d81a8f22338bf6d95c621391c184f3ca9ecd5886f179f2ba1b8d2"
+      "sha256": "59bc97d8fa10c7bca6bfc956dcdec834585916fba9a03f15ccdf93c87a2822b5"
     },
     {
       "path": "evaluation/expanded-final-acceptance-2026-10-24/README.md",
-      "bytes": 4426,
-      "sha256": "9daef58f072941c5a6905cd86b5ddf8b2a404913dfc945ee5923e1c27880f655"
+      "bytes": 4770,
+      "sha256": "64bd9f81d05519c5f810276d6180d1e26020ae206f8f2a9bc39c8ad3fe7c2d21"
     },
     {
       "path": "evaluation/pr-2-review-2026-10-22.json",
@@ -1440,6 +1440,56 @@
       "path": "evaluation/verify_material_preservation.py",
       "bytes": 3110,
       "sha256": "280696c554f8df3cdf4e23df4666c0959ef2a9c24b22c1b6d4e2e115c8804433"
+    },
+    {
+      "path": "evaluation/final-acceptance-2026-10-25/Acceptance_Decision_EN.json",
+      "bytes": 2983,
+      "sha256": "2798193388a5ddc3eee7f74151598f92efe104d6d85ccd9294308711adca7b0d"
+    },
+    {
+      "path": "evaluation/final-acceptance-2026-10-25/Compatibility_Verification_EN.json",
+      "bytes": 8715,
+      "sha256": "c4d368a2fbdcbc2accfce5a68e4a2aba05cc0c12ef4842e932955313527758c0"
+    },
+    {
+      "path": "evaluation/final-acceptance-2026-10-25/Evidence_References_EN.json",
+      "bytes": 1092,
+      "sha256": "53a2874deb37a0086cb43cad61853730d32a77e54b6e9c2056f63bbf8ff83cda"
+    },
+    {
+      "path": "evaluation/final-acceptance-2026-10-25/Final_TopK_Metrics_EN.csv",
+      "bytes": 2634,
+      "sha256": "4f0819de833e9059a8e9fd5590f279a34d815dcf1857f836ed8841f0218c2df9"
+    },
+    {
+      "path": "evaluation/final-acceptance-2026-10-25/Final_Validation_EN.json",
+      "bytes": 1154,
+      "sha256": "40cd5a2100484d754483f76c0524f988e6d181edc2e7ba0323e17bb8f0d5621d"
+    },
+    {
+      "path": "evaluation/final-acceptance-2026-10-25/Group42_Final_Acceptance_Results_EN.xlsx",
+      "bytes": 371559,
+      "sha256": "67c9af00ae916b63e86be15469aca9596d024ad22ab2e4d13803ca4a65e76209"
+    },
+    {
+      "path": "evaluation/final-acceptance-2026-10-25/Group42_Final_Test_Acceptance_Report_EN.docx",
+      "bytes": 54203,
+      "sha256": "29dadc4e17e70718f3bf625ee764f0af76ce58c59dac81f5885f283e8ce0da67"
+    },
+    {
+      "path": "evaluation/final-acceptance-2026-10-25/Group42_Final_Test_Acceptance_Report_EN.pdf",
+      "bytes": 358334,
+      "sha256": "8920489ac7727accdba4c0a1c27a8b6c306a5f41f42ab8d27a4139022d279a51"
+    },
+    {
+      "path": "evaluation/final-acceptance-2026-10-25/README.md",
+      "bytes": 4518,
+      "sha256": "b4a233ab54ad055a466a2ab0d78537e3dd92bc0a34588fada57c465149a8ca6a"
+    },
+    {
+      "path": "evaluation/final-acceptance-2026-10-25/SHA256SUMS.txt",
+      "bytes": 876,
+      "sha256": "81ef0460d35dcc0829d318194f9f8525646c58b2f4d36398d840b48274c921c0"
     }
   ],
   "verification": "python3 evaluation/verify_material_preservation.py",
@@ -1448,5 +1498,15 @@
     "Basic benchmark remains pinned to 4d687e3; complex evidence uses its recorded local-only patch.",
     "Later English-edition and continuation changes on main require their own validation.",
     "Original historical failures, unknown labels and human-review gaps are preserved."
-  ]
+  ],
+  "acceptance_status_at_cleanup": "DEFERRED",
+  "current_publication": {
+    "date": "2026-10-25",
+    "edition": "Final acceptance revision 3",
+    "base_main": "35304d0f4d7781383690594884a77adf1af238cc",
+    "branch": "codex/final-acceptance-completed-2026-10-25",
+    "final_guide": "evaluation/final-acceptance-2026-10-25/README.md",
+    "scope_decision": "evaluation/final-acceptance-2026-10-25/Acceptance_Decision_EN.json",
+    "note": "Original cleanup summary and all 93 original preservation locations are unchanged. Current-file hashes track this publication; original publication bytes remain in Git history at base_main."
+  }
 }
