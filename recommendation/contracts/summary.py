@@ -2,10 +2,14 @@
 
 Phase P2 populates these with transitional values (no pool cache, no cold start, ranked
 prefix selection); later phases fill the remaining diagnostics without changing the shapes.
+
+``selection.cold_start`` is a union (2026-10-24): new runs report the mpd-v1 detector
+(ColdStartDiagnostics, ``detector`` always present); stored historical responses keep the C/B/S
+shape (LegacyColdStartDiagnostics), which is accepted as stored and never reinterpreted as D.
 """
 
 from typing import Annotated, Literal
-from pydantic import Field, model_validator
+from pydantic import Discriminator, Field, Tag, model_validator
 from .requirements import Contract
 from .limits import MAX_RESULT_LIMIT
 
@@ -86,13 +90,19 @@ class Exploration(Contract):
     bins: list[ExplorationBin]
 
 
+DETECTOR = "mean_pairwise_difference"
+DETECTOR_VERSION = "mpd-v1"
+
+
 class ColdStartThresholds(Contract):
     c: Unit
     b: Annotated[int, Field(ge=1)]
     s: Unit
 
 
-class ColdStartDiagnostics(Contract):
+class LegacyColdStartDiagnostics(Contract):
+    """C/B/S cold-start diagnostics of responses stored before mpd-v1 (accepted as stored)."""
+
     evaluated: bool
     active: bool
     reason: str
@@ -113,6 +123,52 @@ class ColdStartDiagnostics(Contract):
         return self
 
 
+class ColdStartDiagnostics(Contract):
+    """mpd-v1: D = mean absolute pairwise difference of the first ``candidate_window`` official
+    combined scores of O; active = D < threshold. D describes score spread only."""
+
+    evaluated: bool
+    active: bool
+    reason: str
+    detector: Literal["mean_pairwise_difference"]
+    detector_version: Literal["mpd-v1"]
+    candidate_window: Annotated[int, Field(ge=2)] | None = None
+    evaluated_count: Annotated[int, Field(ge=2)] | None = None
+    mean_pairwise_difference: Annotated[float, Field(ge=0)] | None = None
+    threshold: Annotated[float, Field(ge=0)] | None = None
+    pool_key: str | None = None
+
+    @model_validator(mode="after")
+    def active_follows_d(self):
+        if self.active and not self.evaluated:
+            raise ValueError("cold start cannot be active without evaluated diagnostics")
+        measured = (self.evaluated_count, self.mean_pairwise_difference)
+        if not self.evaluated:
+            if any(v is not None for v in measured):
+                raise ValueError("mean_pairwise_difference is reported only for evaluated diagnostics")
+            return self
+        if any(v is None for v in (self.candidate_window, self.threshold, *measured)):
+            raise ValueError("evaluated diagnostics require candidate_window, evaluated_count, "
+                             "mean_pairwise_difference and threshold")
+        if self.evaluated_count > self.candidate_window:
+            raise ValueError("evaluated_count cannot exceed candidate_window")
+        if self.active != (self.mean_pairwise_difference < self.threshold):
+            raise ValueError("active must equal mean_pairwise_difference < threshold")
+        return self
+
+
+def _cold_start_shape(value):
+    if isinstance(value, dict):
+        return "mpd" if "detector" in value else "legacy"
+    return "legacy" if isinstance(value, LegacyColdStartDiagnostics) else "mpd"
+
+
+AnyColdStartDiagnostics = Annotated[
+    Annotated[ColdStartDiagnostics, Tag("mpd")] | Annotated[LegacyColdStartDiagnostics, Tag("legacy")],
+    Discriminator(_cold_start_shape),
+]
+
+
 class SelectionSummary(Contract):
     mode: Literal["ranked", "near_tie_sampling", "cold_start_exploration", "small_pool", "empty"]
     algorithm_version: str
@@ -121,4 +177,4 @@ class SelectionSummary(Contract):
     leaders: Count
     tie_group: TieGroup | None = None
     exploration: Exploration | None = None
-    cold_start: ColdStartDiagnostics
+    cold_start: AnyColdStartDiagnostics

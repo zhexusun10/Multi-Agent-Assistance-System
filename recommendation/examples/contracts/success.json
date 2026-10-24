@@ -51,10 +51,7 @@
             "method": "threshold"
           }
         ],
-        "suppressed_features": [
-          "bedrooms",
-          "price"
-        ],
+        "suppressed_features": [],
         "ordering": "fused"
       },
       "criterion_results": [
@@ -134,10 +131,7 @@
             "method": "threshold"
           }
         ],
-        "suppressed_features": [
-          "bedrooms",
-          "price"
-        ],
+        "suppressed_features": [],
         "ordering": "fused"
       },
       "criterion_results": [
@@ -217,10 +211,7 @@
             "method": "threshold"
           }
         ],
-        "suppressed_features": [
-          "bedrooms",
-          "price"
-        ],
+        "suppressed_features": [],
         "ordering": "fused"
       },
       "criterion_results": [
@@ -300,10 +291,7 @@
             "method": "threshold"
           }
         ],
-        "suppressed_features": [
-          "bedrooms",
-          "price"
-        ],
+        "suppressed_features": [],
         "ordering": "fused"
       },
       "criterion_results": [
@@ -383,10 +371,7 @@
             "method": "threshold"
           }
         ],
-        "suppressed_features": [
-          "bedrooms",
-          "price"
-        ],
+        "suppressed_features": [],
         "ordering": "fused"
       },
       "criterion_results": [
@@ -466,10 +451,7 @@
             "method": "threshold"
           }
         ],
-        "suppressed_features": [
-          "bedrooms",
-          "price"
-        ],
+        "suppressed_features": [],
         "ordering": "fused"
       },
       "criterion_results": [
@@ -550,10 +532,7 @@
             "method": "threshold"
           }
         ],
-        "suppressed_features": [
-          "bedrooms",
-          "price"
-        ],
+        "suppressed_features": [],
         "ordering": "fused"
       },
       "criterion_results": [
@@ -634,10 +613,7 @@
             "method": "threshold"
           }
         ],
-        "suppressed_features": [
-          "bedrooms",
-          "price"
-        ],
+        "suppressed_features": [],
         "ordering": "fused"
       },
       "criterion_results": [
@@ -718,10 +694,7 @@
             "method": "threshold"
           }
         ],
-        "suppressed_features": [
-          "bedrooms",
-          "price"
-        ],
+        "suppressed_features": [],
         "ordering": "fused"
       },
       "criterion_results": [
@@ -760,9 +733,9 @@
   "evidence": [],
   "resolution": [],
   "pool": {
-    "pool_key": "cf2648381e6cf69eead0bcc496329e6bd9e0f70e7bf56a05dc1b04fa1d806258",
+    "pool_key": "e67a6c344f8aa37f92f2d2ee6b5b8e61339b217ecbf0fb663f2c0bd5a8903707",
     "pool_version": "aed08ee26cf45d2aa700102de38b5312d3d379c4ae9846d3427dfd0267b0959f",
-    "data_version": "24ddafa745523a348ebddc96a1e632214c8127f772d46ba69d15dc34497177b9",
+    "data_version": "05a6ea4d32726e1d669fb587634136fd569633120e3c7573b5b726219de83b38",
     "cache": "built",
     "size": 9,
     "source_count": 12,
@@ -775,7 +748,7 @@
   "selection": {
     "mode": "small_pool",
     "algorithm_version": "select-v1",
-    "seed": "10f70a8b9bc1e7f4f08a9c7d20c2946455f8d5589c1d210b985653f644a108b1",
+    "seed": "ce254487e5d1334d1721b19a3f06c43df0b41b95eb43d60c5d3db2529f4c041a",
     "result_limit": 10,
     "leaders": 0,
     "tie_group": null,
@@ -784,16 +757,13 @@
       "evaluated": false,
       "active": false,
       "reason": "small_pool",
-      "coverage_c": null,
-      "boundary_group_b": null,
-      "stability_s": null,
-      "thresholds": {
-        "c": 0.8,
-        "b": 5,
-        "s": 0.9
-      },
-      "exit_conditions_met": false,
-      "pool_key": "cf2648381e6cf69eead0bcc496329e6bd9e0f70e7bf56a05dc1b04fa1d806258"
+      "detector": "mean_pairwise_difference",
+      "detector_version": "mpd-v1",
+      "candidate_window": 30,
+      "evaluated_count": null,
+      "mean_pairwise_difference": null,
+      "threshold": 0.01,
+      "pool_key": "e67a6c344f8aa37f92f2d2ee6b5b8e61339b217ecbf0fb663f2c0bd5a8903707"
     }
   },
   "clarifications": [],
@@ -805,8 +775,8 @@
     "1 listings were excluded because hard-criterion data is unknown (see pool.unknown_reasons); they are not verified matches."
   ],
   "state": {
-    "state_id": "d249104b-9431-4679-8072-781407683041",
-    "candidate_pool_ref": "48b0bf19-0f7e-4e67-bf9b-6b541b6aa89c/pool",
+    "state_id": "77813f25-1785-4599-87b0-c5795befaf67",
+    "candidate_pool_ref": "72c17b42-4de9-4af6-88f5-0e9d0072808e/pool",
     "run_sequence": 1,
     "scope": "all RENT listings",
     "truncated": false,
@@ -815,18 +785,18 @@
     "assessed_count": 9
   },
   "execution": {
-    "trace_id": "48b0bf19-0f7e-4e67-bf9b-6b541b6aa89c",
-    "trace_ref": "sqlite:48b0bf19-0f7e-4e67-bf9b-6b541b6aa89c",
+    "trace_id": "72c17b42-4de9-4af6-88f5-0e9d0072808e",
+    "trace_ref": "sqlite:72c17b42-4de9-4af6-88f5-0e9d0072808e",
     "strategy": "full-pool fused-v2 scoring + select-v1 selection",
-    "scoring_version": "fused-v2:cc051e535df4",
+    "scoring_version": "fused-v2-pool-minmax:d56688f28109",
     "selection_algorithm": "select-v1",
     "config_version": 1,
-    "config_hash": "9a7477ea9224baf775654841f7a3808f539c116b3cde9a9f2a3e2785ea69f41b",
-    "selection_hash": "cc051e535df4be969ac533c865020a622f63651da3be65183b0dc84a1591b93d",
+    "config_hash": "d3ee67b179391ebd0a832d1da09e5cef84058de8ad1c4195979e602f2c3c632a",
+    "selection_hash": "d56688f2810985eb5adc7691c550debe84ca52b29bc1afca16c9161b051f9d15",
     "model_identifier": null,
     "model_calls": 0,
     "tool_calls": 4,
-    "duration_ms": 35.41845898143947,
+    "duration_ms": 48.29795800469583,
     "tokens": null,
     "data_mode": "fixture",
     "controller_mode": "scripted"

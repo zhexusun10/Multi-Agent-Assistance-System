@@ -8,9 +8,9 @@
   "evidence": [],
   "resolution": [],
   "pool": {
-    "pool_key": "e0d83c9d4d1557db8f5d9241781cfcf4dfeff7f73cd149093a6227cd19b66476",
+    "pool_key": "87a3b8fdd4b08a698400392e8ba0fa52bac98f50296eb6bcb57b5e1e0687576b",
     "pool_version": "279a1446a14cad534ec36fbd8b23065a80d09a9975a9371715ece90dc053be00",
-    "data_version": "24ddafa745523a348ebddc96a1e632214c8127f772d46ba69d15dc34497177b9",
+    "data_version": "05a6ea4d32726e1d669fb587634136fd569633120e3c7573b5b726219de83b38",
     "cache": "built",
     "size": 0,
     "source_count": 12,
@@ -21,7 +21,7 @@
   "selection": {
     "mode": "empty",
     "algorithm_version": "select-v1",
-    "seed": "89455618675be0de356fc573c74fc86508aa637ef76585b48e4eeb10ed384d43",
+    "seed": "08e53ef7b7b22a3995bb844aff581064bf6333c20f2d557419232586754a9765",
     "result_limit": 10,
     "leaders": 0,
     "tie_group": null,
@@ -30,16 +30,13 @@
       "evaluated": false,
       "active": false,
       "reason": "empty_pool",
-      "coverage_c": null,
-      "boundary_group_b": null,
-      "stability_s": null,
-      "thresholds": {
-        "c": 0.8,
-        "b": 5,
-        "s": 0.9
-      },
-      "exit_conditions_met": false,
-      "pool_key": "e0d83c9d4d1557db8f5d9241781cfcf4dfeff7f73cd149093a6227cd19b66476"
+      "detector": "mean_pairwise_difference",
+      "detector_version": "mpd-v1",
+      "candidate_window": 30,
+      "evaluated_count": null,
+      "mean_pairwise_difference": null,
+      "threshold": 0.01,
+      "pool_key": "87a3b8fdd4b08a698400392e8ba0fa52bac98f50296eb6bcb57b5e1e0687576b"
     }
   },
   "clarifications": [],
@@ -52,8 +49,8 @@
     "Posting time does not establish current availability."
   ],
   "state": {
-    "state_id": "f58b0dcf-cacb-4be7-95ad-2f17d85a814e",
-    "candidate_pool_ref": "aa805181-eee8-4b29-9d27-6a5c2fabe926/pool",
+    "state_id": "8a820dff-452d-43ae-b80e-6b290be45703",
+    "candidate_pool_ref": "9bed6e3b-4268-4936-add0-6c5e1290b31b/pool",
     "run_sequence": 1,
     "scope": "all RENT listings",
     "truncated": false,
@@ -62,18 +59,18 @@
     "assessed_count": 0
   },
   "execution": {
-    "trace_id": "aa805181-eee8-4b29-9d27-6a5c2fabe926",
-    "trace_ref": "sqlite:aa805181-eee8-4b29-9d27-6a5c2fabe926",
+    "trace_id": "9bed6e3b-4268-4936-add0-6c5e1290b31b",
+    "trace_ref": "sqlite:9bed6e3b-4268-4936-add0-6c5e1290b31b",
     "strategy": "full-pool fused-v2 scoring + select-v1 selection",
-    "scoring_version": "fused-v2:cc051e535df4",
+    "scoring_version": "fused-v2-pool-minmax:d56688f28109",
     "selection_algorithm": "select-v1",
     "config_version": 1,
-    "config_hash": "9a7477ea9224baf775654841f7a3808f539c116b3cde9a9f2a3e2785ea69f41b",
-    "selection_hash": "cc051e535df4be969ac533c865020a622f63651da3be65183b0dc84a1591b93d",
+    "config_hash": "d3ee67b179391ebd0a832d1da09e5cef84058de8ad1c4195979e602f2c3c632a",
+    "selection_hash": "d56688f2810985eb5adc7691c550debe84ca52b29bc1afca16c9161b051f9d15",
     "model_identifier": null,
     "model_calls": 0,
     "tool_calls": 4,
-    "duration_ms": 1.7716250149533153,
+    "duration_ms": 1.8834579968824983,
     "tokens": null,
     "data_mode": "fixture",
     "controller_mode": "scripted"

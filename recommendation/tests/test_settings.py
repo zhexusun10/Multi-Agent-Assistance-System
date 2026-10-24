@@ -182,13 +182,17 @@ def test_bad_weights_rejected(overrides, key):
 @pytest.mark.parametrize(
     "overrides,key",
     [
-        ({"cold_start.min_evidence_coverage": 1.5}, "cold_start.min_evidence_coverage"),
-        ({"cold_start.min_top_k_stability": -0.1}, "cold_start.min_top_k_stability"),
-        ({"cold_start.max_boundary_tie_group_size": 0}, "cold_start.max_boundary_tie_group_size"),
-        ({"cold_start.max_boundary_tie_group_size": True}, "cold_start.max_boundary_tie_group_size"),
+        ({"cold_start.detector.candidate_window": 1}, "cold_start.detector.candidate_window"),
+        ({"cold_start.detector.candidate_window": 0}, "cold_start.detector.candidate_window"),
+        ({"cold_start.detector.candidate_window": loader.DETECTOR_WINDOW_CEILING + 1}, "cold_start.detector.candidate_window"),
+        ({"cold_start.detector.candidate_window": True}, "cold_start.detector.candidate_window"),
+        ({"cold_start.detector.candidate_window": 2.5}, "cold_start.detector.candidate_window"),
+        ({"cold_start.detector.min_mean_pairwise_difference": -0.01}, "cold_start.detector.min_mean_pairwise_difference"),
+        ({"cold_start.detector.min_mean_pairwise_difference": "0.01"}, "cold_start.detector.min_mean_pairwise_difference"),
+        ({"cold_start.detector.min_mean_pairwise_difference": True}, "cold_start.detector.min_mean_pairwise_difference"),
+        ({"cold_start.detector.min_mean_pairwise_difference": float("inf")}, "cold_start.detector.min_mean_pairwise_difference"),
         ({"cold_start.price_sampling.target_sample_size": 5}, "cold_start.price_sampling.target_sample_size"),
         ({"cold_start.price_sampling.quantile_bins": 0}, "cold_start.price_sampling.quantile_bins"),
-        ({"cold_start.stability.weight_perturbation_fraction": 1.0}, "cold_start.stability.weight_perturbation_fraction"),
         ({"selection.tie_max_score_span": -0.01}, "selection.tie_max_score_span"),
         ({"recommendation.max_result_limit": 11}, "recommendation.max_result_limit"),
         ({"recommendation.default_result_limit": 0}, "recommendation.default_result_limit"),
@@ -226,6 +230,12 @@ def test_bad_weights_rejected(overrides, key):
         # unknown keys
         ({"ranking.similarity.feature_weights.unknown": 1}, "ranking.similarity.feature_weights.unknown"),
         ({"cold_start.exit_after_rounds": 2}, "cold_start.exit_after_rounds"),
+        # keys of the superseded C/B/S detector and remembered exit (removed 2026-10-24)
+        *[({f"cold_start.{key}": value}, f"cold_start.{key}: unknown key (removed with the C/B/S cold-start detector")
+          for key, value in (("reenter_on_pool_rebuild", True), ("min_evidence_coverage", 0.8),
+                             ("max_boundary_tie_group_size", 5), ("min_top_k_stability", 0.9),
+                             ("stability", {"trials": 20, "weight_perturbation_fraction": 0.2}))],
+        ({"cold_start.stability.trials": 20}, "cold_start.stability: unknown settings section"),
     ],
 )
 def test_illegal_ranges_enums_and_unknown_keys_rejected(overrides, key):
@@ -238,8 +248,8 @@ REQUIRED = [
     ("ranking.browsing.time_scale_seconds", "browsing_weight > 0"),
     ("cold_start.price_sampling.target_sample_size", "cold_start.enabled"),
     ("cold_start.price_sampling.quantile_bins", "cold_start.enabled"),
-    ("cold_start.stability.trials", "cold_start.enabled"),
-    ("cold_start.stability.weight_perturbation_fraction", "cold_start.enabled"),
+    ("cold_start.detector.candidate_window", "cold_start.enabled"),
+    ("cold_start.detector.min_mean_pairwise_difference", "cold_start.enabled"),
     ("cache.ttl_seconds", "cache.enabled"),
     ("selection.tie_max_score_span", "always required"),
     ("entity_resolution.max_search_attempts", "always required"),
@@ -259,7 +269,7 @@ def test_missing_required_parameter_rejected_with_key(key, reason):
 
 
 @pytest.mark.parametrize(
-    "path", ["controller.repairs", "ranking.similarity", "selection.seed_namespace", "cold_start"]
+    "path", ["controller.repairs", "ranking.similarity", "selection.seed_namespace", "cold_start", "cold_start.detector"]
 )
 def test_absent_required_key_rejected(path):
     raw = default().to_data()
@@ -285,7 +295,7 @@ def test_unreachable_parameters_may_be_null():
     )
     RecommendationConfig.from_data(
         data(**{"cold_start.enabled": False, "cold_start.price_sampling": {"target_sample_size": None, "quantile_bins": None},
-                "cold_start.stability": {"trials": None, "weight_perturbation_fraction": None}})
+                "cold_start.detector": {"candidate_window": None, "min_mean_pairwise_difference": None}})
     )
     RecommendationConfig.from_data(data(**{"cache.enabled": False, "cache.ttl_seconds": None}))
     # Disabled behaviour branch: the fused-v2 scorer produces no behaviour signal (P5: was the

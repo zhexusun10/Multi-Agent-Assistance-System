@@ -5,8 +5,8 @@ import type {ToolContext} from '../tools/executor.js';
 
 const fields:Record<string,string>={price:'price',bedrooms:'bedrooms',floor_area_sqft:'floor_area_sqft',district:'district_code',property_type:'property_type',place_proximity:'distance',commute_time:'commute',furnishing:'furnishing',current_availability:'availability',lease_months:'lease_months'};
 // Pure: the native body is a function of the persisted V1 request (with its behavior_context) and the
-// persisted cold-start state only, so transport retries and projectNative rebuild the identical body
-// (native idempotency).
+// persisted cold-start compat state only (accepted but ignored natively since mpd-v1), so transport
+// retries and projectNative rebuild the identical body (native idempotency).
 export function nativeRequest(req:RecommendationRequest,coldStart:ColdStartInput=NOT_EXITED){
   const cold=coldStartInputSchema.parse(coldStart);
   const unsupported:Criterion[]=[],criteria:Record<string,unknown>[]=[];
@@ -31,7 +31,7 @@ export function nativeRequest(req:RecommendationRequest,coldStart:ColdStartInput
   // Main contract: real completed intervals are admitted by the behavior ledger and forwarded as
   // feedback events (validated, not re-scored natively); behavior_context carries the cumulative
   // browsing summary and saved viewing drafts that native scores. Saves and image clicks are not
-  // invented durations. cold_start is the recommendation-owned extension.
+  // invented durations. cold_start is the recommendation-owned extension (compat only since mpd-v1).
   const supported=(f:RecommendationRequest['feedback'][number])=>f.event_type==='active_view'&&['sample','web_detail'].includes(String(f.payload.source));
   const feedback=req.feedback.filter(supported).map(f=>({event_id:f.event_id,conversation_id:req.conversation_id,recommendation_request_id:f.payload.recommendation_request_id,listing_id:f.listing_id,event_type:'listing_view_duration' as const,source:f.payload.source as 'sample'|'web_detail',occurred_at:f.occurred_at,payload:{view_session_id:f.payload.view_session_id as string,duration_seconds:Number(f.payload.active_duration_ms)/1000}}));
   const previous=req.previous_state_id?.startsWith('native:')?req.previous_state_id.slice(7):null;

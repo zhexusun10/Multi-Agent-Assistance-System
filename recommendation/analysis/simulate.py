@@ -21,8 +21,9 @@ hidden preference (log-normal noise; about 10 % of records missing, as an orches
 saves a timed viewing draft (later re-saved: same listing, no extra signal) when the match is high.
 The orchestrator side is emulated per the main contract: behavior_context.listing_view_durations =
 session-cumulative seconds per listing (interest_eligible by the emulated main gate),
-book_viewing_listings = every listing with a saved draft (one entry per listing), and the
-cold-start exit is recorded only after a response with evaluated and exit_conditions_met.
+book_viewing_listings = every listing with a saved draft (one entry per listing), and
+cold_start is always sent as {exited: false, exited_pool_key: null}: since the mpd-v1 detector
+(2026-10-24) the orchestrator records no exits and native decides every round from D.
 Durations depend only on (session, round, listing), so identical selections get identical
 feedback in every mode. Reported exposure / coverage / match figures describe this simulator,
 not user satisfaction.
@@ -130,7 +131,7 @@ class Session:
         self.previous = None  # (request_id, response)
         self.views = {}  # listing_id -> {"seconds", "views", "requests", "last"}
         self.drafts = {}  # listing_id -> saved viewing draft summary
-        self.cold_start = {"exited": False, "exited_pool_key": None}
+        self.cold_start = {"exited": False, "exited_pool_key": None}  # compat field, never updated (mpd-v1)
 
     def as_of(self, round_no):
         return f"2026-10-23T{8 + round_no:02d}:00:00Z"
@@ -164,7 +165,7 @@ class Session:
                 "result_limit": 10, "behavior_context": behavior, "cold_start": dict(self.cold_start)}
 
     def adopt(self, round_no, request_id, response):
-        """Orchestrator after adopting a response: saved viewing drafts, cold-start exit."""
+        """Orchestrator after adopting a response: saved viewing drafts (no cold-start exit is recorded)."""
         self.previous = (request_id, response)
         for item in response.recommendations:
             listing_id = item.listing.listing_id
@@ -175,9 +176,6 @@ class Session:
                     "starts_at": "2026-10-30T06:00:00Z", "ends_at": "2026-10-30T07:00:00Z",
                     "time_zone": "Asia/Singapore", "recorded_at": self.as_of(round_no),
                     "signal": "viewing_draft_saved", "appointment_confirmed": False}
-        cold = response.selection.cold_start if response.selection else None
-        if cold is not None and cold.evaluated and cold.exit_conditions_met:
-            self.cold_start = {"exited": True, "exited_pool_key": response.pool.pool_key}
 
 
 def check(response, body, pool_ids, pool_version, store):
@@ -233,7 +231,7 @@ def evaluate(data, settings, sessions=6, rounds=5, plan=SESSION_PLAN, log=print)
                 rows = {r.listing_id: r for r in build.rows}
                 per_mode = {mode: {"timings": [], "checks": [], "losses": [], "abs_losses": [], "exposure": {}, "matches": [],
                                    "selection_modes": [], "cache": [], "replay_identical": [], "ids": [],
-                                   "exits": 0} for mode in MODES}
+                                   "cold_start_inactive": 0} for mode in MODES}
                 for index in range(sessions):
                     user = SimulatedUser(build.rows, index)
                     states = {mode: Session(scenario, soft_name, index, user, mode) for mode in MODES}
@@ -266,8 +264,9 @@ def evaluate(data, settings, sessions=6, rounds=5, plan=SESSION_PLAN, log=print)
                             acc["matches"].extend(user.match(rows[i]) for i in ids)
                             acc["selection_modes"].append(response.selection.mode if response.selection else None)
                             acc["cache"].append(response.pool.cache if response.pool else None)
-                            if response.selection and response.selection.cold_start.exit_conditions_met:
-                                acc["exits"] += 1
+                            cold = response.selection.cold_start if response.selection else None
+                            if cold is not None and cold.evaluated and not cold.active:
+                                acc["cold_start_inactive"] += 1
                             state.adopt(round_no, body["request_id"], response)
                     log(f"{scenario}: session {index + 1}/{sessions} done")
                 report["scenarios"][f"{scenario}/{soft_name}"] = summarise(per_mode, build, rows)
@@ -298,7 +297,7 @@ def summarise(per_mode, build, rows):
             "rows_transferred": stats.p50_p95([t["rows_transferred"] for t in timings]),
             "pool_cache": {k: acc["cache"].count(k) for k in sorted(set(acc["cache"]) - {None})},
             "selection_modes": {k: acc["selection_modes"].count(k) for k in sorted(set(acc["selection_modes"]) - {None})},
-            "cold_start_exit_responses": acc["exits"],
+            "cold_start_inactive_responses": acc["cold_start_inactive"],
             "coverage": stats.coverage(acc["exposure"], pool),
             "coverage_of_possible": len(acc["exposure"]) / min(len(pool), sum(counts)) if sum(counts) else 0.0,
             "distinct_shown": len(acc["exposure"]),

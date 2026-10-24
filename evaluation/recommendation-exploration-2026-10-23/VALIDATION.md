@@ -1542,3 +1542,39 @@ appointment status upgrade → re-saved viewing draft (`test_appointment_status_
 main's byte-preserved kernels → kernels change only through declared patches; main's behavior-transport test: native
 `/recommend` now accepts behavior_context (was 422) and the native request keeps it (was stripped); main's
 output-protocol tests use the v2 pipeline tools and an empty hard budget (native now resolves URA areas).
+
+## Cold-start detector mpd-v1 (2026-10-24)
+
+User decision: cold start measures score differentiation directly. D (Gini's mean difference) over the official
+combined scores of the overall top 30 eligible candidates; active when D < 0.01 (starting value, not calibrated).
+Replaces the C/B/S exit checks and the remembered exit. Details: MIGRATION.md section 0.5. D describes score spread
+only; nothing below shows that requirements are sufficient or that recommendations are correct.
+
+| Item | Proof | Outcome |
+|---|---|---|
+| D formula, equal scores (D = 0), order independence, fewer than two scores (no division) | `test_selection_v1.py::test_mean_pairwise_difference_is_ginis_mean_difference` | pass |
+| D equal to the threshold is inactive; nextafter above/below; threshold 0 never active | `::test_detector_threshold_equality_is_inactive_without_tolerance` | pass |
+| Window: overall top 30 incl. leaders; a 31st score never changes D; fewer than 30 uses all; narrow vs wide spread; configurable window | `::test_detector_window_is_the_overall_top_scores_including_leaders` | pass |
+| Short circuits: disabled, empty pool, pool ≤ result_limit (not evaluated, D null) | `::test_detector_short_circuits_are_not_evaluated`, `::test_plan_scenario_small_pool_returns_everything_in_score_order` | pass |
+| Input is the unmodified full-pool score order; no rescoring or reweighting at runtime | `::test_detector_input_is_the_unmodified_full_pool_score_order`, `::test_d_is_request_independent_and_never_rescores`, `::test_unresolved_data_is_not_treated_as_under_specification` | pass |
+| Remembered exit ignored (this or another pool_key); recorded as unused in the trace | `::test_inactive_cold_start_keeps_near_tie_sampling_and_remembered_exit_is_ignored`, `::test_service_round_trip_cold_start_follows_d_and_ignores_the_exit_input`, `test_trace_v2.py` cold_start_diagnostics params | pass |
+| Reactivation: a later round with low differentiation is active again (same pool_key, stale exit sent) | `::test_later_round_reactivates_when_its_differentiation_is_low` | pass |
+| Sampling unchanged for equivalent selection inputs: draws equal to the pre-change (HEAD 4d687e3) select_v1 for a fixed seed, active and inactive | `::test_sampling_is_unchanged_for_equivalent_selection_inputs` (golden draws computed with HEAD's select_v1 from the same selection_input) | pass |
+| Exact price-exploration draws reproduced from the committed fixture | `test_contract_v2_fixtures.py::test_cold_start_exploration_fixture_is_valid_and_reproduced`; mutation of the stage A/B stream fails it | pass |
+| Stored pre-mpd-v1 run (legacy C/B/S cold_start, removed settings keys) replays byte-for-byte through immutable replay + replay_gate | `::test_stored_legacy_cold_start_run_replays_as_stored`; routing every dict to the mpd-v1 model fails it | pass |
+| Legacy C/B/S shape accepted as stored, never read as D; mixed shapes rejected; mpd-v1 invariants (Python and TS agree) | `response-cases.json` (30 cases) in `test_contract_v2_fixtures.py::test_response_cases` and `tests/recommendation-v2-fixtures.test.ts`; teammate round-3 file in `tests/refinement-native-trigger.test.ts` | pass |
+| Settings: detector keys required when enabled, window 2..1000, threshold ≥ 0; removed C/B/S keys rejected by name; stored legacy configuration migrated only for `inspect-listing` | `test_settings.py`, `test_terminal_debug.py::...stored_configuration` | pass |
+| Orchestrator records no new exits; stored values carried forward; refinement trigger on mpd-v1 and stored legacy records | `tests/recommendation-v2-fixtures.test.ts`, `tests/refinement-native-trigger.test.ts` | pass |
+| Weight-perturbation analysis (epsilon basis) still reproducible, analysis-only | `test_analysis_p7.py::test_top_k_stability_*`, `::test_historical_exit_test_keeps_the_superseded_thresholds` | pass |
+| TUNING / YAML / OPEN_ITEMS agreement; downstream patches re-registered (no earlier `changes` line dropped) | `test_analysis_p7.py`, `test_delivery_p7.py`, `scripts/import-recommendation-upstream.py --check` (71 files, 39 declared) | pass |
+
+Gates: `pytest recommendation/tests -q` 498 passed; `pytest tests -q` 46 passed; `python -m recommendation.schemas
+--check` exit 0; `npm run -s typecheck` and `typecheck:recommendation` exit 0; `npm test` 330 passed, 0 failed,
+22 skipped (env-gated live tests). All offline: no model request was made.
+
+Not run (AGENTS.md cost rule): `tests/native-recommendation-live.test.ts` (assertions updated for mpd-v1, not
+executed), `scripts/check_refinement_real.ts`, live smokes, the real-browser refinement run, and any measurement of
+how often real pools fall below 0.01. Fixture notes: `ten-results.json` is now near_tie_sampling (D ≈ 0.327) and
+`single-reference.json` ranked (D ≈ 0.039); `cold-start-exploration.json` (D = 0) was added for exploration coverage.
+Their regenerated `pool_key` / `data_version` and the regenerated examples' `suppressed_features` were already stale
+at HEAD (a HEAD regeneration gives the same values), not caused by this change.

@@ -37,8 +37,10 @@ test('native full-data live (contract 2.0): SQL eligibility + select-v1 / fused-
    assert.equal(exchange.data.request.result_limit,10);assert.deepEqual(exchange.data.request.feedback,[]);assert.deepEqual(exchange.data.request.cold_start,{exited:false,exited_pool_key:null});
    assert(first.recommendations.every((c:any)=>c.scores.combined_score===0&&c.scores.soft_score===null&&c.scores.behavior_score===null));
    checkSelectV1(first,scoreOrder(zero(eligible)),zero(eligible));
-   // Without soft criteria C = 0, so cold start is active and can never be exited (R9).
-   assert.equal(first.selection.cold_start.coverage_c,0);assert(first.selection.cold_start.reason.includes('no_soft_requirements'));assert.equal(first.selection.cold_start.exit_conditions_met,false);
+   // No soft criterion and no feedback: every score is 0, so the mpd-v1 D is 0 < threshold and cold start is active.
+   const cold=first.selection.cold_start;assert.equal(cold.detector,'mean_pairwise_difference');assert.equal(cold.detector_version,'mpd-v1');
+   assert.equal(cold.evaluated,true);assert.equal(cold.active,true);assert.equal(cold.reason,'mean_difference_below_threshold');assert.equal(cold.mean_pairwise_difference,0);
+   assert.equal(cold.evaluated_count,Math.min(cold.candidate_window,eligible.length));assert(!('coverage_c' in cold));
    assert.deepEqual(rec.native.ranking,first.recommendations.map((c:any)=>c.listing.listing_id));assert.deepEqual(rec.recommendations.map((c:any)=>c.listing.listing_id),rec.native.ranking);assert.equal(rec.unverified_candidates.length,0);
    const source=s.latest_request_id,version=s.requirements_version;
    s=await run('解释一下第一套为什么推荐，为什么排在前面');assert.equal(s.latest_request_id,source);assert.equal(s.requirements_version,version);assert(s.messages.at(-1).text.includes('原生房源ID')||s.messages.at(-1).text.includes('房源ID字符串'));

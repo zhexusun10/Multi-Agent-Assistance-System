@@ -2,9 +2,10 @@
 
 Hard scenarios cover: no hard criterion, budget, budget + bedrooms, budget + bedrooms + district,
 property type, MRT-category distance, named-station distance, URA region (area) membership and an
-amenity-category distance. Soft sets cover: none (cold start cannot be exited, R9), a single
-categorical preference, and a mixed numeric + geographic preference set. Values are ordinary
-user-style requirements chosen before looking at any result (they are inputs, not tuned).
+amenity-category distance. Soft sets cover: none (every score equal, so D = 0 and cold start stays
+active), a single categorical preference, and a mixed numeric + geographic preference set. Values
+are ordinary user-style requirements chosen before looking at any result (they are inputs, not
+tuned).
 """
 
 

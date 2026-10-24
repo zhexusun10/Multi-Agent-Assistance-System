@@ -112,10 +112,13 @@ def cold_start_diagnostics(d):
         "note": None if cold.evaluated else cold.reason,
         "pool": d.pool_result,
         "inputs": {"pool_size": len(d.ranked), "result_limit": d.request.result_limit},
-        "outputs": {k: v for k, v in cold.model_dump(mode="json").items() if k != "thresholds"},
-        "params": {"thresholds": cold.thresholds.model_dump(), "enabled": d.config.cold_start.enabled,
-                   "trials": record.get("trials"), "stability_seed": record.get("stability_seed"),
-                   "reenter_on_pool_rebuild": d.config.cold_start.reenter_on_pool_rebuild},
+        "outputs": {k: v for k, v in cold.model_dump(mode="json").items()
+                    if k not in ("detector", "detector_version", "candidate_window", "threshold")},
+        "params": {"enabled": d.config.cold_start.enabled, "detector": cold.detector,
+                   "detector_version": cold.detector_version, "candidate_window": cold.candidate_window,
+                   "min_mean_pairwise_difference": cold.threshold,
+                   "request_cold_start": record.get("request_cold_start"),
+                   "request_cold_start_used": record.get("request_cold_start_used")},
     }
 
 

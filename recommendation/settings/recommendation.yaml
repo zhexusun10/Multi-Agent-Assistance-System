@@ -68,21 +68,17 @@ ranking:
 geography:                          # native geography: recommendation/geography/ (catalog, resolver, distances)
   station_distance_method: nearest_exit   # confirmed (R1c: LTA station entity, nearest recorded exit); alternative: exit_centroid
 
-cold_start:                         # cold-start diagnostics + price exploration: recommendation/ranking/selection.py, exploration.py
+cold_start:                         # cold-start detector mpd-v1 + price exploration: recommendation/ranking/selection.py, exploration.py
   enabled: true                     # confirmed (plan Step 7)
-  reenter_on_pool_rebuild: true     # confirmed (decision 4)
-  min_evidence_coverage: 0.80       # confirmed (C threshold)
-  max_boundary_tie_group_size: 5    # confirmed (B threshold)
-  min_top_k_stability: 0.90         # confirmed (S threshold)
   price_sampling:
     target_sample_size: 30          # confirmed as initial experimental value (not a statistical guarantee)
     quantile_bins: 5                # experiment-result (kept; more bins leave more price bins without a slot)
-  stability:
-    trials: 20                      # experiment-result (kept; S std <= 0.021, exit decision agrees with 1000 trials)
-    weight_perturbation_fraction: 0.2   # provisional (not calibrated: what counts as a reasonable perturbation is a design choice; epsilon was derived under it)
+  detector:                         # D = mean absolute pairwise difference of the top candidate_window combined scores
+    candidate_window: 30            # confirmed (user decision 2026-10-24; overall top 30 incl. leaders, all when fewer; independent of target_sample_size)
+    min_mean_pairwise_difference: 0.01  # confirmed (user decision 2026-10-24: starting value, not calibrated; active when D < it)
 
 selection:                          # select-v1 (tie group, seeds R3): recommendation/ranking/selection.py
-  tie_max_score_span: 0.01          # experiment-result (epsilon; score gaps > 0.005 keep their order under the perturbation)
+  tie_max_score_span: 0.01          # experiment-result (epsilon; score gaps > 0.005 keep their order under the calibration perturbation f = 0.2)
   random_policy: uniform_without_replacement  # confirmed
   seed_namespace: recommendation-selection-v1 # confirmed
 

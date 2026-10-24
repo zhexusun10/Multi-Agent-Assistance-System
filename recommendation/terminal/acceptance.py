@@ -57,8 +57,8 @@ def resent_feedback_differences(first, second, first_scoring=None, second_scorin
     A new request_id gives new select-v1 seeds (R3), so near-tie and cold-start price exploration
     samples may legitimately differ. Compared instead: status, the pool, every listing's scores,
     score_rank and criterion results where it appears in both responses, the selection mode,
-    leaders (count and IDs), tie group, cold-start diagnostics (S uses the request-independent
-    stability seed), the exploration candidates and bin counts, the full ID order for seedless
+    leaders (count and IDs), tie group, cold-start diagnostics (D depends only on the scores, so it
+    is request-independent), the exploration candidates and bin counts, the full ID order for seedless
     modes (ranked / small_pool / empty), and the rank_candidates scoring summary (references and
     weights) when traces are given."""
     diffs = []

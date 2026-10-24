@@ -3,7 +3,8 @@ import {behaviorContextSchema} from './behavior-context.js';
 
 // Strict mirror of the native recommendation contract (recommendation/contracts, generated JSON
 // Schemas in recommendation/contracts/schemas). Request = the main-branch orchestrator contract 1.0
-// (feedback events + behavior_context) plus the recommendation-owned `cold_start`; response =
+// (feedback events + behavior_context) plus the recommendation-owned `cold_start` (since the mpd-v1
+// detector, 2026-10-24, accepted for compatibility and ignored by native); response =
 // recommendation-owned contract 2.0. Python and this mirror change together; the cross-layer tests
 // parse recommendation/examples/contracts/*.json and tests/fixtures/recommendation-v2/ with these
 // schemas. The UI projection (recommendation-v1.ts) is a separate contract.
@@ -51,9 +52,21 @@ export const nativePoolSchema=z.object({pool_key:z.string(),pool_version:z.strin
   .refine(p=>p.source_count===p.size+p.excluded_hard_fail+p.excluded_hard_unknown,{message:'pool partition mismatch'})
   .refine(p=>Object.keys(p.unknown_reasons).length<=UNKNOWN_REASON_KEYS+1,{message:`unknown_reasons keeps at most ${UNKNOWN_REASON_KEYS} reasons plus "other"`})
   .refine(p=>!Object.keys(p.unknown_reasons).length||p.excluded_hard_unknown>0,{message:'unknown_reasons require unknown exclusions'});
-const coldStart=z.object({evaluated:z.boolean(),active:z.boolean(),reason:z.string(),coverage_c:unit.nullable(),boundary_group_b:z.number().int().min(1).nullable(),stability_s:unit.nullable(),thresholds:z.object({c:unit,b:z.number().int().min(1),s:unit}).strict(),exit_conditions_met:z.boolean(),pool_key:z.string().nullable()}).strict()
+// selection.cold_start (== Python contracts/summary.AnyColdStartDiagnostics): new runs report the mpd-v1
+// detector (D = mean pairwise difference of the top candidate_window scores; active = D < threshold);
+// stored responses from before 2026-10-24 keep the C/B/S shape, accepted as stored and never read as D.
+// Both members are strict, so a mixed object matches neither.
+export const legacyColdStartSchema=z.object({evaluated:z.boolean(),active:z.boolean(),reason:z.string(),coverage_c:unit.nullable(),boundary_group_b:z.number().int().min(1).nullable(),stability_s:unit.nullable(),thresholds:z.object({c:unit,b:z.number().int().min(1),s:unit}).strict(),exit_conditions_met:z.boolean(),pool_key:z.string().nullable()}).strict()
   .refine(c=>!c.exit_conditions_met||(c.evaluated&&c.stability_s!==null),{message:'exit_conditions_met requires evaluated diagnostics with stability_s'})
   .refine(c=>!c.active||c.evaluated,{message:'cold start cannot be active without evaluated diagnostics'});
+const window=z.number().int().min(2).nullable();
+export const mpdColdStartSchema=z.object({evaluated:z.boolean(),active:z.boolean(),reason:z.string(),detector:z.literal('mean_pairwise_difference'),detector_version:z.literal('mpd-v1'),candidate_window:window,evaluated_count:window,mean_pairwise_difference:z.number().nonnegative().nullable(),threshold:z.number().nonnegative().nullable(),pool_key:z.string().nullable()}).strict()
+  .refine(c=>!c.active||c.evaluated,{message:'cold start cannot be active without evaluated diagnostics'})
+  .refine(c=>c.evaluated||(c.evaluated_count===null&&c.mean_pairwise_difference===null),{message:'mean_pairwise_difference is reported only for evaluated diagnostics'})
+  .refine(c=>!c.evaluated||(c.candidate_window!==null&&c.evaluated_count!==null&&c.mean_pairwise_difference!==null&&c.threshold!==null),{message:'evaluated diagnostics require candidate_window, evaluated_count, mean_pairwise_difference and threshold'})
+  .refine(c=>!c.evaluated||c.evaluated_count===null||c.candidate_window===null||c.evaluated_count<=c.candidate_window,{message:'evaluated_count cannot exceed candidate_window'})
+  .refine(c=>!c.evaluated||c.mean_pairwise_difference===null||c.threshold===null||c.active===(c.mean_pairwise_difference<c.threshold),{message:'active must equal mean_pairwise_difference < threshold'});
+const coldStart=z.union([mpdColdStartSchema,legacyColdStartSchema]);
 export const nativeSelectionSchema=z.object({mode:z.enum(['ranked','near_tie_sampling','cold_start_exploration','small_pool','empty']),algorithm_version:z.string(),seed:z.string().regex(/^[0-9a-f]{64}$/).nullable(),result_limit:z.number().int().min(1).max(NATIVE_MAX_RESULTS),leaders:count,tie_group:z.object({size:z.number().int().min(1),min_score:unit,max_score:unit,span:z.number().nonnegative(),epsilon:z.number().nonnegative()}).strict().nullable(),exploration:z.object({candidate_count:count,sample_size:count,bins:z.array(z.object({lower:z.number().nullable(),upper:z.number().nullable(),count,sampled:count,quota:count}).strict())}).strict().nullable(),cold_start:coldStart}).strict();
 export const nativeResponseSchema=z.object({contract_version:z.literal(NATIVE_CONTRACT_VERSION),request_id:z.string(),conversation_id:z.string(),requirements_version:z.number().int(),status:z.enum(['success','needs_clarification','no_match','error']),recommendations:z.array(nativeItemSchema).max(NATIVE_MAX_RESULTS),evidence:z.array(nativeEvidence),resolution:z.array(nativeResolutionSchema),pool:nativePoolSchema.nullable(),selection:nativeSelectionSchema.nullable(),clarifications:z.array(z.string()),relaxation_suggestions:z.array(z.string()),warnings:z.array(z.string()),state:z.object({state_id:z.string().nullable(),candidate_pool_ref:z.string().nullable(),run_sequence:z.number().int(),scope:z.string(),truncated:z.boolean(),source_count:z.number().int(),prefilter_excluded:z.number().int(),assessed_count:z.number().int()}).strict(),execution:z.object({trace_id:z.string(),trace_ref:z.string(),strategy:z.string(),scoring_version:z.string(),selection_algorithm:z.string(),config_version:z.number().int(),config_hash:z.string(),selection_hash:z.string(),model_identifier:z.string().nullable(),model_calls:z.number().int(),tool_calls:z.number().int(),duration_ms:z.number(),tokens:z.number().nullable(),data_mode:z.string(),controller_mode:z.string()}).strict(),error:z.object({code:z.string(),message:z.string(),retryable:z.boolean()}).strict().nullable()}).strict()
   .refine(r=>(r.status==='success')===(r.recommendations.length>0),{message:'success requires recommendations; other statuses prohibit them'})

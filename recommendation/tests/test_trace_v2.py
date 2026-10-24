@@ -131,8 +131,14 @@ def test_stage_records_cover_every_stage_with_counts_params_versions_and_bounded
     assert [r["listing_id"] for r in scoring["preview"]] == [f"L{k:03d}" for k in range(1, rows + 1)]
     assert scoring["preview_total"] == 40 > len(scoring["preview"])  # P6 review: the uncut row count
     cold = stage(trace, "cold_start_diagnostics")
-    assert cold["outputs"]["active"] is True and cold["outputs"]["stability_s"] == response.selection.cold_start.stability_s
-    assert cold["params"]["thresholds"] == {"c": 0.8, "b": 5, "s": 0.9}
+    detector = response.selection.cold_start
+    assert cold["outputs"]["active"] is True
+    assert cold["outputs"]["mean_pairwise_difference"] == detector.mean_pairwise_difference
+    assert cold["outputs"]["evaluated_count"] == detector.evaluated_count == 30
+    assert cold["params"] == {"enabled": True, "detector": "mean_pairwise_difference", "detector_version": "mpd-v1",
+                              "candidate_window": 30, "min_mean_pairwise_difference": detector.threshold,
+                              "request_cold_start": {"exited": False, "exited_pool_key": None},
+                              "request_cold_start_used": False}
     sampling = stage(trace, "price_sampling")
     assert sampling["inputs"]["candidates"] == response.selection.exploration.candidate_count
     assert sampling["outputs"]["drawn"] == 7 and len(sampling["preview"]) == len(response.selection.exploration.bins)

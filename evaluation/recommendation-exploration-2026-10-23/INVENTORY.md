@@ -13,6 +13,10 @@ Status values: **resolved-P1** = done in this phase · **open-Pn** = planned for
 **P7 final state:** no entry is open. The re-run greps were executed over tracked and untracked files
 (`p7/inventory_check.sh`, output `p7/inventory-grep.txt`); every remaining hit is classified in section F.
 
+2026-10-24 note: the cold-start settings named below (`reenter_on_pool_rebuild`, the C/B/S thresholds, stability
+trials / fraction) were removed by the mpd-v1 detector change (MIGRATION.md section 0.5); the entries record the
+P1–P7 state and are not reopened.
+
 Line numbers were re-read after the P1 edits.
 
 ## C. Settings keys: who reads them after P1

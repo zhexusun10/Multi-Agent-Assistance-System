@@ -9,7 +9,7 @@ Identifier = Annotated[str, Field(min_length=1, max_length=128)]
 
 
 class ColdStartInput(Contract):
-    """Cold-start exit state managed by the orchestrator (no native history)."""
+    """Former cold-start exit state; accepted for compatibility, ignored by the mpd-v1 detector."""
 
     exited: bool = False
     exited_pool_key: Identifier | None = None

@@ -5,6 +5,12 @@ limits. Raw output: `p7/calibration.json` (committed settings after P7) and
 `p7/calibration-pre-p7-settings.json` (same analyses run under the pre-P7 provisional settings,
 iqr and epsilon 0.02, kept so the change can be compared).
 
+2026-10-24: the cold-start figures here (§8 exit reachability, S, trials) describe the superseded C/B/S detector
+and were not re-run. The mpd-v1 threshold 0.01 is a user-chosen starting value; this page holds no calibration of D.
+The epsilon basis in §8 still applies (`selection.tie_max_score_span` is unchanged; f = 0.2 now lives in
+`recommendation/analysis/stability.py`). The pre-P7 settings fixture's cold_start block was migrated to the detector
+keys, so re-running the analyses against it is no longer byte-identical to `p7/calibration-pre-p7-settings.json`.
+
 ## Method
 
 - Entry point: `recommendation/analysis/` (new, offline; `python -m recommendation.analysis.calibrate
@@ -179,6 +185,8 @@ and score loss of the shown set vs the deterministic top 10.
   value; the measured cost is about 1 % mean score loss.
 
 ## 8. Cutoff ties, epsilon, B, S and stability trials (real listings; synthetic references where marked)
+
+(Exit reachability, S and trials below apply to the C/B/S detector, superseded on 2026-10-24; not re-run.)
 
 Top-of-order structure (selection of rows; all 54 in the JSON). B is |G| at the cutoff (K = 10).
 

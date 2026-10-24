@@ -9,27 +9,26 @@ Cutoff tie group (only when |pool| > result_limit): s_K = score of O[K-1];
 G = {i : |s_i - s_K| <= epsilon/2} (contiguous in O because O is sorted, span <= epsilon, no
 chaining); leaders L = the items of O before G; m = K - |L| >= 1.
 
-Cold-start diagnostics (evaluated only when cold_start.enabled and |pool| > result_limit, R9):
-- C = mean soft_evidence_coverage over O[:K]; 0 with reason ``no_soft_requirements`` when the
-  request has no soft criterion. C is soft evidence coverage only: unresolved geographic targets
-  or missing listing data lower it like any unknown utility, they are never reported as the user
-  under-specifying, and resolution problems are reported separately (response.resolution).
-- B = |G| (1 when the cutoff is fully distinguishable).
-- S = mean over ``stability.trials`` of |T0 & Tt| / K, T0 = O[:K], Tt = top K after multiplying
-  every weight by (1 + u), u ~ U[-f, f] (f = weight_perturbation_fraction): each soft criterion
-  weight, soft/behaviour, appointment/browsing and each active similarity feature weight, each
-  layer renormalised. The components are reweighted (PoolScores.combine), never rescored. Ties in
-  a trial are broken by a per-trial random key, so the listing-ID order can never fake
-  stability. RNG: numpy Generator(PCG64) seeded from the R3 stability seed (pool_version,
-  requirements, behavior_context, selection_hash; NOT request_id), so S is reproducible for identical
-  inputs.
-- exit_conditions_met = C >= c_min and B <= b_max and S >= s_min; false whenever the diagnostics
-  were not evaluated or S is None (R9).
-cold_start_active = enabled and |pool| > result_limit and not exit_conditions_met and not
-(request.cold_start.exited and (not reenter_on_pool_rebuild or exited_pool_key == pool_key)).
-Re-entry depends on pool_key only: a data_version-only rebuild or a cache eviction keeps the
-pool_key and does not re-trigger cold start (R9). Without soft criteria C = 0, so the exit
-conditions can never be met (known effect, R9).
+Cold-start detector mpd-v1 (2026-10-24; replaces the C/B/S exit checks and the remembered exit):
+- Short circuits: cold_start.enabled false -> inactive (cold_start_disabled); |pool| = 0 or
+  |pool| <= result_limit -> not evaluated (empty_pool / small_pool); fewer than two scores in the
+  window -> not evaluated (insufficient_scores, no division by zero).
+- Window: the first W = cold_start.detector.candidate_window items of O (all when fewer),
+  leaders included, official combined scores as computed (no per-list rescaling). W is its own
+  setting, independent of price_sampling.target_sample_size.
+- D = 2 / (n (n - 1)) * sum_{i<j} |s_i - s_j| (Gini's mean difference). The pairwise sum is a
+  math.fsum, so D is correctly rounded and does not depend on summation order.
+- active = D < cold_start.detector.min_mean_pairwise_difference (reasons
+  mean_difference_below_threshold / mean_difference_at_or_above_threshold). D equal to the
+  threshold is inactive; the comparison is exact on IEEE doubles, without a tolerance.
+- The threshold is a practical score tolerance: D measures how far apart the top scores are. It is
+  not a statistical test and does not show that the requirements are sufficient or that the
+  ranking is correct.
+- Every evaluated round derives its status from the current D. request.cold_start
+  {exited, exited_pool_key} is still accepted (compatibility) and recorded in the trace as unused;
+  it never bypasses the check. No weight-perturbation trials run (they moved to
+  recommendation/analysis/stability.py, where the epsilon derivation still uses them).
+- D is not part of selection_input: replay uses only the stored cold_start_active.
 
 Selection (``select_v1``, shared with replay_gate):
 - |pool| = 0 -> mode empty. |pool| <= result_limit -> every item in O order, mode small_pool.
@@ -66,19 +65,17 @@ import math
 import platform
 import random
 import time
-from dataclasses import dataclass, field, replace
-
-import numpy as np
+from dataclasses import dataclass, field
 
 from recommendation.contracts.summary import (
+    DETECTOR,
+    DETECTOR_VERSION,
     ColdStartDiagnostics,
-    ColdStartThresholds,
     Exploration,
     ExplorationBin,
     SelectionSummary,
     TieGroup,
 )
-from ..tracing.trace import digest
 from . import exploration
 
 ALGORITHM_VERSION = "select-v1"
@@ -96,15 +93,19 @@ def describe(settings):
         "random_policy": sel.random_policy,
         "seed_namespace": sel.seed_namespace,
         "seeds": "base = sha256(namespace|conversation|request|pool_version|selection_hash); tie/stageA/stageB "
-        "streams; stability seed without request_id",
+        "streams",
         "cold_start": {
             "enabled": cold.enabled,
-            "reenter_on_pool_rebuild": cold.reenter_on_pool_rebuild,
-            "reentry": "pool_key change only (a data_version-only rebuild does not re-trigger)",
-            "thresholds": thresholds_of(settings).model_dump(),
+            "detector": DETECTOR,
+            "detector_version": DETECTOR_VERSION,
+            "candidate_window": cold.detector.candidate_window,
+            "min_mean_pairwise_difference": cold.detector.min_mean_pairwise_difference,
+            "statistic": "D = 2/(n(n-1)) * sum_{i<j} |s_i - s_j| over the first candidate_window combined "
+            "scores of O (leaders included; all when fewer)",
+            "decision": "active when D < min_mean_pairwise_difference (D equal to it is inactive); every "
+            "evaluated round",
+            "request_cold_start": "accepted for compatibility, not used for the decision",
             "price_sampling": cold.price_sampling.model_dump(),
-            "stability": cold.stability.model_dump(),
-            "no_soft_requirements": "C = 0, so cold start cannot be exited without soft criteria",
         },
     }
 
@@ -129,17 +130,6 @@ def stream(seed_hex):
     return random.Random(int(seed_hex[:16], 16))
 
 
-def stability_seed(settings, pool_version, requirements, behavior_context):
-    """R3 stability seed: no request_id, so identical inputs give the identical S."""
-    return _sha(settings.selection.seed_namespace, "stability", pool_version,
-                digest(requirements.model_dump(mode="json")), digest(behavior_context.model_dump(mode="json") if behavior_context is not None else None),
-                settings.selection_hash)
-
-
-def stability_generator(seed_hex):
-    return np.random.Generator(np.random.PCG64(int(seed_hex[:16], 16)))
-
-
 # --- tie group ---------------------------------------------------------------------------------
 def tie_group(scores, k, epsilon):
     """[start, end) of G in O order for the K-th score (``scores`` non-increasing).
@@ -160,103 +150,45 @@ def tie_group(scores, k, epsilon):
     return start, end
 
 
-# --- diagnostics -------------------------------------------------------------------------------
-def exit_conditions(c, b, s, thresholds):
-    """C >= c_min and B <= b_max and S >= s_min; False when any value is missing (R9)."""
-    if c is None or b is None or s is None:
-        return False
-    return c >= thresholds.c and b <= thresholds.b and s >= thresholds.s
+# --- cold-start detector (mpd-v1) ---------------------------------------------------------------
+def mean_pairwise_difference(scores):
+    """D = 2 / (n (n - 1)) * sum_{i<j} |s_i - s_j| (Gini's mean difference); None when n < 2.
+
+    Determinism pin (like R11): the pairwise absolute differences are summed with math.fsum, which
+    is correctly rounded, so D does not depend on the summation order, and the threshold
+    comparison is made on that double without a tolerance."""
+    n = len(scores)
+    if n < 2:
+        return None
+    total = math.fsum(abs(a - b) for i, a in enumerate(scores) for b in scores[i + 1:])
+    return 2 * total / (n * (n - 1))
 
 
-def thresholds_of(settings):
+def evaluate_cold_start(scores, request, settings, pool_key):
+    """ColdStartDiagnostics for this run plus the record kept in the trace (``scores``: O order)."""
     cold = settings.cold_start
-    return ColdStartThresholds(c=cold.min_evidence_coverage, b=cold.max_boundary_tie_group_size,
-                               s=cold.min_top_k_stability)
-
-
-def _renormalised(values):
-    total = float(values.sum())
-    return values / total if total > 0 else values
-
-
-def perturbed_weights(weights, u):
-    """Weights with every entry multiplied by (1 + u) and each layer renormalised.
-
-    ``u`` layout: soft criteria, (soft, behaviour), (appointment, browsing), active features."""
-    ns, nf = len(weights.soft_criteria), len(weights.features)
-    soft_criteria = _renormalised(weights.soft_criteria * (1 + u[:ns]))
-    fusion = _renormalised(np.array([weights.soft, weights.behavior]) * (1 + u[ns:ns + 2]))
-    branch = _renormalised(np.array([weights.appointment, weights.browsing]) * (1 + u[ns + 2:ns + 4]))
-    features = _renormalised(weights.features * (1 + u[ns + 4:ns + 4 + nf]))
-    return replace(weights, soft_criteria=soft_criteria, soft=float(fusion[0]), behavior=float(fusion[1]),
-                   appointment=float(branch[0]), browsing=float(branch[1]), features=features)
-
-
-def top_k_stability(scored, k, trials, fraction, generator):
-    """S: mean overlap of the perturbed top K with T0 = O[:K] (random tie-break per trial)."""
-    n = len(scored.ids)
-    in_t0 = np.zeros(n, bool)
-    in_t0[scored.order[:k]] = True
-    width = len(scored.weights.soft_criteria) + 4 + len(scored.weights.features)
-    overlap = 0.0
-    for _ in range(trials):
-        u = generator.uniform(-fraction, fraction, size=width)
-        combined = scored.combine(perturbed_weights(scored.weights, u)).combined
-        keys = generator.random(n)
-        top = np.lexsort((keys, -combined))[:k]
-        overlap += int(in_t0[top].sum()) / k
-    return overlap / trials
-
-
-def evaluate_cold_start(scored, request, settings, pool_key, pool_version, k, tie_size):
-    """ColdStartDiagnostics for this run plus the record kept in the trace."""
-    cold = settings.cold_start
-    thresholds = thresholds_of(settings)
-    n = len(scored.ids)
-    limit = request.result_limit
-    common = {"thresholds": thresholds, "pool_key": pool_key}
+    detector = cold.detector
+    n = len(scores)
+    common = {"detector": DETECTOR, "detector_version": DETECTOR_VERSION,
+              "candidate_window": detector.candidate_window,
+              "threshold": detector.min_mean_pairwise_difference, "pool_key": pool_key}
+    record = {"request_cold_start": request.cold_start.model_dump(mode="json"), "request_cold_start_used": False}
     if not cold.enabled:
-        return ColdStartDiagnostics(evaluated=False, active=False, reason="cold_start_disabled",
-                                    exit_conditions_met=False, **common), {}
-    if n == 0 or n <= limit:
+        return ColdStartDiagnostics(evaluated=False, active=False, reason="cold_start_disabled", **common), record
+    if n == 0 or n <= request.result_limit:
         return ColdStartDiagnostics(evaluated=False, active=False,
-                                    reason="empty_pool" if n == 0 else "small_pool",
-                                    exit_conditions_met=False, **common), {}
+                                    reason="empty_pool" if n == 0 else "small_pool", **common), record
     started = time.perf_counter()
-    reasons = []
-    if scored.soft_criteria:
-        c = float(np.mean(scored.fused.soft_coverage[scored.order[:k]]))
-    else:
-        c = 0.0
-        reasons.append("no_soft_requirements")
-    b = tie_size
-    seed = stability_seed(settings, pool_version, request.requirements, request.behavior_context)
-    s = top_k_stability(scored, k, cold.stability.trials, cold.stability.weight_perturbation_fraction,
-                        stability_generator(seed))
-    met = exit_conditions(c, b, s, thresholds)
-    if met:
-        reasons.append("exit_conditions_met")
-    else:
-        if c < thresholds.c and "no_soft_requirements" not in reasons:
-            reasons.append("c_below_min")
-        if b > thresholds.b:
-            reasons.append("b_above_max")
-        if s < thresholds.s:
-            reasons.append("s_below_min")
-    state = request.cold_start
-    exited = state.exited and (not cold.reenter_on_pool_rebuild or state.exited_pool_key == pool_key)
-    if exited:
-        reasons.append("exited_by_orchestrator")
-    elif state.exited:
-        reasons.append("reentered_pool_rebuilt")  # exited at another pool_key, reenter_on_pool_rebuild
-    active = not met and not exited
+    window = scores[:detector.candidate_window]
+    d = mean_pairwise_difference(window)
+    if d is None:
+        return ColdStartDiagnostics(evaluated=False, active=False, reason="insufficient_scores", **common), record
+    active = d < detector.min_mean_pairwise_difference
     diagnostics = ColdStartDiagnostics(
-        evaluated=True, active=active, reason="; ".join(reasons), coverage_c=min(1.0, max(0.0, c)),
-        boundary_group_b=b, stability_s=min(1.0, max(0.0, s)), exit_conditions_met=met, **common)
-    record = {"stability_seed": seed, "trials": cold.stability.trials,
-              "weight_perturbation_fraction": cold.stability.weight_perturbation_fraction,
-              "request_cold_start": state.model_dump(mode="json"),
-              "duration_ms": (time.perf_counter() - started) * 1000}
+        evaluated=True, active=active,
+        reason="mean_difference_below_threshold" if active else "mean_difference_at_or_above_threshold",
+        evaluated_count=len(window), mean_pairwise_difference=d, **common)
+    record["duration_ms"] = (time.perf_counter() - started) * 1000
     return diagnostics, record
 
 
@@ -432,7 +364,7 @@ def select(scored, request, settings, pool_key, pool_version, seed_override=None
         start, end = tie_group(scores, k, epsilon)
     tie_ms = (time.perf_counter() - started) * 1000
     stage_started = time.perf_counter()
-    diagnostics, record = evaluate_cold_start(scored, request, settings, pool_key, pool_version, k, end - start)
+    diagnostics, record = evaluate_cold_start(scores, request, settings, pool_key)
     marks["cold_start_diagnostics"] = (time.perf_counter() - stage_started) * 1000
     stage_started = time.perf_counter()
     active = diagnostics.active

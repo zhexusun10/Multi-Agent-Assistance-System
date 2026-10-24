@@ -37,14 +37,16 @@ SOFT_PRICE_MIN = {"criterion_id": "cheap", "field": "price", "operator": "lte", 
                   "unit": "SGD/month", "strength": "soft", "weight": 1, "utility": "minimize"}
 PLAN = [SOFT_D01, SOFT_BR3]
 # Explicit fixture settings (spec section 2): every expectation below is pinned to these values,
-# not to the committed YAML, whose provisional values P7 replaces with calibrated ones. The C/B/S
-# thresholds 0.8/5/0.9 and the soft/behaviour weights 0.6/0.4 are confirmed values and are read
+# not to the committed YAML. The soft/behaviour weights 0.6/0.4 are confirmed values and are read
 # from the YAML; target_sample_size 30 is confirmed as the initial experimental value but is
-# pinned here as well.
-EPSILON, TRIALS, FRACTION, TARGET, BINS = 0.02, 20, 0.2, 30, 5
-FIXTURE = {"selection.tie_max_score_span": EPSILON, "cold_start.stability.trials": TRIALS,
-           "cold_start.stability.weight_perturbation_fraction": FRACTION,
+# pinned here as well. The mpd-v1 threshold is pinned high (0.25) so that the synthetic plan
+# pools (D 0.06-0.21) exercise cold-start exploration; NEAR_TIE pins the committed starting value
+# 0.01, under which those pools are inactive (near-tie sampling / ranked).
+EPSILON, WINDOW, THRESHOLD, TARGET, BINS = 0.02, 30, 0.25, 30, 5
+FIXTURE = {"selection.tie_max_score_span": EPSILON, "cold_start.detector.candidate_window": WINDOW,
+           "cold_start.detector.min_mean_pairwise_difference": THRESHOLD,
            "cold_start.price_sampling.target_sample_size": TARGET, "cold_start.price_sampling.quantile_bins": BINS}
+NEAR_TIE = {"cold_start.detector.min_mean_pairwise_difference": 0.01}
 
 
 @pytest.fixture(autouse=True)
@@ -133,8 +135,9 @@ def test_tie_group_boundary_is_evaluated_on_ieee_doubles_without_tolerance():
 @pytest.mark.parametrize("leaders,last_tied,size", [(3, 30, 40), (3, 20, 40)])
 def test_plan_scenario_leaders_kept_and_seven_drawn_from_the_tie_group(leaders, last_tied, size):
     rows = plan_rows(leaders, last_tied, size)
-    # After the orchestrator recorded the exit for this pool: near-tie sampling (no exploration).
-    scored, chosen = run(rows, PLAN, exited_key=POOL_KEY)
+    # Cold start inactive (D >= 0.01): near-tie sampling (no exploration).
+    scored, chosen = run(rows, PLAN, config=settings(**NEAR_TIE))
+    assert not chosen.summary.cold_start.active and chosen.summary.cold_start.evaluated
     group = ids_of(rows)[leaders:last_tied]
     assert chosen.summary.mode == "near_tie_sampling" and chosen.summary.leaders == 3
     assert chosen.ids[:3] == ["L001", "L002", "L003"] and len(chosen.ids) == 10
@@ -144,7 +147,7 @@ def test_plan_scenario_leaders_kept_and_seven_drawn_from_the_tie_group(leaders, 
     tie = chosen.summary.tie_group
     assert (tie.size, tie.min_score, tie.max_score, tie.span, tie.epsilon) == (last_tied - 3, 0.3, 0.3, 0.0, EPSILON)
     assert chosen.summary.exploration is None
-    # In cold start (B = |G| > 5): the leaders are still kept, the other 7 come from price exploration.
+    # In cold start (D < THRESHOLD): the leaders are still kept, the other 7 come from price exploration.
     scored, cold = run(rows, PLAN)
     assert cold.summary.cold_start.active and cold.summary.mode == "cold_start_exploration"
     assert cold.ids[:3] == ["L001", "L002", "L003"]
@@ -156,7 +159,8 @@ def test_plan_scenario_leaders_kept_and_seven_drawn_from_the_tie_group(leaders, 
 
 def test_plan_scenario_all_tied_draws_ten_from_the_whole_pool():
     rows = [listing(k) for k in range(1, 41)]
-    _, chosen = run(rows, (), exited_key=POOL_KEY)
+    # All tied gives D = 0, below any positive threshold: only a disabled cold start samples near ties.
+    _, chosen = run(rows, (), config=settings(**{"cold_start.enabled": False}))
     assert chosen.summary.mode == "near_tie_sampling" and chosen.summary.leaders == 0
     assert chosen.summary.tie_group.size == 40 and len(chosen.ids) == 10
     assert set(chosen.reasons.values()) == {"tie_group_sample"}
@@ -166,13 +170,16 @@ def test_plan_scenario_all_tied_draws_ten_from_the_whole_pool():
 
 def test_plan_scenario_fully_distinct_selects_by_score_even_with_cold_start_enabled():
     rows = [listing(k, price=1000.0 * k) for k in range(1, 41)]
-    scored, chosen = run(rows, [SOFT_PRICE_MIN])
+    scored, chosen = run(rows, [SOFT_PRICE_MIN], config=settings(**NEAR_TIE))
     # Around the cutoff, combined steps = soft_weight 0.6 x 1000 / 20000 = 0.03 > EPSILON / 2, so s_K
     # has no neighbour within EPSILON / 2 (prices above 20000 clamp to 0 far below the cutoff).
     assert (-np.diff(scored.fused.combined[scored.order][:11])).min() > EPSILON / 2
     cold = chosen.summary.cold_start
-    assert (cold.coverage_c, cold.boundary_group_b, cold.stability_s) == (1.0, 1, 1.0)
-    assert cold.exit_conditions_met and not cold.active and cold.reason == "exit_conditions_met"
+    assert cold.evaluated and not cold.active and cold.reason == "mean_difference_at_or_above_threshold"
+    assert (cold.detector, cold.detector_version) == ("mean_pairwise_difference", "mpd-v1")
+    assert cold.candidate_window == cold.evaluated_count == WINDOW and cold.threshold == 0.01
+    assert cold.mean_pairwise_difference == selection.mean_pairwise_difference(
+        scored.fused.combined[scored.order][:WINDOW].tolist()) >= cold.threshold
     assert chosen.summary.mode == "ranked" and chosen.ids == scored.ranked[:10] == ids_of(rows)[:10]
     assert set(chosen.reasons.values()) == {"ranked"} and chosen.summary.tie_group.size == 1
 
@@ -183,7 +190,8 @@ def test_plan_scenario_small_pool_returns_everything_in_score_order():
     assert chosen.summary.mode == "small_pool" and chosen.ids == scored.ranked and len(chosen.ids) == 7
     assert set(chosen.reasons.values()) == {"small_pool"} and chosen.summary.tie_group is None
     cold = chosen.summary.cold_start
-    assert not cold.evaluated and not cold.exit_conditions_met and cold.reason == "small_pool"
+    assert not cold.evaluated and cold.reason == "small_pool" and cold.detector == "mean_pairwise_difference"
+    assert cold.mean_pairwise_difference is None and cold.evaluated_count is None
     _, empty = run([], [SOFT_D01])
     assert empty.summary.mode == "empty" and empty.ids == [] and empty.summary.cold_start.reason == "empty_pool"
 
@@ -193,9 +201,8 @@ def test_no_soft_requirements_and_all_tied_enters_price_exploration():
     rows = [listing(k) for k in range(1, 41)]
     _, chosen = run(rows, ())
     cold = chosen.summary.cold_start
-    assert cold.evaluated and cold.active and not cold.exit_conditions_met
-    assert cold.coverage_c == 0.0 and cold.boundary_group_b == 40 and cold.stability_s < 0.9
-    assert cold.reason.split("; ")[0] == "no_soft_requirements"
+    assert cold.evaluated and cold.active and cold.reason == "mean_difference_below_threshold"
+    assert cold.mean_pairwise_difference == 0.0 and cold.evaluated_count == WINDOW  # window < pool of 40
     assert chosen.summary.mode == "cold_start_exploration" and len(chosen.ids) == 10
     explored = chosen.summary.exploration
     assert (explored.candidate_count, explored.sample_size) == (40, TARGET)  # stage A: TARGET of R = 40
@@ -203,99 +210,144 @@ def test_no_soft_requirements_and_all_tied_enters_price_exploration():
     assert sum(b.quota for b in explored.bins) == TARGET and sum(b.sampled for b in explored.bins) == 10
 
 
-def test_unresolved_data_is_not_treated_as_under_specification(tmp_path):
-    """C is soft evidence coverage only: an unresolved soft target lowers it like any unknown
-    utility (reason c_below_min), it is never reported as missing soft requirements, the run
-    is not turned into a clarification, and the resolution problem is reported separately.
-    Listings excluded for unknown hard data are not part of C."""
+def test_unresolved_data_is_not_treated_as_under_specification(tmp_path, monkeypatch):
+    """An unresolved soft target contributes unknown utility (soft evidence coverage 0.5), the run is
+    not turned into a clarification, the resolution problem is reported separately, and the
+    cold-start status is still decided by D of the scores only."""
     unresolved = {"criterion_id": "near", "field": "distance", "operator": "lte", "value": 1500, "unit": "m",
                   "strength": "soft", "weight": 1, "utility": "proximity", "distance_type": "straight_line",
                   "destination_name": "Nowhere Imaginary Place"}
     listing_repo, geo_repo = repositories("fixture")
     service = RecommendationService(listing_repo, geo_repo, StateStore(tmp_path / "s.sqlite"), ScriptedController(),
                                     config=settings())
+    seen = []
+    original = selection.select
+
+    def recording(scored, *args, **kwargs):
+        chosen = original(scored, *args, **kwargs)
+        seen.append((scored.fused.combined[scored.order].tolist(), chosen.summary.cold_start))
+        return chosen
+
+    monkeypatch.setattr(selection, "select", recording)
     try:
         for k, criteria in enumerate(([SOFT_DISTRICT, unresolved], [HARD_BEDROOMS, SOFT_DISTRICT, unresolved])):
             response = service.recommend(make_request(criteria, f"u-{k}", f"u-{k}", limit=3))
             assert response.status == "success" and response.clarifications == []
             assert [r.status for r in response.resolution] == ["unresolved"]
             cold = response.selection.cold_start
-            assert cold.evaluated and cold.coverage_c == 0.5  # district known, target unknown
-            assert "no_soft_requirements" not in cold.reason and "c_below_min" in cold.reason
+            assert cold.evaluated and cold.reason in ("mean_difference_below_threshold",
+                                                      "mean_difference_at_or_above_threshold")
+            # D comes from the official full-pool combined scores only (unknown utility is not dropped or
+            # replaced by soft evidence coverage), and the status follows it.
+            order, recorded = seen[-1]
+            assert recorded == cold and cold.mean_pairwise_difference == selection.mean_pairwise_difference(order[:WINDOW])
+            assert cold.evaluated_count == min(WINDOW, len(order)) and cold.active == (cold.mean_pairwise_difference < THRESHOLD)
             assert all(i.scores.soft_evidence_coverage == 0.5 for i in response.recommendations)
-        assert response.pool.excluded_hard_unknown == 1  # fixture-10 (no bedrooms): outside the pool and C
+        assert response.pool.excluded_hard_unknown == 1  # fixture-10 (no bedrooms): outside the pool and D
     finally:
         service.close()
 
 
-def _boundary_rows(extra_c=0, leaders=3):
-    """K = 5: leaders a* (coverage 1), then the tie group b1, b2 (bedrooms unknown: coverage
-    0.5) and c* (coverage 1) at 0.3, then d* at 0."""
-    rows = [listing(k, "D01", 3.0, listing_id=f"a{k}") for k in range(1, leaders + 1)]
-    rows += [listing(10 + k, "D01", None, listing_id=f"b{k}") for k in range(1, 3)]
-    rows += [listing(20 + k, "D02", 3.0, listing_id=f"c{k}") for k in range(1, 4 + extra_c)]
-    rows += [listing(30 + k, "D02", 1.0, listing_id=f"d{k}") for k in range(1, 4)]
-    return rows
+def test_mean_pairwise_difference_is_ginis_mean_difference():
+    assert selection.mean_pairwise_difference([0.5] * 30) == 0.0  # equal scores
+    assert selection.mean_pairwise_difference([0.5, 0.25]) == 0.25
+    # Binary-exact: pairs |1-.5|, |1-.5|, |1-0|, |.5-.5|, |.5-0|, |.5-0| sum to 3.0 -> 2 * 3 / (4 * 3).
+    assert selection.mean_pairwise_difference([1.0, 0.5, 0.5, 0.0]) == 0.5
+    # Order-independent (math.fsum) and equal to the closed form on decimal scores.
+    scores = [0.61, 0.6, 0.3, 0.2999, 0.0003, 0.0]
+    brute = sum(abs(a - b) for a in scores for b in scores) / (len(scores) * (len(scores) - 1))
+    assert math.isclose(selection.mean_pairwise_difference(scores), brute, rel_tol=1e-12)
+    assert selection.mean_pairwise_difference(scores) == selection.mean_pairwise_difference(scores[::-1])
+    # Fewer than two scores: no pair, no division by zero.
+    assert selection.mean_pairwise_difference([0.5]) is None and selection.mean_pairwise_difference([]) is None
 
 
-def test_threshold_boundaries_c_b_s_exactly_at_thresholds():
-    t = selection.thresholds_of(settings())
-    assert (t.c, t.b, t.s) == (0.8, 5, 0.9)
-    assert selection.exit_conditions(0.8, 5, 0.9, t)
-    assert not selection.exit_conditions(math.nextafter(0.8, 0), 5, 0.9, t)
-    assert not selection.exit_conditions(0.8, 6, 0.9, t)
-    assert not selection.exit_conditions(0.8, 5, math.nextafter(0.9, 0), t)
-    assert not selection.exit_conditions(1.0, 1, None, t)  # R9: no S, no exit
-    # Computed values landing exactly on the thresholds: C = mean(1, 1, 1, .5, .5) = 0.8, B = 5.
-    _, chosen = run(_boundary_rows(), PLAN, limit=5)
+def test_detector_threshold_equality_is_inactive_without_tolerance():
+    req = make_request(limit=1)
+    at = settings(**{"cold_start.detector.min_mean_pairwise_difference": 0.25})
+    cold, record = selection.evaluate_cold_start([0.5, 0.25], req, at, POOL_KEY)  # D == 0.25 exactly
+    assert cold.evaluated and not cold.active and cold.mean_pairwise_difference == 0.25 == cold.threshold
+    assert cold.reason == "mean_difference_at_or_above_threshold"
+    above = settings(**{"cold_start.detector.min_mean_pairwise_difference": math.nextafter(0.25, 1)})
+    cold, _ = selection.evaluate_cold_start([0.5, 0.25], req, above, POOL_KEY)
+    assert cold.active and cold.reason == "mean_difference_below_threshold"
+    below = settings(**{"cold_start.detector.min_mean_pairwise_difference": math.nextafter(0.25, 0)})
+    assert not selection.evaluate_cold_start([0.5, 0.25], req, below, POOL_KEY)[0].active
+    # Equal scores: D = 0 is below any positive threshold, never below 0.
+    assert selection.evaluate_cold_start([0.3] * 12, req, settings(), POOL_KEY)[0].active
+    zero = settings(**{"cold_start.detector.min_mean_pairwise_difference": 0.0})
+    assert not selection.evaluate_cold_start([0.3] * 12, req, zero, POOL_KEY)[0].active
+    # The configured window, threshold and detector identity are always reported; the request's
+    # remembered-exit field is recorded as unused.
+    assert (cold.detector, cold.detector_version, cold.pool_key) == ("mean_pairwise_difference", "mpd-v1", POOL_KEY)
+    assert record["request_cold_start"] == {"exited": False, "exited_pool_key": None}
+    assert record["request_cold_start_used"] is False
+
+
+def test_detector_window_is_the_overall_top_scores_including_leaders():
+    req = make_request()
+    config = settings(**{"cold_start.detector.min_mean_pairwise_difference": 0.01})
+    narrow = [0.9] + [0.5] * 28 + [0.49]  # 30 scores: leader 0.9 included
+    cold, _ = selection.evaluate_cold_start(narrow + [0.0] * 10, req, config, POOL_KEY)
+    assert cold.evaluated_count == cold.candidate_window == WINDOW
+    assert cold.mean_pairwise_difference == selection.mean_pairwise_difference(narrow)
+    # A 31st score outside the window never changes D; one inside it does.
+    assert selection.evaluate_cold_start(narrow + [0.5] * 10, req, config, POOL_KEY)[0] == cold
+    inside = selection.evaluate_cold_start(narrow[:-1] + [0.0] + [0.0] * 10, req, config, POOL_KEY)[0]
+    assert inside.mean_pairwise_difference != cold.mean_pairwise_difference
+    # Narrowly vs widely spread scores (no leader): below vs at or above 0.01.
+    tight = [0.5 + 0.0001 * i for i in range(30)]
+    wide = [0.05 * i for i in range(30)]
+    assert selection.evaluate_cold_start(tight, req, config, POOL_KEY)[0].active
+    assert not selection.evaluate_cold_start(wide, req, config, POOL_KEY)[0].active
+    # Fewer eligible candidates than the window: all of them are used.
+    cold, _ = selection.evaluate_cold_start([0.5] * 12, make_request(), config, POOL_KEY)
+    assert cold.evaluated_count == 12 and cold.candidate_window == WINDOW
+    # A smaller configured window takes only that many.
+    small = settings(**{"cold_start.detector.candidate_window": 2,
+                        "cold_start.detector.min_mean_pairwise_difference": 0.01})
+    cold, _ = selection.evaluate_cold_start([0.5, 0.5, 0.0, 0.0], make_request(limit=3), small, POOL_KEY)
+    assert cold.evaluated_count == 2 and cold.mean_pairwise_difference == 0.0 and cold.active
+
+
+def test_detector_short_circuits_are_not_evaluated():
+    config = settings()
+    for scores, limit, reason in (([], 10, "empty_pool"), ([0.5] * 10, 10, "small_pool"), ([0.1, 0.9], 5, "small_pool")):
+        cold, _ = selection.evaluate_cold_start(scores, make_request(limit=limit), config, POOL_KEY)
+        assert not cold.evaluated and not cold.active and cold.reason == reason
+        assert cold.mean_pairwise_difference is None and cold.evaluated_count is None
+    disabled = settings(**{"cold_start.enabled": False})
+    cold, _ = selection.evaluate_cold_start([0.5] * 40, make_request(), disabled, POOL_KEY)
+    assert (cold.evaluated, cold.active, cold.reason) == (False, False, "cold_start_disabled")
+
+
+def test_detector_input_is_the_unmodified_full_pool_score_order():
+    rows = plan_rows(3, 30, 40)
+    scored, chosen = run(rows, PLAN)
+    order = scored.fused.combined[scored.order].tolist()
     cold = chosen.summary.cold_start
-    assert cold.coverage_c == 0.8 and cold.boundary_group_b == 5
-    assert "c_below_min" not in cold.reason and "b_above_max" not in cold.reason
-    assert cold.exit_conditions_met == (cold.stability_s >= 0.9)
-    # One more tied listing: B = 6 > 5.
-    _, chosen = run(_boundary_rows(extra_c=1), PLAN, limit=5)
-    assert chosen.summary.cold_start.boundary_group_b == 6 and "b_above_max" in chosen.summary.cold_start.reason
-    assert not chosen.summary.cold_start.exit_conditions_met
-    # Two leaders and a third unknown-bedroom listing: top K = a1, a2, b1, b2, b3 -> C = 3.5 / 5 = 0.7.
-    rows = _boundary_rows(leaders=2) + [listing(19, "D01", None, listing_id="b3")]
-    _, chosen = run(rows, PLAN, limit=5)
-    assert chosen.summary.cold_start.coverage_c == 0.7 and "c_below_min" in chosen.summary.cold_start.reason
+    assert cold.mean_pairwise_difference == selection.mean_pairwise_difference(order[:WINDOW])
+    assert cold.evaluated_count == WINDOW and cold.threshold == THRESHOLD
+    # The detector only reads the scores: the official order and scores are unchanged by it.
+    assert scored.fused.combined[scored.order].tolist() == order
 
 
-def test_stability_is_computed_reweights_components_and_is_reproducible(monkeypatch):
+def test_d_is_request_independent_and_never_rescores(monkeypatch):
     rows = plan_rows(3, 30, 40)
     req_a = make_request(PLAN, "req-a")
     config = settings()
     scored = scored_pool(rows, req_a, config)
+    # No weight-perturbation trials or rescoring at runtime: no PoolScores is built again and the stored
+    # components are never recombined under other weights (the old trials called PoolScores.combine).
+    monkeypatch.setattr(scoring_v2.PoolScores, "__init__", lambda *a, **k: pytest.fail("rescored"))
+    monkeypatch.setattr(scoring_v2.PoolScores, "combine", lambda *a, **k: pytest.fail("reweighted"))
+    monkeypatch.setattr(scoring_v2.PoolScores, "reweighted", lambda *a, **k: pytest.fail("reweighted"))
     first = selection.select(scored, req_a, config, POOL_KEY, POOL_VERSION)
     second = selection.select(scored, make_request(PLAN, "req-b", "other-conversation"), config, POOL_KEY, POOL_VERSION)
-    # R3: the stability seed has no request_id/conversation: identical inputs -> identical S.
-    assert first.record["cold_start"]["stability_seed"] == second.record["cold_start"]["stability_seed"]
-    assert first.summary.cold_start.stability_s == second.summary.cold_start.stability_s
+    assert first.summary.cold_start == second.summary.cold_start
     assert first.summary.seed != second.summary.seed  # the selection seed does depend on them
-    other_feedback = make_request(PLAN, "req-a", fb=feedback([("L001", 10.0)]))
-    assert selection.stability_seed(config, POOL_VERSION, other_feedback.requirements, other_feedback.behavior_context) != \
-        first.record["cold_start"]["stability_seed"]
-    # Trials only reweight the stored components: no PoolScores is built again.
-    monkeypatch.setattr(scoring_v2.PoolScores, "__init__", lambda *a, **k: pytest.fail("rescored"))
-    gen = selection.stability_generator(first.record["cold_start"]["stability_seed"])
-    assert selection.top_k_stability(scored, 10, TRIALS, FRACTION, gen) == first.summary.cold_start.stability_s
-    # u = 0 keeps every layer; any u renormalises every layer.
-    w = scored.weights
-    same = selection.perturbed_weights(w, np.zeros(len(w.soft_criteria) + 4 + len(w.features)))
-    assert np.allclose(same.soft_criteria, w.soft_criteria / w.soft_criteria.sum()) and same.soft == w.soft
-    moved = selection.perturbed_weights(w, np.full(len(w.soft_criteria) + 4 + len(w.features), 0.1) *
-                                        np.arange(len(w.soft_criteria) + 4 + len(w.features)))
-    assert math.isclose(moved.soft + moved.behavior, 1) and math.isclose(moved.appointment + moved.browsing, 1)
-    assert math.isclose(moved.soft_criteria.sum(), 1) and moved.soft != w.soft
-
-
-def test_stability_random_tie_break_never_fakes_stability():
-    # All tied: the official order is by listing ID, but each trial breaks ties at random, so
-    # S is about K / |pool| instead of 1.
-    rows = [listing(k) for k in range(1, 41)]
-    _, chosen = run(rows, ())
-    assert chosen.summary.cold_start.stability_s < 0.5
+    assert "stability_seed" not in first.record["cold_start"] and "trials" not in first.record["cold_start"]
+    assert not hasattr(selection, "top_k_stability") and not hasattr(selection, "stability_seed")
 
 
 # --- exploration: bins and quotas --------------------------------------------------------------
@@ -375,25 +427,28 @@ def test_exploration_quota_totals_and_stage_sizes(leaders, last_tied, size, limi
             assert abs(b.quota - explored.sample_size * b.count / r_size) < 1
 
 
-def test_after_exit_no_price_exploration_but_near_tie_sampling_kept():
+def test_inactive_cold_start_keeps_near_tie_sampling_and_remembered_exit_is_ignored():
     rows = plan_rows(3, 30, 40)
-    _, exited = run(rows, PLAN, exited_key=POOL_KEY)
-    cold = exited.summary.cold_start
-    assert cold.evaluated and not cold.active and "exited_by_orchestrator" in cold.reason
-    assert exited.summary.mode == "near_tie_sampling" and exited.summary.exploration is None
-    assert exited.selection_input["cold_start_active"] is False and exited.selection_input["bin_edges"] is None
-    # Pool rebuilt (another pool_key) with reenter_on_pool_rebuild: cold start re-evaluated -> active.
-    _, rebuilt = run(rows, PLAN, exited_key="an-older-pool-key")
-    assert rebuilt.summary.cold_start.active and "reentered_pool_rebuilt" in rebuilt.summary.cold_start.reason
-    assert rebuilt.summary.mode == "cold_start_exploration"
-    # Without re-entry the exit holds for any pool.
-    _, kept = run(rows, PLAN, config=settings(**{"cold_start.reenter_on_pool_rebuild": False}),
-                  exited_key="an-older-pool-key")
-    assert not kept.summary.cold_start.active and kept.summary.mode == "near_tie_sampling"
-    # Cold start disabled: not evaluated, never an exit claim, near-tie sampling still applies.
+    _, inactive = run(rows, PLAN, config=settings(**NEAR_TIE))
+    cold = inactive.summary.cold_start
+    assert cold.evaluated and not cold.active and cold.reason == "mean_difference_at_or_above_threshold"
+    assert inactive.summary.mode == "near_tie_sampling" and inactive.summary.exploration is None
+    assert inactive.selection_input["cold_start_active"] is False and inactive.selection_input["bin_edges"] is None
+    # A remembered exit (this pool or an older one) never bypasses the check: the status follows D.
+    _, active = run(rows, PLAN)
+    for key in (POOL_KEY, "an-older-pool-key"):
+        _, exited = run(rows, PLAN, exited_key=key)
+        assert exited.summary.cold_start == active.summary.cold_start and exited.summary.cold_start.active
+        assert exited.summary.mode == "cold_start_exploration" and exited.ids == active.ids
+        assert exited.record["cold_start"]["request_cold_start"] == {"exited": True, "exited_pool_key": key}
+        assert exited.record["cold_start"]["request_cold_start_used"] is False
+    # ...and it does not turn an inactive round active either.
+    _, still = run(rows, PLAN, config=settings(**NEAR_TIE), exited_key=POOL_KEY)
+    assert still.summary.cold_start == cold and still.summary.mode == "near_tie_sampling"
+    # Cold start disabled: not evaluated, near-tie sampling still applies.
     _, disabled = run(rows, PLAN, config=settings(**{"cold_start.enabled": False}))
     assert disabled.summary.cold_start.reason == "cold_start_disabled"
-    assert not disabled.summary.cold_start.evaluated and not disabled.summary.cold_start.exit_conditions_met
+    assert not disabled.summary.cold_start.evaluated and not disabled.summary.cold_start.active
     assert disabled.summary.mode == "near_tie_sampling"
 
 
@@ -428,12 +483,13 @@ def test_seeds_follow_r3():
     assert override["override"] and override["base"] == selection.derive_seeds(config, "x", "y", "z", override="fixed")["base"]
 
 
-@pytest.mark.parametrize("exited", [True, False])
-def test_no_duplicates_and_nothing_outside_the_pool(exited):
+@pytest.mark.parametrize("overrides", [{}, {"cold_start.enabled": False}])
+def test_no_duplicates_and_nothing_outside_the_pool(overrides):
+    config = settings(**overrides)
     for rows in (plan_rows(3, 30, 40), [listing(k) for k in range(1, 41)]):
         pool = set(ids_of(rows))
         for r in range(150):
-            _, chosen = run(rows, PLAN, request_id=f"d-{r}", exited_key=POOL_KEY if exited else None)
+            _, chosen = run(rows, PLAN, config=config, request_id=f"d-{r}")
             assert len(chosen.ids) == len(set(chosen.ids)) == 10 and set(chosen.ids) <= pool
 
 
@@ -442,8 +498,9 @@ def test_every_tie_group_member_is_selected_across_seeds_and_ids_are_not_fixed()
     group = ids_of(rows)[3:30]
     counts, sets = Counter(), Counter()
     seeds = 400
+    near_tie = settings(**NEAR_TIE)
     for r in range(seeds):
-        _, chosen = run(rows, PLAN, request_id=f"stat-{r}", exited_key=POOL_KEY)
+        _, chosen = run(rows, PLAN, config=near_tie, request_id=f"stat-{r}")
         drawn = chosen.ids[3:]
         counts.update(drawn)
         sets[tuple(drawn)] += 1
@@ -466,10 +523,29 @@ def test_every_tie_group_member_is_selected_across_seeds_and_ids_are_not_fixed()
 
 
 # --- replay and gates --------------------------------------------------------------------------
+# Draws for a fixed seed override, computed by the pre-mpd-v1 (HEAD 4d687e3) select_v1 from the same stored
+# selection_input: the detector change leaves sampling unchanged for equivalent selection inputs.
+GOLDEN_DRAWS = {
+    "cold_start_exploration": ["L001", "L002", "L003", "L008", "L009", "L012", "L018", "L019", "L027", "L031"],
+    "near_tie_sampling": ["L001", "L002", "L003", "L011", "L017", "L018", "L019", "L025", "L026", "L027"],
+}
+
+
+@pytest.mark.parametrize("overrides,mode", [({}, "cold_start_exploration"), (NEAR_TIE, "near_tie_sampling")])
+def test_sampling_is_unchanged_for_equivalent_selection_inputs(overrides, mode):
+    config = settings(**overrides)
+    req = make_request(PLAN, "golden", "golden")
+    scored = scored_pool(plan_rows(3, 30, 40), req, config)
+    chosen = selection.select(scored, req, config, POOL_KEY, POOL_VERSION, seed_override="fixed")
+    assert chosen.summary.mode == mode and chosen.ids == GOLDEN_DRAWS[mode]
+    assert replay_select(json.loads(json.dumps(chosen.selection_input))).ids == GOLDEN_DRAWS[mode]
+
+
 def test_replay_recomputes_select_v1_from_the_stored_input_only():
-    for rows, kwargs in ((plan_rows(3, 30, 40), {}), (plan_rows(3, 30, 40), {"exited_key": POOL_KEY}),
+    near_tie = {"config": settings(**NEAR_TIE)}
+    for rows, kwargs in ((plan_rows(3, 30, 40), {}), (plan_rows(3, 30, 40), near_tie),
                          ([listing(k) for k in range(1, 41)], {}), ([listing(k) for k in range(1, 8)], {}),
-                         ([listing(k, price=1000.0 * k) for k in range(1, 41)], {})):
+                         ([listing(k, price=1000.0 * k) for k in range(1, 41)], near_tie)):
         criteria = [SOFT_PRICE_MIN] if rows[1].price == 2000.0 else PLAN
         _, chosen = run(rows, criteria, **kwargs)
         stored = json.loads(json.dumps(chosen.selection_input))  # as stored in the run snapshot
@@ -500,7 +576,7 @@ def rank_step(service, conversation, request_id):
     return [s for s in steps if s.get("result", {}).get("tool") == "rank_candidates"][-1]
 
 
-def test_service_round_trip_cold_start_then_exit_with_complete_diagnostics(tmp_path):
+def test_service_round_trip_cold_start_follows_d_and_ignores_the_exit_input(tmp_path):
     service = synthetic_service(tmp_path, plan_rows(3, 30, 40))
     try:
         first = service.recommend(make_request(PLAN, "e2e-1", "e2e"))
@@ -514,14 +590,15 @@ def test_service_round_trip_cold_start_then_exit_with_complete_diagnostics(tmp_p
         assert all(i.selection_note for i in first.recommendations)
         cold = sel.cold_start
         assert cold.evaluated and cold.active and cold.pool_key == first.pool.pool_key
-        assert None not in (cold.coverage_c, cold.boundary_group_b, cold.stability_s)
-        assert cold.thresholds.model_dump() == {"c": 0.8, "b": 5, "s": 0.9}
+        assert (cold.detector, cold.detector_version, cold.candidate_window, cold.evaluated_count) == \
+            ("mean_pairwise_difference", "mpd-v1", WINDOW, WINDOW)
+        assert cold.threshold == THRESHOLD and cold.mean_pairwise_difference < THRESHOLD
         assert sel.tie_group.size == 27 and sel.exploration.candidate_count == TARGET and len(sel.exploration.bins) == BINS
         step = rank_step(service, "e2e", "e2e-1")
         record = step["result"]["data"]["selection"]
         assert step["result"]["data"]["scoring"]["pool_scored"] == first.pool.size == 40
-        assert record["mode"] == sel.mode and record["cold_start"]["trials"] == TRIALS
-        assert record["cold_start"]["stability_seed"] and record["duration_ms"] >= 0
+        assert record["mode"] == sel.mode and record["cold_start"]["duration_ms"] >= 0
+        assert record["cold_start"]["request_cold_start_used"] is False and record["duration_ms"] >= 0
         assert step["result"]["selected_ids"] == [i.listing.listing_id for i in first.recommendations]
         trace = service.store.trace("e2e", "e2e-1")
         assert trace["context"]["selection_policy"]["algorithm_version"] == "select-v1"
@@ -529,30 +606,69 @@ def test_service_round_trip_cold_start_then_exit_with_complete_diagnostics(tmp_p
         assert gate["passed"] and gate["selection"]["mode"] == sel.mode
         snapshot = service.store.current("e2e")
         assert snapshot["selection_input"]["seeds"]["base"] == sel.seed
-        # Simulated orchestrator exit at this pool_key (round 1 did not meet the exit conditions, so an
-        # R7 orchestrator would not record it; injected to exercise near-tie sampling): no price exploration.
+        # A stale remembered exit for this pool_key (sent by an older orchestrator) is accepted and
+        # ignored: D is unchanged, so the second round is still in cold-start exploration.
         second = service.recommend(make_request(PLAN, "e2e-2", "e2e", exited_key=first.pool.pool_key)
                                    .model_copy(update={"previous_state_id": first.state.state_id}))
         assert second.status == "success" and second.pool.cache == "reused"
-        assert second.selection.mode == "near_tie_sampling" and second.selection.exploration is None
-        assert "exited_by_orchestrator" in second.selection.cold_start.reason
-        assert [i.selection_reason for i in second.recommendations] == ["leader"] * 3 + ["tie_group_sample"] * 7
-        # S is identical for identical inputs although the request differs (R3).
-        assert second.selection.cold_start.stability_s == cold.stability_s
+        assert second.selection.mode == "cold_start_exploration" and second.selection.cold_start == cold
+        assert [i.selection_reason for i in second.recommendations] == ["leader"] * 3 + ["price_exploration_sample"] * 7
+        assert rank_step(service, "e2e", "e2e-2")["result"]["data"]["selection"]["cold_start"][
+            "request_cold_start"] == {"exited": True, "exited_pool_key": first.pool.pool_key}
     finally:
         service.close()
 
 
-def test_data_version_only_rebuild_does_not_reenter_cold_start(tmp_path):
-    service = synthetic_service(tmp_path, plan_rows(3, 30, 40))
+def test_later_round_reactivates_when_its_differentiation_is_low(tmp_path):
+    """Status is derived from the current D every round: round 1 is distinguishable (inactive),
+    round 2 on a pool whose top scores are tied (after a data rebuild under the same pool_key, with
+    a stale remembered exit) is active again."""
+    rows = [listing(k, price=1000.0 * k) for k in range(1, 41)]
+    service = synthetic_service(tmp_path, rows, config=settings(**NEAR_TIE))
     try:
-        first = service.recommend(make_request(PLAN, "dv-1", "dv"))
-        service.listing.rows[-1] = service.listing.rows[-1].model_copy(update={"title": "edited"})
-        second = service.recommend(make_request(PLAN, "dv-2", "dv", exited_key=first.pool.pool_key)
+        first = service.recommend(make_request([SOFT_PRICE_MIN], "dv-1", "dv"))
+        assert first.selection.cold_start.evaluated and not first.selection.cold_start.active
+        assert first.selection.mode == "ranked"
+        tied = [r.model_copy(update={"price": 1000.0}) for r in service.listing.rows]
+        service.listing.rows[:] = tied
+        second = service.recommend(make_request([SOFT_PRICE_MIN], "dv-2", "dv", exited_key=first.pool.pool_key)
                                    .model_copy(update={"previous_state_id": first.state.state_id}))
         assert second.pool.cache == "built" and second.pool.data_version != first.pool.data_version
         assert second.pool.pool_key == first.pool.pool_key
-        assert not second.selection.cold_start.active and "exited_by_orchestrator" in second.selection.cold_start.reason
+        cold = second.selection.cold_start
+        assert cold.active and cold.mean_pairwise_difference == 0.0 and cold.reason == "mean_difference_below_threshold"
+        assert second.selection.mode == "cold_start_exploration"
+    finally:
+        service.close()
+
+
+def test_stored_legacy_cold_start_run_replays_as_stored(tmp_path):
+    """A run stored before mpd-v1 (legacy C/B/S selection.cold_start, configuration with the removed keys):
+    resending the same request returns the stored response unchanged through the immutable replay and
+    replay_gate, which recompute only from the stored selection_input. C/B/S is never read as D."""
+    service = synthetic_service(tmp_path, plan_rows(3, 30, 40))
+    try:
+        request = make_request(PLAN, "lg-1", "lg")
+        first = service.recommend(request)
+        assert first.selection.mode == "cold_start_exploration"
+        legacy = {"evaluated": True, "active": True, "reason": "b_above_max; s_below_min", "coverage_c": 1.0,
+                  "boundary_group_b": 27, "stability_s": 0.87, "thresholds": {"c": 0.8, "b": 5, "s": 0.9},
+                  "exit_conditions_met": False, "pool_key": first.pool.pool_key}
+        stored = first.model_dump(mode="json")
+        stored["selection"]["cold_start"] = legacy
+        snapshot = service.store.current("lg")
+        cold = snapshot["configuration"]["cold_start"]
+        del cold["detector"]
+        cold.update({"reenter_on_pool_rebuild": True, "min_evidence_coverage": 0.8, "max_boundary_tie_group_size": 5,
+                     "min_top_k_stability": 0.9, "stability": {"trials": 20, "weight_perturbation_fraction": 0.2}})
+        service.store.db.execute("UPDATE runs_v2 SET response=?, snapshot=? WHERE conversation_id=? AND request_id=?",
+                                 (json.dumps(stored), json.dumps(snapshot), "lg", "lg-1"))
+        service.store.db.commit()
+        again = service.recommend(request)
+        assert again.model_dump(mode="json") == stored  # byte-for-byte the stored legacy response
+        assert again.selection.cold_start.coverage_c == 1.0 and not hasattr(again.selection.cold_start, "detector")
+        assert [i.listing.listing_id for i in again.recommendations] == [i.listing.listing_id for i in first.recommendations]
+        assert service.store.trace("lg")["steps"][0]["mode"] == "immutable_replay"
     finally:
         service.close()
 
@@ -592,15 +708,15 @@ def test_same_request_replays_identically_and_tampering_is_rejected(tmp_path):
 def test_new_request_can_resample_with_the_same_inputs(tmp_path):
     service = synthetic_service(tmp_path, plan_rows(3, 30, 40))
     try:
-        previous, selections, stabilities = None, set(), set()
+        previous, selections, spreads = None, set(), set()
         for r in range(6):
             body = make_request(PLAN, f"rs-{r}", "rs").model_copy(update={"previous_state_id": previous})
             response = service.recommend(body)
             previous = response.state.state_id
             selections.add(tuple(i.listing.listing_id for i in response.recommendations))
-            stabilities.add(response.selection.cold_start.stability_s)
+            spreads.add(response.selection.cold_start.mean_pairwise_difference)
             assert [i.listing.listing_id for i in response.recommendations][:3] == ["L001", "L002", "L003"]
-        assert len(selections) > 1 and len(stabilities) == 1
+        assert len(selections) > 1 and len(spreads) == 1
     finally:
         service.close()
 

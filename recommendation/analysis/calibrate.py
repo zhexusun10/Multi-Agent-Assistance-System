@@ -32,7 +32,7 @@ from ..geography.resolver import resolve
 from ..geography.search import search
 from ..ranking import exploration, selection
 from ..ranking.scoring_v2 import FEATURES, NUMERIC_FEATURES, fit_spread
-from . import stats
+from . import stability, stats
 from .live import Data
 from .scenarios import HARD_SCENARIOS, SOFT_SETS
 
@@ -254,9 +254,9 @@ def geographic_distances(build, rng):
 
 # --- 6. cold start: stability, epsilon, exploration --------------------------------------------
 def stability_and_epsilon(scored, request, settings, label):
-    """C, B per epsilon, S per perturbation fraction (20 trials, fixed seed), the exit decision
-    per epsilon at the configured thresholds, the score noise near the cutoff under the
-    configured fraction (|delta combined| of score ranks K-5 .. K+20 over 20 trials) and, for
+    """C, B per epsilon, S per perturbation fraction (20 trials, fixed seed), the superseded C/B/S
+    exit decision per epsilon at its historical thresholds (stability.C_MIN / B_MAX / S_MIN), the
+    score noise near the cutoff under the calibration fraction stability.FRACTION (|delta combined| of score ranks K-5 .. K+20 over 20 trials) and, for
     every pair in that window, how often the perturbation flips the pair's order by score gap
     (the gap below which two scores are not reliably distinguishable: the epsilon basis)."""
     n = len(scored.ids)
@@ -265,12 +265,11 @@ def stability_and_epsilon(scored, request, settings, label):
     k = K
     ordered = scored.fused.combined[scored.order].tolist()
     c = float(np.mean(scored.fused.soft_coverage[scored.order[:k]])) if scored.soft_criteria else 0.0
-    thresholds = selection.thresholds_of(settings)
     s_by_f = {}
     for fraction in FRACTIONS:
         gen = np.random.Generator(np.random.PCG64(SEED))
-        s_by_f[f"{fraction:g}"] = selection.top_k_stability(scored, k, 20, fraction, gen)
-    fraction = settings.cold_start.stability.weight_perturbation_fraction
+        s_by_f[f"{fraction:g}"] = stability.top_k_stability(scored, k, 20, fraction, gen)
+    fraction = stability.FRACTION
     gen = np.random.Generator(np.random.PCG64(SEED + 1))
     window = scored.order[max(0, k - 5):k + 20]
     width = len(scored.weights.soft_criteria) + 4 + len(scored.weights.features)
@@ -281,7 +280,7 @@ def stability_and_epsilon(scored, request, settings, label):
     flips = np.zeros_like(gaps)
     for _ in range(20):
         u = gen.uniform(-fraction, fraction, size=width)
-        combined = scored.combine(selection.perturbed_weights(scored.weights, u)).combined
+        combined = scored.combine(stability.perturbed_weights(scored.weights, u)).combined
         deltas.extend(np.abs(combined[window] - base).tolist())
         p = combined[window]
         flips += (p[:, None] < p[None, :])
@@ -294,11 +293,11 @@ def stability_and_epsilon(scored, request, settings, label):
                                            "flip_rate": float(flips[cell].mean()) if cell.any() else None}
     s = s_by_f.get(f"{fraction:g}")
     if s is None:
-        s = selection.top_k_stability(scored, k, 20, fraction, np.random.Generator(np.random.PCG64(SEED)))
+        s = stability.top_k_stability(scored, k, 20, fraction, np.random.Generator(np.random.PCG64(SEED)))
     per_eps = {}
     for e in EPSILONS:
         start, end = stats.tie_group_bounds(ordered, k, e)
-        per_eps[f"{e:g}"] = {"B": end - start, "exit": selection.exit_conditions(c, end - start, s, thresholds)}
+        per_eps[f"{e:g}"] = {"B": end - start, "exit": stability.exit_conditions(c, end - start, s)}
     return {"label": label, "pool": n, "C": c, "S_by_fraction": s_by_f, "per_epsilon": per_eps,
             "cutoff_noise": stats.summarize(deltas, percentiles=(50, 75, 90)),
             "pair_flip_rate_by_gap": flip_by_gap,
@@ -307,19 +306,20 @@ def stability_and_epsilon(scored, request, settings, label):
 
 def stability_convergence(scored, settings, label):
     """Variance of the S estimate vs number of trials (30 independent seeds per trial count),
-    agreement of the exit test S >= s_min with a 1000-trial reference, and the cost per trial."""
+    agreement of the historical exit test S >= stability.S_MIN with a 1000-trial reference, and the
+    cost per trial."""
     n = len(scored.ids)
     if n <= K:
         return {"label": label, "small_pool": True}
-    fraction = settings.cold_start.stability.weight_perturbation_fraction
-    s_min = settings.cold_start.min_top_k_stability
-    reference = selection.top_k_stability(scored, K, REFERENCE_TRIALS, fraction, np.random.Generator(np.random.PCG64(SEED)))
+    fraction = stability.FRACTION
+    s_min = stability.S_MIN
+    reference = stability.top_k_stability(scored, K, REFERENCE_TRIALS, fraction, np.random.Generator(np.random.PCG64(SEED)))
     out = {"label": label, "pool": n, "reference_trials": REFERENCE_TRIALS, "S_reference": reference, "per_trials": {}}
     for trials in TRIALS:
         estimates, started = [], time.perf_counter()
         for seed in range(CONVERGENCE_SEEDS):
             gen = np.random.Generator(np.random.PCG64(SEED + 1000 + seed))
-            estimates.append(selection.top_k_stability(scored, K, trials, fraction, gen))
+            estimates.append(stability.top_k_stability(scored, K, trials, fraction, gen))
         per_trial_ms = (time.perf_counter() - started) * 1000 / (CONVERGENCE_SEEDS * trials)
         agree = sum((e >= s_min) == (reference >= s_min) for e in estimates) / len(estimates)
         out["per_trials"][str(trials)] = {**stats.estimate_spread(estimates), "decision_agreement": agree,

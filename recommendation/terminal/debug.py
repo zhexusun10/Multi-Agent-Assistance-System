@@ -32,7 +32,7 @@ from pathlib import Path
 from recommendation.contracts.errors import RecommendationError
 from recommendation.contracts.request import RecommendationRequest
 from ..config import RecommendationConfig
-from ..settings.loader import lookup
+from ..settings.loader import REMOVED_KEYS, lookup
 from ..tools.registry import PIPELINE
 from ..tracing import slim
 
@@ -85,8 +85,9 @@ Step mode (--controller scripted only):
   run-until <stage>                      run stages up to <stage>: resolve_entities, build_pool,
                                          get_geographic_evidence, rank_candidates, final_gate
   step reset                             discard the step session
-Notes: cold start is exited only when C (soft evidence coverage of the top K), B and S meet their
-thresholds; without soft criteria C = 0, so cold start cannot be exited without soft criteria.
+Notes: cold start (detector mpd-v1) is active while D, the mean pairwise difference of the top
+cold_start.detector.candidate_window scores, is below cold_start.detector.min_mean_pairwise_difference;
+it is re-evaluated every round and a staged cold_start exit is ignored. D measures score spread only.
 Live mode prints progress events (tool start/end with counts and duration, model turns, gate)."""
 
 
@@ -722,8 +723,13 @@ def show_cold_start(t, arg):
     else:
         raise ValueError("This response has no selection summary")
     _print({"cold_start": cold, "details": record})
-    print("Cold start is active when enabled, the pool exceeds result_limit and the exit conditions "
-          "(C >= c, B <= b, S >= s) are not met; without soft criteria C = 0, so cold start cannot be exited.")
+    if "detector" not in cold:
+        print("Stored legacy C/B/S cold-start diagnostics (superseded detector), shown as stored; they are not "
+              "reinterpreted as D.")
+        return
+    print("Cold start is active when enabled, the pool exceeds result_limit and D (mean pairwise difference of the "
+          "top candidate_window scores) is below the threshold; D equal to the threshold is inactive. D measures "
+          "score spread only, not whether the requirements are sufficient.")
 
 
 def show_selection(t, arg):
@@ -786,8 +792,11 @@ def stored_configuration(data, current):
 
     A trace-only key added after the run was stored (P7: trace.max_string_chars) is absent from
     older snapshots. Trace keys never affect results (they are outside selection_hash), so the
-    missing ones are taken from the current settings and named in the output; every other key
-    must be present and valid exactly as stored."""
+    missing ones are taken from the current settings and named in the output. A snapshot from
+    before the mpd-v1 cold-start detector (2026-10-24) holds the removed C/B/S keys: they are
+    dropped and cold_start.detector is taken from the current settings (named as filled), so the
+    recompute's cold-start status follows the current detector. Every other key must be present
+    and valid exactly as stored."""
     data = json.loads(json.dumps(data))
     filled = []
     if isinstance(data.get("trace"), dict):
@@ -795,6 +804,14 @@ def stored_configuration(data, current):
             if key not in data["trace"]:
                 data["trace"][key] = value
                 filled.append(f"trace.{key}")
+    cold = data.get("cold_start")
+    if isinstance(cold, dict) and "detector" not in cold:
+        legacy = [k for k in cold if f"cold_start.{k}" in REMOVED_KEYS]
+        if legacy:
+            for key in legacy:
+                del cold[key]
+            cold["detector"] = current.to_data()["cold_start"]["detector"]
+            filled.append("cold_start.detector")
     source = "stored run configuration" + (f" + current {', '.join(filled)}" if filled else "")
     return RecommendationConfig.from_data(data, source), filled
 
@@ -810,9 +827,14 @@ def inspect_listing(t, arg):
         cached = t.store.cached(t.conversation, response.request_id)
         request = RecommendationRequest.model_validate(cached[2]["request"])
         config, filled = stored_configuration(cached[2]["configuration"], t.config)
-        if filled:
-            print(f"Note: the stored configuration predates {', '.join(filled)} (trace-only, never result-"
+        trace_filled = [k for k in filled if k.startswith("trace.")]
+        if trace_filled:
+            print(f"Note: the stored configuration predates {', '.join(trace_filled)} (trace-only, never result-"
                   "affecting); the current value is used for this recompute.")
+        if "cold_start.detector" in filled:
+            print("Note: the stored configuration uses the superseded C/B/S cold-start keys; they are dropped and the "
+                  "current cold_start.detector is used, so this recompute's cold-start status and selection follow "
+                  "the current detector, not the original run.")
         session = StepSession(t, request, config, None, validate=False, label="recompute")
         session.run_until("rank_candidates")
         d, recomputed = session.dispatcher, True

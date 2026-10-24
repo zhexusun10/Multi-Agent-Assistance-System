@@ -221,7 +221,7 @@ export class WorkflowService{
             const behavior_context=await collectBehaviorContext(tx,s.session_id,operation.created_at,interest.ready);
             const request=recommendationRequestSchema.parse({contract_version:'1.0',request_id:requestId,conversation_id:s.session_id,requirements_version:s.requirements_version,requirements:s.requirements,feedback,behavior_context,...(previous?{previous_state_id:previous}:{}),result_limit:RECOMMENDATION_DISPLAY_LIMIT});
             await tx.query('INSERT INTO recommendation_calls(id,session_id,operation_id,request,feedback_cutoff,interest_context) VALUES($1,$2,$3,$4,$5,$6)',[requestId,s.session_id,env.operation_id,JSON.stringify(request),operation.created_at,JSON.stringify(interest)]);
-            // Cold-start exit state is read once here and queued with B's body, so retries resend the identical native body.
+            // The stored cold-start compat state (ignored natively since mpd-v1) is read once here and queued with B's body, so retries resend the identical native body.
             s.latest_request_id=requestId;await next('b',{request,cold_start:s.recommendation_cold_start??NOT_EXITED,interpretation_notes:draft.interpretation_notes||[]},'recommend');
           }
         }else if(task.agent==='b'){

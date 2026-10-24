@@ -6,7 +6,9 @@ same evaluation under the pre-P7 provisional settings (iqr, epsilon 0.02).
 
 **Not claimed.** Price sampling does not reduce scoring cost: every mode scores the full pool
 every round (the `scoring` stage is the same order of magnitude in all three modes), and cold
-start adds the stability diagnostics. Nothing here measures user satisfaction. The users are
+start adds the stability diagnostics. (2026-10-24: measured with the superseded C/B/S detector, 20 stability
+trials per evaluated round; mpd-v1 runs no perturbation trials, so the `cold_start_diagnostics` timings and the
+exit counts below do not describe the current code; not re-measured.) Nothing here measures user satisfaction. The users are
 rule-based simulators, and the "simulated match" row describes the simulator's own hidden
 preference, not real users.
 

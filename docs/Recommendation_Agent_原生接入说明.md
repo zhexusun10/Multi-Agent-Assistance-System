@@ -135,7 +135,7 @@ K = min(result_limit, 探索池大小)。与第 K 名分差不超过 ε/2（ε =
 - 冷启动：在领先项之后取前 max(|G|, 30) 个候选，按整个探索池的价格分位（5 层，同价边界合并，无价格单列）分层、按比例不放回抽样（`cold_start_exploration`）。
 - 探索池不超过 result_limit 时全部按分数返回（`small_pool`）。
 
-冷启动退出条件：前 K 项软需求证据覆盖度均值 C ≥ 0.80、G 的大小 B ≤ 5、权重扰动 20 次后前 K 集合平均重合度 S ≥ 0.90；扰动只用于诊断，不改正式分数。退出状态由编排器保存（`cold_start.exited` / `exited_pool_key`），硬条件变化导致探索池重建时重新评估。**没有软需求时 C = 0，冷启动无法退出。** 随机种子由会话、请求、探索池版本和结果相关配置的 hash 派生并保存；同一请求重放返回原结果，新请求可以重新抽样。展示顺序为领先项在前、抽中项在后，各自按分数顺序；每套房源带 `selection_reason` 和 `selection_note`。价格分层抽样不减少评分计算量（评分始终针对完整探索池）。
+冷启动判定（mpd-v1，2026-10-24 起取代原 C/B/S 退出条件和编排器记忆的退出状态）：取全池顺序 O 中前 W 个合格候选（W = `cold_start.detector.candidate_window` = 30，含领先项；不足 W 个时取全部）的正式融合分数，不做逐列表归一化，计算平均两两绝对差 D = 2/(n(n−1)) · Σ_{i<j}|s_i − s_j|。D < `cold_start.detector.min_mean_pairwise_difference`（0.01，用户确认的起始值，未校准）时冷启动生效；D 等于阈值时不生效，按浮点数精确比较、无容差。该阈值是实用的分数容差，不是统计显著性；D 只反映前 W 名分数的区分度，不证明需求已足够，也不说明推荐是否正确。每轮都按当轮 D 重新判定；请求中的 `cold_start.exited` / `exited_pool_key` 仍可接受但不参与判定，编排器不再记录新的退出，运行时也不再做权重扰动试验。未启用、探索池为空或不超过 result_limit 时不评估。**没有软需求且没有行为信号时所有分数相同，D = 0，冷启动保持生效。** 随机种子由会话、请求、探索池版本和结果相关配置的 hash 派生并保存；同一请求重放返回原结果，新请求可以重新抽样。展示顺序为领先项在前、抽中项在后，各自按分数顺序；每套房源带 `selection_reason` 和 `selection_note`。价格分层抽样不减少评分计算量（评分始终针对完整探索池）。
 
 ### 3.6 地理证据与最终校验
 
@@ -170,7 +170,7 @@ SQLite 保留 request_id 绑定、会话 v2 state、runs（紧凑快照，不含
 | 无显式utility字段 | utility | 普通threshold；soft距离lte且尺度>0时proximity；不猜价格最小化 |
 | previous_state_id | previous_state_id | 应用`native:<id>`解包；旧baseline状态不传进新引擎。应用传输入口按原生实际已提交head对齐；入站body与实际调用body分别留档，同一request_id只绑定一次 |
 | result_limit | result_limit | 应用请求10，原生按 min(10, result_limit) 返回，探索池不足时返回实际数量；不是从更多结果中再截断重排 |
-| active_view且payload.source=sample；VIEWING 动作；会话冷启动状态 | feedback.previous_round.browsing、feedback.appointments、cold_start（契约 2.0 快照） | 编排器在 agent-A 应用事务中按上一轮已采用的原生推荐汇总每个展示房源的样例浏览秒数（无样例记为 missing），连同全部 MANUAL_SENT/MANUAL_REPLIED/CONFIRMED 看房预约（每房源一条）和冷启动退出状态一次性写入 `recommendation_calls.feedback_snapshot`，重试原样复用；原生端不累积历史反馈 |
+| active_view且payload.source=sample；VIEWING 动作；会话冷启动状态 | feedback.previous_round.browsing、feedback.appointments、cold_start（契约 2.0 快照） | 编排器在 agent-A 应用事务中按上一轮已采用的原生推荐汇总每个展示房源的样例浏览秒数（无样例记为 missing），连同全部 MANUAL_SENT/MANUAL_REPLIED/CONFIRMED 看房预约（每房源一条）和冷启动退出状态一次性写入 `recommendation_calls.feedback_snapshot`，重试原样复用；原生端不累积历史反馈（2026-10-24 起 `cold_start` 仅为兼容字段，原生不用于判定，编排器不再写入新的退出状态） |
 | save / shortlist / explicit_attribute_feedback /普通浏览遥测 | 不伪造对应事件 | 保留本地原事件，并提示原生本轮未用于打分 |
 
 **原生没有对应字段**：bathrooms、land_area_sqft、build_year、region_code、postal_code筛选、tenure_category、mrt_distance_m、mrt_walking_mins、rental_scope、move_in_date、amenities。注意 ListingSummary 可以返回邮编，但不代表原生支持邮编筛选。
@@ -281,7 +281,7 @@ $env:PYTHONUTF8='1'
 - 原生只有10类输入字段；上述缺失字段明确保留为应用待核实条件。这不会获得旧基线对这些字段的过滤能力。
 - 原生地理目录覆盖 LTA 站点（按最近出口计距）、URA 规划区与大区多边形和 Neo4j 中 active 的 OSM Place 点位；约60%的房源缺坐标，地理硬条件下这些房源判 unknown 并排除出探索池，行为相似度的地理特征退回 district 比较。不实现区中心距离，不用出口代替站点实体。
 - 契约 2.0 原生只返回已验证推荐（最多10套），没有待核实候选。应用附加硬条件把原生已选项转为待核实时，仍保留原生得分、选择原因和原始分组元数据。
-- 没有软需求时冷启动无法退出（C = 0）；有软需求时也常因近似同分组过大而保持冷启动（见 CALIBRATION.md）。
+- 没有软需求且没有行为信号时所有分数相同，D = 0，冷启动保持生效；前 30 名分数差异小（D 低于阈值）时每轮都可能进入冷启动探索。阈值 0.01 尚未用真实数据校准；CALIBRATION.md 的冷启动数据针对已停用的 C/B/S 判定。
 - sample浏览是课程测试输入，界面明确标注为手动样例，不宣称自动采集真实用户行为；收藏不参与原生兴趣模型。
 - 数据为历史快照，当前可租和真实路线仍不能从历史字段推断。
 

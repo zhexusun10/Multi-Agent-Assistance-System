@@ -20,6 +20,10 @@ V2 = "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_s
 EXAMPLES = ("Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, "
             "result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates")
 TESTS = "Assertions changed one at a time for intended v2 rule changes, intent kept (listed per phase in VALIDATION.md)"
+MPD = "Cold-start detector mpd-v1 (2026-10-24, MIGRATION.md section 0.5): "
+# Commit ff40fb6 recorded this line by hand in the registry; kept here so regenerating does not drop it.
+SCORING_REVISION = ("User-requested scoring revision: identity similarity 1, preserve informative hard-constrained features, "
+                    "current-pool min/max normalization; update associated offline expectations.")
 
 DESCRIPTIONS = {
     "recommendation/agent/controller.py": ("DEF11 controller terminal output and final-gate recovery; " + V2, [
@@ -37,7 +41,9 @@ DESCRIPTIONS = {
         "behavior_context checks: uncounted viewing signals rejected (INVALID_FEEDBACK); feedback events validated, recorded, never scored",
         "Profile records the behaviour snapshot (cumulative browsing, interest_eligible, viewing drafts) and the v2 browsing weights; weighted-v1 duration cap and event merging removed"]),
     "recommendation/examples/config.json": (V2 + ": settings experiment file", [
-        "Rewritten in the v2 settings schema: identical to recommendation.yaml except cold_start.enabled false (not a production source)"]),
+        "Rewritten in the v2 settings schema: identical to recommendation.yaml except cold_start.enabled false (not a production source)",
+        SCORING_REVISION,
+        MPD + "C/B/S thresholds, reenter_on_pool_rebuild and stability removed; cold_start.detector {candidate_window 30, min_mean_pairwise_difference 0.01}"]),
     "recommendation/examples/generate_contract_examples.py": (V2 + ": contract examples", [
         "Feedback-only and preference-update examples use a behavior_context built from the preceding response (fixed as_of); result_limit 10"]),
     "recommendation/examples/run.py": (V2 + ": example runner", ["Replays the example flow with a behavior_context instead of ViewingEvents"]),
@@ -51,10 +57,13 @@ DESCRIPTIONS = {
         "Previews bounded by trace.preview_rows instead of 4; ScorePreview uses soft/behaviour names",
         "ToolResult carries selected_ids, completed_stages and compact data"]),
     "recommendation/ranking/ranker.py": (V2 + ": scoring reference", [
-        "Rewritten as the scalar fused-v2 reference (soft_utility, feature_similarity, pair_similarity) reading the settings; weighted-v1 constants removed"]),
+        "Rewritten as the scalar fused-v2 reference (soft_utility, feature_similarity, pair_similarity) reading the settings; weighted-v1 constants removed",
+        SCORING_REVISION]),
     "recommendation/README.md": (V2 + ": documentation", [
         "Main behavior_context request, pool cache / data_version / final gate, fused-v2 scoring, select-v1 selection and cold start described",
-        "Settings section: single YAML source with confirmed / existing-default / experiment-result labels (provisional = not yet calibrated, pending) and TUNING.md; terminal debugging commands"]),
+        "Settings section: single YAML source with confirmed / existing-default / experiment-result labels (provisional = not yet calibrated, pending) and TUNING.md; terminal debugging commands",
+        SCORING_REVISION,
+        MPD + "cold start described as D < threshold over the top candidate_window scores, re-evaluated every round; exit fields compat-only"]),
     "recommendation/repositories/geographic_repository.py": (V2 + ": native geography", [
         "Native catalog (LTA stations + exits, URA areas / regions, OSM places), resolver and Python haversine distances",
         "Neo4j NEAR_PLACE edges, point.distance and the 1 m tolerance comparison no longer used"]),
@@ -72,12 +81,14 @@ DESCRIPTIONS = {
         "resolve_reference through tracing/slim.py; '<trace>/pool' from pool_cache; legacy v1 trace note"]),
     "recommendation/terminal/__main__.py": (V2 + ": terminal", [
         "Requirements / behavior_context flow (main contract); recommend always mints a new request_id (except retrying a failed pending one)",
-        "Debug commands dispatched to terminal/debug.py; --config; staged cold_start / result_limit; response summary"]),
+        "Debug commands dispatched to terminal/debug.py; --config; staged cold_start / result_limit; response summary",
+        MPD + "summary prints the detector status (reason, D, threshold, window); stored legacy C/B/S responses shown as stored; exit hint removed"]),
     "recommendation/terminal/acceptance.py": (V2 + ": acceptance companion", [
         "Ported to the merged request: behavior_context, the same snapshot resent under a new request ID (request-independent outputs compared), scoring summary",
-        "--config defaults to RECOMMENDATION_CONFIG"]),
-    "recommendation/tests/test_policy_controller.py": (V2 + ": tests", [TESTS]),
-    "recommendation/tests/test_recommendation.py": (V2 + ": tests", [TESTS]),
+        "--config defaults to RECOMMENDATION_CONFIG",
+        MPD + "docstring: D is request-independent (no stability seed)"]),
+    "recommendation/tests/test_policy_controller.py": (V2 + ": tests", [TESTS, SCORING_REVISION]),
+    "recommendation/tests/test_recommendation.py": (V2 + ": tests", [TESTS, SCORING_REVISION]),
     "recommendation/tests/test_terminal_repositories.py": (V2 + ": tests", [TESTS]),
     "recommendation/tools/dispatcher.py": (V2 + ": tool dispatcher", [
         "Pipeline tools with stage dependencies and invalidation, typed per-tool arguments, resolution budgets and bind_entity application",
@@ -89,19 +100,23 @@ DESCRIPTIONS = {
     "recommendation/contracts/feedback.py": (V2 + ": feedback contract", [
         "main's ViewingEvent (source sample | web_detail) kept; documented as validated, not scored (behavior_context holds the same time cumulatively)"]),
     "recommendation/contracts/request.py": (V2 + ": request contract", [
-        "Main request contract 1.0 (2.0 bodies rejected) with feedback events and behavior_context; result_limit None -> settings default, max 10; recommendation-owned cold_start input; event conversation and unique IDs checked"]),
+        "Main request contract 1.0 (2.0 bodies rejected) with feedback events and behavior_context; result_limit None -> settings default, max 10; recommendation-owned cold_start input; event conversation and unique IDs checked",
+        MPD + "ColdStartInput docstring: accepted for compatibility, ignored by the detector"]),
     "recommendation/contracts/requirements.py": (V2 + ": requirements contract", [
         "A distance/commute criterion accepts a category alone, or a destination ID and/or a name (ID/name conflict -> ambiguous)"]),
     "recommendation/contracts/response.py": (V2 + ": response contract", [
         "contract_version 2.0, recommendations max 10, unverified_candidates and state.feedback_version removed",
         "resolution / pool / selection summaries; execution config and selection identity; evidence one entry per (evidence_id, criterion_id)"]),
-    "recommendation/contracts/README.md": (V2 + ": documentation", ["Interface description updated (main request + behavior_context + cold_start, response 2.0 summaries, no unverified list); links fixed"]),
+    "recommendation/contracts/README.md": (V2 + ": documentation", ["Interface description updated (main request + behavior_context + cold_start, response 2.0 summaries, no unverified list); links fixed",
+        MPD + "cold_start request field compat-only; selection.cold_start union (mpd-v1 or stored legacy C/B/S)"]),
     "recommendation/contracts/schemas/feedback.schema.json": (V2 + ": generated schema", ["Regenerated by python -m recommendation.schemas (ViewingEvent, sample | web_detail)"]),
-    "recommendation/contracts/schemas/request.schema.json": (V2 + ": generated schema", ["Regenerated by python -m recommendation.schemas (main request 1.0 + behavior_context + cold_start, result_limit <= 10)"]),
-    "recommendation/contracts/schemas/response.schema.json": (V2 + ": generated schema", ["Regenerated by python -m recommendation.schemas (response 2.0)"]),
+    "recommendation/contracts/schemas/request.schema.json": (V2 + ": generated schema", ["Regenerated by python -m recommendation.schemas (main request 1.0 + behavior_context + cold_start, result_limit <= 10)",
+        MPD + "ColdStartInput description"]),
+    "recommendation/contracts/schemas/response.schema.json": (V2 + ": generated schema", ["Regenerated by python -m recommendation.schemas (response 2.0)",
+        MPD + "selection.cold_start oneOf ColdStartDiagnostics (mpd-v1) / LegacyColdStartDiagnostics"]),
 }
 for name in ("clarification", "error", "feedback-only-update", "initial-search", "no-match", "preference-update", "success"):
-    DESCRIPTIONS[f"recommendation/examples/contracts/{name}.json"] = (V2 + ": contract example", [EXAMPLES])
+    DESCRIPTIONS[f"recommendation/examples/contracts/{name}.json"] = (V2 + ": contract example", [EXAMPLES, MPD + "regenerated (new selection_hash; mpd-v1 cold_start)"])
 
 
 def main():

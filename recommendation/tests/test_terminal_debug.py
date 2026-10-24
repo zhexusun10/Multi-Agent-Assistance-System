@@ -49,6 +49,9 @@ def fresh_memory():
     pool_cache_module.MEMORY.clear()
 
 
+# Pre-P7 epsilon / scaling values. Its cold_start block was migrated to the mpd-v1 detector
+# (2026-10-24, the loader rejects the C/B/S keys) with a deliberately high threshold 0.5, above the
+# transcript pool's D (1/3), so the transcript still exercises cold-start exploration.
 PRE_P7_SETTINGS = Path(__file__).with_name("fixtures") / "settings-pre-p7-provisional.json"
 
 
@@ -576,7 +579,8 @@ def test_show_trace_debug_flag_and_help(tmp_path, capsys):
         with pytest.raises(ValueError):
             t.command("show-trace --bogus")
         help_text = run("help")
-        assert "without soft criteria C = 0, so cold start cannot be exited without soft criteria" in help_text
+        assert "cold start (detector mpd-v1) is active while D, the mean pairwise difference of the top" in help_text
+        assert "re-evaluated every round and a staged cold_start exit is ignored" in help_text
         for command in debug.COMMANDS:
             assert command in help_text
         with pytest.raises(ValueError, match="No committed run"):
@@ -645,6 +649,19 @@ def test_inspection_recomputes_a_run_stored_before_trace_max_string_chars(tmp_pa
     del incomplete["selection"]["tie_max_score_span"]  # result-affecting keys are never filled in
     with pytest.raises(Exception, match="tie_max_score_span"):
         debug.stored_configuration(incomplete, RecommendationConfig.default())
+    # A snapshot from before the mpd-v1 detector holds the removed C/B/S keys: they are dropped and the
+    # current cold_start.detector is used (named as filled); everything else stays as stored.
+    legacy = json.loads(json.dumps(snapshot["configuration"]))
+    del legacy["cold_start"]["detector"]
+    legacy["cold_start"].update({"reenter_on_pool_rebuild": True, "min_evidence_coverage": 0.8,
+                                 "max_boundary_tie_group_size": 5, "min_top_k_stability": 0.9,
+                                 "stability": {"trials": 20, "weight_perturbation_fraction": 0.2}})
+    with pytest.raises(Exception, match="removed with the C/B/S cold-start detector"):
+        RecommendationConfig.from_data(legacy, "pre-mpd-v1 snapshot")
+    config, filled = debug.stored_configuration(legacy, RecommendationConfig.default())
+    assert filled == ["trace.max_string_chars", "cold_start.detector"]
+    assert config.cold_start.detector == RecommendationConfig.default().cold_start.detector
+    assert config.selection.tie_max_score_span == snapshot["configuration"]["selection"]["tie_max_score_span"]
 
 
 def test_export_show_trace_and_show_scores_use_the_runs_own_trace_after_a_replay(tmp_path, capsys):
