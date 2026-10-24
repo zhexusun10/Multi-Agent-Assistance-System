@@ -11,7 +11,7 @@ export function recoverExplanation(bundle:ExplanationBundle,req:Requirements,rec
   const placeName=(name:string|undefined)=>({'MRT或公交站':'MRT or bus stop','最近的MRT或公交站':'Nearest MRT or bus stop','超市':'Supermarket','CLEMENTI':'Clementi'} as Record<string,string>)[name||'']||name||'target destination';
   const paragraphs:ExplanationOutput['paragraphs']=[];
   if(!g.target_listing_ids.length)return validateExplanation({version:'2.0',focus_listing_ids:[],paragraphs:[{listing_id:null,text:english?'There are no homes to display for these conditions. Which condition would you like to adjust?':'There are no homes to display for these conditions. Which condition would you like to adjust?',support_refs:['results:empty']}]},bundle);
-  paragraphs.push({listing_id:null,text:english?'These details may help you choose between the homes:':'These details may help you choose between the homes:',support_refs:['guide:purpose']});
+  paragraphs.push({listing_id:null,text:g.continuation?'Here are the additional homes to consider:':english?'These details may help you choose between the homes:':'These details may help you choose between the homes:',support_refs:['guide:purpose']});
   for(const id of g.target_listing_ids){
     const profile=g.profiles.find(p=>p.listing_id===id)!,row=rows.find(r=>r.listing.listing_id===id)!;
     const refs=new Set<string>(profile.core_refs),parts:string[]=[];

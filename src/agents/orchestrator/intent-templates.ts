@@ -3,6 +3,7 @@ export const INTENT_TEMPLATES={
   search:["I want to find a rental home that suits me","Help me shortlist some homes",'Find a home to rent'],
   property_search:["I want to rent near Clementi with a monthly budget of SGD 2500","Find a room with a private bathroom within five kilometres of NUS",'Find a condo near NUS under SGD 2000 per month'],
   requirement_update:["Change the budget to 2000 and keep the other requirements","Remove the private-bathroom requirement and recommend again",'Change my budget to 2500 and search again'],
+  recommendation_more:["Show me five more homes","These are not suitable; please keep recommending","Recommend some more with the same requirements"],
   knowledge:["I would like some general rental advice","Explain the rental rules",'Explain Singapore rental rules'],
   rental_knowledge:["What is the minimum HDB rental period in Singapore?","How is stamp duty calculated for a condo lease, and how are deposits usually agreed?",'What are the minimum rental periods for HDB and private homes?'],
   explanation:["Explain the recommendations","I would like to know why these homes were selected",'Explain the recommendations'],
@@ -16,10 +17,11 @@ export const INTENT_TEMPLATES={
   other:["What is the weather like today?","Write a program unrelated to renting",'Tell me a joke unrelated to housing'],
 } as const;
 export type IntentCategory=keyof typeof INTENT_TEMPLATES;
-export const INTENT_GROUPS:Record<IntentCategory,string>={search:'search',property_search:'search',requirement_update:'search',knowledge:'knowledge',rental_knowledge:'knowledge',explanation:'explanation',recommendation_explanation:'explanation',followup:'followup',contact_salesperson:'followup',arrange_viewing:'followup',recommendation_summary:'followup',conversation_summary:'followup',followup_status:'followup',other:'other'};
+export const INTENT_GROUPS:Record<IntentCategory,string>={search:'search',property_search:'search',requirement_update:'search',recommendation_more:'more',knowledge:'knowledge',rental_knowledge:'knowledge',explanation:'explanation',recommendation_explanation:'explanation',followup:'followup',contact_salesperson:'followup',arrange_viewing:'followup',recommendation_summary:'followup',conversation_summary:'followup',followup_status:'followup',other:'other'};
 export const GENERIC_INTENTS=new Set<IntentCategory>(['search','knowledge','explanation','followup']);
 export const SPECIFIC_INTENTS=new Set<IntentCategory>(['property_search','requirement_update','rental_knowledge','recommendation_explanation','contact_salesperson','arrange_viewing','recommendation_summary','conversation_summary','followup_status']);
 export const SPECIFIC_PATTERNS:Partial<Record<IntentCategory,string[]>>={
+  recommendation_more:['show me more','five more','more homes','more properties','keep recommending','another batch','more options'],
   contact_salesperson:['经纪人','联系草稿','联系核实草稿','联系核实','咨询草稿','salesperson','draft a message'],
   arrange_viewing:['看房询问','约看房','预约看房','我想看第一套','我要看这套','我想看这套','viewing'],
   conversation_summary:['当天会话','今天的会话','今天的对话','经纪人的对话','会话总结','跟进总结','daily summary'],

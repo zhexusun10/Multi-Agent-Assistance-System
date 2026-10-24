@@ -1,4 +1,4 @@
-# Qiju SG — Multi-Agent Rental Workspace (English edition)
+# NestFinder SG — Multi-Agent Rental Workspace (English edition)
 
 An independent English-language copy of the Singapore rental assistant. Search and revise rental requirements through conversation, compare the recommended homes, inspect full property details, refine preferences through cards, prepare agent enquiries and viewing proposals, analyse replies, and export summaries.
 
@@ -34,11 +34,11 @@ English is used for the interface, generated summaries/enquiries, clarification 
 ## Agent workflow
 
 1. **Requirement Agent:** model-first complete semantic interpretation, two retrieved few-shot examples, strict JSON Schema/Zod validation, verbatim provenance, controlled enums, deterministic unit conversion, real-place resolution, effective-state preview, independent semantic review and bounded repair. Only explicit additions/updates/removals change existing requirements. Missing data never silently removes a real request.
-2. **Recommendation Agent:** Jiangshan's native Recommendation 2.0 implementation, with the complete eligible pool, four-stage tools, fused-v2 soft/behaviour scoring, select-v1 ranking/tie sampling/cold-start price exploration, immutable native exchange and final replay/read checks. Request contract remains 1.0 with behaviour/cold-start extensions; response is 2.0. The application requests Top5 directly. Raw exchanges retain the native full contract.
+2. **Recommendation Agent:** Jiangshan's native Recommendation 2.0 implementation, with the complete eligible pool, four-stage tools, fused-v2 soft/behaviour scoring, select-v1 ranking/tie sampling/cold-start price exploration, immutable native exchange and final replay/read checks. Request contract remains 1.0 with behaviour/cold-start extensions; response is 2.0. The application requests up to ten homes and initially displays five. A continuation request reveals up to five additional homes without replacing the first batch; raw exchanges retain the native full contract.
 3. **Explanation Agent:** an evidence-based property adviser. Read additional SQL details and nearby graph facts only for the selected IDs; introduce real rent, area, cohort positions, layout and useful transport/shopping/food/park features, including facts the user did not request. Vary the narrative rather than imposing a fixed price-area-MRT script. Selection advantages are not invented ranking causes. Structure, per-home coverage, sources, numbers and route claims are validated before independent review. On writing failure, retain diagnostics and use the existing independently validated evidence recovery, honestly marked as not model-reviewed.
 4. **Follow-up Agent:** editable first-person enquiry/viewing drafts, manual sending confirmation, original reply capture, claim/negation/contradiction analysis, next enquiries, reminders, calendar and summaries. Drafting, sending and booking are separate states. A model has no permission to send or confirm an appointment on its own.
 
-The orchestrator retains its 70% LLM / 20% template-vector / 10% pattern mixture, with the existing fallback weights. Templates and retrieval algorithms are unchanged apart from English text and collection isolation. Knowledge retrieval retains vector/BM25, RRF, model reranking and sentence-level exact quotation checks.
+The orchestrator retains its 70% LLM / 20% template-vector / 10% pattern mixture, with the existing fallback weights. The continuation intent has dedicated English examples and context boundaries; the existing voting weights and retrieval algorithms are retained. Knowledge retrieval retains vector/BM25, RRF, model reranking and sentence-level exact quotation checks.
 
 ## Recommended searches
 
@@ -57,9 +57,13 @@ A card follows the native `selection.cold_start.active` signal, never a mock sco
 
 Cards distinguish exact/minimum/maximum bedroom count, hard versus nice-to-have, area units, property types and preferred rent. **Keep my current budget** retains the cap and adds no preferred-rent condition. Only an explicit submission resumes Requirement → Recommendation → Explanation. Editing forms, reading details or closing them never silently reranks the list. Submitted cards remain read-only in conversation history.
 
+## More recommendations
+
+After the initial five homes, say “recommend more rentals for me” or “these do not work, keep recommending” to add up to five distinct homes. The right-hand list keeps the original five and grows to ten; the introduction describes only the new homes, numbered 6–10. Existing cards and scroll position are retained. Refreshing the page preserves the expanded list. A changed requirement starts a new five-home presentation. Shortages are not padded and this result is capped at ten homes. See [continuation design and offline checks](docs/more-recommendations.md).
+
 ## Detail viewing and viewing intentions
 
-Opening details gives a home the main work area while retaining the conversation. The image gallery and known fields are grouped together; missing fields do not occupy rows. Return restores list/scroll position. Numbered navigation uses the same Top5 scope as introductions and selection.
+Opening details gives a home the main work area while retaining the conversation. The image gallery and known fields are grouped together; missing fields do not occupy rows. Return restores list/scroll position. Numbered navigation follows the server-approved visible list: five initially, up to ten after a continuation request.
 
 Only eligible active detail viewing is recorded. Hidden tabs, minimised/unfocused windows, activity elsewhere and extended inactivity pause timing. The existing quality thresholds remain 15 seconds per home, at least two homes and 60 seconds total. Activity never changes the current list automatically. A later explicit recommendation request carries cumulative viewing and `book_viewing_listings` through `behavior_context` to the native algorithm.
 

@@ -1,5 +1,5 @@
 import type {RecommendationResponse,Requirements} from '../../contracts/recommendation-v1.js';
-import {displayedCandidates,RECOMMENDATION_DISPLAY_LIMIT} from '../../domain/selection.js';
+import {displayedCandidates} from '../../domain/selection.js';
 import type {ExplanationBundle,ExplanationFact} from './contracts.js';
 import type {ExplanationEnrichment} from './enrichment.js';
 import {describeCohort,unitRentAssessment,type CohortObservation} from './cohort.js';
@@ -20,7 +20,7 @@ export function explanationTargets(bundle:ExplanationBundle){
   }
   const first=q.match(/前\s*([两二三四五六七八\d]+)\s*套|first\s+(two|three|\d+)\s+(?:homes|properties|listings)/i);
   if(first){const words:Record<string,number>={two:2,three:3,...ordinal},n=words[first[1]||first[2]]??Number(first[1]||first[2]);for(const l of bundle.listings.slice(0,n))selected.add(l.listing_id);}
-  return (selected.size?bundle.listings.filter(l=>selected.has(l.listing_id)):bundle.listings.slice(0,RECOMMENDATION_DISPLAY_LIMIT)).map(l=>l.listing_id);
+  return (selected.size?bundle.listings.filter(l=>selected.has(l.listing_id)):bundle.listings).map(l=>l.listing_id);
 }
 
 /** Adds decision facts to a COPY. Criterion outcomes and native ordering stay
@@ -200,7 +200,7 @@ export function addDecisionSupport(source:ExplanationBundle,req:Requirements,rec
     }
   }
   const target_listing_ids=explanationTargets(bundle),explain_order=/排序|排名|排(?:在|到|前|后)|顺序|为什么第|\b(?:rank\w*|order\w*)\b/i.test(bundle.question);
-  const focused=target_listing_ids.length!==Math.min(RECOMMENDATION_DISPLAY_LIMIT,rows.length)||explain_order||/只(?:问|看|说|谈|比较)|仅(?:问|看|比较)|比较前[两二2]套|对比前[两二2]套|\b(?:only|versus)\b/i.test(bundle.question);
+  const focused=target_listing_ids.length!==rows.length||explain_order||/只(?:问|看|说|谈|比较)|仅(?:问|看|比较)|比较前[两二2]套|对比前[两二2]套|\b(?:only|versus)\b/i.test(bundle.question);
   bundle.decision_support={mode:focused?'focused':'guide',target_listing_ids,explain_order,profiles};
   add('guide:purpose','limitation',"Introduce each current home’s real features and supported relative advantages, adding useful known facts beyond the user’s requests to help them choose. Do not reorder or guarantee all requirements are satisfied.",[]);
   bundle.required_refs=rows.length?['availability:current',...(explain_order?['ranking:method',...(bundle.ranking.behavior_features.length?['ranking:behavior']:[])]:[])]:['results:empty'];

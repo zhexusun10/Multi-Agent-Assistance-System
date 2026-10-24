@@ -13,9 +13,15 @@ import {addDecisionSupport} from './decision-support.js';
 import type {ExplanationEnrichment} from './enrichment.js';
 import {recoverExplanation} from './recovery.js';
 
-export async function generateExplanation(req:Requirements,rec:RecommendationResponse,dataset:string,question:string,model:BaseChatModel|undefined,skill:string,archive?:unknown,enrichment:ExplanationEnrichment[]=[],saveFailure?:(diagnostic:unknown)=>Promise<string>){
+export async function generateExplanation(req:Requirements,rec:RecommendationResponse,dataset:string,question:string,model:BaseChatModel|undefined,skill:string,archive?:unknown,enrichment:ExplanationEnrichment[]=[],saveFailure?:(diagnostic:unknown)=>Promise<string>,continuation?:{previous_count:number;listing_ids:string[]}){
   if(!model)throw Error('EXPLANATION_MODEL_REQUIRED');
   const bundle=addDecisionSupport(makeExplanationBundle(req,rec,question,archive),req,rec,enrichment);
+  if(continuation){
+    const visible=bundle.listings.map(l=>l.listing_id),targets=continuation.listing_ids;
+    if(!targets.length||new Set(targets).size!==targets.length||JSON.stringify(targets)!==JSON.stringify(visible.slice(continuation.previous_count)))throw Error('EXPLANATION_CONTINUATION_IDENTITY');
+    bundle.decision_support={...bundle.decision_support!,mode:'guide',explain_order:false,target_listing_ids:targets,continuation};
+    bundle.required_refs=['availability:current'];
+  }
   try{
     const generated=await explainBundle(bundle,model,skill);
     return {...buildExplanation(req,rec,dataset,''),summary:generated.text,question,narrative:generated.output,generation:{...generated.metadata,enrichment_refs:enrichment.map(e=>e.source_ref)}};
@@ -35,7 +41,7 @@ export async function explainBundle(bundle:ExplanationBundle,model:BaseChatModel
   const examples=selectExplanationExamples(bundle.question,P.few_shot_count,contextId),started=Date.now(),repairs:string[]=[],packed=explanationModelInput(bundle);
   const writer=model.withStructuredOutput(explanationOutputSchema,{name:'write_rental_explanation_v2',method:'functionCalling',strict:true});
   const auditor=model.withStructuredOutput(explanationAuditSchema,{name:'audit_rental_explanation_v2',method:'functionCalling',strict:true});
-  const messages=[new SystemMessage(explanationSystemPrompt(skill)),...examples.flatMap(e=>[new HumanMessage(JSON.stringify({question:e.question,example_facts:e.context})),new AIMessage(JSON.stringify(e.output))]),new HumanMessage(JSON.stringify(packed.input))];
+  const messages=[new SystemMessage(explanationSystemPrompt(skill)+'\nContinuation: initial results show five homes. On an additional-batch request, the visible cohort may expand to ten. When decision_support.continuation is present, introduce only target_listing_ids (the new homes), using their actual displayed positions, and say briefly that these are additional choices. Do not repeat earlier homes, restart numbering, invent missing results or reorder. Cohort comparisons refer to the currently displayed cohort.\n'),...examples.flatMap(e=>[new HumanMessage(JSON.stringify({question:e.question,example_facts:e.context})),new AIMessage(JSON.stringify(e.output))]),new HumanMessage(JSON.stringify(packed.input))];
   // Reassert the user's language after every repair. Evidence and audit feedback
   // may be Chinese; neither is a request to change the reply language.
   const languageGuard=new SystemMessage(english

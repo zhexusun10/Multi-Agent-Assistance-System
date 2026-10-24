@@ -1,0 +1,20 @@
+# Additional recommendations (five to ten)
+
+## Interaction
+
+A new search or requirement change displays at most five homes. After recommendations exist, requests such as “show me more”, “these do not work, keep recommending”, or a generic recommendation request continue the current result. The list expands by up to five unique homes, with a ten-home maximum for this recommendation. Previously displayed homes retain their values and order. Insufficient results are never padded. At ten, the user is told the list is exhausted and can change requirements for a new search.
+
+## Implementation
+
+1. The existing LLM intent classifier gains `recommendation_more`, three few-shot templates, a strict allowed intent value, contextual examples and a routing contract. Current requirements and `has_recommendation` distinguish first search, continuation, changed requirements and explanation. Keyword/vector channels remain secondary; they do not re-extract requirements on a continuation. A missing current result routes to search.
+2. A normal recommendation call requests the native service's supported `result_limit=10`. Native scoring, select-v1 selection, evidence, grouping and scores are unchanged. The complete response is persisted; the public projection initially exposes five according to the existing display/group order. The native exchange is never cropped or edited.
+3. App-only optional metadata `presentation={limit:5|10,batch_size:5,loaded_limit:10}` records the chosen visible range. Missing metadata means five for backward compatibility. New sessions reserve the tail once; continuation does not run extraction or rescore homes. Legacy sessions without a reserved tail refresh from canonical saved requirements and may refresh their old list while expanding to at most ten.
+4. The orchestrator stages the expanded response for Explanation. Its evidence package compares the visible cohort, but `decision_support.continuation` fixes target IDs to the new suffix and preserves displayed positions 6–10. The normal structured LLM writer, reference/numeric/coverage checks, semantic reviewer and validated evidence recovery remain active. The new cards and explanation are adopted in one state transaction after source/version checks.
+5. The server determines the visible range for public state, detail selection, enrichment and summaries. The browser renders the entire approved list without applying another five-row cap; continuation appends cards while retaining existing nodes and scroll position. The render key includes the presentation limit and visible IDs, so a same-request expansion is rendered. State persists across refresh. Requirement updates start a fresh five-home presentation.
+6. Session row locks, request ID idempotence, a pending-continuation check, source operation/version guards and the ten-home cap prevent duplicate additions and stale results overwriting a newer search.
+
+## Verification and cost
+
+New local tests cover display scope, shortage, legacy compatibility, contextual intent routing, the writer/reviewer path, fallback validation, isolated PostgreSQL A/B/C lifecycle, concurrent/replayed requests, stale source rejection and reset. Playwright exercises real Chinese/English frontend assets with intercepted business APIs, verifying 5→10, same-source repaint, reload, navigation and tenth-home detail/save/contact. PostgreSQL tests use isolated temporary schemas and deterministic model/recommender stubs. No paid model API is invoked by these tests. This is not a claim of live-provider semantic accuracy on every phrasing.
+
+Commands: `npm run build`; `node --import tsx --test tests/recommendation-more.test.ts`; set `MORE_DB_TEST=1` then run `node --import tsx scripts/with-project-env.mjs tests/recommendation-more-db.test.ts`; run `.venv/Scripts/python.exe scripts/test_more_recommendations_ui.py` with the local web service available.

@@ -1,4 +1,6 @@
 import { randomUUID } from 'node:crypto';
+import type {PoolClient} from 'pg';
+import {displayLimit,nextRecommendationBatch,withPresentation,RECOMMENDATION_RESERVOIR_LIMIT} from '../shared/recommendation-display.js';
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { z } from 'zod';
@@ -20,7 +22,7 @@ import {AgentOrchestrator} from '../agents/orchestrator/agent-orchestrator.js';
 import { describeAgentFailure,recommendationFailureMessage } from './errors.js';
 import {LocationService} from '../adapters/locations.js';
 import {DEFAULT_PROXIMITY_SCALE_M} from './geo-intake.js';
-import {displayedCandidates,resolveListingSelection,RECOMMENDATION_DISPLAY_LIMIT} from './selection.js';
+import {displayedCandidates,resolveListingSelection} from './selection.js';
 import {FollowupService,singaporeDate} from './followup.js';
 import {ManualFollowupService} from './manual-followup.js';
 import {notesFromFollowupQuery} from '../shared/followup-message.js';
@@ -69,6 +71,37 @@ export class WorkflowService{
         const answer="The full listing dataset has been updated. Search again using your current requirements before requesting explanations or follow-up. Earlier conversations and drafts are retained.";
         this.store.message(s,'assistant',answer);await tx.query("UPDATE domain_operations SET status='completed' WHERE id=$1",[op]);await this.store.saveState(tx,s);await this.store.event(tx,sessionId,{type:'workflow_result',payload:{intent,answer}},`dataset-changed:${op}`);return {assignments:[],answer};
       }
+      if(kind==='more'){
+        const finish=async(answer:string)=>{
+          this.store.message(s,'assistant',answer);
+          await tx.query("UPDATE domain_operations SET status='completed' WHERE id=$1",[op]);
+          await this.store.saveState(tx,s);
+          await this.store.event(tx,sessionId,{type:'workflow_result',payload:{intent,answer}},`more:${op}`);
+          return {assignments:[],answer};
+        };
+        if(!s.recommendation)return finish('The requirements or results changed while this request was being processed. Please ask for more again.');
+        if((sourceRequestId&&sourceRequestId!==s.latest_request_id)||s.latest_request_id!==reservation.snapshot.latest_request_id||s.active_operation_id!==reservation.snapshot.active_operation_id||s.requirements_version!==reservation.snapshot.requirements_version)return finish('The requirements or results changed while this request was being processed. Please ask for more again.');
+        const current=(await tx.query('SELECT status FROM domain_operations WHERE id=$1',[s.active_operation_id])).rows[0];
+        if(s.pending||current?.status==='queued')return finish('Your current search is still being updated. Please wait for it to finish before requesting more homes.');
+        const duplicate=(await tx.query("SELECT 1 FROM domain_operations WHERE session_id=$1 AND kind='more' AND status='queued' AND id<>$2 AND intent_plan->>'source_request_id'=$3 LIMIT 1",[sessionId,op,s.latest_request_id])).rowCount;
+        if(duplicate)return finish('I am already preparing the additional homes for this list.');
+        const needsRefresh=!s.recommendation.presentation||staleDataset||s.recommendation.request_id!==s.latest_request_id||s.recommendation.requirements_version!==s.requirements_version;
+        if(!needsRefresh&&displayLimit(s.recommendation)>=RECOMMENDATION_RESERVOIR_LIMIT)return finish('You are already viewing all ten homes in this recommendation. Change your requirements to start a new search.');
+        if(needsRefresh){
+          // Old five-result sessions have no reserved tail: use the same canonical
+          // requirements directly, without asking the extractor to reinterpret them.
+          await tx.query("UPDATE domain_operations SET kind='search',intent_plan=$2 WHERE id=$1",[op,JSON.stringify({...plan,intent,continuation_refresh:true})]);
+          s.active_operation_id=op;
+          const created=(await tx.query('SELECT created_at FROM domain_operations WHERE id=$1',[op])).rows[0].created_at;
+          const assignments=await this.queueRecommendation(tx,s,op,created);
+          await this.store.saveState(tx,s);return {assignments,answer:'Refreshing the saved recommendation under the current requirements to show up to ten homes.'};
+        }
+        const batch=nextRecommendationBatch(s.recommendation);
+        if(!batch.listing_ids.length)return finish('There are no additional homes available in this result under the current requirements. You can adjust the conditions to explore other options.');
+        await tx.query('UPDATE domain_operations SET intent_plan=$2 WHERE id=$1',[op,JSON.stringify({...plan,intent,source_request_id:s.latest_request_id,source_operation_id:s.active_operation_id})]);
+        const assignments=await this.store.queue(tx,s,op,'c',{kind:'more',query,requirements:s.requirements,recommendation:batch.recommendation,continuation:{previous_count:batch.previous_count,listing_ids:batch.listing_ids},base_limit:displayLimit(s.recommendation)},'more-explain');
+        await this.store.saveState(tx,s);return {assignments,answer:'Preparing five more homes with the same requirements.'};
+      }
       if(kind==='clarify'||((kind==='explain'||kind==='summary')&&!s.recommendation)){
         const answer=kind==='clarify'?"I can help find homes, answer Singapore rental questions, explain recommendations or prepare enquiries, viewings and summaries. Tell me what you would like to do.":"Search for homes or return to a conversation with recommendations, then choose which homes to explain or summarise.";
         this.store.message(s,'assistant',answer);await tx.query("UPDATE domain_operations SET status='completed' WHERE id=$1",[op]);await this.store.saveState(tx,s);await this.store.event(tx,sessionId,{type:'workflow_result',payload:{intent,answer}},`intent-clarify:${op}`);return {assignments:[],answer};
@@ -100,6 +133,17 @@ export class WorkflowService{
       }).catch(()=>{/* Preserve the original failure if the database itself is unavailable. */});
       throw error;
     }
+  }
+  private async queueRecommendation(tx:PoolClient,s:DomainState,operationId:string,cutoff:Date|string,notes:string[]=[]){
+    const interest=await prepareBrowserFeedback(tx,s,cutoff);
+    const feedback=(await tx.query('SELECT body FROM listing_feedback WHERE session_id=$1 AND consumed_request_id IS NULL AND (created_at <= $2 OR event_id=$3) ORDER BY created_at,event_id',[s.session_id,cutoff,`explicit:${operationId}`])).rows.map(x=>x.body);
+    const requestId=randomUUID(),previous=s.recommendation?.state.state_id;
+    const behavior_context=await collectBehaviorContext(tx,s.session_id,cutoff,interest.ready);
+    // Reserve native results once; only the first batch is initially public.
+    const request=recommendationRequestSchema.parse({contract_version:'1.0',request_id:requestId,conversation_id:s.session_id,requirements_version:s.requirements_version,requirements:s.requirements,feedback,behavior_context,...(previous?{previous_state_id:previous}:{}),result_limit:RECOMMENDATION_RESERVOIR_LIMIT});
+    await tx.query('INSERT INTO recommendation_calls(id,session_id,operation_id,request,feedback_cutoff,interest_context) VALUES($1,$2,$3,$4,$5,$6)',[requestId,s.session_id,operationId,JSON.stringify(request),cutoff,JSON.stringify(interest)]);
+    s.latest_request_id=requestId;
+    return this.store.queue(tx,s,operationId,'b',{request,cold_start:s.recommendation_cold_start??NOT_EXITED,interpretation_notes:notes},'recommend');
   }
   async recoverRouting(){const rows=(await this.store.pool.query("SELECT session_id,request_id,query,source_request_id FROM domain_operations WHERE kind='routing' AND status='queued' AND COALESCE((intent_plan->>'routing_started_at')::timestamptz,created_at)<now()-interval '30 seconds' ORDER BY created_at LIMIT 2")).rows;await Promise.allSettled(rows.map(r=>this.plan(r.query,r.session_id,r.request_id,r.source_request_id||undefined)));}
   context(sessionId:string,env:TaskEnvelope):ToolContext{return {sessionId,operationId:env.operation_id,agent:env.agent,dataset:this.dataset,deadline:Date.now()+120000,calls:0};}
@@ -135,7 +179,7 @@ export class WorkflowService{
       const rec=body.recommendation;
       const archive=rec.native?await this.store.loadPayload(rec.native.exchange_ref,sessionId):undefined;
       const enrichment=await this.explanationEnricher.load(rec,ctx);
-      payload={explanation:await generateExplanation(body.requirements,rec,this.dataset,body.query||'',this.model,profile.instructions,archive,enrichment,diagnostic=>this.store.savePayload(sessionId,env.operation_id,diagnostic))};
+      payload={explanation:await generateExplanation(body.requirements,rec,this.dataset,body.query||'',this.model,profile.instructions,archive,enrichment,diagnostic=>this.store.savePayload(sessionId,env.operation_id,diagnostic),body.continuation),...(body.continuation?{expanded_recommendation:rec,base_limit:body.base_limit}:{})};
     }else if(body.kind==='daily')payload={kind:'daily',date:singaporeDate()};
     else if(body.kind==='knowledge'||body.kind==='status'){
       if(body.kind==='status'){
@@ -176,8 +220,8 @@ export class WorkflowService{
   }
   private interpretFeedback(query:string,rec:any,source:string|null,op:string):Feedback[]{
     if(!rec||source!==rec.request_id)return [];
-    const m=query.match(/第([一二三四五\d])套.*?(太小|不喜欢|喜欢|面积小)/);if(!m)return [];
-    const map:Record<string,number>={"一":1,"二":2,"三":3,"四":4,"五":5};const candidate=displayedCandidates(rec)[(map[m[1]]??Number(m[1]))-1];if(!candidate)return [];
+    const m=query.match(/第([一二三四五六七八九十]|10|[1-9])套.*?(太小|不喜欢|喜欢|面积小)/);if(!m)return [];
+    const map:Record<string,number>={"一":1,"二":2,"三":3,"四":4,"五":5,"六":6,"七":7,"八":8,"九":9,"十":10};const candidate=displayedCandidates(rec)[(map[m[1]]??Number(m[1]))-1];if(!candidate)return [];
     return [feedbackSchema.parse({event_id:`explicit:${op}`,listing_id:candidate.listing.listing_id,occurred_at:new Date().toISOString(),event_type:'explicit_attribute_feedback',payload:{attribute:/小/.test(m[2])?'floor_area_sqft':'listing',sentiment:m[2]==='喜欢'?'positive':'negative',quote:m[0]}})];
   }
   async emitDueReminders(){
@@ -200,7 +244,7 @@ export class WorkflowService{
       const operation=(await tx.query('SELECT * FROM domain_operations WHERE id=$1 AND session_id=$2',[env.operation_id,s.session_id])).rows[0];
       if(!operation)throw Error('Task operation missing');
       const isSearch=operation.kind==='search';
-      if((isSearch&&s.active_operation_id!==env.operation_id)||s.requirements_version!==env.requirements_version){await tx.query("INSERT INTO handled_results(task_id,status) VALUES($1,'superseded')",[task.id]);await tx.query("UPDATE domain_operations SET status='superseded' WHERE id=$1 AND status='queued'",[env.operation_id]);return [];}
+      if((isSearch&&s.active_operation_id!==env.operation_id)||(operation.kind==='more'&&(operation.intent_plan.source_request_id!==s.latest_request_id||operation.intent_plan.source_operation_id!==s.active_operation_id))||s.requirements_version!==env.requirements_version){await tx.query("INSERT INTO handled_results(task_id,status) VALUES($1,'superseded')",[task.id]);await tx.query("UPDATE domain_operations SET status='superseded' WHERE id=$1 AND status='queued'",[env.operation_id]);return [];}
       const wake:{sessionId:string;agent:TaskEnvelope['agent']}[]=[];
       try{
         if(t.status==='failed'){const failure=describeAgentFailure(task.agent,String(t.error||''));throw new BusinessError(failure.code,failure.message);}
@@ -215,18 +259,12 @@ export class WorkflowService{
             const requirements=mergeRequirements(s.requirements,draft);if(hash(requirements)!==hash(s.requirements)){s.requirements_version++;s.requirements=requirements;await tx.query('INSERT INTO requirement_revisions(session_id,version,body,sources) VALUES($1,$2,$3,$4)',[s.session_id,s.requirements_version,JSON.stringify(requirements),JSON.stringify(draft.sources)]);}
             s.pending=null;
             for(const fb of payload.feedback??[]) {const event=feedbackSchema.parse(fb);await tx.query('INSERT INTO listing_feedback(session_id,event_id,body) VALUES($1,$2,$3) ON CONFLICT DO NOTHING',[s.session_id,event.event_id,JSON.stringify(event)]);}
-            const interest=await prepareBrowserFeedback(tx,s,operation.created_at);
-            const feedback=(await tx.query('SELECT body FROM listing_feedback WHERE session_id=$1 AND consumed_request_id IS NULL AND (created_at <= $2 OR event_id=$3) ORDER BY created_at,event_id',[s.session_id,operation.created_at,`explicit:${env.operation_id}`])).rows.map(x=>x.body);
-            const requestId=randomUUID(),previous=s.recommendation?.state.state_id;
-            const behavior_context=await collectBehaviorContext(tx,s.session_id,operation.created_at,interest.ready);
-            const request=recommendationRequestSchema.parse({contract_version:'1.0',request_id:requestId,conversation_id:s.session_id,requirements_version:s.requirements_version,requirements:s.requirements,feedback,behavior_context,...(previous?{previous_state_id:previous}:{}),result_limit:RECOMMENDATION_DISPLAY_LIMIT});
-            await tx.query('INSERT INTO recommendation_calls(id,session_id,operation_id,request,feedback_cutoff,interest_context) VALUES($1,$2,$3,$4,$5,$6)',[requestId,s.session_id,env.operation_id,JSON.stringify(request),operation.created_at,JSON.stringify(interest)]);
-            // Cold-start exit state is read once here and queued with B's body, so retries resend the identical native body.
-            s.latest_request_id=requestId;await next('b',{request,cold_start:s.recommendation_cold_start??NOT_EXITED,interpretation_notes:draft.interpretation_notes||[]},'recommend');
+            const assignments=await this.queueRecommendation(tx,s,env.operation_id,operation.created_at,draft.interpretation_notes||[]);
+            wake.push(...assignments.map(x=>({sessionId:s.session_id,agent:x.agent})));
           }
         }else if(task.agent==='b'){
           const call=(await tx.query('SELECT request,interest_context FROM recommendation_calls WHERE id=$1 AND operation_id=$2',[s.latest_request_id,env.operation_id])).rows[0];if(!call)throw Error('Recommendation call missing');
-          const response=validateResponse(payload,call.request);
+          const response=withPresentation(validateResponse(payload,call.request),operation.intent_plan?.continuation_refresh?10:5);
           const interestNotice=browserInterestNotice(!!call.interest_context?.ready,response);if(interestNotice)response.warnings.push(interestNotice);
           for(const e of response.evidence){if(e.source_kind==='data_api'){const evidence=(await tx.query('SELECT 1 FROM domain_payloads WHERE ref=$1 AND session_id=$2',[e.source_ref,s.session_id])).rowCount;if(!evidence)throw Error('Evidence source cannot be resolved');}}
           await tx.query('UPDATE recommendation_calls SET response=$2 WHERE id=$1',[s.latest_request_id,JSON.stringify(response)]);
@@ -235,7 +273,14 @@ export class WorkflowService{
           if(response.status==='needs_clarification'){const questions=response.clarifications.map(x=>x.question);this.store.message(s,'assistant',questions.join('\n'));await this.store.event(tx,s.session_id,{type:'clarification',payload:{questions}},`clarify:${task.id}`);}
           else{s.recommendation=response;s.recommendation_cold_start=coldStartAfterAdoption(s.recommendation_cold_start,response);await next('c',{requirements:s.requirements,recommendation:response,query:operation.query},'explain');}
         }else if(task.agent==='c'){
-          const source=payload.explanation.source_request_id;const sourceOperation=(await tx.query('SELECT operation_id FROM recommendation_calls WHERE id=$1',[source])).rows[0]?.operation_id;if(source!==s.latest_request_id||sourceOperation!==s.active_operation_id)throw new BusinessError('RESULT_STALE',"Recommendations have changed; this explanation is no longer current.");s.explanation=payload.explanation;this.store.message(s,'assistant',payload.explanation.summary);
+          const source=payload.explanation.source_request_id;const sourceOperation=(await tx.query('SELECT operation_id FROM recommendation_calls WHERE id=$1',[source])).rows[0]?.operation_id;if(source!==s.latest_request_id||sourceOperation!==s.active_operation_id)throw new BusinessError('RESULT_STALE',"Recommendations have changed; this explanation is no longer current.");
+          if(payload.expanded_recommendation){
+            if(!s.recommendation||displayLimit(s.recommendation)!==payload.base_limit||hash(withPresentation(s.recommendation,10))!==hash(payload.expanded_recommendation))throw new BusinessError('RESULT_STALE','The requirements or results changed while this request was being processed. Please ask for more again.');
+            // The new cards and their explanation are committed in one transaction.
+            s.recommendation=payload.expanded_recommendation;
+            await tx.query('UPDATE recommendation_calls SET response=$2 WHERE id=$1',[s.latest_request_id,JSON.stringify(s.recommendation)]);
+          }
+          s.explanation=payload.explanation;this.store.message(s,'assistant',payload.explanation.summary);
           const refinementId=await this.refinement.generate(tx,s);if(refinementId)s.messages.at(-1)!.refinement_id=refinementId;
           await this.store.event(tx,s.session_id,{type:'workflow_result',payload:{explanation:payload.explanation,source_request_id:source}},`result:${task.id}`);
           if(isSearch&&operation.intent_plan?.deferred_summary)await next('d',{kind:'summary',requirements:s.requirements,recommendation:s.recommendation},'followup-summary');

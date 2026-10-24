@@ -35,7 +35,8 @@ with sync_playwright() as p:
         if path == '/api/config':
             value = {'dataset': fixture['dataset'], 'today': '2026-10-24', 'action_mode': 'simulation'}
         elif path == '/api/state':
-            value = state
+            value = deepcopy(state)
+            value['recommendation']['unverified_candidates'] = []
         elif path == '/api/events':
             route.fulfill(status=200, content_type='text/event-stream', body=': offline UI test\n\n')
             return

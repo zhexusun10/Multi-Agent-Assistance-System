@@ -18,6 +18,7 @@ export type ExplanationBundle={
   required_refs:string[];
   ranking:{mode:string;active_criteria:string[];behavior_features:string[];ranked_listing_ids:string[];filter_only_criteria:string[];unscored_listing_ids:string[]};
   decision_support?:{
+    continuation?:{previous_count:number;listing_ids:string[]};
     mode:'guide'|'focused';target_listing_ids:string[];explain_order:boolean;
     profiles:{listing_id:string;position:number;title:string;known_refs:string[];extra_refs:string[];additional_refs:string[];highlight_refs:string[];caution_refs:string[];core_refs?:string[]}[];
   };

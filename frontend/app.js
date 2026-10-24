@@ -8,7 +8,7 @@ import {ViewTracker} from './view-tracker.js?v=20261023-behavior2';
 import {PropertyDetailView} from './property-detail-view.js?v=20261022-soft-preferences';
 import {SessionSync,readSse as sse} from './session-sync.js?v=20261024-presentation';
 import {SessionHistoryUI} from './session-history.js?v=20261023-behavior';
-import {displayedCandidates} from './recommendation-display.js?v=20261024-top5';
+import {publicRecommendationCandidates as displayedCandidates} from './public-recommendations.js?v=20261024-append10';
 const $=id=>document.getElementById(id);
 const el=(tag,className,text)=>{const e=document.createElement(tag);if(className)e.className=className;if(text!==undefined)e.textContent=text;return e;};
 let owner=localStorage.getItem('rental.owner');if(!owner){owner=crypto.randomUUID()+crypto.randomUUID();localStorage.setItem('rental.owner',owner);}
@@ -36,7 +36,7 @@ async function deleteSession(id){try{
 }catch(e){toast(e.message);}}
 async function switchSession(id){propertyDetail.close();await Promise.race([tracker.flush(),new Promise(resolve=>setTimeout(resolve,1800))]);pendingActionSelection=null;streamController?.abort();session=id;localStorage.setItem('rental.session',id);await refresh();cursor=state.last_event_id;remember();listen();}
 async function newSession(){try{propertyDetail.close();pendingActionSelection=null;streamController?.abort();state=await api('sessions',{});session=state.session_id;cursor=0;localStorage.setItem('rental.session',session);remember();render();listen();$('query').focus();}catch(e){toast(e.message);}}
-function message(role,text,knowledge,refinementId){const row=el('div','message '+role);row.append(el('span','message-avatar',role==='user'?"You":'⌂'));const content=el('div','message-content');content.append(el('div','message-name',role==='user'?"You":"Qiju · Rental Assistant"),el('div','message-text',text));if(knowledge?.citations?.length){const details=el('details','knowledge-sources');details.append(el('summary','',`View excerpts and sources (${knowledge.citations.length})`));for(const [i,c] of knowledge.citations.entries()){const section=el('section','knowledge-source');section.append(el('strong','',`[${i+1}] ${c.title} · ${c.heading}`),el('blockquote','',c.quote),el('small','muted',`Sources reviewed: ${c.checked_at} · ${c.scope==='system_help'?"Workspace guide":"Official guidance and workspace advice; check the applicable scope"}`));for(const source of c.sources){if(source.url.startsWith('project://'))section.append(el('div','muted',source.title));else if(safeUrl(source.url)){const a=el('a','',source.title);a.href=source.url;a.target='_blank';a.rel='noopener noreferrer';section.append(a);}}details.append(section);}content.append(details);}if(refinementId)refinementUI.mount(refinementId,content);row.append(content);return row;}
+function message(role,text,knowledge,refinementId){const row=el('div','message '+role);row.append(el('span','message-avatar',role==='user'?"You":'⌂'));const content=el('div','message-content');content.append(el('div','message-name',role==='user'?"You":"NestFinder · Rental Assistant"),el('div','message-text',text));if(knowledge?.citations?.length){const details=el('details','knowledge-sources');details.append(el('summary','',`View excerpts and sources (${knowledge.citations.length})`));for(const [i,c] of knowledge.citations.entries()){const section=el('section','knowledge-source');section.append(el('strong','',`[${i+1}] ${c.title} · ${c.heading}`),el('blockquote','',c.quote),el('small','muted',`Sources reviewed: ${c.checked_at} · ${c.scope==='system_help'?"Workspace guide":"Official guidance and workspace advice; check the applicable scope"}`));for(const source of c.sources){if(source.url.startsWith('project://'))section.append(el('div','muted',source.title));else if(safeUrl(source.url)){const a=el('a','',source.title);a.href=source.url;a.target='_blank';a.rel='noopener noreferrer';section.append(a);}}details.append(section);}content.append(details);}if(refinementId)refinementUI.mount(refinementId,content);row.append(content);return row;}
 function renderMessages(){
   const box=$('messages'),keys=state.messages.map(m=>JSON.stringify(m));
   const sameSession=messageRenderSession===session;
@@ -80,16 +80,22 @@ function listingCard(c,verified,displayRank=c.rank){
 function renderRecommendations(){
   // Recommendation snapshots are immutable. Unrelated SSE/message updates must
   // not replace a card between pointer-down and click or discard its open details.
-  const key=JSON.stringify([session,state.latest_request_id,state.requirements_version,state.active_operation_id,state.recommendation_operation_id,state.recommendation?.request_id,state.presentation_version,config?.dataset]);
+  const key=JSON.stringify([session,state.latest_request_id,state.requirements_version,state.active_operation_id,state.recommendation_operation_id,state.recommendation?.request_id,state.recommendation?.presentation?.limit,displayedCandidates(state.recommendation).map(c=>c.listing.listing_id),state.presentation_version,config?.dataset]);
   if(key===recommendationRenderKey)return;recommendationRenderKey=key;
-  const box=$('recommendations');box.replaceChildren();listingNavigator.setCards([]);const rec=state.recommendation,visible=displayedCandidates(rec);$('result-count').textContent=visible.length;if(!rec){empty(box,'⌂',"Your recommendations will appear here. Tell me your budget and rental preferences to begin.");return;}
+  const box=$('recommendations'),rec=state.recommendation,visible=displayedCandidates(rec);
+  const sourceKey=JSON.stringify([session,state.latest_request_id,state.requirements_version,state.active_operation_id,state.recommendation_operation_id,rec?.request_id,config?.dataset]);
+  const oldCards=[...box.querySelectorAll('.listing-card')];
+  const append=box.dataset.sourceKey===sourceKey&&oldCards.length>0&&visible.length>oldCards.length&&oldCards.every((card,index)=>card.dataset.listingId===visible[index]?.listing.listing_id);
+  if(!append){box.replaceChildren();listingNavigator.setCards([]);}
+  box.dataset.sourceKey=sourceKey;
+  $('result-count').textContent=visible.length;if(!rec){empty(box,'⌂',"Your recommendations will appear here. Tell me your budget and rental preferences to begin.");return;}
   if(rec.state.coverage.dataset_version!==config?.dataset){$('result-count').textContent='0';empty(box,'↻',"The listing dataset has been updated. Your earlier results remain in the conversation history. Search again with your current requirements.");box.append(button("Search with current requirements",()=>sendQuery("Search with current requirements")));return;}
   if(rec.request_id!==state.latest_request_id||rec.requirements_version!==state.requirements_version||state.recommendation_operation_id!==state.active_operation_id){$('result-count').textContent='0';empty(box,'↻',"Updating recommendations for your latest requirements. Please wait before following up on the previous results.");return;}
-  for(const [index,c] of visible.entries())box.append(listingCard(c,rec.recommendations.includes(c),index+1));
+  for(const [index,c] of visible.entries())if(!append||index>=oldCards.length)box.append(listingCard(c,rec.recommendations.includes(c),index+1));
   if(!visible.length)box.append(el('p','muted',"No matching homes were found. Adjust your requirements and try again."));
-  listingNavigator.setCards([...box.querySelectorAll('.listing-card')]);
+  listingNavigator.setCards([...box.querySelectorAll('.listing-card')],{preservePosition:append});
   observeExposures();
-  for(const suggestion of rec.relaxation_suggestions){const c=state.requirements.criteria.find(c=>c.criterion_id===suggestion.criterion_id);if(c?.field==='price')box.append(button(`Change the budget to ${suggestion.proposed_value} SGD/month and search again`,()=>sendQuery(`Change my budget to ${suggestion.proposed_value} SGD`)));}
+  if(!append)for(const suggestion of rec.relaxation_suggestions){const c=state.requirements.criteria.find(c=>c.criterion_id===suggestion.criterion_id);if(c?.field==='price')box.append(button(`Change the budget to ${suggestion.proposed_value} SGD/month and search again`,()=>sendQuery(`Change my budget to ${suggestion.proposed_value} SGD`)));}
 }
 const localTime=value=>value?new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Singapore',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(value)).replace(' ','T'):'';
 const isoTime=value=>value?new Date(value+':00+08:00').toISOString():null;
