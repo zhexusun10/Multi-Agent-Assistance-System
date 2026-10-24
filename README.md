@@ -89,11 +89,21 @@ See [English migration and verification](docs/English_Edition_Migration.md) for 
 
 ## Testing and acceptance evidence
 
-Start with the [Group 42 QA handoff](evaluation/README.md) for the current English
-report, workbook, ranking metrics and complete original evidence. The recorded
-40-scenario recommendation benchmark tests main `4d687e3` with the 9 October
-listing snapshot. Later English-edition and continuation changes require their
-own verification; these recorded results do not certify the current main.
+**Final acceptance: COMPLETED FOR THE AGREED PROJECT SCOPE (25 October 2026).**
+Start with the [Group 42 QA handoff](evaluation/README.md), the
+[final English report](evaluation/final-acceptance-2026-10-25/Group42_Final_Test_Acceptance_Report_EN.pdf)
+and [results workbook](evaluation/final-acceptance-2026-10-25/Group42_Final_Acceptance_Results_EN.xlsx).
 
-[PR 3](https://github.com/zhexusun10/Multi-Agent-Assistance-System/pull/3) merged
-the evaluation materials. Overall system acceptance remains **DEFERRED**.
+The recorded 40-scenario recommendation benchmark uses main `4d687e3` and the
+9 October listing snapshot. Finalization preserves all grades and K=1–10 metrics.
+Current-main `35304d0` adds eight passing offline display compatibility checks
+and 27 unchanged native core-file identities; it does not claim a new full live
+end-to-end run. The 60-case complex experiment remains a separate non-blocking
+study. Participant UAT and independent human scoring/signatures are not required
+under the confirmed final protocol.
+
+All original responses, failures and evidence archives remain available through
+the [historical evidence index](evaluation/archive/README.md). Frozen older
+reports retain their historical acceptance decisions. The
+[final decision](evaluation/final-acceptance-2026-10-25/Acceptance_Decision_EN.json)
+defines the completed scope and retained data limits.
