@@ -86,3 +86,24 @@ URA distance is zero inside an area or the nearest boundary distance outside. LT
 Use `npm run build`, local Node/Python regression tests and saved offline browser replays first. No paid model suite runs by default. The standing test budget is one representative case and at most three model requests in total, including repairs/reviews, with SDK retries disabled. Never resume old paid suites automatically. A fallback result is not evidence that direct LLM generation passed review.
 
 See [English migration and verification](docs/English_Edition_Migration.md) for exact checks, screenshots, remaining language-data exceptions and the preservation check against the Chinese project. Previous design and Recommendation contracts remain under `docs/` as historical references.
+
+## Testing and acceptance evidence
+
+Start with the [Group 42 QA handoff](evaluation/README.md). The
+[24 October expanded final evaluation](evaluation/expanded-final-acceptance-2026-10-24/README.md) contains the
+English final report and workbook, 40 basic scenarios, K=1–10 Precision,
+judged-pool Recall and NDCG, the retained 60-case complex suite and all 251
+original evidence files in one sealed ZIP. Basic results use main `4d687e3`
+and the 9 October listing snapshot.
+
+The materials are published for review in
+[PR 3](https://github.com/zhexusun10/Multi-Agent-Assistance-System/pull/3).
+Overall system acceptance remains **DEFERRED**. This publication does not apply
+the local timeout patch or change production behavior.
+
+The [23 October relevance evaluation](evaluation/recommendation-relevance-2026-10-23/README.md)
+preserves the earlier `d5af7e1` results and 577 frozen judgments.
+[PR 2](https://github.com/zhexusun10/Multi-Agent-Assistance-System/pull/2)
+merged the earlier matching fixes and historical QA evidence. Retained reports
+record their original dates and scopes; independent participant acceptance and
+human relevance validation remain open.
