@@ -1,16 +1,8 @@
-# Original publication metadata
+# Superseded publication metadata
 
-These five files are unchanged copies from the original complete-evidence
-publication at commit `90fd41a97d121ebf26f298ab47828fb6f2a49683` in [PR 2](https://github.com/zhexusun10/Multi-Agent-Assistance-System/pull/2).
-
-- [Historical reading guide](history/README.md)
-- [Original evidence manifest](history/EVIDENCE_MANIFEST.json)
-- [Original phase index](history/PHASE_INDEX.json)
-- [Original publication validation](history/VALIDATION.json)
-- [Original recommendation reading guide](recommendation-fit/README.md)
-
-Their relative links and hashes describe the original layout. To follow the
-old links in their original context, view [the immutable earlier tree](https://github.com/zhexusun10/Multi-Agent-Assistance-System/tree/90fd41a97d121ebf26f298ab47828fb6f2a49683/evaluation).
-Use the [current QA entry](../../README.md) and [current inventory](../../acceptance-history/EVIDENCE_MANIFEST.json)
-for today's layout and checksums. The original v3.6 report is retained inside the
-comprehensive and focused-fix ZIPs; the direct report is publication edition v3.7.
+The original files formerly under this directory, including this original
+README, are preserved at the same member paths in the
+[historical publication ZIP](../Historical_Publication_Files_2026-10-24.zip).
+See the [archive guide](../README.md) and the
+[preservation manifest](../../CLEANUP_MANIFEST_EN.json) for lookup and verification.
+Use the [current QA handoff](../../README.md) to read the current results.
