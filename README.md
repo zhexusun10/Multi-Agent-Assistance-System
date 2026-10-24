@@ -89,21 +89,11 @@ See [English migration and verification](docs/English_Edition_Migration.md) for 
 
 ## Testing and acceptance evidence
 
-Start with the [Group 42 QA handoff](evaluation/README.md). The
-[24 October expanded final evaluation](evaluation/expanded-final-acceptance-2026-10-24/README.md) contains the
-English final report and workbook, 40 basic scenarios, K=1–10 Precision,
-judged-pool Recall and NDCG, the retained 60-case complex suite and all 251
-original evidence files in one sealed ZIP. Basic results use main `4d687e3`
-and the 9 October listing snapshot.
+Start with the [Group 42 QA handoff](evaluation/README.md) for the current English
+report, workbook, ranking metrics and complete original evidence. The recorded
+40-scenario recommendation benchmark tests main `4d687e3` with the 9 October
+listing snapshot. Later English-edition and continuation changes require their
+own verification; these recorded results do not certify the current main.
 
-The materials are published for review in
-[PR 3](https://github.com/zhexusun10/Multi-Agent-Assistance-System/pull/3).
-Overall system acceptance remains **DEFERRED**. This publication does not apply
-the local timeout patch or change production behavior.
-
-The [23 October relevance evaluation](evaluation/recommendation-relevance-2026-10-23/README.md)
-preserves the earlier `d5af7e1` results and 577 frozen judgments.
-[PR 2](https://github.com/zhexusun10/Multi-Agent-Assistance-System/pull/2)
-merged the earlier matching fixes and historical QA evidence. Retained reports
-record their original dates and scopes; independent participant acceptance and
-human relevance validation remain open.
+[PR 3](https://github.com/zhexusun10/Multi-Agent-Assistance-System/pull/3) merged
+the evaluation materials. Overall system acceptance remains **DEFERRED**.
