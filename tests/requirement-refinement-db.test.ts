@@ -9,6 +9,7 @@ import {PostgresSessionEventStore} from '../src/session-store.js';
 import {WorkflowService} from '../src/domain/workflow.js';
 import {compare,validateResponse,type RecommendationRequest,type RecommendationResponse} from '../src/contracts/recommendation-v1.js';
 import {classify} from '../src/adapters/recommendation.js';
+import {refinementNative} from './helpers/refinement-native.js';
 
 test('isolated PostgreSQL card lifecycle preserves requirements, resumes A/B/C, rejects stale plans and stops after all questions', {skip:process.env.REFINEMENT_DB_TEST!=='1'},async()=>{
   const admin=new pg.Pool({connectionString:process.env.TEST_DATABASE_URL||process.env.DATABASE_URL}),schema='refinement_test_'+randomUUID().replaceAll('-','');
@@ -19,7 +20,16 @@ test('isolated PostgreSQL card lifecycle preserves requirements, resumes A/B/C, 
     await tasks.setup();await events.setup();await store.setup();
     const f=JSON.parse(await readFile('evaluation/inputs/explanation-update-ranking.json','utf8')),dataset=f.recommendation.state.coverage.dataset_version;
     const workflow=new WorkflowService(store,dataset),session=await store.create('refinement-isolated-test-owner'),operation=randomUUID(),source=randomUUID();
+    // A deleted conversation with a due action previously aborted the entire
+    // real reminder scan every 15 seconds. Keep active reminders idempotent.
+    const reminderOwner='isolated-reminder-owner',activeReminder=await store.create(reminderOwner),deletedReminder=await store.create(reminderOwner);
+    for(const sid of [activeReminder,deletedReminder])await pool.query('INSERT INTO workflow_actions(id,session_id,body) VALUES($1,$2,$3)',[randomUUID(),sid,JSON.stringify({status:'DRAFT',revision:1,subject:'隔离测试提醒',next_followup_at:'2020-01-01T00:00:00Z'})]);
+    await store.deleteSession(deletedReminder,reminderOwner);
+    await workflow.emitDueReminders();await workflow.emitDueReminders();
+    assert.equal((await store.state(activeReminder)).messages.length,1);
+    assert.equal((await pool.query('SELECT jsonb_array_length(messages) AS n FROM session_domain_state WHERE session_id=$1',[deletedReminder])).rows[0].n,0);
     f.recommendation.request_id=source;f.recommendation.conversation_id=session;
+    f.recommendation.native={...f.recommendation.native,...refinementNative(true)};
     await pool.query("INSERT INTO domain_operations(id,session_id,request_id,query,kind,status) VALUES($1,$2,$3,'fixture','search','completed')",[operation,session,randomUUID()]);
     await pool.query('INSERT INTO recommendation_calls(id,session_id,operation_id,request,response) VALUES($1,$2,$3,$4,$5)',[source,session,operation,JSON.stringify({}),JSON.stringify(f.recommendation)]);
     await store.transaction(async tx=>{const s=await store.lock(tx,session);s.requirements=f.requirements;s.requirements_version=f.recommendation.requirements_version;s.active_operation_id=operation;s.latest_request_id=source;s.recommendation=f.recommendation;

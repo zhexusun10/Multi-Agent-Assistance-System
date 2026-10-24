@@ -17,3 +17,4 @@ data/exports/export_properties_properties_rent.csv
 data/exports/export_properties_properties_sale.csv
 *.pyc
 .DS_Store
+/tmp_*/

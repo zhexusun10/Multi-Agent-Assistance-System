@@ -57,5 +57,10 @@
   },
   "feedback": [],
   "previous_state_id": null,
-  "result_limit": 4
+  "result_limit": null,
+  "behavior_context": null,
+  "cold_start": {
+    "exited": false,
+    "exited_pool_key": null
+  }
 }

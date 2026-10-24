@@ -3,11 +3,13 @@ import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {writeFile} from 'node:fs/promises';
 import pg from 'pg';
+import {readFile} from 'node:fs/promises';
+import {selectV1Violations,scoreOrder,singleBrowsingReferenceScores,oracleRow,oracleSettings} from './helpers/select-v1-oracle.js';
 
-test('native full-data live: exact SQL/ranking oracle, model tools, feedback, explanation and follow-up', {skip:process.env.NATIVE_LIVE!=='1',timeout:720000},async()=>{
+test('native full-data live (contract 2.0): SQL eligibility + select-v1 / fused-v2 oracles, model tools, behavior_context, explanation and follow-up', {skip:process.env.NATIVE_LIVE!=='1',timeout:720000},async()=>{
  const origin='http://127.0.0.1:8010/api/',owner=randomUUID()+randomUUID(),headers={authorization:'Bearer '+owner,'content-type':'application/json'};
  const app=new pg.Pool({connectionString:process.env.DATABASE_URL}),sql=new pg.Pool({connectionString:process.env.PROPERTYGURU_DATABASE_URL!.replace('postgresql+psycopg2:','postgresql:')});
- const report:any={started_at:new Date().toISOString(),checks:[],provider:'jiangshan-native',upstream:'907cfa8'};
+ const report:any={started_at:new Date().toISOString(),checks:[],provider:'jiangshan-native',upstream:'907cfa8',contract:'2.0'};
  const api=async(path:string,body?:unknown)=>{const r=await fetch(origin+path,{method:body===undefined?'GET':'POST',headers,body:body===undefined?undefined:JSON.stringify(body)});assert(r.ok,await r.clone().text());return r.json();};
  const session=await api('sessions',{}),sid=session.session_id;
  const state=()=>api('state?session_id='+sid);
@@ -19,39 +21,60 @@ test('native full-data live: exact SQL/ranking oracle, model tools, feedback, ex
  };
  try{
    assert.equal((await api('config')).recommendation_mode,'native');
-   const properties=(await sql.query("SELECT listing_id,price,bedrooms,district_code,property_type,floor_area_sqft FROM properties WHERE listing_type='RENT' ORDER BY listing_id::text")).rows;
+   const settings=oracleSettings(await readFile('recommendation/settings/recommendation.yaml','utf8'));
+   const properties=(await sql.query("SELECT listing_id,price,currency,bedrooms,district_code,property_type,floor_area_sqft,latitude,longitude FROM properties WHERE listing_type='RENT' ORDER BY listing_id::text")).rows.map(oracleRow);
    assert.equal(properties.length,21431);
-   const eligible=properties.filter(p=>p.price!==null&&Number(p.price)<=5000&&p.bedrooms!==null&&Number(p.bedrooms)>=2&&p.district_code==='D05');
+   // Canonical rows as the native repository normalises them; all three criteria are hard, so this is the pool.
+   const eligibleAt=(budget:number)=>properties.filter(p=>p.price!==null&&p.price<=budget&&p.bedrooms!==null&&p.bedrooms>=2&&p.district_code==='D05');
+   const eligible=eligibleAt(5000);
+   // No soft criterion and no feedback: every fused-v2 score is 0, so O is the pool in listing-ID order (all tied).
+   const zero=(rows:typeof eligible)=>new Map(rows.map(p=>[p.listing_id,0]));
+   const checkSelectV1=(response:any,order:string[],scores:Map<string,number>)=>assert.deepEqual(selectV1Violations(response,order,10,scores),[],JSON.stringify(response.selection));
    let s=await run('帮我找租房，预算不超过5000新币，至少2房，D05');
-   let rec=s.recommendation;assert(rec.native);assert.equal(rec.state.counts.assessed,21431);assert.equal(rec.state.counts.eligible,eligible.length);assert.deepEqual(rec.recommendations.map((c:any)=>c.listing.listing_id),eligible.slice(0,4).map(p=>String(p.listing_id)));assert.equal(rec.recommendations.length,4);
-   const exchange=await api(`evidence?session_id=${sid}&ref=${rec.native.exchange_ref}`);
-   assert.equal(exchange.data.response.execution.controller_mode,'live');assert(exchange.data.response.execution.model_calls>0);assert(exchange.data.response.execution.tool_calls>=4);assert.equal(exchange.data.response.state.source_count,21431);
-   assert.deepEqual(rec.native.ranking,exchange.data.response.recommendations.map((c:any)=>c.listing.listing_id));assert.equal(exchange.data.request.result_limit,4);
+   let rec=s.recommendation;assert(rec.native);assert.equal(rec.native.contract,'2.0');assert.equal(rec.state.counts.assessed,21431);assert.equal(rec.state.counts.eligible,eligible.length);
+   const exchange=await api(`evidence?session_id=${sid}&ref=${rec.native.exchange_ref}`),first=exchange.data.response;
+   assert.equal(first.execution.controller_mode,'live');assert(first.execution.model_calls>0);assert(first.execution.tool_calls>=4);assert.equal(first.state.source_count,21431);assert.equal(first.pool.size,eligible.length);
+   assert.equal(exchange.data.request.result_limit,10);assert.deepEqual(exchange.data.request.feedback,[]);assert.deepEqual(exchange.data.request.cold_start,{exited:false,exited_pool_key:null});
+   assert(first.recommendations.every((c:any)=>c.scores.combined_score===0&&c.scores.soft_score===null&&c.scores.behavior_score===null));
+   checkSelectV1(first,scoreOrder(zero(eligible)),zero(eligible));
+   // Without soft criteria C = 0, so cold start is active and can never be exited (R9).
+   assert.equal(first.selection.cold_start.coverage_c,0);assert(first.selection.cold_start.reason.includes('no_soft_requirements'));assert.equal(first.selection.cold_start.exit_conditions_met,false);
+   assert.deepEqual(rec.native.ranking,first.recommendations.map((c:any)=>c.listing.listing_id));assert.deepEqual(rec.recommendations.map((c:any)=>c.listing.listing_id),rec.native.ranking);assert.equal(rec.unverified_candidates.length,0);
    const source=s.latest_request_id,version=s.requirements_version;
    s=await run('解释一下第一套为什么推荐，为什么排在前面');assert.equal(s.latest_request_id,source);assert.equal(s.requirements_version,version);assert(s.messages.at(-1).text.includes('原生房源ID')||s.messages.at(-1).text.includes('房源ID字符串'));
    s=await run('请为第1套房源生成看房询问草稿');assert.equal(s.actions.length,1);assert.equal(s.actions[0].source_request_id,source);assert(!s.actions[0].body.includes('请为房源ID'));
    s=await run('生成当前推荐的总结文档');assert(s.artifacts.length>0);assert.equal(s.latest_request_id,source);
-   const selected=rec.recommendations[0],reference=properties.find(p=>String(p.listing_id)===selected.listing.listing_id)!;
+   const selected=rec.recommendations[0];
    await api('feedback',{session_id:sid,source_request_id:source,event:{event_id:randomUUID(),listing_id:selected.listing.listing_id,occurred_at:new Date().toISOString(),event_type:'active_view',payload:{source:'sample',recommendation_request_id:source,view_session_id:randomUUID(),active_duration_ms:90000}}});
    s=await run('请按当前需求重新推荐，参考新增的浏览样例');rec=s.recommendation;
-   const text=(p:any)=>typeof p.property_type==='string'?p.property_type.trim().toLowerCase():null;
-   const implicit=(p:any)=>.5*(text(p)!==null&&text(reference)!==null?Number(text(p)===text(reference)):0)+.5*(p.floor_area_sqft===null||reference.floor_area_sqft===null?0:Math.max(0,1-Math.abs(Number(p.floor_area_sqft)-Number(reference.floor_area_sqft))/500));
-   const ranked=[...eligible].sort((a,b)=>implicit(b)-implicit(a)||(String(a.listing_id)<String(b.listing_id)?-1:1));
-   assert.deepEqual(rec.recommendations.map((c:any)=>c.listing.listing_id),ranked.slice(0,4).map(p=>String(p.listing_id)));
-   for(const c of rec.recommendations){const p=properties.find(p=>String(p.listing_id)===c.listing.listing_id);assert(Math.abs(c.score-implicit(p))<1e-9);assert.equal(rec.native.scores[c.listing.listing_id].ordering,'behavioral');assert(rec.native.scores[c.listing.listing_id].suppressed_features.includes('geography'));}
    assert.equal(s.requirements_version,version);
-   const follow=await api(`evidence?session_id=${sid}&ref=${rec.native.exchange_ref}`);assert.equal(follow.data.request.previous_state_id,exchange.data.response.state.state_id);assert.equal(follow.data.response.state.feedback_version,1);assert.equal(follow.data.response.state.run_sequence,2);
+   const follow=await api(`evidence?session_id=${sid}&ref=${rec.native.exchange_ref}`),second=follow.data.response;
+   assert.equal(follow.data.request.previous_state_id,first.state.state_id);assert.equal(second.state.run_sequence,2);
+   // Main contract (merge c7dc536): a sample duration is forwarded as a validated feedback event but never scored
+   // natively; scoreable browsing arrives only as behavior_context.listing_view_durations from the browser ledger
+   // (none here, the session has no real detail segments) and the inquiry draft without a saved time is no viewing
+   // intent. So the second round is scored exactly like the first (all 0) and select-v1 explores the tied pool.
+   assert(follow.data.request.feedback.some((e:any)=>e.listing_id===selected.listing.listing_id&&e.payload.duration_seconds===90));
+   const behavior=follow.data.request.behavior_context;assert(behavior&&behavior.book_viewing_listings.length===0);
+   assert(behavior.listing_view_durations.every((v:any)=>!v.interest_eligible));
+   assert(second.recommendations.every((c:any)=>c.scores.browsing_score===null&&c.scores.combined_score===0));
+   checkSelectV1(second,scoreOrder(zero(eligible)),zero(eligible));
+   assert.deepEqual(rec.native.ranking,second.recommendations.map((c:any)=>c.listing.listing_id));
    const replay=await fetch(process.env.RECOMMENDATION_API_URL+'/recommend',{method:'POST',headers:{'content-type':'application/json','x-recommendation-token':process.env.RECOMMENDATION_SERVICE_TOKEN!},body:JSON.stringify(follow.data.request)});assert(replay.ok);assert.deepEqual(await replay.json(),follow.data.response);
    // Simulate a native run that commits after its application operation was
    // superseded: the UI still holds the previous state, while native has advanced.
-   const hiddenInput={...follow.data.request,request_id:randomUUID(),previous_state_id:follow.data.response.state.state_id,feedback:[]};
+   const hiddenInput={...follow.data.request,request_id:randomUUID(),previous_state_id:second.state.state_id,feedback:[]};
    const hiddenHttp=await fetch(process.env.RECOMMENDATION_API_URL+'/app/recommend',{method:'POST',headers:{'content-type':'application/json','x-recommendation-token':process.env.RECOMMENDATION_SERVICE_TOKEN!},body:JSON.stringify(hiddenInput)});assert(hiddenHttp.ok);const hidden=await hiddenHttp.json();assert.equal(hidden.response.status,'success');
-   s=await run('预算改为4500新币，其余要求保持');rec=s.recommendation;assert.equal(rec.state.counts.eligible,eligible.filter(p=>Number(p.price)<=4500).length);
+   s=await run('预算改为4500新币，其余要求保持');rec=s.recommendation;const tighter=eligibleAt(4500);assert.equal(rec.state.counts.eligible,tighter.length);
    const aligned=await api(`evidence?session_id=${sid}&ref=${rec.native.exchange_ref}`);
-   assert.equal(aligned.data.transport_request.previous_state_id,follow.data.response.state.state_id);assert.equal(aligned.data.request.previous_state_id,hidden.response.state.state_id);assert.equal(aligned.data.response.state.run_sequence,4);
+   assert.equal(aligned.data.transport_request.previous_state_id,second.state.state_id);assert.equal(aligned.data.request.previous_state_id,hidden.response.state.state_id);assert.equal(aligned.data.response.state.run_sequence,4);
+   // The hard change rebuilds the pool (new pool_key); there is still no scoreable behaviour, so every score is 0 and
+   // select-v1 explores the whole tied pool again.
+   assert.notEqual(aligned.data.response.pool.pool_key,second.pool.pool_key);assert.equal(aligned.data.response.pool.cache,'built');
+   checkSelectV1(aligned.data.response,scoreOrder(zero(tighter)),zero(tighter));
    report.checks.push({name:'A native run committed without UI adoption is reconciled at the transport reference boundary; native stale/requirement checks and request replay remain unchanged'});
    const presentation=await api(`listings/${rec.recommendations[0].listing.listing_id}/presentation?session_id=${sid}&source_request_id=${s.latest_request_id}`);assert(presentation.photos.length>0);assert(presentation.nearby.length>0);
-   report.checks.push({name:'Independent 21,431-row eligibility, lexicographic tie order and duration-based implicit scores match exactly; immutable HTTP replay, photo/context, direct C/D routing passed'});
+   report.checks.push({name:'Independent 21,431-row eligibility, fused-v2 single-reference browsing scores (1e-9) and select-v1 selections (leaders, tie group / exploration window, score_rank) match; complete feedback snapshot, immutable HTTP replay, photo/context, direct C/D routing passed'});
    report.status='passed';report.session_id=sid;report.owner=undefined;
    // Owner stays in ignored runtime storage for an isolated browser walkthrough.
    await writeFile('data/.runtime/native-browser-session.json',JSON.stringify({owner,session_id:sid}));

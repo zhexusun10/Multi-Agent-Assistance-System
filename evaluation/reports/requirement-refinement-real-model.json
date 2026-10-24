@@ -1,0 +1,53 @@
+{
+  "status": "failed",
+  "native_controller": "scripted scheduling; unchanged native filtering/scoring/selection/gate",
+  "real_services": [
+    "PostgreSQL",
+    "Neo4j",
+    "data HTTP",
+    "native Recommendation HTTP",
+    "application workflow",
+    "web API proxy",
+    "Chromium"
+  ],
+  "paid_request_limit": 3,
+  "checks": [
+    "deleted-session reminders skipped; active reminder delivered once",
+    "real first A/B/C: source 21431, eligible 239, Top5, active=true, three-question card"
+  ],
+  "initial": {
+    "pool": 239,
+    "displayed": 5,
+    "questions": [
+      "bedrooms",
+      "property_type",
+      "ideal_rent"
+    ],
+    "cold_start": {
+      "active": true,
+      "reason": "no_soft_requirements; b_above_max; s_below_min",
+      "pool_key": "4295a178022ada2cae49baac6118f588b16ca106648922fe077121496ceafdcd",
+      "evaluated": true,
+      "coverage_c": 0,
+      "thresholds": {
+        "b": 5,
+        "c": 0.8,
+        "s": 0.9
+      },
+      "stability_s": 0.02,
+      "boundary_group_b": 239,
+      "exit_conditions_met": false
+    },
+    "explanation_mode": "evidence_recovery"
+  },
+  "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'evidence_recovery'\n- 'llm_grounded'\n",
+  "schema_cleanup": true,
+  "model_requests": [
+    "write_rental_explanation_v2",
+    "write_rental_explanation_v2",
+    "write_rental_explanation_v2"
+  ],
+  "scope": "One real Explanation scenario, max 3 network requests, no SDK retries. Browser and workflow finished; direct LLM acceptance assertion failed because evidence recovery was used. Raw failure payload was not retained before isolated schema cleanup; exact validation reason is unavailable.",
+  "model_calls": 3,
+  "semantic_audit": "not_reached"
+}

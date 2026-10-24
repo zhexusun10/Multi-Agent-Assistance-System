@@ -18,6 +18,19 @@ export function location(name:string|null,categories:ModelIntake['locations'][nu
 export function output(query:string,patch:Partial<ModelIntake>={}):ModelIntake{return {schema_version:'2.0',supported:true,upsert:[],locations:[],removals:[],clarifications:[],coverage:[{quote:query,disposition:'extracted'}],...patch};}
 const ex=(id:string,query:string,patch:Partial<ModelIntake>,base=empty):IntakeExample=>({id,query,base,output:output(query,patch)});
 export const INTAKE_EXAMPLES:IntakeExample[]=[
+  ex('short-replace-neighbourhood','那改为：帮我找荷兰村附近的房子',{
+    locations:[location('荷兰村',[],'帮我找荷兰村附近的房子')],
+    removals:[{field:'place_proximity',criterion_id:'place_proximity:LTA:MRT:CHINATOWN-preference',quote:'那改为：帮我找荷兰村附近的房子'}],
+  },{listing_type:'RENT',criteria:[
+    {criterion_id:'minimum-bedrooms',field:'bedrooms',operator:'eq',value:1,unit:'count',strength:'hard'},
+    {criterion_id:'monthly-rent',field:'price',operator:'lte',value:3000,unit:'SGD/month',strength:'hard'},
+    {criterion_id:'place_proximity:LTA:MRT:CHINATOWN-preference',field:'place_proximity',operator:'lte',value:1000,unit:'m',strength:'soft',weight:1,target:{place_id:'LTA:MRT:CHINATOWN',name:'CHINATOWN MRT STATION'},distance_type:'straight_line',distance_preference:'nearer'},
+    {criterion_id:'transport-preference',field:'place_proximity',operator:'lte',value:800,unit:'m',strength:'soft',weight:1,target:{category:'PublicTransport',name:'最近的MRT或公交站'},distance_type:'straight_line',distance_preference:'bounded'},
+  ]}),
+  ex('chinese-neighbourhood','帮我找牛车水附近的房子，预算3000新币每月，卧室数量1间',{
+    upsert:[attribute('price','lte',3000,'预算3000新币每月'),attribute('bedrooms','eq',1,'卧室数量1间')],
+    locations:[location('牛车水',[],'帮我找牛车水附近的房子')],
+  }),
   ex('rent-ceiling','每个月最多付两千新币，别再贵了。',{upsert:[attribute('price','lte',2000,'每个月最多付两千新币')]}),
   ex('rent-interval','希望租金在1800到2400新币之间。',{upsert:[attribute('price','between',[1800,2400],'租金在1800到2400新币之间')]}),
   ex('rent-soft','3000新币是上限，如果能低于2500就更好了。',{upsert:[attribute('price','lte',3000,'3000新币是上限'),attribute('price','lte',2500,'如果能低于2500就更好了',{strength:'soft'})]}),

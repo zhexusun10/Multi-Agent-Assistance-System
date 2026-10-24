@@ -23,6 +23,15 @@ test('zero polygon distance means within an area, without claiming zero distance
   const view=matchSummary({listing,criterion_results:[{criterion_id:'distance',status:'pass',observed_value:0}]},[c],format);
   assert.equal(view.rows[0].text,'位于Clementi区域内');
 });
+
+test('official Clementi boundary distances remain visible alongside all other matched fields; missing coordinates are explained',()=>{
+  const c={...place,strength:'soft',distance_preference:'nearer',target:{name:'CLEMENTI',place_id:'URA:AREA:CLEMENTI'}};
+  const candidate={listing:{...listing,bedrooms:1,floor_area_sqft:800},criterion_results:[{criterion_id:'distance',status:'fail',observed_value:6299.645}]};
+  const view=matchSummary(candidate,[c],format);
+  assert.match(view.rows[0].text,/金文泰区域边界 6,300 米（直线，更近优先）/);assert.equal(view.rows[0].status,'preference');assert(!view.pending.some(t=>t.includes('金文泰')));
+  candidate.criterion_results[0]={criterion_id:'distance',status:'unknown',observed_value:null,reason:'原生证据未知：missing valid listing coordinates'} as any;
+  const missing=matchSummary(candidate,[c],format);assert(missing.pending.includes('到金文泰的距离（缺少房源坐标）'));
+});
 test('distinct destinations and failed criteria keep their own measurements and status',()=>{
   const nus={...place,criterion_id:'nus',target:{name:'National University of Singapore',place_id:'OSM:other'}};
   const view=matchSummary({listing,criterion_results:[{criterion_id:'distance',status:'pass',observed_value:811.64},{criterion_id:'nus',status:'fail',observed_value:8000}]},[place,nus],format);

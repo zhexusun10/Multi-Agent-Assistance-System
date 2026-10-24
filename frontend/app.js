@@ -1,13 +1,14 @@
-import {RequirementRefinementUI} from './requirement-refinement.js?v=20261023-behavior2';
+import {RequirementRefinementUI} from './requirement-refinement.js?v=20261024-budget';
 import {ListingDetailsUI} from './listing-details.js';
 import {FollowupUI} from './followup.js';
-import {renderMatches,rentElement} from './property-presentation.js?v=20261022-soft-preferences';
+import {renderMatches,rentElement} from './property-presentation.js?v=20261024-official-geo';
 import {ListingNavigator} from './listing-navigator.js';
 import {BehaviorOutbox} from './behavior-outbox.js?v=20261023-behavior2';
 import {ViewTracker} from './view-tracker.js?v=20261023-behavior2';
 import {PropertyDetailView} from './property-detail-view.js?v=20261022-soft-preferences';
-import {SessionSync,readSse as sse} from './session-sync.js';
+import {SessionSync,readSse as sse} from './session-sync.js?v=20261024-presentation';
 import {SessionHistoryUI} from './session-history.js?v=20261023-behavior';
+import {displayedCandidates} from './recommendation-display.js?v=20261024-top5';
 const $=id=>document.getElementById(id);
 const el=(tag,className,text)=>{const e=document.createElement(tag);if(className)e.className=className;if(text!==undefined)e.textContent=text;return e;};
 let owner=localStorage.getItem('rental.owner');if(!owner){owner=crypto.randomUUID()+crypto.randomUUID();localStorage.setItem('rental.owner',owner);}
@@ -79,14 +80,13 @@ function listingCard(c,verified,displayRank=c.rank){
 function renderRecommendations(){
   // Recommendation snapshots are immutable. Unrelated SSE/message updates must
   // not replace a card between pointer-down and click or discard its open details.
-  const key=JSON.stringify([session,state.latest_request_id,state.requirements_version,state.active_operation_id,state.recommendation_operation_id,state.recommendation?.request_id,config?.dataset]);
+  const key=JSON.stringify([session,state.latest_request_id,state.requirements_version,state.active_operation_id,state.recommendation_operation_id,state.recommendation?.request_id,state.presentation_version,config?.dataset]);
   if(key===recommendationRenderKey)return;recommendationRenderKey=key;
-  const box=$('recommendations');box.replaceChildren();listingNavigator.setCards([]);const rec=state.recommendation;$('result-count').textContent=(rec?.recommendations.length||0)+(rec?.unverified_candidates.length||0);if(!rec){empty(box,'⌂','推荐结果将在这里出现。先告诉我你的预算和租房偏好。');return;}
+  const box=$('recommendations');box.replaceChildren();listingNavigator.setCards([]);const rec=state.recommendation,visible=displayedCandidates(rec);$('result-count').textContent=visible.length;if(!rec){empty(box,'⌂','推荐结果将在这里出现。先告诉我你的预算和租房偏好。');return;}
   if(rec.state.coverage.dataset_version!==config?.dataset){$('result-count').textContent='0';empty(box,'↻','房源数据已更新为完整快照，旧列表保留在会话历史中。请按当前需求重新搜索。');box.append(button('按当前需求重新搜索',()=>sendQuery('按当前需求重新搜索')));return;}
   if(rec.request_id!==state.latest_request_id||rec.requirements_version!==state.requirements_version||state.recommendation_operation_id!==state.active_operation_id){$('result-count').textContent='0';empty(box,'↻','正在按最新需求更新推荐；上一版结果已失效，暂不可据此跟进。');return;}
-  for(const c of rec.recommendations)box.append(listingCard(c,true));
-  if(!rec.recommendations.length&&!rec.unverified_candidates.length)box.append(el('p','muted','没有找到匹配的房源，可以调整找房条件后再试。'));
-  for(const c of rec.unverified_candidates)box.append(listingCard(c,false,rec.recommendations.length+c.rank));
+  for(const [index,c] of visible.entries())box.append(listingCard(c,rec.recommendations.includes(c),index+1));
+  if(!visible.length)box.append(el('p','muted','没有找到匹配的房源，可以调整找房条件后再试。'));
   listingNavigator.setCards([...box.querySelectorAll('.listing-card')]);
   observeExposures();
   for(const suggestion of rec.relaxation_suggestions){const c=state.requirements.criteria.find(c=>c.criterion_id===suggestion.criterion_id);if(c?.field==='price')box.append(button(`选择将预算改为 ${suggestion.proposed_value} SGD/月后重搜`,()=>sendQuery(`预算改为${suggestion.proposed_value}新币`)));}

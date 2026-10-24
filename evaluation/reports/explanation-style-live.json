@@ -1,0 +1,266 @@
+{
+  "operation_id": "9b469c27-9ea4-44fe-b75d-a0411b757d70",
+  "status": "passed",
+  "model_calls": 2,
+  "model_request_cap": 2,
+  "requests": [
+    {
+      "role": "write_rental_explanation_v2",
+      "started_at": "2026-10-23T17:55:18.843Z",
+      "output": {
+        "version": "2.0",
+        "focus_listing_ids": [
+          "500285985",
+          "23839651",
+          "500215736",
+          "500240708",
+          "23368920"
+        ],
+        "paragraphs": [
+          {
+            "text": "以下信息可能帮助您更好地比较这几套房子：",
+            "support_refs": [
+              "guide:purpose"
+            ],
+            "listing_id": null
+          },
+          {
+            "text": "第1套 441B Clementi Avenue 3：到金文泰地铁站的直线距离约92米，是这五套里最近的，想贴近这个位置可以优先看它。房源面积1,001平方英尺，也是这组里最大的，月租1,400新币处在中间水平。挂牌记录写有2个卫生间，不过这项要求还需要向经纪人核实；附近有职总平价超市，直线约60米，金文泰广场和食阁也在几十米范围内，买东西、吃饭选择不少。",
+            "support_refs": [
+              "f2",
+              "f4",
+              "f98",
+              "f103",
+              "f108",
+              "f48",
+              "f5",
+              "f53",
+              "f55",
+              "f56"
+            ],
+            "listing_id": "500285985"
+          },
+          {
+            "text": "第2套 701 West Coast Road：房源面积721平方英尺，在这组里居中，月租1,450新币则与另一套并列最高。到金文泰地铁站直线约873米，距离也居中。挂牌记录写有1个卫生间，但这项要求同样还需核实；附近有Jalan Mas Puteh游乐场，直线约183米，职总平价超市约509米。",
+            "support_refs": [
+              "f10",
+              "f12",
+              "f99",
+              "f104",
+              "f109",
+              "f58",
+              "f13",
+              "f67",
+              "f63"
+            ],
+            "listing_id": "23839651"
+          },
+          {
+            "text": "第3套 701 West Coast Road：这套和上一套同名，条件也很接近——721平方英尺、月租1,450新币、到金文泰地铁站直线约873米，都处在中间位置。挂牌记录写有1个卫生间，仍需向经纪人确认；周边同样是游乐场约183米、超市约509米，两套可以放在一起比细节。",
+            "support_refs": [
+              "f18",
+              "f20",
+              "f100",
+              "f105",
+              "f110",
+              "f68",
+              "f21",
+              "f77",
+              "f73"
+            ],
+            "listing_id": "500215736"
+          },
+          {
+            "text": "第4套 412 Pandan Gardens：月租700新币，是这五套里最低的，能省下不少预算。不过房源面积只有150平方英尺，在这组里偏小，先看看这个空间够不够用。到金文泰地铁站直线约2,006米，比前几套远一些；附近有班丹蓄水池公园，直线约266米，资料提到的地铁站是Pandan Reservoir，约430米。挂牌记录写有1个卫生间，仍需核实。",
+            "support_refs": [
+              "f26",
+              "f28",
+              "f106",
+              "f111",
+              "f101",
+              "f85",
+              "f82",
+              "f78",
+              "f29"
+            ],
+            "listing_id": "500240708"
+          },
+          {
+            "text": "第5套 18D Holland Drive：月租1,300新币，在这组里偏低，但房源面积只有102平方英尺，是五套里最小的，空间取舍要重点考虑。到金文泰地铁站直线约3,013米，是这组里最远的，仍在您5公里范围内。生活配套倒是密集：职总平价超市直线约85米，荷兰村巴刹与熟食中心约193米，One Holland Village约228米。挂牌记录写有2个卫生间，仍需核实。",
+            "support_refs": [
+              "f34",
+              "f36",
+              "f107",
+              "f112",
+              "f102",
+              "f93",
+              "f95",
+              "f96",
+              "f88",
+              "f37"
+            ],
+            "listing_id": "23368920"
+          },
+          {
+            "text": "记录的租金和现在是否仍可租，请联系经纪人确认。",
+            "support_refs": [
+              "availability:current"
+            ],
+            "listing_id": null
+          }
+        ]
+      }
+    },
+    {
+      "role": "audit_rental_explanation_v2",
+      "started_at": "2026-10-23T17:55:24.077Z",
+      "output": {
+        "valid": true,
+        "issues": []
+      }
+    }
+  ],
+  "visible_count": 5,
+  "local_replay": {
+    "version": "2.0",
+    "focus_listing_ids": [
+      "500285985",
+      "23839651",
+      "500215736",
+      "500240708",
+      "23368920"
+    ],
+    "paragraphs": [
+      {
+        "text": "以下信息可能帮助您更好地选择这几套房子：",
+        "support_refs": [
+          "guide:purpose"
+        ],
+        "listing_id": null
+      },
+      {
+        "text": "第1套 441B Clementi Avenue 3：挂牌面积1001平方英尺，在这几套里最大，可以结合格局看看是否够用。月租1,400新币，在这几套里居中。距CLEMENTI MRT STATION直线约92米。附近有职总平价超市直线约60.29米、Clementi Market直线约184.78米、Hawkers' Street @ Clementi Mall直线约56.13米。采购或用餐多几个选择；实际路线可以再看看。卫生间数量还缺少资料，需要确认后再决定。",
+        "support_refs": [
+          "price:500285985",
+          "area:500285985",
+          "cohort:500285985:price",
+          "cohort:500285985:floor_area_sqft",
+          "condition:500285985:place_proximity:LTA:MRT:CLEMENTI",
+          "condition:500285985:place_proximity:LTA:MRT:CLEMENTI-preference",
+          "profile:500285985:nearby:Supermarket",
+          "profile:500285985:nearby:Market",
+          "profile:500285985:nearby:FoodCourt",
+          "condition:500285985:bathrooms"
+        ],
+        "listing_id": "500285985"
+      },
+      {
+        "text": "第2套 701 West Coast Road：月租1,450新币，在这几套里并列最高。挂牌面积721平方英尺，在这几套里居中，可以结合格局看看是否够用。距CLEMENTI MRT STATION直线约873米。附近有职总平价超市直线约508.83米、West Coast Market直线约555.45米、Bowl Chap直线约480.23米。采购或用餐多几个选择；实际路线可以再看看。卫生间数量还缺少资料，需要确认后再决定。",
+        "support_refs": [
+          "price:23839651",
+          "area:23839651",
+          "cohort:23839651:price",
+          "cohort:23839651:floor_area_sqft",
+          "condition:23839651:place_proximity:LTA:MRT:CLEMENTI",
+          "condition:23839651:place_proximity:LTA:MRT:CLEMENTI-preference",
+          "profile:23839651:nearby:Supermarket",
+          "profile:23839651:nearby:Market",
+          "profile:23839651:nearby:FoodCourt",
+          "condition:23839651:bathrooms"
+        ],
+        "listing_id": "23839651"
+      },
+      {
+        "text": "第3套 701 West Coast Road：月租1,450新币，在这几套里并列最高。挂牌面积721平方英尺，在这几套里居中，可以结合格局看看是否够用。距CLEMENTI MRT STATION直线约873米。附近有职总平价超市直线约508.83米、West Coast Market直线约555.45米、Bowl Chap直线约480.23米。采购或用餐多几个选择；实际路线可以再看看。卫生间数量还缺少资料，需要确认后再决定。",
+        "support_refs": [
+          "price:500215736",
+          "area:500215736",
+          "cohort:500215736:price",
+          "cohort:500215736:floor_area_sqft",
+          "condition:500215736:place_proximity:LTA:MRT:CLEMENTI",
+          "condition:500215736:place_proximity:LTA:MRT:CLEMENTI-preference",
+          "profile:500215736:nearby:Supermarket",
+          "profile:500215736:nearby:Market",
+          "profile:500215736:nearby:FoodCourt",
+          "condition:500215736:bathrooms"
+        ],
+        "listing_id": "500215736"
+      },
+      {
+        "text": "第4套 412 Pandan Gardens：月租700新币，在这几套里最低，能少占一些预算。挂牌面积150平方英尺，在这几套里偏小，可以结合格局看看是否够用。距CLEMENTI MRT STATION直线约2,006米。附近有Pandan Reservoir资料里写约430米、职总平价超市直线约541.14米、德曼巴刹与熟食中心直线约568.64米。采购或用餐多几个选择；选公共交通时可以参考，实际路线可以再看看。卫生间数量还缺少资料，需要确认后再决定。",
+        "support_refs": [
+          "price:500240708",
+          "area:500240708",
+          "cohort:500240708:price",
+          "cohort:500240708:floor_area_sqft",
+          "condition:500240708:place_proximity:LTA:MRT:CLEMENTI",
+          "condition:500240708:place_proximity:LTA:MRT:CLEMENTI-preference",
+          "profile:500240708:nearby:MRT",
+          "profile:500240708:nearby:Supermarket",
+          "profile:500240708:nearby:FoodCourt",
+          "condition:500240708:bathrooms"
+        ],
+        "listing_id": "500240708"
+      },
+      {
+        "text": "第5套 18D Holland Drive：月租1,300新币，在这几套里偏低，能少占一些预算。挂牌面积102平方英尺，在这几套里最小，可以结合格局看看是否够用。距CLEMENTI MRT STATION直线约3,013米。附近有Buona Vista资料里写约590米、职总平价超市直线约85.05米、Holland Village Market直线约283.36米。采购或用餐多几个选择；选公共交通时可以参考，实际路线可以再看看。卫生间数量还缺少资料，需要确认后再决定。",
+        "support_refs": [
+          "price:23368920",
+          "area:23368920",
+          "cohort:23368920:price",
+          "cohort:23368920:floor_area_sqft",
+          "condition:23368920:place_proximity:LTA:MRT:CLEMENTI",
+          "condition:23368920:place_proximity:LTA:MRT:CLEMENTI-preference",
+          "profile:23368920:nearby:MRT",
+          "profile:23368920:nearby:Supermarket",
+          "profile:23368920:nearby:Market",
+          "condition:23368920:bathrooms"
+        ],
+        "listing_id": "23368920"
+      },
+      {
+        "text": "当前租金和是否仍可租，请联系经纪人确认。",
+        "support_refs": [
+          "availability:current"
+        ],
+        "listing_id": null
+      }
+    ]
+  },
+  "generation": {
+    "mode": "llm_grounded",
+    "purpose": "listing_decision_support",
+    "version": "3.1",
+    "attempts": 1,
+    "latency_ms": 6668,
+    "example_ids": [
+      "whole-list-outlier",
+      "whole-list-distance"
+    ],
+    "repair_notes": [],
+    "semantic_audit": "not_rerun_after_source_correction",
+    "enrichment_refs": [
+      "076128bc-6683-4d29-a348-581f74b02c71",
+      "a34e71c2-5dae-4d0b-bf58-478f79876ab2",
+      "cab28250-e885-467a-a275-29fd471e2788",
+      "9305873d-c911-4479-a74e-7ca4f131b0ac",
+      "39a13cbc-2c62-495d-8561-fe55fc6f8853"
+    ],
+    "style_repair_ref": "4cb88ed9-3d2f-471d-b5aa-929f1fc331f4",
+    "evidence_characters": {
+      "model": 23348,
+      "original": 75266
+    },
+    "source_checked_correction_ref": "dd75e8da-e0ea-4a27-9029-c116c000fc95",
+    "deterministic_validation": "passed"
+  },
+  "summary": "以下信息可能帮助您更好地比较这几套房子：\n\n第1套 441B Clementi Avenue 3：到金文泰地铁站的直线距离约92米，是这五套里最近的，想贴近这个位置可以优先看它。房源面积1,001平方英尺，也是这组里最大的，月租1,400新币处在中间水平。挂牌记录写有2个卫生间，不过这项要求还需要向经纪人核实；附近有职总平价超市，直线约60米，金文泰广场和食阁也在几十米范围内，买东西、吃饭选择不少。\n\n第2套 701 West Coast Road：房源面积721平方英尺，在这组里居中，月租1,450新币则与另一套并列最高。到金文泰地铁站直线约873米，距离也居中。挂牌记录写有1个卫生间，但这项要求同样还需核实；附近有Jalan Mas Puteh游乐场，直线约183米，职总平价超市约509米。\n\n第3套 701 West Coast Road：这套和上一套同名，条件也很接近——721平方英尺、月租1,450新币、到金文泰地铁站直线约873米，面积和到目标的距离都处在中间位置，月租则并列最高。挂牌记录写有1个卫生间，仍需向经纪人确认；周边同样是游乐场约183米、超市约509米，两套可以放在一起比细节。\n\n第4套 412 Pandan Gardens：月租700新币，是这五套里最低的，能省下不少预算。不过房源面积只有150平方英尺，在这组里偏小，先看看这个空间够不够用。到金文泰地铁站直线约2,006米，比前几套远一些；附近有班丹蓄水池公园，直线约266米，资料提到的地铁站是Pandan Reservoir，约430米。挂牌记录写有1个卫生间，仍需核实。\n\n第5套 18D Holland Drive：月租1,300新币，在这组里偏低，但房源面积只有102平方英尺，是五套里最小的，空间取舍要重点考虑。到金文泰地铁站直线约3,013米，是这组里最远的，仍在您5公里范围内。生活配套倒是密集：职总平价超市直线约85米，荷兰村巴刹与熟食中心约193米，One Holland Village约228米。挂牌记录写有2个卫生间，仍需核实。\n\n记录的租金和现在是否仍可租，请联系经纪人确认。",
+  "applied": true,
+  "original_llm_summary": "以下信息可能帮助您更好地比较这几套房子：\n\n第1套 441B Clementi Avenue 3：到金文泰地铁站的直线距离约92米，是这五套里最近的，想贴近这个位置可以优先看它。房源面积1,001平方英尺，也是这组里最大的，月租1,400新币处在中间水平。挂牌记录写有2个卫生间，不过这项要求还需要向经纪人核实；附近有职总平价超市，直线约60米，金文泰广场和食阁也在几十米范围内，买东西、吃饭选择不少。\n\n第2套 701 West Coast Road：房源面积721平方英尺，在这组里居中，月租1,450新币则与另一套并列最高。到金文泰地铁站直线约873米，距离也居中。挂牌记录写有1个卫生间，但这项要求同样还需核实；附近有Jalan Mas Puteh游乐场，直线约183米，职总平价超市约509米。\n\n第3套 701 West Coast Road：这套和上一套同名，条件也很接近——721平方英尺、月租1,450新币、到金文泰地铁站直线约873米，都处在中间位置。挂牌记录写有1个卫生间，仍需向经纪人确认；周边同样是游乐场约183米、超市约509米，两套可以放在一起比细节。\n\n第4套 412 Pandan Gardens：月租700新币，是这五套里最低的，能省下不少预算。不过房源面积只有150平方英尺，在这组里偏小，先看看这个空间够不够用。到金文泰地铁站直线约2,006米，比前几套远一些；附近有班丹蓄水池公园，直线约266米，资料提到的地铁站是Pandan Reservoir，约430米。挂牌记录写有1个卫生间，仍需核实。\n\n第5套 18D Holland Drive：月租1,300新币，在这组里偏低，但房源面积只有102平方英尺，是五套里最小的，空间取舍要重点考虑。到金文泰地铁站直线约3,013米，是这组里最远的，仍在您5公里范围内。生活配套倒是密集：职总平价超市直线约85米，荷兰村巴刹与熟食中心约193米，One Holland Village约228米。挂牌记录写有2个卫生间，仍需核实。\n\n记录的租金和现在是否仍可租，请联系经纪人确认。",
+  "source_checked_correction": {
+    "listing_id": "500215736",
+    "original": "第3套 701 West Coast Road：这套和上一套同名，条件也很接近——721平方英尺、月租1,450新币、到金文泰地铁站直线约873米，都处在中间位置。挂牌记录写有1个卫生间，仍需向经纪人确认；周边同样是游乐场约183米、超市约509米，两套可以放在一起比细节。",
+    "corrected": "第3套 701 West Coast Road：这套和上一套同名，条件也很接近——721平方英尺、月租1,450新币、到金文泰地铁站直线约873米，面积和到目标的距离都处在中间位置，月租则并列最高。挂牌记录写有1个卫生间，仍需向经纪人确认；周边同样是游乐场约183米、超市约509米，两套可以放在一起比细节。",
+    "model_calls": 0
+  }
+}

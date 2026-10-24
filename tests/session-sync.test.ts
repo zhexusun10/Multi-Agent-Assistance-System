@@ -3,6 +3,12 @@ import assert from 'node:assert/strict';
 import {SessionSync,readSse} from '../frontend/session-sync.js';
 
 const deferred=()=>{let resolve!:(v:any)=>void;const promise=new Promise<any>(r=>{resolve=r;});return {resolve,promise};};
+test('a new presentation version refreshes a saved result even if its business revision has not changed',async()=>{
+ let state:any={session_id:'a',revision:4,last_event_id:10,presentation_version:'old',recommendation:{recommendations:Array(9).fill({})}};
+ const next={...state,presentation_version:'new',recommendation:{recommendations:Array(5).fill({})}};
+ const sync=new SessionSync({getSession:()=>'a',getState:()=>state,fetchState:async()=>next,applyState:(s:any)=>{state=s;}});
+ await sync.refresh();assert.equal(state.recommendation.recommendations.length,5);assert.equal(state.presentation_version,'new');
+});
 test('an event during a state fetch forces another read and old snapshots cannot overwrite final messages',async()=>{
   const reads=[deferred(),deferred()];let calls=0;
   let state:any={session_id:'a',revision:4,last_event_id:10,messages:['question']};

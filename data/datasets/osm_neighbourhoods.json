@@ -1,0 +1,37 @@
+[
+  {
+    "place_id": "OSM:node:2511049756",
+    "name": "Chinatown",
+    "name_local": "牛车水",
+    "aliases": [
+      "牛车水",
+      "Chinatown Singapore"
+    ],
+    "category": "Neighbourhood",
+    "latitude": 1.2799695,
+    "longitude": 103.8436879,
+    "source_url": "https://www.openstreetmap.org/node/2511049756",
+    "source_updated_at": "2026-09-17T11:35:18Z",
+    "osm_version": 15,
+    "osm_place_type": "neighbourhood",
+    "coordinate_method": "osm_neighbourhood_label_point"
+  },
+  {
+    "place_id": "OSM:node:8777049478",
+    "name": "Holland Village",
+    "name_local": "荷兰村",
+    "aliases": [
+      "荷兰村",
+      "Holland V",
+      "HollandV"
+    ],
+    "category": "Neighbourhood",
+    "latitude": 1.3126017,
+    "longitude": 103.7971262,
+    "source_url": "https://www.openstreetmap.org/node/8777049478",
+    "source_updated_at": "2026-10-16T13:04:34Z",
+    "osm_version": 9,
+    "osm_place_type": "suburb",
+    "coordinate_method": "osm_neighbourhood_label_point"
+  }
+]

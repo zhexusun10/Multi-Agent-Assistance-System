@@ -5,3 +5,5 @@ neo4j>=5.20,<7
 python-dotenv>=1,<2
 jsonschema>=4,<5
 pytest>=8,<10
+PyYAML>=6,<7
+numpy>=1.26,<3

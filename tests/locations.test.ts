@@ -21,6 +21,27 @@ test('Clementi area and MRT are distinct grounded entities; aliases and joined M
   const locations=service();for(const name of ['金文泰','Clementi','克莱门特','金文台'])assert.equal((await locations.resolve(ctx(),name)).entity?.entity_id,'URA:AREA:CLEMENTI');
   for(const name of ['Clementi MRT','ClementiMRT','金文泰地铁站','克莱门特MRT'])assert.equal((await locations.resolve(ctx(),name,true)).entity?.entity_id,'LTA:MRT:CLEMENTI');
 });
+
+test('Chinatown and Holland Village neighbourhoods resolve bilingually without becoming rail stations',async()=>{
+  const locations=service();
+  for(const [names,id,station] of [
+    [['牛车水','Chinatown','China Town','Chinatown Singapore'],'OSM:node:2511049756','LTA:MRT:CHINATOWN'],
+    [['荷兰村','Holland Village','Holland V'],'OSM:node:8777049478','LTA:MRT:HOLLAND_VILLAGE'],
+  ] as const){
+    for(const name of names){const r=await locations.resolve(ctx(),name,false);assert.equal(r.entity?.entity_id,id);assert.equal(r.entity?.label,'Neighbourhood');assert.match(r.note,/参考点/);}
+    assert.equal((await locations.resolve(ctx(),names[0]+'地铁站',true)).entity?.entity_id,station);
+    const readContext=ctx();readContext.agent='b';const found=await locations.get(readContext,id);assert.equal(found.entity.entity_id,id);
+    assert.equal((await locations.describe(id))?.entity.entity_id,id);
+  }
+});
+
+test('a single substring POI match and a same-name station are not substitutes for an unknown neighbourhood',async()=>{
+  const tools=new ToolExecutor(),data=new DataHttpAdapter('http://127.0.0.1:8089',tools,async()=>randomUUID());
+  data.request=async()=>({items:[{entity_id:'OSM:node:1',label:'FoodCourt',properties:{name:'Example Food Centre'}}],next_cursor:null,has_more:false,page_size:50,source:{store:'test',role:'places'},warnings:[]});
+  const locations=new LocationService(data,tools,async()=>randomUUID());
+  assert.equal((await locations.resolve(ctx(),'Example')).entity,null);
+  assert.equal((await locations.resolve(ctx(),'Dover')).entity,null);
+});
 test('natural nearby stays soft and an explicit radius converts Chinese or Arabic kilometres to 3000 metres',()=>{
   assert.equal(parseLocationIntents('我要找金文泰附近')[0].radius_m,undefined);
   for(const q of ['就是Clementi MRT附近3公里','克莱门特MRT附近三公里','金文泰地铁站周边3km']){const l=parseLocationIntents(q)[0];assert.equal(l.radius_m,3000);assert.equal(l.strength,'hard');assert.equal(l.distance_type,'straight_line');assert(l.explicit_station);}

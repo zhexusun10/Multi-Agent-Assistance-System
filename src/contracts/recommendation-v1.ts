@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import {nativeScoresSchema} from './recommendation-native.js';
+import {nativeScoresSchema,legacyNativeScoresSchema,SELECTION_REASONS} from './recommendation-native.js';
 import {behaviorContextSchema} from './behavior-context.js';
 
 export const FIELD_RULES: Record<string, { kind: 'number'|'integer'|'string'|'boolean'|'date'; ops: string[]; unit?: string; unsupported?: boolean }> = {
@@ -76,7 +76,10 @@ const listingSchema=z.object({listing_id:z.string().regex(/^\d+$/),title:z.strin
 const candidateSchema=z.object({listing:listingSchema,rank:z.number().int().positive(),score:z.number().min(0).max(1),criterion_results:z.array(resultSchema),score_breakdown:z.array(z.object({criterion_id:z.string(),origin:z.enum(['stated_preference','inferred_interest']),utility:z.number().min(0).max(1),weight:z.number().positive(),normalized_weight:z.number().min(0).max(1),contribution:z.number().min(0).max(1),evidence_ids:z.array(z.string())}).strict()),explanation_evidence:z.object({strengths:z.array(z.object({criterion_ids:z.array(z.string()),evidence_ids:z.array(z.string())})),compromises:z.array(z.object({criterion_ids:z.array(z.string()),evidence_ids:z.array(z.string())})),unknowns:z.array(z.object({field:z.string(),evidence_ids:z.array(z.string())}))}).strict()}).strict();
 export type Candidate=z.infer<typeof candidateSchema>;
 export const recommendationResponseSchema=z.object({
-  native:z.object({provider:z.literal('jiangshan-native'),upstream_commit:z.string(),exchange_ref:z.string().uuid(),status:z.enum(['success','needs_clarification','no_match','error']),state_id:z.string().nullable(),ranking:z.array(z.string()),scores:z.record(z.string(),nativeScoresSchema),criterion_results:z.record(z.string(),z.unknown()),unsupported_criterion_ids:z.array(z.string()),unscored_listing_ids:z.array(z.string())}).strict().optional(),
+  native:z.object({provider:z.literal('jiangshan-native'),upstream_commit:z.string(),exchange_ref:z.string().uuid(),status:z.enum(['success','needs_clarification','no_match','error']),state_id:z.string().nullable(),ranking:z.array(z.string()),scores:z.record(z.string(),z.union([nativeScoresSchema,legacyNativeScoresSchema])),criterion_results:z.record(z.string(),z.unknown()),unsupported_criterion_ids:z.array(z.string()),unscored_listing_ids:z.array(z.string()),
+    // Native response contract 2.0 metadata (optional: archived contract-1.0 projections lack it). pool/selection/resolution
+    // are the lossless native objects, already validated by the strict 2.0 schema at projection time.
+    contract:z.literal('2.0').optional(),pool:z.record(z.string(),z.unknown()).nullable().optional(),selection:z.record(z.string(),z.unknown()).nullable().optional(),resolution:z.array(z.record(z.string(),z.unknown())).optional(),config_hash:z.string().optional(),selection_reasons:z.record(z.string(),z.object({selection_reason:z.enum(SELECTION_REASONS),selection_note:z.string(),score_rank:z.number().int().positive()}).strict()).optional()}).strict().optional(),
   contract_version:z.literal('1.0'),request_id:z.string(),conversation_id:z.string(),requirements_version:z.number().int(),
   status:z.enum(['success','needs_clarification','no_match','error']),recommendations:z.array(candidateSchema),unverified_candidates:z.array(candidateSchema),evidence:z.array(evidenceSchema),
   clarifications:z.array(z.object({criterion_ids:z.array(z.string()),question:z.string()}).strict()),

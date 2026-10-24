@@ -11,7 +11,7 @@ export class SessionSync {
       if(this.getSession()!==session)continue;
       const current=this.getState();
       if(current?.session_id===session&&Number(next.revision)<Number(current.revision))continue;
-      if(current?.session_id===session&&next.revision===current.revision&&next.last_event_id<=current.last_event_id)continue;
+      if(current?.session_id===session&&next.revision===current.revision&&next.last_event_id<=current.last_event_id&&next.presentation_version===current.presentation_version)continue;
       this.applyState(next);
     }while(run.dirty);}finally{if(this.runs.get(session)===run)this.runs.delete(session);}})();
     return run.promise;

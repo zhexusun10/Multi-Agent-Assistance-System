@@ -1,0 +1,82 @@
+{
+  "status": "passed",
+  "model_calls": 0,
+  "model_request_cap": 0,
+  "checks": [
+    {
+      "check": "actual_location_replacement",
+      "passed": true,
+      "model_proposed": false,
+      "requirements": {
+        "listing_type": "RENT",
+        "criteria": [
+          {
+            "criterion_id": "minimum-bedrooms",
+            "field": "bedrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 3000,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "place_proximity:OSM:node:8777049478-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "place_id": "OSM:node:8777049478",
+              "name": "Holland Village"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ]
+      }
+    },
+    {
+      "check": "native_neighbourhood_ranking",
+      "place_id": "OSM:node:2511049756",
+      "passed": true,
+      "ids": [
+        "500286414",
+        "18656603",
+        "500248279",
+        "500277757"
+      ],
+      "distances_m": [
+        368.37,
+        573.48,
+        1284.3204119928569,
+        1284.3204119928569
+      ]
+    },
+    {
+      "check": "native_neighbourhood_ranking",
+      "place_id": "OSM:node:8777049478",
+      "passed": true,
+      "ids": [
+        "23368920",
+        "500226876",
+        "500266147",
+        "12620560"
+      ],
+      "distances_m": [
+        599.27,
+        732.78,
+        1038.140889749122,
+        1193.8824258961774
+      ]
+    }
+  ]
+}

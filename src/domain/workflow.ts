@@ -20,13 +20,14 @@ import {AgentOrchestrator} from '../agents/orchestrator/agent-orchestrator.js';
 import { describeAgentFailure,recommendationFailureMessage } from './errors.js';
 import {LocationService} from '../adapters/locations.js';
 import {DEFAULT_PROXIMITY_SCALE_M} from './geo-intake.js';
-import {displayedCandidates,resolveListingSelection} from './selection.js';
+import {displayedCandidates,resolveListingSelection,RECOMMENDATION_DISPLAY_LIMIT} from './selection.js';
 import {FollowupService,singaporeDate} from './followup.js';
 import {ManualFollowupService} from './manual-followup.js';
 import {notesFromFollowupQuery} from '../shared/followup-message.js';
 import {ListingPresentationService} from './listing-presentation.js';
 import {prepareBrowserFeedback,browserInterestNotice} from './behavior.js';
 import {collectBehaviorContext} from './behavior-context.js';
+import {coldStartAfterAdoption,NOT_EXITED} from './cold-start.js';
 import {RequirementRefinementService} from '../agents/requirement/refinement/service.js';
 
 const resultEnvelope=z.object({schema_version:z.literal('1.1'),agent:z.enum(['a','b','c','d']),operation_id:z.string().uuid(),requirements_version:z.number().int(),payload_ref:z.string().uuid(),payload_hash:z.string()}).strict();
@@ -128,13 +129,13 @@ export class WorkflowService{
       }
       payload={draft:draftSchema.parse(draft),feedback:this.interpretFeedback(body.latest_query||body.query,body.recommendation,body.source_request_id,env.operation_id)};
     }else if(agent==='b'){
-      const req=recommendationRequestSchema.parse(body.request);const rec=await this.recommender.recommend(req,ctx);rec.warnings.push(...(body.interpretation_notes||[]).map((message:string)=>({code:'GEO_INTERPRETATION',message})));payload=rec;
+      const req=recommendationRequestSchema.parse(body.request);const rec=await this.recommender.recommend(req,ctx,body.cold_start??NOT_EXITED);rec.warnings.push(...(body.interpretation_notes||[]).map((message:string)=>({code:'GEO_INTERPRETATION',message})));payload=rec;
     }else if(agent==='c'){
       if(!body.recommendation)throw new BusinessError('NO_RECOMMENDATION','请先检索房源。');
       const rec=body.recommendation;
       const archive=rec.native?await this.store.loadPayload(rec.native.exchange_ref,sessionId):undefined;
       const enrichment=await this.explanationEnricher.load(rec,ctx);
-      payload={explanation:await generateExplanation(body.requirements,rec,this.dataset,body.query||'',this.model,profile.instructions,archive,enrichment)};
+      payload={explanation:await generateExplanation(body.requirements,rec,this.dataset,body.query||'',this.model,profile.instructions,archive,enrichment,diagnostic=>this.store.savePayload(sessionId,env.operation_id,diagnostic))};
     }else if(body.kind==='daily')payload={kind:'daily',date:singaporeDate()};
     else if(body.kind==='knowledge'||body.kind==='status'){
       if(body.kind==='status'){
@@ -180,9 +181,12 @@ export class WorkflowService{
     return [feedbackSchema.parse({event_id:`explicit:${op}`,listing_id:candidate.listing.listing_id,occurred_at:new Date().toISOString(),event_type:'explicit_attribute_feedback',payload:{attribute:/小/.test(m[2])?'floor_area_sqft':'listing',sentiment:m[2]==='喜欢'?'positive':'negative',quote:m[0]}})];
   }
   async emitDueReminders(){
-    const rows=(await this.store.pool.query("SELECT id,session_id,body FROM workflow_actions WHERE body->>'next_followup_at' IS NOT NULL AND (body->>'next_followup_at')::timestamptz<=now() AND body->>'status'<>'CANCELLED' LIMIT 100")).rows;
+    const rows=(await this.store.pool.query("SELECT a.id,a.session_id,a.body FROM workflow_actions a JOIN session_domain_state s ON s.session_id=a.session_id WHERE s.deleted_at IS NULL AND a.body->>'next_followup_at' IS NOT NULL AND (a.body->>'next_followup_at')::timestamptz<=now() AND a.body->>'status'<>'CANCELLED' LIMIT 100")).rows;
     for(const row of rows)await this.store.transaction(async tx=>{
-      const s=await this.store.lock(tx,row.session_id),a=row.body,key=`reminder:${row.id}:${a.revision}:${a.next_followup_at}`;
+      // A conversation can be deleted between the scan and acquiring its lock.
+      const current=await tx.query('SELECT * FROM session_domain_state WHERE session_id=$1 FOR UPDATE',[row.session_id]);
+      const s=current.rows[0] as DomainState|undefined;if(!s||s.deleted_at)return;
+      const a=row.body,key=`reminder:${row.id}:${a.revision}:${a.next_followup_at}`;
       if((await tx.query('SELECT 1 FROM session_events WHERE session_id=$1 AND event_key=$2',[s.session_id,key])).rowCount)return;
       this.store.message(s,'assistant',`跟进提醒已到期：${a.subject}。请在工作台检查下一步；系统没有自动发送消息。`);
       await this.store.event(tx,s.session_id,{type:'action_update',payload:{action_id:row.id,reminder:'due',message:'跟进提醒已到期；没有自动发送外部消息。',mode:'simulation'}},key);await this.store.saveState(tx,s);
@@ -215,9 +219,10 @@ export class WorkflowService{
             const feedback=(await tx.query('SELECT body FROM listing_feedback WHERE session_id=$1 AND consumed_request_id IS NULL AND (created_at <= $2 OR event_id=$3) ORDER BY created_at,event_id',[s.session_id,operation.created_at,`explicit:${env.operation_id}`])).rows.map(x=>x.body);
             const requestId=randomUUID(),previous=s.recommendation?.state.state_id;
             const behavior_context=await collectBehaviorContext(tx,s.session_id,operation.created_at,interest.ready);
-            const request=recommendationRequestSchema.parse({contract_version:'1.0',request_id:requestId,conversation_id:s.session_id,requirements_version:s.requirements_version,requirements:s.requirements,feedback,behavior_context,...(previous?{previous_state_id:previous}:{}),result_limit:5});
+            const request=recommendationRequestSchema.parse({contract_version:'1.0',request_id:requestId,conversation_id:s.session_id,requirements_version:s.requirements_version,requirements:s.requirements,feedback,behavior_context,...(previous?{previous_state_id:previous}:{}),result_limit:RECOMMENDATION_DISPLAY_LIMIT});
             await tx.query('INSERT INTO recommendation_calls(id,session_id,operation_id,request,feedback_cutoff,interest_context) VALUES($1,$2,$3,$4,$5,$6)',[requestId,s.session_id,env.operation_id,JSON.stringify(request),operation.created_at,JSON.stringify(interest)]);
-            s.latest_request_id=requestId;await next('b',{request,interpretation_notes:draft.interpretation_notes||[]},'recommend');
+            // Cold-start exit state is read once here and queued with B's body, so retries resend the identical native body.
+            s.latest_request_id=requestId;await next('b',{request,cold_start:s.recommendation_cold_start??NOT_EXITED,interpretation_notes:draft.interpretation_notes||[]},'recommend');
           }
         }else if(task.agent==='b'){
           const call=(await tx.query('SELECT request,interest_context FROM recommendation_calls WHERE id=$1 AND operation_id=$2',[s.latest_request_id,env.operation_id])).rows[0];if(!call)throw Error('Recommendation call missing');
@@ -228,7 +233,7 @@ export class WorkflowService{
           if(response.status==='error')throw new BusinessError(response.error!.code,recommendationFailureMessage(response.error!.code));
           await tx.query('UPDATE listing_feedback SET consumed_request_id=$2 WHERE session_id=$1 AND event_id=ANY($3::text[]) AND consumed_request_id IS NULL',[s.session_id,s.latest_request_id,call.request.feedback.map((f:Feedback)=>f.event_id)]);
           if(response.status==='needs_clarification'){const questions=response.clarifications.map(x=>x.question);this.store.message(s,'assistant',questions.join('\n'));await this.store.event(tx,s.session_id,{type:'clarification',payload:{questions}},`clarify:${task.id}`);}
-          else{s.recommendation=response;await next('c',{requirements:s.requirements,recommendation:response,query:operation.query},'explain');}
+          else{s.recommendation=response;s.recommendation_cold_start=coldStartAfterAdoption(s.recommendation_cold_start,response);await next('c',{requirements:s.requirements,recommendation:response,query:operation.query},'explain');}
         }else if(task.agent==='c'){
           const source=payload.explanation.source_request_id;const sourceOperation=(await tx.query('SELECT operation_id FROM recommendation_calls WHERE id=$1',[source])).rows[0]?.operation_id;if(source!==s.latest_request_id||sourceOperation!==s.active_operation_id)throw new BusinessError('RESULT_STALE','推荐已变化，此解释已失效。');s.explanation=payload.explanation;this.store.message(s,'assistant',payload.explanation.summary);
           const refinementId=await this.refinement.generate(tx,s);if(refinementId)s.messages.at(-1)!.refinement_id=refinementId;

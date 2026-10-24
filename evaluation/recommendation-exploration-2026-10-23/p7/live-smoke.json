@@ -1,0 +1,1432 @@
+{
+ "started_at": "2026-10-23T18:38:45+0800",
+ "tree": "/Users/tot/Documents/nus-ais/PR1/dev/Multi-Agent-Assistance-System",
+ "python": "3.11.16",
+ "scripted": {
+  "port": 8192,
+  "state": "temporary",
+  "health": {
+   "status": "ok",
+   "provider": "jiangshan-native",
+   "upstream": "907cfa8",
+   "contract": "2.0",
+   "controller": "scripted"
+  },
+  "conversation": "p7-smoke-452c5743",
+  "runs": [
+   {
+    "name": "r1_initial",
+    "request": {
+     "request_id": "s1-77d303",
+     "requirements_version": 1,
+     "criteria": [
+      "budget:price lte 3500 (hard)",
+      "bedrooms:bedrooms gte 2 (hard)",
+      "district:district_code in ['D15'] (soft)"
+     ],
+     "previous_round": null,
+     "appointments": []
+    },
+    "status": "success",
+    "warnings": [
+     "Sample viewing durations are simulated observations.",
+     "Posting time does not establish current availability.",
+     "528 listings were excluded because hard-criterion data is unknown (see pool.unknown_reasons); they are not verified matches."
+    ],
+    "clarifications": [],
+    "resolution": [],
+    "pool": {
+     "pool_key": "01f99fadd3cce5cf4d208af7e11cb4087a0689ed0e792f0a8d6319446caf0373",
+     "pool_version": "4453100aa48cd9a191fb8a5e2c28177c75da2380f90337e20d163cede934adba",
+     "data_version": "fdfce5220311e85438213d9ee4839969db300708224018b2adce5c069892d726",
+     "cache": "built",
+     "size": 1239,
+     "source_count": 21431,
+     "excluded_hard_fail": 19664,
+     "excluded_hard_unknown": 528
+    },
+    "selection": {
+     "mode": "cold_start_exploration",
+     "algorithm_version": "select-v1",
+     "leaders": 0,
+     "tie_group": {
+      "size": 36,
+      "min_score": 0.6,
+      "max_score": 0.6,
+      "span": 0.0,
+      "epsilon": 0.01
+     },
+     "exploration": {
+      "candidate_count": 36,
+      "sample_size": 30
+     },
+     "cold_start": {
+      "evaluated": true,
+      "active": true,
+      "reason": "b_above_max; s_below_min",
+      "coverage_c": 1.0,
+      "boundary_group_b": 36,
+      "stability_s": 0.325,
+      "exit_conditions_met": false
+     }
+    },
+    "recommendations": [
+     {
+      "listing_id": "25004403",
+      "rank": 1,
+      "score_rank": 11,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "25375358",
+      "rank": 2,
+      "score_rank": 14,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "500003398",
+      "rank": 3,
+      "score_rank": 15,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "500206815",
+      "rank": 4,
+      "score_rank": 17,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "500232006",
+      "rank": 5,
+      "score_rank": 19,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "500252525",
+      "rank": 6,
+      "score_rank": 21,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "500266011",
+      "rank": 7,
+      "score_rank": 24,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "500283811",
+      "rank": 8,
+      "score_rank": 28,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "500283864",
+      "rank": 9,
+      "score_rank": 29,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "500284065",
+      "rank": 10,
+      "score_rank": 30,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     }
+    ],
+    "presentation_counts": {
+     "assessed": 21431,
+     "eligible": 1239,
+     "unverified": 528,
+     "excluded": 19664
+    },
+    "execution": {
+     "controller_mode": "scripted",
+     "data_mode": "database",
+     "scoring_version": "fused-v2:90e724bb160a",
+     "selection_algorithm": "select-v1",
+     "config_hash": "e46e754a9c6e6eafd4e2522f7bee4f26de37f956de50d3be6be173549710b2c8",
+     "model_identifier": null,
+     "model_calls": 0,
+     "tool_calls": 4,
+     "duration_ms": 1101.8294170498848,
+     "tokens": null
+    },
+    "timing_ms": {
+     "client_wall": 1411.5,
+     "service": 1101.8
+    },
+    "stage_ms": {
+     "input_validation": 1.3,
+     "entity_resolution": 0.0,
+     "pool_build_or_load": 914.3,
+     "geographic_evidence": 0.2,
+     "scoring": 5.3,
+     "cold_start_diagnostics": 2.6,
+     "price_sampling": 0.2,
+     "final_selection": 0.2,
+     "final_gate": 175.8,
+     "response_assembly": 1.3
+    },
+    "tools": [
+     "resolve_entities",
+     "build_pool",
+     "get_geographic_evidence",
+     "rank_candidates",
+     "final_gate"
+    ],
+    "model_steps": 0,
+    "trace_bytes": 72236,
+    "correctness": {
+     "no_duplicates": true,
+     "display_order_leaders_then_drawn_in_score_order": true,
+     "hard_criteria_pass": true,
+     "all_in_pool_content": true,
+     "pool_content_rows": 1239
+    }
+   },
+   {
+    "name": "r2_feedback_rerank",
+    "request": {
+     "request_id": "s2-97a04d",
+     "requirements_version": 1,
+     "criteria": [
+      "budget:price lte 3500 (hard)",
+      "bedrooms:bedrooms gte 2 (hard)",
+      "district:district_code in ['D15'] (soft)"
+     ],
+     "previous_round": {
+      "request_id": "s1-77d303",
+      "shown": 10,
+      "recorded": {
+       "25004403": 90.0,
+       "25375358": 0.0
+      }
+     },
+     "appointments": [
+      {
+       "listing_id": "500003398",
+       "statuses": [
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "p7-action-1"
+       ]
+      }
+     ]
+    },
+    "status": "success",
+    "warnings": [
+     "Sample viewing durations are simulated observations.",
+     "Posting time does not establish current availability.",
+     "528 listings were excluded because hard-criterion data is unknown (see pool.unknown_reasons); they are not verified matches."
+    ],
+    "clarifications": [],
+    "resolution": [],
+    "pool": {
+     "pool_key": "01f99fadd3cce5cf4d208af7e11cb4087a0689ed0e792f0a8d6319446caf0373",
+     "pool_version": "4453100aa48cd9a191fb8a5e2c28177c75da2380f90337e20d163cede934adba",
+     "data_version": "fdfce5220311e85438213d9ee4839969db300708224018b2adce5c069892d726",
+     "cache": "reused",
+     "size": 1239,
+     "source_count": 21431,
+     "excluded_hard_fail": 19664,
+     "excluded_hard_unknown": 528
+    },
+    "selection": {
+     "mode": "ranked",
+     "algorithm_version": "select-v1",
+     "leaders": 9,
+     "tie_group": {
+      "size": 1,
+      "min_score": 0.8584580838323352,
+      "max_score": 0.8584580838323352,
+      "span": 0.0,
+      "epsilon": 0.01
+     },
+     "exploration": null,
+     "cold_start": {
+      "evaluated": true,
+      "active": false,
+      "reason": "exit_conditions_met",
+      "coverage_c": 1.0,
+      "boundary_group_b": 1,
+      "stability_s": 1.0,
+      "exit_conditions_met": true
+     }
+    },
+    "recommendations": [
+     {
+      "listing_id": "500286380",
+      "rank": 1,
+      "score_rank": 1,
+      "reason": "ranked",
+      "combined": 0.888524,
+      "soft": 1.0,
+      "behavior": 0.7213107513990711,
+      "appointment": 0.7638113321721046,
+      "browsing": 0.6575598802395209
+     },
+     {
+      "listing_id": "500280093",
+      "rank": 2,
+      "score_rank": 2,
+      "reason": "ranked",
+      "combined": 0.882148,
+      "soft": 1.0,
+      "behavior": 0.7053705089820359,
+      "appointment": 0.5223615269461077,
+      "browsing": 0.9798839820359281
+     },
+     {
+      "listing_id": "24661152",
+      "rank": 3,
+      "score_rank": 3,
+      "reason": "ranked",
+      "combined": 0.881737,
+      "soft": 1.0,
+      "behavior": 0.7043413173652695,
+      "appointment": 0.5172155688622755,
+      "browsing": 0.9850299401197604
+     },
+     {
+      "listing_id": "500283864",
+      "rank": 4,
+      "score_rank": 4,
+      "reason": "ranked",
+      "combined": 0.880539,
+      "soft": 1.0,
+      "behavior": 0.7013473053892216,
+      "appointment": 0.5022455089820359,
+      "browsing": 1.0
+     },
+     {
+      "listing_id": "500284885",
+      "rank": 5,
+      "score_rank": 5,
+      "reason": "ranked",
+      "combined": 0.880539,
+      "soft": 1.0,
+      "behavior": 0.7013473053892216,
+      "appointment": 0.5022455089820359,
+      "browsing": 1.0
+     },
+     {
+      "listing_id": "21944439",
+      "rank": 6,
+      "score_rank": 6,
+      "reason": "ranked",
+      "combined": 0.872493,
+      "soft": 1.0,
+      "behavior": 0.6812312874251496,
+      "appointment": 0.48212949101796404,
+      "browsing": 0.9798839820359281
+     },
+     {
+      "listing_id": "500252525",
+      "rank": 7,
+      "score_rank": 7,
+      "reason": "ranked",
+      "combined": 0.870431,
+      "soft": 1.0,
+      "behavior": 0.6760775045230821,
+      "appointment": 0.7255358608318834,
+      "browsing": 0.6018899700598802
+     },
+     {
+      "listing_id": "500264945",
+      "rank": 8,
+      "score_rank": 8,
+      "reason": "ranked",
+      "combined": 0.870431,
+      "soft": 1.0,
+      "behavior": 0.6760775045230821,
+      "appointment": 0.7255358608318834,
+      "browsing": 0.6018899700598802
+     },
+     {
+      "listing_id": "500232006",
+      "rank": 9,
+      "score_rank": 9,
+      "reason": "ranked",
+      "combined": 0.866032,
+      "soft": 1.0,
+      "behavior": 0.6650792963586066,
+      "appointment": 0.7072055138910909,
+      "browsing": 0.6018899700598802
+     },
+     {
+      "listing_id": "20392411",
+      "rank": 10,
+      "score_rank": 10,
+      "reason": "ranked",
+      "combined": 0.858458,
+      "soft": 1.0,
+      "behavior": 0.6461452095808382,
+      "appointment": 0.44704341317365265,
+      "browsing": 0.9447979041916167
+     }
+    ],
+    "presentation_counts": {
+     "assessed": 21431,
+     "eligible": 1239,
+     "unverified": 528,
+     "excluded": 19664
+    },
+    "execution": {
+     "controller_mode": "scripted",
+     "data_mode": "database",
+     "scoring_version": "fused-v2:90e724bb160a",
+     "selection_algorithm": "select-v1",
+     "config_hash": "e46e754a9c6e6eafd4e2522f7bee4f26de37f956de50d3be6be173549710b2c8",
+     "model_identifier": null,
+     "model_calls": 0,
+     "tool_calls": 4,
+     "duration_ms": 325.3572500543669,
+     "tokens": null
+    },
+    "timing_ms": {
+     "client_wall": 347.6,
+     "service": 325.4
+    },
+    "stage_ms": {
+     "input_validation": 0.5,
+     "entity_resolution": 0.0,
+     "pool_build_or_load": 150.1,
+     "geographic_evidence": 0.7,
+     "scoring": 19.2,
+     "cold_start_diagnostics": 8.5,
+     "price_sampling": 0.0,
+     "final_selection": 0.3,
+     "final_gate": 142.1,
+     "response_assembly": 3.5
+    },
+    "tools": [
+     "resolve_entities",
+     "build_pool",
+     "get_geographic_evidence",
+     "rank_candidates",
+     "final_gate"
+    ],
+    "model_steps": 0,
+    "trace_bytes": 87671,
+    "correctness": {
+     "no_duplicates": true,
+     "display_order_leaders_then_drawn_in_score_order": true,
+     "hard_criteria_pass": true,
+     "all_in_pool_content": true,
+     "pool_content_rows": 1239
+    }
+   },
+   {
+    "name": "r3_soft_change_cache_hit",
+    "request": {
+     "request_id": "s3-f913e3",
+     "requirements_version": 2,
+     "criteria": [
+      "budget:price lte 3500 (hard)",
+      "bedrooms:bedrooms gte 2 (hard)",
+      "district:district_code in ['D19'] (soft)",
+      "cheaper:price lte 3500 (soft)"
+     ],
+     "previous_round": {
+      "request_id": "s2-97a04d",
+      "shown": 10,
+      "recorded": {}
+     },
+     "appointments": [
+      {
+       "listing_id": "500003398",
+       "statuses": [
+        "MANUAL_SENT"
+       ],
+       "action_ids": [
+        "p7-action-1"
+       ]
+      }
+     ]
+    },
+    "status": "success",
+    "warnings": [
+     "Sample viewing durations are simulated observations.",
+     "Posting time does not establish current availability.",
+     "528 listings were excluded because hard-criterion data is unknown (see pool.unknown_reasons); they are not verified matches."
+    ],
+    "clarifications": [],
+    "resolution": [],
+    "pool": {
+     "pool_key": "01f99fadd3cce5cf4d208af7e11cb4087a0689ed0e792f0a8d6319446caf0373",
+     "pool_version": "4453100aa48cd9a191fb8a5e2c28177c75da2380f90337e20d163cede934adba",
+     "data_version": "fdfce5220311e85438213d9ee4839969db300708224018b2adce5c069892d726",
+     "cache": "reused",
+     "size": 1239,
+     "source_count": 21431,
+     "excluded_hard_fail": 19664,
+     "excluded_hard_unknown": 528
+    },
+    "selection": {
+     "mode": "cold_start_exploration",
+     "algorithm_version": "select-v1",
+     "leaders": 5,
+     "tie_group": {
+      "size": 12,
+      "min_score": 0.6367769461077845,
+      "max_score": 0.6442275449101795,
+      "span": 0.00745059880239507,
+      "epsilon": 0.01
+     },
+     "exploration": {
+      "candidate_count": 30,
+      "sample_size": 30
+     },
+     "cold_start": {
+      "evaluated": true,
+      "active": true,
+      "reason": "b_above_max",
+      "coverage_c": 1.0,
+      "boundary_group_b": 12,
+      "stability_s": 0.9800000000000001,
+      "exit_conditions_met": false
+     }
+    },
+    "recommendations": [
+     {
+      "listing_id": "500256762",
+      "rank": 1,
+      "score_rank": 1,
+      "reason": "leader",
+      "combined": 0.700567,
+      "soft": 0.9425,
+      "behavior": 0.3376684131736527,
+      "appointment": 0.5627806886227545,
+      "browsing": null
+     },
+     {
+      "listing_id": "500261081",
+      "rank": 2,
+      "score_rank": 2,
+      "reason": "leader",
+      "combined": 0.694581,
+      "soft": 0.9125,
+      "behavior": 0.36770209580838326,
+      "appointment": 0.6128368263473054,
+      "browsing": null
+     },
+     {
+      "listing_id": "60125643",
+      "rank": 3,
+      "score_rank": 3,
+      "reason": "leader",
+      "combined": 0.692335,
+      "soft": 0.9125,
+      "behavior": 0.3620883233532934,
+      "appointment": 0.6034805389221557,
+      "browsing": null
+     },
+     {
+      "listing_id": "500288455",
+      "rank": 4,
+      "score_rank": 4,
+      "reason": "leader",
+      "combined": 0.676425,
+      "soft": 0.94025,
+      "behavior": 0.280688622754491,
+      "appointment": 0.46781437125748504,
+      "browsing": null
+     },
+     {
+      "listing_id": "25361916",
+      "rank": 5,
+      "score_rank": 5,
+      "reason": "leader",
+      "combined": 0.663226,
+      "soft": 0.9375249999999999,
+      "behavior": 0.2517776946107784,
+      "appointment": 0.41962949101796404,
+      "browsing": null
+     },
+     {
+      "listing_id": "60178525",
+      "rank": 6,
+      "score_rank": 8,
+      "reason": "price_exploration_sample",
+      "combined": 0.642993,
+      "soft": 0.9299999999999999,
+      "behavior": 0.21248128742514968,
+      "appointment": 0.35413547904191617,
+      "browsing": null
+     },
+     {
+      "listing_id": "25639150",
+      "rank": 7,
+      "score_rank": 18,
+      "reason": "price_exploration_sample",
+      "combined": 0.636175,
+      "soft": 0.925,
+      "behavior": 0.202937874251497,
+      "appointment": 0.3382297904191617,
+      "browsing": null
+     },
+     {
+      "listing_id": "500262772",
+      "rank": 8,
+      "score_rank": 20,
+      "reason": "price_exploration_sample",
+      "combined": 0.634572,
+      "soft": 0.9299999999999999,
+      "behavior": 0.19142964071856286,
+      "appointment": 0.3190494011976048,
+      "browsing": null
+     },
+     {
+      "listing_id": "500255640",
+      "rank": 9,
+      "score_rank": 24,
+      "reason": "price_exploration_sample",
+      "combined": 0.633072,
+      "soft": 0.9275,
+      "behavior": 0.19142964071856286,
+      "appointment": 0.3190494011976048,
+      "browsing": null
+     },
+     {
+      "listing_id": "500283582",
+      "rank": 10,
+      "score_rank": 30,
+      "reason": "price_exploration_sample",
+      "combined": 0.631572,
+      "soft": 0.925,
+      "behavior": 0.19142964071856286,
+      "appointment": 0.3190494011976048,
+      "browsing": null
+     }
+    ],
+    "presentation_counts": {
+     "assessed": 21431,
+     "eligible": 1239,
+     "unverified": 528,
+     "excluded": 19664
+    },
+    "execution": {
+     "controller_mode": "scripted",
+     "data_mode": "database",
+     "scoring_version": "fused-v2:90e724bb160a",
+     "selection_algorithm": "select-v1",
+     "config_hash": "e46e754a9c6e6eafd4e2522f7bee4f26de37f956de50d3be6be173549710b2c8",
+     "model_identifier": null,
+     "model_calls": 0,
+     "tool_calls": 4,
+     "duration_ms": 325.6292500300333,
+     "tokens": null
+    },
+    "timing_ms": {
+     "client_wall": 375.8,
+     "service": 325.6
+    },
+    "stage_ms": {
+     "input_validation": 0.7,
+     "entity_resolution": 0.0,
+     "pool_build_or_load": 150.3,
+     "geographic_evidence": 0.8,
+     "scoring": 19.3,
+     "cold_start_diagnostics": 8.0,
+     "price_sampling": 0.2,
+     "final_selection": 0.1,
+     "final_gate": 142.6,
+     "response_assembly": 2.1
+    },
+    "tools": [
+     "resolve_entities",
+     "build_pool",
+     "get_geographic_evidence",
+     "rank_candidates",
+     "final_gate"
+    ],
+    "model_steps": 0,
+    "trace_bytes": 89193,
+    "correctness": {
+     "no_duplicates": true,
+     "display_order_leaders_then_drawn_in_score_order": true,
+     "hard_criteria_pass": true,
+     "all_in_pool_content": true,
+     "pool_content_rows": 1239
+    }
+   }
+  ],
+  "replay": {
+   "request_id": "s2-97a04d",
+   "identical_response": true,
+   "direct_recommend_identical": true,
+   "client_wall_ms": 10.3,
+   "direct_client_wall_ms": 9.9
+  },
+  "expectations": {
+   "r1_built": true,
+   "r2_feedback_reuses_pool": true,
+   "r3_soft_change_reuses_pool": true,
+   "r2_feedback_changes_behaviour_scores": true,
+   "replay_identical": true,
+   "all_success": true
+  }
+ },
+ "live": {
+  "port": 8192,
+  "state": "temporary",
+  "health": {
+   "status": "ok",
+   "provider": "jiangshan-native",
+   "upstream": "907cfa8",
+   "contract": "2.0",
+   "controller": "live"
+  },
+  "llm_runs": 3,
+  "runs": [
+   {
+    "name": "L1_initial_named_area",
+    "request": {
+     "request_id": "l1-35822e",
+     "requirements_version": 1,
+     "criteria": [
+      "budget:price lte 3500 (hard)",
+      "bedrooms:bedrooms gte 2 (hard)",
+      "near-clementi:distance lte 1500 (soft)"
+     ],
+     "previous_round": null,
+     "appointments": []
+    },
+    "status": "success",
+    "warnings": [
+     "Sample viewing durations are simulated observations.",
+     "Posting time does not establish current availability.",
+     "528 listings were excluded because hard-criterion data is unknown (see pool.unknown_reasons); they are not verified matches."
+    ],
+    "clarifications": [],
+    "resolution": [
+     {
+      "criterion_id": "near-clementi",
+      "status": "resolved",
+      "entity_id": "URA:AREA:CLEMENTI",
+      "entity_kind": "ura_area",
+      "method": "name",
+      "reason": "unique_exact_area_match",
+      "candidates": 0
+     }
+    ],
+    "pool": {
+     "pool_key": "01f99fadd3cce5cf4d208af7e11cb4087a0689ed0e792f0a8d6319446caf0373",
+     "pool_version": "4453100aa48cd9a191fb8a5e2c28177c75da2380f90337e20d163cede934adba",
+     "data_version": "fdfce5220311e85438213d9ee4839969db300708224018b2adce5c069892d726",
+     "cache": "built",
+     "size": 1239,
+     "source_count": 21431,
+     "excluded_hard_fail": 19664,
+     "excluded_hard_unknown": 528
+    },
+    "selection": {
+     "mode": "cold_start_exploration",
+     "algorithm_version": "select-v1",
+     "leaders": 0,
+     "tie_group": {
+      "size": 30,
+      "min_score": 0.6,
+      "max_score": 0.6,
+      "span": 0.0,
+      "epsilon": 0.01
+     },
+     "exploration": {
+      "candidate_count": 30,
+      "sample_size": 30
+     },
+     "cold_start": {
+      "evaluated": true,
+      "active": true,
+      "reason": "b_above_max; s_below_min",
+      "coverage_c": 1.0,
+      "boundary_group_b": 30,
+      "stability_s": 0.31,
+      "exit_conditions_met": false
+     }
+    },
+    "recommendations": [
+     {
+      "listing_id": "18689152",
+      "rank": 1,
+      "score_rank": 1,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "20205305",
+      "rank": 2,
+      "score_rank": 2,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "21603433",
+      "rank": 3,
+      "score_rank": 5,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "500183381",
+      "rank": 4,
+      "score_rank": 15,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "500188597",
+      "rank": 5,
+      "score_rank": 16,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "500249657",
+      "rank": 6,
+      "score_rank": 18,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "500279439",
+      "rank": 7,
+      "score_rank": 23,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "500284431",
+      "rank": 8,
+      "score_rank": 26,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "60126094",
+      "rank": 9,
+      "score_rank": 29,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "6995669",
+      "rank": 10,
+      "score_rank": 30,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     }
+    ],
+    "presentation_counts": {
+     "assessed": 21431,
+     "eligible": 1239,
+     "unverified": 528,
+     "excluded": 19664
+    },
+    "execution": {
+     "controller_mode": "live",
+     "data_mode": "database",
+     "scoring_version": "fused-v2:90e724bb160a",
+     "selection_algorithm": "select-v1",
+     "config_hash": "e46e754a9c6e6eafd4e2522f7bee4f26de37f956de50d3be6be173549710b2c8",
+     "model_identifier": "openai:gpt-4.1-mini",
+     "model_calls": 5,
+     "tool_calls": 4,
+     "duration_ms": 11123.05483291857,
+     "tokens": 32300
+    },
+    "timing_ms": {
+     "client_wall": 11390.3,
+     "service": 11123.1
+    },
+    "stage_ms": {
+     "input_validation": 0.4,
+     "entity_resolution": 160.5,
+     "pool_build_or_load": 962.5,
+     "geographic_evidence": 50.7,
+     "scoring": 16.6,
+     "cold_start_diagnostics": 4.9,
+     "price_sampling": 0.3,
+     "final_selection": 0.3,
+     "final_gate": 190.3,
+     "response_assembly": 3.2
+    },
+    "tools": [
+     "resolve_entities",
+     "build_pool",
+     "get_geographic_evidence",
+     "rank_candidates",
+     "final_gate"
+    ],
+    "model_steps": 5,
+    "trace_bytes": 135429,
+    "correctness": {
+     "no_duplicates": true,
+     "display_order_leaders_then_drawn_in_score_order": true,
+     "hard_criteria_pass": true,
+     "all_in_pool_content": true,
+     "pool_content_rows": 1239
+    }
+   },
+   {
+    "name": "L2_feedback_rerank",
+    "request": {
+     "request_id": "l2-469f8a",
+     "requirements_version": 1,
+     "criteria": [
+      "budget:price lte 3500 (hard)",
+      "bedrooms:bedrooms gte 2 (hard)",
+      "near-clementi:distance lte 1500 (soft)"
+     ],
+     "previous_round": {
+      "request_id": "l1-35822e",
+      "shown": 10,
+      "recorded": {
+       "18689152": 120.0
+      }
+     },
+     "appointments": []
+    },
+    "status": "success",
+    "warnings": [
+     "Sample viewing durations are simulated observations.",
+     "Posting time does not establish current availability.",
+     "528 listings were excluded because hard-criterion data is unknown (see pool.unknown_reasons); they are not verified matches."
+    ],
+    "clarifications": [],
+    "resolution": [
+     {
+      "criterion_id": "near-clementi",
+      "status": "resolved",
+      "entity_id": "URA:AREA:CLEMENTI",
+      "entity_kind": "ura_area",
+      "method": "name",
+      "reason": "unique_exact_area_match",
+      "candidates": 0
+     }
+    ],
+    "pool": {
+     "pool_key": "01f99fadd3cce5cf4d208af7e11cb4087a0689ed0e792f0a8d6319446caf0373",
+     "pool_version": "4453100aa48cd9a191fb8a5e2c28177c75da2380f90337e20d163cede934adba",
+     "data_version": "fdfce5220311e85438213d9ee4839969db300708224018b2adce5c069892d726",
+     "cache": "reused",
+     "size": 1239,
+     "source_count": 21431,
+     "excluded_hard_fail": 19664,
+     "excluded_hard_unknown": 528
+    },
+    "selection": {
+     "mode": "cold_start_exploration",
+     "algorithm_version": "select-v1",
+     "leaders": 5,
+     "tie_group": {
+      "size": 15,
+      "min_score": 0.7219403790146376,
+      "max_score": 0.728920100966177,
+      "span": 0.006979721951539397,
+      "epsilon": 0.01
+     },
+     "exploration": {
+      "candidate_count": 30,
+      "sample_size": 30
+     },
+     "cold_start": {
+      "evaluated": true,
+      "active": true,
+      "reason": "b_above_max",
+      "coverage_c": 1.0,
+      "boundary_group_b": 15,
+      "stability_s": 0.9850000000000001,
+      "exit_conditions_met": false
+     }
+    },
+    "recommendations": [
+     {
+      "listing_id": "500266415",
+      "rank": 1,
+      "score_rank": 1,
+      "reason": "leader",
+      "combined": 0.754853,
+      "soft": 1.0,
+      "behavior": 0.387132947018045,
+      "appointment": null,
+      "browsing": 0.9678323675451125
+     },
+     {
+      "listing_id": "6995669",
+      "rank": 2,
+      "score_rank": 2,
+      "reason": "leader",
+      "combined": 0.738138,
+      "soft": 1.0,
+      "behavior": 0.345343861437309,
+      "appointment": null,
+      "browsing": 0.8633596535932724
+     },
+     {
+      "listing_id": "500285705",
+      "rank": 3,
+      "score_rank": 3,
+      "reason": "leader",
+      "combined": 0.736482,
+      "soft": 1.0,
+      "behavior": 0.3412061303650237,
+      "appointment": null,
+      "browsing": 0.8530153259125591
+     },
+     {
+      "listing_id": "500228798",
+      "rank": 4,
+      "score_rank": 4,
+      "reason": "leader",
+      "combined": 0.732375,
+      "soft": 1.0,
+      "behavior": 0.33093870104373946,
+      "appointment": null,
+      "browsing": 0.8273467526093486
+     },
+     {
+      "listing_id": "500279439",
+      "rank": 5,
+      "score_rank": 5,
+      "reason": "leader",
+      "combined": 0.732375,
+      "soft": 1.0,
+      "behavior": 0.33093870104373946,
+      "appointment": null,
+      "browsing": 0.8273467526093486
+     },
+     {
+      "listing_id": "24194570",
+      "rank": 6,
+      "score_rank": 12,
+      "reason": "price_exploration_sample",
+      "combined": 0.726228,
+      "soft": 1.0,
+      "behavior": 0.31557104395915136,
+      "appointment": null,
+      "browsing": 0.7889276098978784
+     },
+     {
+      "listing_id": "21595049",
+      "rank": 7,
+      "score_rank": 16,
+      "reason": "price_exploration_sample",
+      "combined": 0.723249,
+      "soft": 1.0,
+      "behavior": 0.30812172413971767,
+      "appointment": null,
+      "browsing": 0.7703043103492941
+     },
+     {
+      "listing_id": "500256005",
+      "rank": 8,
+      "score_rank": 29,
+      "reason": "price_exploration_sample",
+      "combined": 0.687251,
+      "soft": 1.0,
+      "behavior": 0.21812653191753079,
+      "appointment": null,
+      "browsing": 0.5453163297938269
+     },
+     {
+      "listing_id": "18689152",
+      "rank": 9,
+      "score_rank": 31,
+      "reason": "price_exploration_sample",
+      "combined": 0.6,
+      "soft": 1.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "60125207",
+      "rank": 10,
+      "score_rank": 34,
+      "reason": "price_exploration_sample",
+      "combined": 0.498882,
+      "soft": 0.6943698819781329,
+      "behavior": 0.20565119760479045,
+      "appointment": null,
+      "browsing": 0.5141279940119761
+     }
+    ],
+    "presentation_counts": {
+     "assessed": 21431,
+     "eligible": 1239,
+     "unverified": 528,
+     "excluded": 19664
+    },
+    "execution": {
+     "controller_mode": "live",
+     "data_mode": "database",
+     "scoring_version": "fused-v2:90e724bb160a",
+     "selection_algorithm": "select-v1",
+     "config_hash": "e46e754a9c6e6eafd4e2522f7bee4f26de37f956de50d3be6be173549710b2c8",
+     "model_identifier": "openai:gpt-4.1-mini",
+     "model_calls": 5,
+     "tool_calls": 4,
+     "duration_ms": 8782.852916046977,
+     "tokens": 35079
+    },
+    "timing_ms": {
+     "client_wall": 8808.8,
+     "service": 8782.9
+    },
+    "stage_ms": {
+     "input_validation": 0.8,
+     "entity_resolution": 10.9,
+     "pool_build_or_load": 193.1,
+     "geographic_evidence": 51.5,
+     "scoring": 48.8,
+     "cold_start_diagnostics": 4.6,
+     "price_sampling": 0.2,
+     "final_selection": 0.2,
+     "final_gate": 187.6,
+     "response_assembly": 3.1
+    },
+    "tools": [
+     "resolve_entities",
+     "build_pool",
+     "get_geographic_evidence",
+     "rank_candidates",
+     "final_gate"
+    ],
+    "model_steps": 5,
+    "trace_bytes": 147534,
+    "correctness": {
+     "no_duplicates": true,
+     "display_order_leaders_then_drawn_in_score_order": true,
+     "hard_criteria_pass": true,
+     "all_in_pool_content": true,
+     "pool_content_rows": 1239
+    }
+   },
+   {
+    "name": "L3_ambiguous_narrowable_target",
+    "request": {
+     "request_id": "l3-edf663",
+     "requirements_version": 1,
+     "criteria": [
+      "budget:price lte 3500 (hard)",
+      "bedrooms:bedrooms gte 2 (hard)",
+      "near-lkc:distance lte 2000 (soft)"
+     ],
+     "previous_round": null,
+     "appointments": []
+    },
+    "status": "success",
+    "warnings": [
+     "Sample viewing durations are simulated observations.",
+     "Posting time does not establish current availability.",
+     "528 listings were excluded because hard-criterion data is unknown (see pool.unknown_reasons); they are not verified matches."
+    ],
+    "clarifications": [],
+    "resolution": [
+     {
+      "criterion_id": "near-lkc",
+      "status": "ambiguous",
+      "entity_id": null,
+      "entity_kind": null,
+      "method": "name",
+      "reason": "multiple_exact_matches (2)",
+      "candidates": 2
+     }
+    ],
+    "pool": {
+     "pool_key": "01f99fadd3cce5cf4d208af7e11cb4087a0689ed0e792f0a8d6319446caf0373",
+     "pool_version": "4453100aa48cd9a191fb8a5e2c28177c75da2380f90337e20d163cede934adba",
+     "data_version": "fdfce5220311e85438213d9ee4839969db300708224018b2adce5c069892d726",
+     "cache": "built",
+     "size": 1239,
+     "source_count": 21431,
+     "excluded_hard_fail": 19664,
+     "excluded_hard_unknown": 528
+    },
+    "selection": {
+     "mode": "cold_start_exploration",
+     "algorithm_version": "select-v1",
+     "leaders": 0,
+     "tie_group": {
+      "size": 1239,
+      "min_score": 0.0,
+      "max_score": 0.0,
+      "span": 0.0,
+      "epsilon": 0.01
+     },
+     "exploration": {
+      "candidate_count": 1239,
+      "sample_size": 30
+     },
+     "cold_start": {
+      "evaluated": true,
+      "active": true,
+      "reason": "c_below_min; b_above_max; s_below_min",
+      "coverage_c": 0.0,
+      "boundary_group_b": 1239,
+      "stability_s": 0.005,
+      "exit_conditions_met": false
+     }
+    },
+    "recommendations": [
+     {
+      "listing_id": "20539327",
+      "rank": 1,
+      "score_rank": 70,
+      "reason": "price_exploration_sample",
+      "combined": 0.0,
+      "soft": 0.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "21621004",
+      "rank": 2,
+      "score_rank": 127,
+      "reason": "price_exploration_sample",
+      "combined": 0.0,
+      "soft": 0.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "23149585",
+      "rank": 3,
+      "score_rank": 180,
+      "reason": "price_exploration_sample",
+      "combined": 0.0,
+      "soft": 0.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "23547188",
+      "rank": 4,
+      "score_rank": 204,
+      "reason": "price_exploration_sample",
+      "combined": 0.0,
+      "soft": 0.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "23898694",
+      "rank": 5,
+      "score_rank": 228,
+      "reason": "price_exploration_sample",
+      "combined": 0.0,
+      "soft": 0.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "24614043",
+      "rank": 6,
+      "score_rank": 325,
+      "reason": "price_exploration_sample",
+      "combined": 0.0,
+      "soft": 0.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "25155665",
+      "rank": 7,
+      "score_rank": 408,
+      "reason": "price_exploration_sample",
+      "combined": 0.0,
+      "soft": 0.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "25159529",
+      "rank": 8,
+      "score_rank": 409,
+      "reason": "price_exploration_sample",
+      "combined": 0.0,
+      "soft": 0.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "500155013",
+      "rank": 9,
+      "score_rank": 608,
+      "reason": "price_exploration_sample",
+      "combined": 0.0,
+      "soft": 0.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     },
+     {
+      "listing_id": "500198469",
+      "rank": 10,
+      "score_rank": 642,
+      "reason": "price_exploration_sample",
+      "combined": 0.0,
+      "soft": 0.0,
+      "behavior": null,
+      "appointment": null,
+      "browsing": null
+     }
+    ],
+    "presentation_counts": {
+     "assessed": 21431,
+     "eligible": 1239,
+     "unverified": 528,
+     "excluded": 19664
+    },
+    "execution": {
+     "controller_mode": "live",
+     "data_mode": "database",
+     "scoring_version": "fused-v2:90e724bb160a",
+     "selection_algorithm": "select-v1",
+     "config_hash": "e46e754a9c6e6eafd4e2522f7bee4f26de37f956de50d3be6be173549710b2c8",
+     "model_identifier": "openai:gpt-4.1-mini",
+     "model_calls": 7,
+     "tool_calls": 6,
+     "duration_ms": 12179.784332984127,
+     "tokens": 44759
+    },
+    "timing_ms": {
+     "client_wall": 12207.0,
+     "service": 12179.8
+    },
+    "stage_ms": {
+     "input_validation": 0.4,
+     "entity_resolution": 7.7,
+     "final_gate": 186.3,
+     "pool_build_or_load": 865.0,
+     "geographic_evidence": 64.8,
+     "scoring": 11.5,
+     "cold_start_diagnostics": 3.1,
+     "price_sampling": 0.8,
+     "final_selection": 0.7,
+     "response_assembly": 4.4
+    },
+    "tools": [
+     "resolve_entities",
+     "search_places",
+     "final_gate",
+     "resolve_entities",
+     "build_pool",
+     "get_geographic_evidence",
+     "rank_candidates",
+     "final_gate"
+    ],
+    "model_steps": 7,
+    "trace_bytes": 153540,
+    "correctness": {
+     "no_duplicates": true,
+     "display_order_leaders_then_drawn_in_score_order": true,
+     "hard_criteria_pass": true,
+     "all_in_pool_content": true,
+     "pool_content_rows": 1239
+    }
+   }
+  ]
+ },
+ "live_state_untouched": true,
+ "finished_at": "2026-10-23T18:39:21+0800"
+}

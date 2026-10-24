@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "model_calls": 0,
+  "visible_count": 5,
+  "checks": [
+    "real computed boundary distance on each of five cards",
+    "known distance removed from pending items",
+    "detail and narrative preserve the same distance",
+    "soft preference remains neutral and truthful about long distance"
+  ],
+  "scope": "real frontend with saved real SQL/KG/native results; intercepted business APIs"
+}

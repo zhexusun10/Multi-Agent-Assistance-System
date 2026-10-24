@@ -5,8 +5,10 @@ import {writeFile} from 'node:fs/promises';
 import pg from 'pg';
 import {nativeRequest,projectNative} from '../src/adapters/native-recommendation.js';
 import {recommendationRequestSchema} from '../src/contracts/recommendation-v1.js';
+import {selectV1Violations,scoreOrder,oracleSettings} from './helpers/select-v1-oracle.js';
+import {readFile} from 'node:fs/promises';
 
-test('native geographic ranking matches independently computed haversine/NEAR_PLACE values and guarded unsupported requirements',{skip:process.env.NATIVE_GEO_LIVE!=='1',timeout:240000},async()=>{
+test('native geographic ranking (contract 2.0) matches independently computed haversine values, the select-v1 oracle and guarded unsupported requirements',{skip:process.env.NATIVE_GEO_LIVE!=='1',timeout:240000},async()=>{
  const sql=new pg.Pool({connectionString:process.env.PROPERTYGURU_DATABASE_URL!.replace('postgresql+psycopg2:','postgresql:')});
  try{
    const destination=(await (await fetch('http://127.0.0.1:8089/api/v1/places/search',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({filters:{q:'National University of Singapore'},page_size:50})})).json()).items.find((p:any)=>p.properties.place_id==='OSM:way:54519165').properties;
@@ -16,13 +18,21 @@ test('native geographic ranking matches independently computed haversine/NEAR_PL
    const distance=(p:any)=>{if(p.latitude===null||p.longitude===null)return null;const h=Math.sin(rad(destination.latitude-p.latitude)/2)**2+Math.cos(rad(p.latitude))*Math.cos(rad(destination.latitude))*Math.sin(rad(destination.longitude-p.longitude)/2)**2;return 6371008.8*2*Math.asin(Math.sqrt(Math.max(0,Math.min(1,h))));};
    const properties=(await sql.query("SELECT listing_id,price,district_code,latitude,longitude FROM properties WHERE listing_type='RENT' ORDER BY listing_id::text")).rows;
    const source=properties.filter(p=>Number(p.price)<=3000&&p.price!==null&&p.district_code==='D05');
-   // Native reuses existing graph distances if they agree within one meter.
-   // Read those recorded values independently from the data API's nearby endpoint
-   // is unnecessary for ordering: this fixture's selected points use coordinate fallback.
+   // Native computes every straight-line distance itself (Python haversine from the canonical SQL coordinates; Neo4j
+   // NEAR_PLACE edges and point.distance are not used), so this independent haversine is the oracle.
    const eligible=source.map(p=>({...p,d:distance(p)})).filter(p=>p.d!==null&&p.d<=3000).sort((a,b)=>b.d===a.d?(String(a.listing_id)<String(b.listing_id)?-1:1):a.d!-b.d!);
    const native=envelope.response;assert.equal(envelope.presentation.counts.assessed,21431);assert.equal(envelope.presentation.counts.eligible,eligible.length);
-   assert.deepEqual(native.recommendations.map((c:any)=>c.listing.listing_id),eligible.slice(0,4).map(p=>String(p.listing_id)));
-   for(const c of native.recommendations){const p=eligible.find(p=>String(p.listing_id)===c.listing.listing_id)!;assert(Math.abs(c.scores.combined_score-1/(1+p.d!/1000))<.001);assert(c.criterion_results.find((x:any)=>x.criterion_id==='radius').outcome==='pass');}
+   // select-v1 oracle: O = eligible order (distance, then listing_id). Leaders are O's prefix; the other items are drawn
+   // from the tie group G (near_tie_sampling) or from R (cold_start_exploration), both directly after the leaders in O;
+   // seedless modes (ranked/small_pool) return O's prefix exactly.
+   // Shared helper: tests/helpers/select-v1-oracle.ts (checked offline by tests/select-v1-oracle.test.ts).
+   const softWeight=oracleSettings(await readFile('recommendation/settings/recommendation.yaml','utf8')).soft_weight;
+   const lo=Math.min(...eligible.map(p=>p.d!)),hi=Math.max(...eligible.map(p=>p.d!));
+   const utility=(d:number)=>hi>lo?(hi-d)/(hi-lo):0.5;
+   const scores=new Map(eligible.map(p=>[String(p.listing_id),softWeight*utility(p.d!)]));
+   assert.deepEqual(selectV1Violations(native,scoreOrder(scores),5,scores),[],JSON.stringify(native.selection));
+   assert.deepEqual(scoreOrder(scores),eligible.map(p=>String(p.listing_id)));
+   for(const c of native.recommendations){const p=eligible.find(p=>String(p.listing_id)===c.listing.listing_id)!;assert(Math.abs(c.scores.combined_score-c.scores.soft_weight*utility(p.d!))<.001);/* fused-v2: no feedback, so combined = soft_weight x soft (weighted-v1: = soft) */assert(c.criterion_results.find((x:any)=>x.criterion_id==='radius').outcome==='pass');}
    let saved:any;const ctx={sessionId:req.conversation_id,operationId:randomUUID(),agent:'b' as const,dataset:'2026-10-09',deadline:Date.now()+120000,calls:0};const save=async(_ctx:unknown,body:unknown)=>{saved=body;return randomUUID();};
    const rec=await projectNative(req,ctx,envelope,save);assert.deepEqual(rec.native!.ranking,native.recommendations.map((x:any)=>x.listing.listing_id));assert.deepEqual(saved.response,native);
    req.requirements.criteria.push({criterion_id:'private',field:'amenities',operator:'eq',value:'private_bathroom',strength:'hard'});

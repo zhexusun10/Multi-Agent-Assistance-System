@@ -85,14 +85,16 @@ class Criterion(Contract):
             ):
                 raise ValueError("nonempty string list required")
         if self.field in ("distance", "commute"):
+            # A category stands alone; a destination ID and a name may come together (the
+            # name is resolved too: invalid ID -> name search, ID/name conflict -> ambiguous).
             if (
-                sum(
-                    bool(v)
-                    for v in (self.destination_id, self.destination_name, self.category)
-                )
-                != 1
+                not (self.destination_id or self.destination_name or self.category)
+                or self.category
+                and (self.destination_id or self.destination_name)
             ):
-                raise ValueError("exactly one destination ID/name/category required")
+                raise ValueError(
+                    "a category alone, or a destination ID and/or name, is required"
+                )
             if self.distance_type is None:
                 raise ValueError("distance semantics required")
             if self.field == "commute" and not self.transport_mode:

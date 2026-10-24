@@ -1,22 +1,26 @@
 import {randomUUID} from 'node:crypto';
 import type {PoolClient} from 'pg';
 import {DomainStore,BusinessError,hash,type DomainState} from '../../../stores/domain.js';
-import {refinementSubmitSchema} from '../../../contracts/requirement-refinement.js';
+import {refinementSubmitSchema,refinementSubmissionText} from '../../../contracts/requirement-refinement.js';
 import {planRefinement} from './planner.js';
 import {compileRefinement} from './answers.js';
+import {refinementTrigger} from './trigger.js';
 
 export class RequirementRefinementService{
   constructor(readonly store:DomainStore,readonly dataset:string){}
   async generate(tx:PoolClient,s:DomainState):Promise<string|null>{
-    // Deliberately separate from native recommendation scores. Replace only this
-    // trigger when the team's real refinement-score contract is available.
-    if((process.env.REQUIREMENT_REFINEMENT_MODE||'mock')!=='mock'||!s.recommendation||!s.active_operation_id||s.recommendation.state.coverage.dataset_version!==this.dataset||s.recommendation.request_id!==s.latest_request_id||s.recommendation.requirements_version!==s.requirements_version)return null;
+    if(process.env.REQUIREMENT_REFINEMENT_MODE==='off'||!s.recommendation||!s.active_operation_id||s.recommendation.state.coverage.dataset_version!==this.dataset||s.recommendation.request_id!==s.latest_request_id||s.recommendation.requirements_version!==s.requirements_version)return null;
+    const trigger=refinementTrigger(s.recommendation);
+    if(!trigger){
+      await tx.query("UPDATE requirement_refinement_plans SET status='STALE',updated_at=now() WHERE session_id=$1 AND status='OPEN'",[s.session_id]);
+      return null;
+    }
     const history=(await tx.query('SELECT * FROM requirement_refinement_plans WHERE session_id=$1 ORDER BY created_at',[s.session_id])).rows;
     if(history.some(p=>p.source_request_id===s.latest_request_id)||history.some(p=>p.status==='DISMISSED'))return null;
     const handled=new Set<string>(history.filter(p=>p.status==='SUBMITTED').flatMap(p=>p.body.questions.map((q:any)=>String(q.id))));
     const questions=planRefinement(s.requirements,s.recommendation,handled);if(!questions.length)return null;
     await tx.query("UPDATE requirement_refinement_plans SET status='STALE',updated_at=now() WHERE session_id=$1 AND status='OPEN'",[s.session_id]);
-    const id=randomUUID();await tx.query('INSERT INTO requirement_refinement_plans(id,session_id,source_request_id,source_operation_id,requirements_version,body) VALUES($1,$2,$3,$4,$5,$6)',[id,s.session_id,s.latest_request_id,s.active_operation_id,s.requirements_version,JSON.stringify({dataset:this.dataset,trigger:'mock',questions})]);return id;
+    const id=randomUUID();await tx.query('INSERT INTO requirement_refinement_plans(id,session_id,source_request_id,source_operation_id,requirements_version,body) VALUES($1,$2,$3,$4,$5,$6)',[id,s.session_id,s.latest_request_id,s.active_operation_id,s.requirements_version,JSON.stringify({dataset:this.dataset,...trigger,questions})]);return id;
   }
   private async current(tx:PoolClient,s:DomainState,id:string){
     const row=(await tx.query('SELECT * FROM requirement_refinement_plans WHERE id=$1 AND session_id=$2 FOR UPDATE',[id,s.session_id])).rows[0];
@@ -45,7 +49,7 @@ export class RequirementRefinementService{
       if(changed&&(await tx.query('SELECT 1 FROM domain_operations WHERE session_id=$1 AND request_id=$2',[session,submitted.submission_id])).rowCount)throw new BusinessError('REQUEST_ID_CONFLICT','提交编号已被其他操作使用，请刷新后重试。');
       await tx.query("UPDATE requirement_refinement_plans SET status='SUBMITTED',answers=$2,answer_summary=$3,submission_id=$4,submitted_operation_id=$5,submission_hash=$6,updated_at=now() WHERE id=$1",[id,JSON.stringify(compiled.answers),JSON.stringify(compiled.summary),submitted.submission_id,operation,submissionHash]);
       if(operation){
-        const query='我补充了找房需求：\n'+compiled.summary.join('\n')+'\n请按更新后的需求重新推荐。';
+        const query=refinementSubmissionText(compiled.summary);
         await tx.query("INSERT INTO domain_operations(id,session_id,request_id,query,kind,source_request_id,intent_plan) VALUES($1,$2,$3,$4,'search',$5,$6)",[operation,session,submitted.submission_id,query,s.latest_request_id,JSON.stringify({kind:'search',agent:'a',deferred_summary:false,source:'requirement_card',plan_id:id})]);
         if(s.active_operation_id)await tx.query("UPDATE domain_operations SET status='superseded' WHERE id=$1 AND status='queued'",[s.active_operation_id]);
         s.active_operation_id=operation;

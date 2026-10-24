@@ -46,6 +46,19 @@ test('cancellation references a real old criterion and cannot remove unrelated a
   assert.deepEqual(mergeRequirements(base,d).criteria.map(c=>c.criterion_id),['pets']);
   assert.throws(()=>compileIntake(output(q,{removals:[{field:'amenities',criterion_id:'fake',quote:q}]}),q,base,meta),/REMOVAL/);
 });
+
+test('a short location replacement removes the prior destination while retaining budget, layout and transit preference',async()=>{
+ const example=INTAKE_EXAMPLES.find(e=>e.id==='short-replace-neighbourhood')!;
+ assert(selectIntakeExamples(example.query).some(e=>e.id===example.id));
+ const draft=await extractRequirements(example.query,example.base,mock([example.output]));
+ const intent=draft.location_intents![0];assert.equal(intent.name,'荷兰村');assert.equal(intent.explicit_station,false);
+ // The directory, rather than the model, supplies this real neighbourhood ID.
+ draft.upsert.push(criterion('place_proximity','lte',1000,'m',true,{target:{place_id:'OSM:node:8777049478',name:'Holland Village'},distance_type:'straight_line',distance_preference:'nearer'}));
+ const next=mergeRequirements(example.base,draft);
+ assert(!next.criteria.some(c=>c.target?.place_id==='LTA:MRT:CHINATOWN'));
+ assert.deepEqual(next.criteria.filter(c=>c.field!=='place_proximity'),example.base.criteria.filter(c=>c.field!=='place_proximity'));
+ assert(next.criteria.some(c=>c.target?.category==='PublicTransport'));
+});
 test('explicit route semantics stay distinct from reported station time and vague nearby has no hard radius',()=>{
   const q='附近最好有MRT，步行去NUS半小时内';const d=compileIntake(output(q,{locations:[location(null,['MRTStation'],q)],upsert:[attribute('commute_time','lte',30,q,{target_name:'NUS',transport_mode:'walking'})]}),q,empty,meta);
   assert.equal(d.location_intents?.[0].radius_m,undefined);assert.equal(d.location_intents?.[0].strength,'soft');assert.equal(d.upsert[0].field,'commute_time');assert.equal(d.upsert[0].transport_mode,'walking');

@@ -1,0 +1,59 @@
+{
+  "status": "passed",
+  "dataset": "2026-10-09",
+  "assessed": 21431,
+  "eligible": 180,
+  "native_ids": [
+    "500281070",
+    "60094463",
+    "500228649",
+    "500262756",
+    "60004435"
+  ],
+  "selected": [
+    {
+      "listing_id": "500281070",
+      "score": 0.30601425209345917,
+      "oracle_distance_m": 960.6929935303144
+    },
+    {
+      "listing_id": "60094463",
+      "score": 0.30601425209345917,
+      "oracle_distance_m": 960.6929935303144
+    },
+    {
+      "listing_id": "500228649",
+      "score": 0.30431831356803835,
+      "oracle_distance_m": 971.6197588151825
+    },
+    {
+      "listing_id": "500262756",
+      "score": 0.30431831356803835,
+      "oracle_distance_m": 971.6197588151825
+    },
+    {
+      "listing_id": "60004435",
+      "score": 0.29476775138199884,
+      "oracle_distance_m": 1035.5008211955842
+    }
+  ],
+  "preserved_native_response": true,
+  "unsupported_hard_guard": true,
+  "execution": {
+    "trace_id": "a8ab0299-020c-4983-8242-a69f30cbcc31",
+    "trace_ref": "sqlite:a8ab0299-020c-4983-8242-a69f30cbcc31",
+    "strategy": "full-pool fused-v2 scoring + select-v1 selection",
+    "scoring_version": "fused-v2:90e724bb160a",
+    "selection_algorithm": "select-v1",
+    "config_version": 1,
+    "config_hash": "e46e754a9c6e6eafd4e2522f7bee4f26de37f956de50d3be6be173549710b2c8",
+    "selection_hash": "90e724bb160ae68524bd5d9b899959716d46f509627096c5696c7ec66d5a18a7",
+    "model_identifier": null,
+    "model_calls": 0,
+    "tool_calls": 4,
+    "duration_ms": 1084.7456250339746,
+    "tokens": null,
+    "data_mode": "database",
+    "controller_mode": "scripted"
+  }
+}

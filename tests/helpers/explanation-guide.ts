@@ -9,10 +9,12 @@ export function guideResponse(req:Requirements,rec:RecommendationResponse,questi
   {listing_id:null,text:english?'These details may help you choose:':'以下信息可能帮助您比较这几套房子：',support_refs:['guide:purpose']},
   ...g.profiles.filter(p=>g.target_listing_ids.includes(p.listing_id)).map(p=>{
    const row=[...rec.recommendations,...rec.unverified_candidates].find(r=>r.listing.listing_id===p.listing_id)!;
-   const extra=p.additional_refs[0]||p.extra_refs[0],area=extra?.endsWith(':area-unit')||extra?.endsWith(':floor_area_sqft');
-   const detail=extra?(area?(english?` The listed floor area is ${row.listing.floor_area_sqft} sq ft.`:`挂牌面积${row.listing.floor_area_sqft}平方英尺。`):(english?' The recorded property type is a condominium.':'记录房屋类型为公寓。')):'';
+   const extra=p.additional_refs[0]||p.extra_refs[0],area=(p.core_refs||[]).find(ref=>ref.startsWith('area:')||ref.endsWith(':floor_area_sqft'));
+   const sqft=b.facts.find(f=>f.ref===area)?.numbers[0];
+   const detail=sqft?(english?` The listed floor area is ${sqft} sq ft.`:`房源面积${sqft}平方英尺。`):'';
+   const supplementary=extra&&!p.core_refs?.includes(extra)?(english?' The recorded property type is a condominium.':'记录房屋类型为公寓。'):'';
    const unknown=p.caution_refs.length?(english?' Some required conditions still need confirmation.':'部分必须要求尚需确认。'):'';
-   return {listing_id:p.listing_id,text:(english?`${p.position}. ${p.title}: Recorded monthly rent is S$${row.listing.price}.`:`第${p.position}套 ${p.title}：记录月租${row.listing.price}新币。`)+detail+unknown,support_refs:[...p.known_refs.slice(0,1),...(extra?[extra]:[]),...p.caution_refs]};
+   return {listing_id:p.listing_id,text:(english?`${p.position}. ${p.title}: Recorded monthly rent is S$${row.listing.price}.`:`第${p.position}套 ${p.title}：记录月租${row.listing.price}新币。`)+detail+supplementary+unknown,support_refs:[...p.known_refs.slice(0,1),...p.core_refs||[],...(extra?[extra]:[]),...p.caution_refs]};
   }),
   {listing_id:null,text:english?'Please confirm current rent and availability.':'当前租金和是否仍可租，请联系确认。',support_refs:b.required_refs},
  ]};

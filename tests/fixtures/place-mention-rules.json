@@ -1,0 +1,474 @@
+{
+ "description": "Shared place-mention rules: TS isExplicitStation / isGenericMrt (src/domain/geo-intake.ts) and stationMode (src/adapters/locations.ts) versus Python recommendation.geography.normalize explicit_station / is_generic_mrt / requested_mode. Expected values were generated from the TS implementation.",
+ "source": "src/domain/geo-intake.ts, src/adapters/locations.ts",
+ "cases": [
+  {
+   "input": "MRT",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "mrt",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "Mrt Station",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": " MRT ",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "MRT\n",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "﻿MRT",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "MRT",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "　MRT　",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "ＭＲＴ",
+   "explicit_station": false,
+   "requested_mode": null,
+   "generic_mrt": false
+  },
+  {
+   "input": "地铁站",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "地铁",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "捷运站",
+   "explicit_station": false,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "捷运",
+   "explicit_station": false,
+   "requested_mode": "MRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "最近的MRT",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "最近MRT站",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "最近的地铁站",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "任意地铁站",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "任一MRT",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "一个MRT站",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "一座地铁站",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "附近的MRT",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "附近MRT",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "nearest MRT station",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "nearest  mrt",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "the MRT",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "the  MRT station",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "an MRT",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "a MRT",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "an  mrt station",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "any MRT  站",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "any MRT",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "MRT  station",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "MRTstation",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "MRT站",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "MRT Stations",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "MRT station nearby",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "nearestMRT",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "the mrt station",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": true
+  },
+  {
+   "input": "LRT",
+   "explicit_station": true,
+   "requested_mode": "LRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "lrt station",
+   "explicit_station": true,
+   "requested_mode": "LRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "nearest LRT",
+   "explicit_station": true,
+   "requested_mode": "LRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "轻轨",
+   "explicit_station": false,
+   "requested_mode": "LRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "轻轨站",
+   "explicit_station": false,
+   "requested_mode": "LRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "LRT站",
+   "explicit_station": true,
+   "requested_mode": "LRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "station",
+   "explicit_station": false,
+   "requested_mode": null,
+   "generic_mrt": false
+  },
+  {
+   "input": "Station",
+   "explicit_station": false,
+   "requested_mode": null,
+   "generic_mrt": false
+  },
+  {
+   "input": "站",
+   "explicit_station": false,
+   "requested_mode": null,
+   "generic_mrt": false
+  },
+  {
+   "input": "Bus station",
+   "explicit_station": false,
+   "requested_mode": null,
+   "generic_mrt": false
+  },
+  {
+   "input": "Clementi",
+   "explicit_station": false,
+   "requested_mode": null,
+   "generic_mrt": false
+  },
+  {
+   "input": "Clementi MRT",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "ClementiMRT",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "Clementi Station",
+   "explicit_station": false,
+   "requested_mode": null,
+   "generic_mrt": false
+  },
+  {
+   "input": "Clementi station",
+   "explicit_station": false,
+   "requested_mode": null,
+   "generic_mrt": false
+  },
+  {
+   "input": "Bukit Panjang Station",
+   "explicit_station": false,
+   "requested_mode": null,
+   "generic_mrt": false
+  },
+  {
+   "input": "Bukit Panjang LRT",
+   "explicit_station": true,
+   "requested_mode": "LRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "Bukit Panjang MRT",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "武吉班让轻轨站",
+   "explicit_station": false,
+   "requested_mode": "LRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "武吉班让轻轨",
+   "explicit_station": false,
+   "requested_mode": "LRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "金文泰地铁站",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "金文泰地铁",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "金文泰站",
+   "explicit_station": false,
+   "requested_mode": null,
+   "generic_mrt": false
+  },
+  {
+   "input": "Bishan捷运站",
+   "explicit_station": false,
+   "requested_mode": "MRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "Bishan捷运",
+   "explicit_station": false,
+   "requested_mode": "MRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "克莱门特MRT",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "Punggol",
+   "explicit_station": false,
+   "requested_mode": null,
+   "generic_mrt": false
+  },
+  {
+   "input": "Punggol Station",
+   "explicit_station": false,
+   "requested_mode": null,
+   "generic_mrt": false
+  },
+  {
+   "input": "Punggol LRT",
+   "explicit_station": true,
+   "requested_mode": "LRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "CLEMENTI MRT STATION",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "BAKAU LRT STATION",
+   "explicit_station": true,
+   "requested_mode": "LRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "Smartphone Mall",
+   "explicit_station": false,
+   "requested_mode": null,
+   "generic_mrt": false
+  },
+  {
+   "input": "Mrtown",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "Ultra Lrt",
+   "explicit_station": true,
+   "requested_mode": "LRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "NUS",
+   "explicit_station": false,
+   "requested_mode": null,
+   "generic_mrt": false
+  },
+  {
+   "input": "Holland Village MRT",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "地铁站附近的公寓",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "Lrt and MRT",
+   "explicit_station": true,
+   "requested_mode": "LRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "the Clementi MRT Station",
+   "explicit_station": true,
+   "requested_mode": "MRT",
+   "generic_mrt": false
+  },
+  {
+   "input": "ＬＲＴ",
+   "explicit_station": false,
+   "requested_mode": null,
+   "generic_mrt": false
+  }
+ ]
+}

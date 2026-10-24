@@ -1,0 +1,61 @@
+{
+  "contract_version": "1.0",
+  "conversation_id": "baseline",
+  "feedback": [],
+  "previous_state_id": "e660e615-0714-42ba-a300-a6114908f3c3",
+  "request_id": "baseline-preference-update",
+  "requirements": {
+    "criteria": [
+      {
+        "category": null,
+        "criterion_id": "budget",
+        "destination_id": null,
+        "destination_name": null,
+        "distance_type": null,
+        "field": "price",
+        "operator": "lte",
+        "strength": "hard",
+        "transport_mode": null,
+        "unit": "SGD/month",
+        "utility": "threshold",
+        "value": 3000.0,
+        "weight": 1.0
+      },
+      {
+        "category": null,
+        "criterion_id": "bedrooms",
+        "destination_id": null,
+        "destination_name": null,
+        "distance_type": null,
+        "field": "bedrooms",
+        "operator": "gte",
+        "strength": "hard",
+        "transport_mode": null,
+        "unit": null,
+        "utility": "threshold",
+        "value": 2.0,
+        "weight": 1.0
+      },
+      {
+        "category": null,
+        "criterion_id": "district",
+        "destination_id": null,
+        "destination_name": null,
+        "distance_type": null,
+        "field": "district_code",
+        "operator": "in",
+        "strength": "soft",
+        "transport_mode": null,
+        "unit": null,
+        "utility": "threshold",
+        "value": [
+          "D21"
+        ],
+        "weight": 1.0
+      }
+    ],
+    "listing_type": "RENT"
+  },
+  "requirements_version": 2,
+  "result_limit": 4
+}

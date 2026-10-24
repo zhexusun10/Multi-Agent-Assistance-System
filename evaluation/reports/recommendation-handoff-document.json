@@ -1,9 +1,9 @@
 {
   "status": "passed",
-  "checked_at": "2026-10-20T15:08:17.004Z",
+  "checked_at": "2026-10-23T13:39:11.535Z",
   "request_examples": 4,
   "response_examples": 4,
-  "schema_properties_documented": 181,
+  "schema_properties_documented": 209,
   "json_blocks": 30,
   "criterion_fragments": 8,
   "runtime_code_modified": false,

@@ -52,7 +52,7 @@ test('full snapshot: exhaustive SQL business oracle, proximity ranking, presenta
         return {id,p,results,group,score};
       });
       const order=(a:any,b:any)=>b.score-a.score||Number(a.p.price)-Number(b.p.price)||(BigInt(a.id)>BigInt(b.id)?1:-1);
-      for(const [group,key,limit] of [['eligible','recommendations',5],['unverified','unverified_candidates',5]] as const){
+      for(const [group,key,limit] of [['eligible','recommendations',10],['unverified','unverified_candidates',10]] as const){
         const e=expected.filter(e=>e.group===group).sort(order);assert.equal(rec.state.counts[group],e.length);
         assert.deepEqual(rec[key].map((c:any)=>c.listing.listing_id),e.slice(0,limit).map(x=>x.id));
         for(const c of rec[key])for(const r of c.criterion_results){const v=e.find(p=>p.id===c.listing.listing_id)!.results.find((x:any)=>x.c.criterion_id===r.criterion_id);assert.equal(r.status,v.status);if(typeof v.v==='number')assert(Math.abs(r.observed_value-v.v)<.02);else assert.equal(r.observed_value,v.v);}
@@ -61,13 +61,13 @@ test('full snapshot: exhaustive SQL business oracle, proximity ranking, presenta
     };
     const one=await api('sessions',{});let s=await run(one.session_id,'帮我找租房，预算不超过5000新币，至少2房，D05');verify(s);
     const two=await api('sessions',{});s=await run(two.session_id,'我想租新加坡国立大学附近3公里内的房子，要求房子3公里内附近有MRT，预算3000新币每月，要求有独立浴室');verify(s);
-    assert.equal(s.recommendation.recommendations.length,0);assert.equal(s.recommendation.unverified_candidates.length,5);
+    assert.equal(s.recommendation.recommendations.length,0);assert.equal(s.recommendation.unverified_candidates.length,10);
     const id=s.recommendation.unverified_candidates[0].listing.listing_id,source=s.latest_request_id;
     const presentation=await api(`listings/${id}/presentation?session_id=${two.session_id}&source_request_id=${source}`);
     assert.equal(presentation.dataset,'2026-10-09');assert.equal(presentation.warnings.length,0);assert(presentation.photos.length>0);assert(presentation.nearby.length>0);assert.equal(String(presentation.details.listing_id),id);
     s=await run(two.session_id,`请为房源ID ${id} 生成看房询问草稿，逐项询问尚未核实的条件。`,source);assert.equal(s.actions.length,1);assert.equal(s.actions[0].source_request_id,source);assert.deepEqual(s.actions[0].listing_ids,[id]);assert.match(s.actions[0].body,/独立卫浴/);
     s=await run(two.session_id,'生成当前推荐的总结文档',source);assert(s.artifacts.length>0);
-    const three=await api('sessions',{});s=await run(three.session_id,'我想租新加坡国立大学附近3公里内的房子，预算3000新币每月');verify(s);assert.equal(s.recommendation.recommendations.length,5);
+    const three=await api('sessions',{});s=await run(three.session_id,'我想租新加坡国立大学附近3公里内的房子，预算3000新币每月');verify(s);assert.equal(s.recommendation.recommendations.length,10);
     report.status='passed';report.full_count=properties.length;report.mrt_exits=exits.length;report.presentation={listing_id:id,photos:presentation.photos.length,nearby:presentation.nearby.length};
     await writeFile('data/.runtime/full-data-ui-fixture.json',JSON.stringify({owner,session_id:two.session_id,plain_session_id:three.session_id}));
   }finally{

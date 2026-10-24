@@ -19,7 +19,7 @@
 | requirements | object | 必填 | 已有 | 显式需求，结构见下表 |
 | feedback | array | 默认[] | 已有 | 已满足质量门槛、尚未消费的浏览时长事件 |
 | previous_state_id | string/null | 默认null | 已有 | 原生上一状态；应用入口继续保留既有原生head适配与重放机制 |
-| result_limit | integer 1–4 | 默认4 | 已有 | 原生每组最多4套；应用内部请求上限不同，适配时截到4 |
+| result_limit | integer 1–5 | 默认5 | 已有字段，2026-10-24调整上限 | 正式推荐最多5套；不足不凑数；资料待确认列表独立返回（最多4套） |
 | behavior_context | object/null | 老客户端可省略；本应用每次提供 | **新增** | 两类行为的完整只读摘要，与显式需求并列，结构见下表 |
 
 这两类行为是“推荐输入中的用户上下文”，不是用户必须满足的房屋条件，因此放在 `behavior_context`，不塞进 `requirements.criteria`，不让LLM再从文本提取，不增加显式需求版本。
@@ -127,9 +127,9 @@
 
 - 应用请求定义：`src/contracts/recommendation-v1.ts`与`src/contracts/behavior-context.ts`。
 - 应用入口的完整可执行Schema：`contracts/releases/recommendation-app-request-1.0.schema.json`；Python类型：`recommendation/app_contract.py`。
-- `/app/recommend`已接收、校验并把behavior_context保存在SQLite的app_transport_requests及应用推荐原始交互存档；同一request_id变更行为内容会报409。
-- 原始 `/recommend`、原生Requirement/Feedback Schema、候选池、评分公式和排序保持原样。应用入口将行为扩展与原生请求分开，现有评分继续通过已有feedback消费合格时长；**新增Book Viewing信号尚未加入原生评分**，供江山后续实现其权重与使用方法。不能说已自动按看房意向改分。
-- Recommendation返回给Explanation的Response字段本次没有新增；应用接入包装仍有request、transport_request、response、presentation，其中transport_request包含完整行为快照，request是送入原算法的原生报文。
+- 2026-10-24已合并原生Recommendation 2.0：`/recommend`与`/app/recommend`均接收behavior_context和cold_start，后者保留应用同源传输、身份绑定及完整存档。同一request_id变更行为内容仍报409，V2传输绑定独立保存，旧数据不删除。
+- 行为现在由江山的新算法原生计分：`listing_view_durations`的会话累计摘要参与browsing分支，`interest_eligible`仍由应用既有质量门槛控制；`book_viewing_listings`中有效的`viewing_draft_saved`参与appointment分支。该信号仍不是已确认看房。feedback增量事件只校验和记录，不再重复计分。默认总分为0.6软需求+0.4行为，行为内为0.6看房意向+0.4浏览；实际以原生配置及原生返回为准，应用不重算分数。
+- 原生Response升级为2.0，增加pool、resolution、selection、每套selection_reason/score_rank及新的软需求/浏览/看房意向分支。应用保存原始报文，并投影为原有工作台契约供Explanation与其他Agent使用。`selection.cold_start.active`现用于需求补充卡片；详细迁移见[2.0合并与真实追问](Recommendation_2.0_合并与真实需求追问.md)。
 
 ## 二、查看时长 listing_view_durations
 

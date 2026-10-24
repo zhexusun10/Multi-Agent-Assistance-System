@@ -1,0 +1,88 @@
+{
+  "contract_version": "1.0",
+  "request_id": "clarification",
+  "conversation_id": "clarification",
+  "requirements_version": 1,
+  "status": "needs_clarification",
+  "recommendations": [],
+  "unverified_candidates": [
+    {
+      "listing_id": "fixture-01",
+      "criterion_results": [
+        {
+          "criterion_id": "furnished",
+          "outcome": "unsupported",
+          "reason": "No trusted evidence for this requirement",
+          "evidence_refs": []
+        }
+      ]
+    },
+    {
+      "listing_id": "fixture-02",
+      "criterion_results": [
+        {
+          "criterion_id": "furnished",
+          "outcome": "unsupported",
+          "reason": "No trusted evidence for this requirement",
+          "evidence_refs": []
+        }
+      ]
+    },
+    {
+      "listing_id": "fixture-03",
+      "criterion_results": [
+        {
+          "criterion_id": "furnished",
+          "outcome": "unsupported",
+          "reason": "No trusted evidence for this requirement",
+          "evidence_refs": []
+        }
+      ]
+    },
+    {
+      "listing_id": "fixture-04",
+      "criterion_results": [
+        {
+          "criterion_id": "furnished",
+          "outcome": "unsupported",
+          "reason": "No trusted evidence for this requirement",
+          "evidence_refs": []
+        }
+      ]
+    }
+  ],
+  "evidence": [],
+  "clarifications": [
+    "Resolve missing or unsupported hard-constraint evidence."
+  ],
+  "relaxation_suggestions": [],
+  "warnings": [
+    "Sample viewing durations are simulated observations.",
+    "Posting time does not establish current availability."
+  ],
+  "state": {
+    "state_id": "18e22d2f-b141-4b8b-9dd8-7aa681c075f5",
+    "candidate_pool_ref": "c90f2dc4-c07e-4557-a410-d660e16e7e15/pool",
+    "run_sequence": 1,
+    "feedback_version": 0,
+    "scope": "all RENT listings",
+    "truncated": false,
+    "source_count": 12,
+    "prefilter_excluded": 0,
+    "assessed_count": 12
+  },
+  "execution": {
+    "trace_id": "c90f2dc4-c07e-4557-a410-d660e16e7e15",
+    "trace_ref": "sqlite:c90f2dc4-c07e-4557-a410-d660e16e7e15",
+    "strategy": "complete-pool weighted ranking",
+    "scoring_version": "weighted-v1",
+    "model_identifier": null,
+    "model_calls": 0,
+    "tool_calls": 4,
+    "duration_ms": 0.861082982737571,
+    "tokens": null,
+    "data_mode": "fixture",
+    "controller_mode": "scripted"
+  },
+  "error": null
+}

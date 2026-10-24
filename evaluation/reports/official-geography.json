@@ -1,0 +1,101 @@
+{
+  "status": "passed",
+  "model_calls": 0,
+  "checks": [
+    {
+      "case": "before_card_refinement",
+      "passed": true,
+      "hard_match_count": 338,
+      "known_coordinate_count": 35,
+      "missing_coordinate_count": 303,
+      "ranking_matches_full_pool_oracle": true,
+      "top5": [
+        {
+          "id": "500122915",
+          "title": "Natura @ Hillview",
+          "boundary_distance_m": 1696.5540413211486
+        },
+        {
+          "id": "24052465",
+          "title": "Lakeville",
+          "boundary_distance_m": 2712.143258713162
+        },
+        {
+          "id": "500288402",
+          "title": "The Lakeshore",
+          "boundary_distance_m": 3001.6794814157897
+        },
+        {
+          "id": "25015792",
+          "title": "Pinetree Condo",
+          "boundary_distance_m": 6077.166755692167
+        },
+        {
+          "id": "20345857",
+          "title": "Windermere",
+          "boundary_distance_m": 6299.6452712134105
+        }
+      ]
+    },
+    {
+      "case": "after_card_refinement",
+      "passed": true,
+      "hard_match_count": 82,
+      "known_coordinate_count": 9,
+      "missing_coordinate_count": 73,
+      "ranking_matches_full_pool_oracle": true,
+      "top5": [
+        {
+          "id": "20345857",
+          "title": "Windermere",
+          "boundary_distance_m": 6299.6452712134105
+        },
+        {
+          "id": "20140931",
+          "title": "Millage",
+          "boundary_distance_m": 13746.150952786911
+        },
+        {
+          "id": "500186606",
+          "title": "Canberra Residences",
+          "boundary_distance_m": 14102.45355768202
+        },
+        {
+          "id": "24772907",
+          "title": "Riverfront Residences",
+          "boundary_distance_m": 14653.54561141995
+        },
+        {
+          "id": "23045041",
+          "title": "Watertown",
+          "boundary_distance_m": 16565.678811337417
+        }
+      ]
+    }
+  ],
+  "original_screenshot_homes": {
+    "all_five_missing_coordinates": true,
+    "homes": [
+      {
+        "listing_id": "19003513",
+        "title": "Estella Gardens"
+      },
+      {
+        "listing_id": "19176837",
+        "title": "Woodhaven"
+      },
+      {
+        "listing_id": "19421114",
+        "title": "Carissa Park Condo"
+      },
+      {
+        "listing_id": "19724822",
+        "title": "The Estuary @ Yishun"
+      },
+      {
+        "listing_id": "20114703",
+        "title": "Hillview Green"
+      }
+    ]
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "status": "passed",
+  "model_calls": 0,
+  "model_request_cap": 0,
+  "checks": [
+    {
+      "check": "single_top5_presentation_scope",
+      "passed": true,
+      "raw_formal": 5,
+      "raw_pending": 4,
+      "visible": 5,
+      "enriched": 5
+    },
+    {
+      "check": "real_data_top5_and_overall_profiles",
+      "passed": true,
+      "native_model_calls": 0,
+      "ids": [
+        "500286414",
+        "18656603",
+        "500248279",
+        "500277757",
+        "24591815"
+      ],
+      "profiles": [
+        {
+          "title": "Emerald Garden",
+          "core_refs": [
+            "price:500286414",
+            "area:500286414"
+          ],
+          "highlights": [
+            "cohort:500286414:price",
+            "cohort:500286414:floor_area_sqft"
+          ]
+        },
+        {
+          "title": "32 New Market Road",
+          "core_refs": [
+            "price:18656603",
+            "area:18656603"
+          ],
+          "highlights": [
+            "cohort:18656603:price",
+            "cohort:18656603:floor_area_sqft"
+          ]
+        },
+        {
+          "title": "106 Spottiswoode Park Road",
+          "core_refs": [
+            "price:500248279",
+            "area:500248279"
+          ],
+          "highlights": [
+            "cohort:500248279:price",
+            "cohort:500248279:floor_area_sqft"
+          ]
+        },
+        {
+          "title": "106 Spottiswoode Park Road",
+          "core_refs": [
+            "price:500277757",
+            "area:500277757"
+          ],
+          "highlights": [
+            "cohort:500277757:price",
+            "cohort:500277757:floor_area_sqft"
+          ]
+        },
+        {
+          "title": "123 Kim Tian Road",
+          "core_refs": [
+            "price:24591815",
+            "area:24591815"
+          ],
+          "highlights": [
+            "cohort:24591815:price",
+            "cohort:24591815:floor_area_sqft"
+          ]
+        }
+      ]
+    }
+  ]
+}

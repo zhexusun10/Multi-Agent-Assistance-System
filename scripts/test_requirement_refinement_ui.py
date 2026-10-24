@@ -3,10 +3,11 @@ from pathlib import Path
 from urllib.parse import urlparse
 from copy import deepcopy
 import json
+import os
 from playwright.sync_api import sync_playwright,expect
 
 ROOT=Path(__file__).resolve().parents[1]
-fixture=json.loads((ROOT/'data/.runtime/refinement-ui-fixture.json').read_text(encoding='utf-8'))
+fixture=json.loads((ROOT/os.getenv('REFINEMENT_UI_FIXTURE','data/.runtime/refinement-ui-fixture.json')).read_text(encoding='utf-8'))
 report={'model_calls':0,'query_posts':0,'checks':[]}
 errors=[]
 with sync_playwright() as p:

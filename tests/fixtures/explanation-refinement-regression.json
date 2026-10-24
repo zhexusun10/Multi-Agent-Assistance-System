@@ -1,0 +1,2518 @@
+{
+  "requirements": {
+    "criteria": [
+      {
+        "unit": "sqft",
+        "field": "floor_area_sqft",
+        "value": [
+          500,
+          1500
+        ],
+        "operator": "between",
+        "strength": "hard",
+        "criterion_id": "floor_area_sqft"
+      },
+      {
+        "unit": "count",
+        "field": "bedrooms",
+        "value": 1,
+        "operator": "eq",
+        "strength": "hard",
+        "criterion_id": "minimum-bedrooms"
+      },
+      {
+        "unit": "SGD/month",
+        "field": "price",
+        "value": 3000,
+        "operator": "lte",
+        "strength": "hard",
+        "criterion_id": "monthly-rent"
+      },
+      {
+        "unit": "m",
+        "field": "place_proximity",
+        "value": 1000,
+        "target": {
+          "name": "CLEMENTI",
+          "place_id": "URA:AREA:CLEMENTI"
+        },
+        "weight": 1,
+        "operator": "lte",
+        "strength": "soft",
+        "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+        "distance_type": "straight_line",
+        "distance_preference": "nearer"
+      },
+      {
+        "field": "property_type",
+        "value": "Condominium",
+        "operator": "eq",
+        "strength": "hard",
+        "criterion_id": "property_type"
+      }
+    ],
+    "listing_type": "RENT"
+  },
+  "recommendation": {
+    "error": null,
+    "state": {
+      "counts": {
+        "assessed": 21431,
+        "eligible": 82,
+        "excluded": 21329,
+        "unverified": 20
+      },
+      "coverage": {
+        "truncated": false,
+        "dataset_scope": "2026-10-09",
+        "dataset_version": "2026-10-09",
+        "retrieval_scope": "all RENT listings",
+        "complete_within_dataset": true
+      },
+      "state_id": "native:d0f1c3be-66c0-4456-8a8b-4062f224bcc7",
+      "candidate_pool_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582"
+    },
+    "native": {
+      "scores": {
+        "19003513": {
+          "ordering": "explicit",
+          "contributions": [
+            {
+              "scale": null,
+              "weight": 1,
+              "feature": "place_proximity:URA:AREA:CLEMENTI-preference",
+              "unknown": true,
+              "reference": null,
+              "similarity": null,
+              "contribution": 0,
+              "raw_difference": null
+            }
+          ],
+          "combined_score": 0,
+          "explicit_score": 0,
+          "implicit_score": null,
+          "explicit_weight": 1,
+          "implicit_weight": 0,
+          "evidence_coverage": 0,
+          "suppressed_features": [
+            "bedrooms",
+            "floor_area_sqft",
+            "geography",
+            "property_type"
+          ]
+        },
+        "19176837": {
+          "ordering": "explicit",
+          "contributions": [
+            {
+              "scale": null,
+              "weight": 1,
+              "feature": "place_proximity:URA:AREA:CLEMENTI-preference",
+              "unknown": true,
+              "reference": null,
+              "similarity": null,
+              "contribution": 0,
+              "raw_difference": null
+            }
+          ],
+          "combined_score": 0,
+          "explicit_score": 0,
+          "implicit_score": null,
+          "explicit_weight": 1,
+          "implicit_weight": 0,
+          "evidence_coverage": 0,
+          "suppressed_features": [
+            "bedrooms",
+            "floor_area_sqft",
+            "geography",
+            "property_type"
+          ]
+        },
+        "19421114": {
+          "ordering": "explicit",
+          "contributions": [
+            {
+              "scale": null,
+              "weight": 1,
+              "feature": "place_proximity:URA:AREA:CLEMENTI-preference",
+              "unknown": true,
+              "reference": null,
+              "similarity": null,
+              "contribution": 0,
+              "raw_difference": null
+            }
+          ],
+          "combined_score": 0,
+          "explicit_score": 0,
+          "implicit_score": null,
+          "explicit_weight": 1,
+          "implicit_weight": 0,
+          "evidence_coverage": 0,
+          "suppressed_features": [
+            "bedrooms",
+            "floor_area_sqft",
+            "geography",
+            "property_type"
+          ]
+        },
+        "19724822": {
+          "ordering": "explicit",
+          "contributions": [
+            {
+              "scale": null,
+              "weight": 1,
+              "feature": "place_proximity:URA:AREA:CLEMENTI-preference",
+              "unknown": true,
+              "reference": null,
+              "similarity": null,
+              "contribution": 0,
+              "raw_difference": null
+            }
+          ],
+          "combined_score": 0,
+          "explicit_score": 0,
+          "implicit_score": null,
+          "explicit_weight": 1,
+          "implicit_weight": 0,
+          "evidence_coverage": 0,
+          "suppressed_features": [
+            "bedrooms",
+            "floor_area_sqft",
+            "geography",
+            "property_type"
+          ]
+        },
+        "20114703": {
+          "ordering": "explicit",
+          "contributions": [
+            {
+              "scale": null,
+              "weight": 1,
+              "feature": "place_proximity:URA:AREA:CLEMENTI-preference",
+              "unknown": true,
+              "reference": null,
+              "similarity": null,
+              "contribution": 0,
+              "raw_difference": null
+            }
+          ],
+          "combined_score": 0,
+          "explicit_score": 0,
+          "implicit_score": null,
+          "explicit_weight": 1,
+          "implicit_weight": 0,
+          "evidence_coverage": 0,
+          "suppressed_features": [
+            "bedrooms",
+            "floor_area_sqft",
+            "geography",
+            "property_type"
+          ]
+        }
+      },
+      "status": "success",
+      "ranking": [
+        "19003513",
+        "19176837",
+        "19421114",
+        "19724822",
+        "20114703"
+      ],
+      "provider": "jiangshan-native",
+      "state_id": "d0f1c3be-66c0-4456-8a8b-4062f224bcc7",
+      "exchange_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+      "upstream_commit": "907cfa8",
+      "criterion_results": {
+        "19003513": [
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "floor_area_sqft",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_refs": []
+          },
+          {
+            "reason": "destination unresolved or category has no known places",
+            "outcome": "unknown",
+            "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+            "evidence_refs": [
+              "ebe91340dcb40c81c938047f7f87ecf24b2b1333c334696203fc212bdb6ad5ae"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "property_type",
+            "evidence_refs": []
+          }
+        ],
+        "19176837": [
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "floor_area_sqft",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_refs": []
+          },
+          {
+            "reason": "destination unresolved or category has no known places",
+            "outcome": "unknown",
+            "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+            "evidence_refs": [
+              "3453127ba8d641ce6663fea26d6313da863a90d8a3c34be1f2d2d6619422546c"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "property_type",
+            "evidence_refs": []
+          }
+        ],
+        "19421114": [
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "floor_area_sqft",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_refs": []
+          },
+          {
+            "reason": "destination unresolved or category has no known places",
+            "outcome": "unknown",
+            "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+            "evidence_refs": [
+              "f13e62adb8052406680a5623708ebb107db71396441f31fe300bc2250cdc63d9"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "property_type",
+            "evidence_refs": []
+          }
+        ],
+        "19724822": [
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "floor_area_sqft",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_refs": []
+          },
+          {
+            "reason": "destination unresolved or category has no known places",
+            "outcome": "unknown",
+            "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+            "evidence_refs": [
+              "4a00d9b256ece33efdda0df4930b16f1c4280c526d2853ca27d63ca0741a0a83"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "property_type",
+            "evidence_refs": []
+          }
+        ],
+        "20114703": [
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "floor_area_sqft",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_refs": []
+          },
+          {
+            "reason": "destination unresolved or category has no known places",
+            "outcome": "unknown",
+            "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+            "evidence_refs": [
+              "bd6e6e551ce6a7d2f687d5fb850f2f8a86ca8ba3596d621ae483135462866b67"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "property_type",
+            "evidence_refs": []
+          }
+        ],
+        "25185336": [
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "floor_area_sqft",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Missing listing attribute",
+            "outcome": "unknown",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_refs": []
+          },
+          {
+            "reason": "destination unresolved or category has no known places",
+            "outcome": "unknown",
+            "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+            "evidence_refs": [
+              "da81426fa170c832b951532fe75b19ba66dbb997c27b256aeb198c07b30c748a"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "property_type",
+            "evidence_refs": []
+          }
+        ],
+        "25185393": [
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "floor_area_sqft",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Missing listing attribute",
+            "outcome": "unknown",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_refs": []
+          },
+          {
+            "reason": "destination unresolved or category has no known places",
+            "outcome": "unknown",
+            "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+            "evidence_refs": [
+              "da6d88e11ba4cc217ecfcb28cab0b0e526018321f794b493c18965a6070f6520"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "property_type",
+            "evidence_refs": []
+          }
+        ],
+        "25186969": [
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "floor_area_sqft",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Missing listing attribute",
+            "outcome": "unknown",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_refs": []
+          },
+          {
+            "reason": "destination unresolved or category has no known places",
+            "outcome": "unknown",
+            "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+            "evidence_refs": [
+              "87e5235573586984c4442e380a0824db9a4a9fa080718f6a803a57be83f949a5"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "property_type",
+            "evidence_refs": []
+          }
+        ],
+        "25186978": [
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "floor_area_sqft",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Missing listing attribute",
+            "outcome": "unknown",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_refs": []
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_refs": []
+          },
+          {
+            "reason": "destination unresolved or category has no known places",
+            "outcome": "unknown",
+            "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+            "evidence_refs": [
+              "c546d8fea5bfca1dbae69b13e6b2fddf7634c35032599af55d04c517bdb1b6a3"
+            ]
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "outcome": "pass",
+            "criterion_id": "property_type",
+            "evidence_refs": []
+          }
+        ]
+      },
+      "unscored_listing_ids": [
+        "25185336",
+        "25185393",
+        "25186969",
+        "25186978"
+      ],
+      "unsupported_criterion_ids": []
+    },
+    "status": "success",
+    "evidence": [
+      {
+        "unit": "sqft",
+        "value": 657,
+        "field_path": "floor_area_sqft",
+        "listing_id": "19003513",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19003513:floor_area_sqft",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "count",
+        "value": 1,
+        "field_path": "bedrooms",
+        "listing_id": "19003513",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19003513:minimum-bedrooms",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "SGD/month",
+        "value": 2800,
+        "field_path": "price",
+        "listing_id": "19003513",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19003513:monthly-rent",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "m",
+        "value": null,
+        "target": {
+          "name": "CLEMENTI",
+          "place_id": "URA:AREA:CLEMENTI"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "19003513",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19003513:place_proximity:URA:AREA:CLEMENTI-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:42.244003+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "unavailable"
+      },
+      {
+        "value": "Condominium",
+        "field_path": "property_type",
+        "listing_id": "19003513",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19003513:property_type",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "sqft",
+        "value": 592,
+        "field_path": "floor_area_sqft",
+        "listing_id": "19176837",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19176837:floor_area_sqft",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "count",
+        "value": 1,
+        "field_path": "bedrooms",
+        "listing_id": "19176837",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19176837:minimum-bedrooms",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "SGD/month",
+        "value": 2700,
+        "field_path": "price",
+        "listing_id": "19176837",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19176837:monthly-rent",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "m",
+        "value": null,
+        "target": {
+          "name": "CLEMENTI",
+          "place_id": "URA:AREA:CLEMENTI"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "19176837",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19176837:place_proximity:URA:AREA:CLEMENTI-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:42.244003+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "unavailable"
+      },
+      {
+        "value": "Condominium",
+        "field_path": "property_type",
+        "listing_id": "19176837",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19176837:property_type",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "sqft",
+        "value": 624,
+        "field_path": "floor_area_sqft",
+        "listing_id": "19421114",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19421114:floor_area_sqft",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "count",
+        "value": 1,
+        "field_path": "bedrooms",
+        "listing_id": "19421114",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19421114:minimum-bedrooms",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "SGD/month",
+        "value": 2800,
+        "field_path": "price",
+        "listing_id": "19421114",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19421114:monthly-rent",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "m",
+        "value": null,
+        "target": {
+          "name": "CLEMENTI",
+          "place_id": "URA:AREA:CLEMENTI"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "19421114",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19421114:place_proximity:URA:AREA:CLEMENTI-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:42.244003+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "unavailable"
+      },
+      {
+        "value": "Condominium",
+        "field_path": "property_type",
+        "listing_id": "19421114",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19421114:property_type",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "sqft",
+        "value": 605,
+        "field_path": "floor_area_sqft",
+        "listing_id": "19724822",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19724822:floor_area_sqft",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "count",
+        "value": 1,
+        "field_path": "bedrooms",
+        "listing_id": "19724822",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19724822:minimum-bedrooms",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "SGD/month",
+        "value": 3000,
+        "field_path": "price",
+        "listing_id": "19724822",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19724822:monthly-rent",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "m",
+        "value": null,
+        "target": {
+          "name": "CLEMENTI",
+          "place_id": "URA:AREA:CLEMENTI"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "19724822",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19724822:place_proximity:URA:AREA:CLEMENTI-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:42.244003+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "unavailable"
+      },
+      {
+        "value": "Condominium",
+        "field_path": "property_type",
+        "listing_id": "19724822",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19724822:property_type",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "sqft",
+        "value": 800,
+        "field_path": "floor_area_sqft",
+        "listing_id": "20114703",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:20114703:floor_area_sqft",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "count",
+        "value": 1,
+        "field_path": "bedrooms",
+        "listing_id": "20114703",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:20114703:minimum-bedrooms",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "SGD/month",
+        "value": 3000,
+        "field_path": "price",
+        "listing_id": "20114703",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:20114703:monthly-rent",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "m",
+        "value": null,
+        "target": {
+          "name": "CLEMENTI",
+          "place_id": "URA:AREA:CLEMENTI"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "20114703",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:20114703:place_proximity:URA:AREA:CLEMENTI-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:42.244003+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "unavailable"
+      },
+      {
+        "value": "Condominium",
+        "field_path": "property_type",
+        "listing_id": "20114703",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:20114703:property_type",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "sqft",
+        "value": 750,
+        "field_path": "floor_area_sqft",
+        "listing_id": "25185336",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185336:floor_area_sqft",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "count",
+        "value": null,
+        "field_path": "bedrooms",
+        "listing_id": "25185336",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185336:minimum-bedrooms",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "SGD/month",
+        "value": 3000,
+        "field_path": "price",
+        "listing_id": "25185336",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185336:monthly-rent",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "m",
+        "value": null,
+        "target": {
+          "name": "CLEMENTI",
+          "place_id": "URA:AREA:CLEMENTI"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "25185336",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185336:place_proximity:URA:AREA:CLEMENTI-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:42.245174+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "unavailable"
+      },
+      {
+        "value": "Condominium",
+        "field_path": "property_type",
+        "listing_id": "25185336",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185336:property_type",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "sqft",
+        "value": 750,
+        "field_path": "floor_area_sqft",
+        "listing_id": "25185393",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185393:floor_area_sqft",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "count",
+        "value": null,
+        "field_path": "bedrooms",
+        "listing_id": "25185393",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185393:minimum-bedrooms",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "SGD/month",
+        "value": 3000,
+        "field_path": "price",
+        "listing_id": "25185393",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185393:monthly-rent",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "m",
+        "value": null,
+        "target": {
+          "name": "CLEMENTI",
+          "place_id": "URA:AREA:CLEMENTI"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "25185393",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185393:place_proximity:URA:AREA:CLEMENTI-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:42.245174+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "unavailable"
+      },
+      {
+        "value": "Condominium",
+        "field_path": "property_type",
+        "listing_id": "25185393",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185393:property_type",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "sqft",
+        "value": 700,
+        "field_path": "floor_area_sqft",
+        "listing_id": "25186969",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186969:floor_area_sqft",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "count",
+        "value": null,
+        "field_path": "bedrooms",
+        "listing_id": "25186969",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186969:minimum-bedrooms",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "SGD/month",
+        "value": 2500,
+        "field_path": "price",
+        "listing_id": "25186969",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186969:monthly-rent",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "m",
+        "value": null,
+        "target": {
+          "name": "CLEMENTI",
+          "place_id": "URA:AREA:CLEMENTI"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "25186969",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186969:place_proximity:URA:AREA:CLEMENTI-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:42.245174+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "unavailable"
+      },
+      {
+        "value": "Condominium",
+        "field_path": "property_type",
+        "listing_id": "25186969",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186969:property_type",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "sqft",
+        "value": 700,
+        "field_path": "floor_area_sqft",
+        "listing_id": "25186978",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186978:floor_area_sqft",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "count",
+        "value": null,
+        "field_path": "bedrooms",
+        "listing_id": "25186978",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186978:minimum-bedrooms",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "SGD/month",
+        "value": 2500,
+        "field_path": "price",
+        "listing_id": "25186978",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186978:monthly-rent",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      },
+      {
+        "unit": "m",
+        "value": null,
+        "target": {
+          "name": "CLEMENTI",
+          "place_id": "URA:AREA:CLEMENTI"
+        },
+        "field_path": "place_proximity",
+        "listing_id": "25186978",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186978:place_proximity:URA:AREA:CLEMENTI-preference",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:42.245174+00:00",
+        "distance_type": "straight_line",
+        "route_verified": false,
+        "dataset_version": "2026-10-09",
+        "raw_distance_type": "straight_line",
+        "measurement_method": "unavailable"
+      },
+      {
+        "value": "Condominium",
+        "field_path": "property_type",
+        "listing_id": "25186978",
+        "source_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+        "evidence_id": "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186978:property_type",
+        "source_kind": "data_api",
+        "verified_at": null,
+        "retrieved_at": "2026-10-23T17:04:54.854Z",
+        "dataset_version": "2026-10-09"
+      }
+    ],
+    "warnings": [
+      {
+        "code": "JIANGSHAN_NATIVE",
+        "message": "使用江山原生推荐模块；每轮最多5套，保留完整候选池、评分和原始排名。"
+      },
+      {
+        "code": "NATIVE_NOTICE",
+        "message": "Sample viewing durations are simulated observations."
+      },
+      {
+        "code": "NATIVE_NOTICE",
+        "message": "Posting time does not establish current availability."
+      },
+      {
+        "code": "NATIVE_GEOGRAPHY_GAP",
+        "message": "当前原生地理仓库只解析 OSM Place 点位，不支持本应用 URA 区域边界或 LTA 出口目录。相关位置要求仍保留为待核实，不会偷偷替换成区域中心或旧推荐算法。"
+      }
+    ],
+    "execution": {
+      "timing": {
+        "total_ms": 12297.0000000023
+      },
+      "strategy": "complete-pool weighted ranking",
+      "trace_ref": "0a7a821a-ed8f-4710-ad9c-dbbc02014582",
+      "tool_calls": [
+        {
+          "count": 4,
+          "provider": "jiangshan-native",
+          "model_calls": 4,
+          "native_trace_ref": "sqlite:13101e8c-dba6-4a8c-880a-cc1e15c64049"
+        }
+      ],
+      "score_semantics": "native_explicit_implicit_weighted_fit_not_probability",
+      "scoring_version": "weighted-v1"
+    },
+    "request_id": "6a2bf5d2-313a-45b1-b0ee-df1451a7b35b",
+    "clarifications": [],
+    "conversation_id": "61d3c544-5c39-41d8-a0d5-3c4959b4fc30",
+    "recommendations": [
+      {
+        "rank": 1,
+        "score": 0,
+        "listing": {
+          "price": 2800,
+          "title": "Estella Gardens",
+          "bedrooms": 1,
+          "district": "D17",
+          "listing_id": "19003513",
+          "price_unit": "SGD/month",
+          "source_url": "https://www.propertyguru.com.sg/listing/for-rent-estella-gardens-19003513",
+          "property_type": "condominium",
+          "floor_area_sqft": 657,
+          "availability_status": "unknown"
+        },
+        "score_breakdown": [
+          {
+            "origin": "stated_preference",
+            "weight": 1,
+            "utility": 0,
+            "contribution": 0,
+            "criterion_id": "native:explicit",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19003513:floor_area_sqft",
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19003513:minimum-bedrooms",
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19003513:monthly-rent",
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19003513:place_proximity:URA:AREA:CLEMENTI-preference",
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19003513:property_type"
+            ],
+            "normalized_weight": 1
+          }
+        ],
+        "criterion_results": [
+          {
+            "unit": "sqft",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "floor_area_sqft",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19003513:floor_area_sqft"
+            ],
+            "observed_value": 657
+          },
+          {
+            "unit": "count",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19003513:minimum-bedrooms"
+            ],
+            "observed_value": 1
+          },
+          {
+            "unit": "SGD/month",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19003513:monthly-rent"
+            ],
+            "observed_value": 2800
+          },
+          {
+            "unit": "m",
+            "reason": "原生证据未知：destination unresolved or category has no known places",
+            "status": "unknown",
+            "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19003513:place_proximity:URA:AREA:CLEMENTI-preference"
+            ],
+            "observed_value": null
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "property_type",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19003513:property_type"
+            ],
+            "observed_value": "Condominium"
+          }
+        ],
+        "explanation_evidence": {
+          "unknowns": [
+            {
+              "field": "place_proximity",
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19003513:place_proximity:URA:AREA:CLEMENTI-preference"
+              ]
+            }
+          ],
+          "strengths": [
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19003513:floor_area_sqft"
+              ],
+              "criterion_ids": [
+                "floor_area_sqft"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19003513:minimum-bedrooms"
+              ],
+              "criterion_ids": [
+                "minimum-bedrooms"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19003513:monthly-rent"
+              ],
+              "criterion_ids": [
+                "monthly-rent"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19003513:property_type"
+              ],
+              "criterion_ids": [
+                "property_type"
+              ]
+            }
+          ],
+          "compromises": []
+        }
+      },
+      {
+        "rank": 2,
+        "score": 0,
+        "listing": {
+          "price": 2700,
+          "title": "Woodhaven",
+          "bedrooms": 1,
+          "district": "D25",
+          "listing_id": "19176837",
+          "price_unit": "SGD/month",
+          "source_url": "https://www.propertyguru.com.sg/listing/for-rent-woodhaven-19176837",
+          "property_type": "condominium",
+          "floor_area_sqft": 592,
+          "availability_status": "unknown"
+        },
+        "score_breakdown": [
+          {
+            "origin": "stated_preference",
+            "weight": 1,
+            "utility": 0,
+            "contribution": 0,
+            "criterion_id": "native:explicit",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19176837:floor_area_sqft",
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19176837:minimum-bedrooms",
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19176837:monthly-rent",
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19176837:place_proximity:URA:AREA:CLEMENTI-preference",
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19176837:property_type"
+            ],
+            "normalized_weight": 1
+          }
+        ],
+        "criterion_results": [
+          {
+            "unit": "sqft",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "floor_area_sqft",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19176837:floor_area_sqft"
+            ],
+            "observed_value": 592
+          },
+          {
+            "unit": "count",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19176837:minimum-bedrooms"
+            ],
+            "observed_value": 1
+          },
+          {
+            "unit": "SGD/month",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19176837:monthly-rent"
+            ],
+            "observed_value": 2700
+          },
+          {
+            "unit": "m",
+            "reason": "原生证据未知：destination unresolved or category has no known places",
+            "status": "unknown",
+            "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19176837:place_proximity:URA:AREA:CLEMENTI-preference"
+            ],
+            "observed_value": null
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "property_type",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19176837:property_type"
+            ],
+            "observed_value": "Condominium"
+          }
+        ],
+        "explanation_evidence": {
+          "unknowns": [
+            {
+              "field": "place_proximity",
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19176837:place_proximity:URA:AREA:CLEMENTI-preference"
+              ]
+            }
+          ],
+          "strengths": [
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19176837:floor_area_sqft"
+              ],
+              "criterion_ids": [
+                "floor_area_sqft"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19176837:minimum-bedrooms"
+              ],
+              "criterion_ids": [
+                "minimum-bedrooms"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19176837:monthly-rent"
+              ],
+              "criterion_ids": [
+                "monthly-rent"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19176837:property_type"
+              ],
+              "criterion_ids": [
+                "property_type"
+              ]
+            }
+          ],
+          "compromises": []
+        }
+      },
+      {
+        "rank": 3,
+        "score": 0,
+        "listing": {
+          "price": 2800,
+          "title": "Carissa Park Condo",
+          "bedrooms": 1,
+          "district": "D17",
+          "listing_id": "19421114",
+          "price_unit": "SGD/month",
+          "source_url": "https://www.propertyguru.com.sg/listing/for-rent-carissa-park-condo-19421114",
+          "property_type": "condominium",
+          "floor_area_sqft": 624,
+          "availability_status": "unknown"
+        },
+        "score_breakdown": [
+          {
+            "origin": "stated_preference",
+            "weight": 1,
+            "utility": 0,
+            "contribution": 0,
+            "criterion_id": "native:explicit",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19421114:floor_area_sqft",
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19421114:minimum-bedrooms",
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19421114:monthly-rent",
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19421114:place_proximity:URA:AREA:CLEMENTI-preference",
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19421114:property_type"
+            ],
+            "normalized_weight": 1
+          }
+        ],
+        "criterion_results": [
+          {
+            "unit": "sqft",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "floor_area_sqft",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19421114:floor_area_sqft"
+            ],
+            "observed_value": 624
+          },
+          {
+            "unit": "count",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19421114:minimum-bedrooms"
+            ],
+            "observed_value": 1
+          },
+          {
+            "unit": "SGD/month",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19421114:monthly-rent"
+            ],
+            "observed_value": 2800
+          },
+          {
+            "unit": "m",
+            "reason": "原生证据未知：destination unresolved or category has no known places",
+            "status": "unknown",
+            "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19421114:place_proximity:URA:AREA:CLEMENTI-preference"
+            ],
+            "observed_value": null
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "property_type",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19421114:property_type"
+            ],
+            "observed_value": "Condominium"
+          }
+        ],
+        "explanation_evidence": {
+          "unknowns": [
+            {
+              "field": "place_proximity",
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19421114:place_proximity:URA:AREA:CLEMENTI-preference"
+              ]
+            }
+          ],
+          "strengths": [
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19421114:floor_area_sqft"
+              ],
+              "criterion_ids": [
+                "floor_area_sqft"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19421114:minimum-bedrooms"
+              ],
+              "criterion_ids": [
+                "minimum-bedrooms"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19421114:monthly-rent"
+              ],
+              "criterion_ids": [
+                "monthly-rent"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19421114:property_type"
+              ],
+              "criterion_ids": [
+                "property_type"
+              ]
+            }
+          ],
+          "compromises": []
+        }
+      },
+      {
+        "rank": 4,
+        "score": 0,
+        "listing": {
+          "price": 3000,
+          "title": "The Estuary @ Yishun",
+          "bedrooms": 1,
+          "district": "D27",
+          "listing_id": "19724822",
+          "price_unit": "SGD/month",
+          "source_url": "https://www.propertyguru.com.sg/listing/for-rent-the-estuary-yishun-19724822",
+          "property_type": "condominium",
+          "floor_area_sqft": 605,
+          "availability_status": "unknown"
+        },
+        "score_breakdown": [
+          {
+            "origin": "stated_preference",
+            "weight": 1,
+            "utility": 0,
+            "contribution": 0,
+            "criterion_id": "native:explicit",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19724822:floor_area_sqft",
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19724822:minimum-bedrooms",
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19724822:monthly-rent",
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19724822:place_proximity:URA:AREA:CLEMENTI-preference",
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19724822:property_type"
+            ],
+            "normalized_weight": 1
+          }
+        ],
+        "criterion_results": [
+          {
+            "unit": "sqft",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "floor_area_sqft",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19724822:floor_area_sqft"
+            ],
+            "observed_value": 605
+          },
+          {
+            "unit": "count",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19724822:minimum-bedrooms"
+            ],
+            "observed_value": 1
+          },
+          {
+            "unit": "SGD/month",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19724822:monthly-rent"
+            ],
+            "observed_value": 3000
+          },
+          {
+            "unit": "m",
+            "reason": "原生证据未知：destination unresolved or category has no known places",
+            "status": "unknown",
+            "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19724822:place_proximity:URA:AREA:CLEMENTI-preference"
+            ],
+            "observed_value": null
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "property_type",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19724822:property_type"
+            ],
+            "observed_value": "Condominium"
+          }
+        ],
+        "explanation_evidence": {
+          "unknowns": [
+            {
+              "field": "place_proximity",
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19724822:place_proximity:URA:AREA:CLEMENTI-preference"
+              ]
+            }
+          ],
+          "strengths": [
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19724822:floor_area_sqft"
+              ],
+              "criterion_ids": [
+                "floor_area_sqft"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19724822:minimum-bedrooms"
+              ],
+              "criterion_ids": [
+                "minimum-bedrooms"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19724822:monthly-rent"
+              ],
+              "criterion_ids": [
+                "monthly-rent"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:19724822:property_type"
+              ],
+              "criterion_ids": [
+                "property_type"
+              ]
+            }
+          ],
+          "compromises": []
+        }
+      },
+      {
+        "rank": 5,
+        "score": 0,
+        "listing": {
+          "price": 3000,
+          "title": "Hillview Green",
+          "bedrooms": 1,
+          "district": "D21",
+          "listing_id": "20114703",
+          "price_unit": "SGD/month",
+          "source_url": "https://www.propertyguru.com.sg/listing/for-rent-hillview-green-20114703",
+          "property_type": "condominium",
+          "floor_area_sqft": 800,
+          "availability_status": "unknown"
+        },
+        "score_breakdown": [
+          {
+            "origin": "stated_preference",
+            "weight": 1,
+            "utility": 0,
+            "contribution": 0,
+            "criterion_id": "native:explicit",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:20114703:floor_area_sqft",
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:20114703:minimum-bedrooms",
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:20114703:monthly-rent",
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:20114703:place_proximity:URA:AREA:CLEMENTI-preference",
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:20114703:property_type"
+            ],
+            "normalized_weight": 1
+          }
+        ],
+        "criterion_results": [
+          {
+            "unit": "sqft",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "floor_area_sqft",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:20114703:floor_area_sqft"
+            ],
+            "observed_value": 800
+          },
+          {
+            "unit": "count",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:20114703:minimum-bedrooms"
+            ],
+            "observed_value": 1
+          },
+          {
+            "unit": "SGD/month",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:20114703:monthly-rent"
+            ],
+            "observed_value": 3000
+          },
+          {
+            "unit": "m",
+            "reason": "原生证据未知：destination unresolved or category has no known places",
+            "status": "unknown",
+            "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:20114703:place_proximity:URA:AREA:CLEMENTI-preference"
+            ],
+            "observed_value": null
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "property_type",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:20114703:property_type"
+            ],
+            "observed_value": "Condominium"
+          }
+        ],
+        "explanation_evidence": {
+          "unknowns": [
+            {
+              "field": "place_proximity",
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:20114703:place_proximity:URA:AREA:CLEMENTI-preference"
+              ]
+            }
+          ],
+          "strengths": [
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:20114703:floor_area_sqft"
+              ],
+              "criterion_ids": [
+                "floor_area_sqft"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:20114703:minimum-bedrooms"
+              ],
+              "criterion_ids": [
+                "minimum-bedrooms"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:20114703:monthly-rent"
+              ],
+              "criterion_ids": [
+                "monthly-rent"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:20114703:property_type"
+              ],
+              "criterion_ids": [
+                "property_type"
+              ]
+            }
+          ],
+          "compromises": []
+        }
+      }
+    ],
+    "contract_version": "1.0",
+    "requirements_version": 2,
+    "unverified_candidates": [
+      {
+        "rank": 1,
+        "score": 0,
+        "listing": {
+          "price": 3000,
+          "title": "Peninsula House, Figment Boutique Homes. Move-in Ready, All-inclusive, Flexible Contract, Central SG",
+          "bedrooms": null,
+          "district": "D02",
+          "listing_id": "25185336",
+          "price_unit": "SGD/month",
+          "source_url": "https://www.propertyguru.com.sg/listing/for-rent-peninsula-house-figment-boutique-homes-move-in-ready-all-inclusive-flexible-contract-central-sg-25185336",
+          "property_type": "condominium",
+          "floor_area_sqft": 750,
+          "availability_status": "unknown"
+        },
+        "score_breakdown": [],
+        "criterion_results": [
+          {
+            "unit": "sqft",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "floor_area_sqft",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185336:floor_area_sqft"
+            ],
+            "observed_value": 750
+          },
+          {
+            "unit": "count",
+            "reason": "原生证据未知：Missing listing attribute",
+            "status": "unknown",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185336:minimum-bedrooms"
+            ],
+            "observed_value": null
+          },
+          {
+            "unit": "SGD/month",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185336:monthly-rent"
+            ],
+            "observed_value": 3000
+          },
+          {
+            "unit": "m",
+            "reason": "原生证据未知：destination unresolved or category has no known places",
+            "status": "unknown",
+            "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185336:place_proximity:URA:AREA:CLEMENTI-preference"
+            ],
+            "observed_value": null
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "property_type",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185336:property_type"
+            ],
+            "observed_value": "Condominium"
+          }
+        ],
+        "explanation_evidence": {
+          "unknowns": [
+            {
+              "field": "bedrooms",
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185336:minimum-bedrooms"
+              ]
+            },
+            {
+              "field": "place_proximity",
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185336:place_proximity:URA:AREA:CLEMENTI-preference"
+              ]
+            }
+          ],
+          "strengths": [
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185336:floor_area_sqft"
+              ],
+              "criterion_ids": [
+                "floor_area_sqft"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185336:monthly-rent"
+              ],
+              "criterion_ids": [
+                "monthly-rent"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185336:property_type"
+              ],
+              "criterion_ids": [
+                "property_type"
+              ]
+            }
+          ],
+          "compromises": []
+        }
+      },
+      {
+        "rank": 2,
+        "score": 0,
+        "listing": {
+          "price": 3000,
+          "title": "Rent In Singapore Housing Condominium Apartment Hotel Accommodation For Expat Short Term Rental",
+          "bedrooms": null,
+          "district": "D08",
+          "listing_id": "25185393",
+          "price_unit": "SGD/month",
+          "source_url": "https://www.propertyguru.com.sg/listing/for-rent-rent-in-singapore-housing-condominium-apartment-hotel-accommodation-for-expat-short-term-rental-25185393",
+          "property_type": "condominium",
+          "floor_area_sqft": 750,
+          "availability_status": "unknown"
+        },
+        "score_breakdown": [],
+        "criterion_results": [
+          {
+            "unit": "sqft",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "floor_area_sqft",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185393:floor_area_sqft"
+            ],
+            "observed_value": 750
+          },
+          {
+            "unit": "count",
+            "reason": "原生证据未知：Missing listing attribute",
+            "status": "unknown",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185393:minimum-bedrooms"
+            ],
+            "observed_value": null
+          },
+          {
+            "unit": "SGD/month",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185393:monthly-rent"
+            ],
+            "observed_value": 3000
+          },
+          {
+            "unit": "m",
+            "reason": "原生证据未知：destination unresolved or category has no known places",
+            "status": "unknown",
+            "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185393:place_proximity:URA:AREA:CLEMENTI-preference"
+            ],
+            "observed_value": null
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "property_type",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185393:property_type"
+            ],
+            "observed_value": "Condominium"
+          }
+        ],
+        "explanation_evidence": {
+          "unknowns": [
+            {
+              "field": "bedrooms",
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185393:minimum-bedrooms"
+              ]
+            },
+            {
+              "field": "place_proximity",
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185393:place_proximity:URA:AREA:CLEMENTI-preference"
+              ]
+            }
+          ],
+          "strengths": [
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185393:floor_area_sqft"
+              ],
+              "criterion_ids": [
+                "floor_area_sqft"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185393:monthly-rent"
+              ],
+              "criterion_ids": [
+                "monthly-rent"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25185393:property_type"
+              ],
+              "criterion_ids": [
+                "property_type"
+              ]
+            }
+          ],
+          "compromises": []
+        }
+      },
+      {
+        "rank": 3,
+        "score": 0,
+        "listing": {
+          "price": 2500,
+          "title": "Rent In Singapore Housing Condominium Apartment Hotel Accommodation For Expat Short Term Rental",
+          "bedrooms": null,
+          "district": "D01",
+          "listing_id": "25186969",
+          "price_unit": "SGD/month",
+          "source_url": "https://www.propertyguru.com.sg/listing/for-rent-rent-in-singapore-housing-condominium-apartment-hotel-accommodation-for-expat-short-term-rental-25186969",
+          "property_type": "condominium",
+          "floor_area_sqft": 700,
+          "availability_status": "unknown"
+        },
+        "score_breakdown": [],
+        "criterion_results": [
+          {
+            "unit": "sqft",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "floor_area_sqft",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186969:floor_area_sqft"
+            ],
+            "observed_value": 700
+          },
+          {
+            "unit": "count",
+            "reason": "原生证据未知：Missing listing attribute",
+            "status": "unknown",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186969:minimum-bedrooms"
+            ],
+            "observed_value": null
+          },
+          {
+            "unit": "SGD/month",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186969:monthly-rent"
+            ],
+            "observed_value": 2500
+          },
+          {
+            "unit": "m",
+            "reason": "原生证据未知：destination unresolved or category has no known places",
+            "status": "unknown",
+            "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186969:place_proximity:URA:AREA:CLEMENTI-preference"
+            ],
+            "observed_value": null
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "property_type",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186969:property_type"
+            ],
+            "observed_value": "Condominium"
+          }
+        ],
+        "explanation_evidence": {
+          "unknowns": [
+            {
+              "field": "bedrooms",
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186969:minimum-bedrooms"
+              ]
+            },
+            {
+              "field": "place_proximity",
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186969:place_proximity:URA:AREA:CLEMENTI-preference"
+              ]
+            }
+          ],
+          "strengths": [
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186969:floor_area_sqft"
+              ],
+              "criterion_ids": [
+                "floor_area_sqft"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186969:monthly-rent"
+              ],
+              "criterion_ids": [
+                "monthly-rent"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186969:property_type"
+              ],
+              "criterion_ids": [
+                "property_type"
+              ]
+            }
+          ],
+          "compromises": []
+        }
+      },
+      {
+        "rank": 4,
+        "score": 0,
+        "listing": {
+          "price": 2500,
+          "title": "Rent In Singapore Housing Condominium Apartment Hotel Accommodation For Expat Short Term Rental",
+          "bedrooms": null,
+          "district": "D02",
+          "listing_id": "25186978",
+          "price_unit": "SGD/month",
+          "source_url": "https://www.propertyguru.com.sg/listing/for-rent-rent-in-singapore-housing-condominium-apartment-hotel-accommodation-for-expat-short-term-rental-25186978",
+          "property_type": "condominium",
+          "floor_area_sqft": 700,
+          "availability_status": "unknown"
+        },
+        "score_breakdown": [],
+        "criterion_results": [
+          {
+            "unit": "sqft",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "floor_area_sqft",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186978:floor_area_sqft"
+            ],
+            "observed_value": 700
+          },
+          {
+            "unit": "count",
+            "reason": "原生证据未知：Missing listing attribute",
+            "status": "unknown",
+            "criterion_id": "minimum-bedrooms",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186978:minimum-bedrooms"
+            ],
+            "observed_value": null
+          },
+          {
+            "unit": "SGD/month",
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "monthly-rent",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186978:monthly-rent"
+            ],
+            "observed_value": 2500
+          },
+          {
+            "unit": "m",
+            "reason": "原生证据未知：destination unresolved or category has no known places",
+            "status": "unknown",
+            "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186978:place_proximity:URA:AREA:CLEMENTI-preference"
+            ],
+            "observed_value": null
+          },
+          {
+            "reason": "Exact criterion comparison",
+            "status": "pass",
+            "criterion_id": "property_type",
+            "evidence_ids": [
+              "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186978:property_type"
+            ],
+            "observed_value": "Condominium"
+          }
+        ],
+        "explanation_evidence": {
+          "unknowns": [
+            {
+              "field": "bedrooms",
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186978:minimum-bedrooms"
+              ]
+            },
+            {
+              "field": "place_proximity",
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186978:place_proximity:URA:AREA:CLEMENTI-preference"
+              ]
+            }
+          ],
+          "strengths": [
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186978:floor_area_sqft"
+              ],
+              "criterion_ids": [
+                "floor_area_sqft"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186978:monthly-rent"
+              ],
+              "criterion_ids": [
+                "monthly-rent"
+              ]
+            },
+            {
+              "evidence_ids": [
+                "native:6a2bf5d2-313a-45b1-b0ee-df1451a7b35b:25186978:property_type"
+              ],
+              "criterion_ids": [
+                "property_type"
+              ]
+            }
+          ],
+          "compromises": []
+        }
+      }
+    ],
+    "relaxation_suggestions": []
+  },
+  "enrichment": [
+    {
+      "kind": "explanation_enrichment_v1",
+      "paths": [
+        "/api/v1/listings/19003513",
+        "/api/v1/listings/19003513/context"
+      ],
+      "nearby": [],
+      "dataset": "2026-10-09",
+      "details": {
+        "price": 2800,
+        "bedrooms": 1,
+        "bathrooms": 1,
+        "build_year": 1999,
+        "listing_id": 19003513,
+        "floor_level": null,
+        "nearest_mrt": null,
+        "rental_scope": null,
+        "property_type": "Condominium",
+        "mrt_distance_m": null,
+        "floor_area_sqft": 657
+      },
+      "sections": {
+        "nearby": "available",
+        "details": "available"
+      },
+      "listing_id": "19003513",
+      "request_id": "6a2bf5d2-313a-45b1-b0ee-df1451a7b35b",
+      "retrieved_at": "2026-10-23T17:04:54.957Z",
+      "source_ref": "c8468266-9a93-4100-b595-f80caadaca08"
+    },
+    {
+      "kind": "explanation_enrichment_v1",
+      "paths": [
+        "/api/v1/listings/19176837",
+        "/api/v1/listings/19176837/context"
+      ],
+      "nearby": [
+        {
+          "id": "MRT:SG:MRT:woodlands",
+          "name": "Woodlands",
+          "metric": "platform_reported",
+          "source": "PropertyGuru 挂牌标注",
+          "category": "MRT",
+          "radius_m": null,
+          "distance_m": 1110,
+          "source_url": null,
+          "computed_at": null,
+          "walking_mins": 13,
+          "route_verified": false
+        }
+      ],
+      "dataset": "2026-10-09",
+      "details": {
+        "price": 2700,
+        "bedrooms": 1,
+        "bathrooms": 1,
+        "build_year": 2015,
+        "listing_id": 19176837,
+        "floor_level": null,
+        "nearest_mrt": "NS9 Woodlands MRT",
+        "rental_scope": null,
+        "property_type": "Condominium",
+        "mrt_distance_m": 1110,
+        "floor_area_sqft": 592
+      },
+      "sections": {
+        "nearby": "available",
+        "details": "available"
+      },
+      "listing_id": "19176837",
+      "request_id": "6a2bf5d2-313a-45b1-b0ee-df1451a7b35b",
+      "retrieved_at": "2026-10-23T17:04:54.962Z",
+      "source_ref": "714aecc2-de3f-46f4-8461-ac837c035536"
+    },
+    {
+      "kind": "explanation_enrichment_v1",
+      "paths": [
+        "/api/v1/listings/19421114",
+        "/api/v1/listings/19421114/context"
+      ],
+      "nearby": [],
+      "dataset": "2026-10-09",
+      "details": {
+        "price": 2800,
+        "bedrooms": 1,
+        "bathrooms": 1,
+        "build_year": 2003,
+        "listing_id": 19421114,
+        "floor_level": null,
+        "nearest_mrt": null,
+        "rental_scope": null,
+        "property_type": "Condominium",
+        "mrt_distance_m": null,
+        "floor_area_sqft": 624
+      },
+      "sections": {
+        "nearby": "available",
+        "details": "available"
+      },
+      "listing_id": "19421114",
+      "request_id": "6a2bf5d2-313a-45b1-b0ee-df1451a7b35b",
+      "retrieved_at": "2026-10-23T17:04:54.977Z",
+      "source_ref": "a9d372ee-5de9-4b68-89ee-2abe86a32318"
+    },
+    {
+      "kind": "explanation_enrichment_v1",
+      "paths": [
+        "/api/v1/listings/19724822",
+        "/api/v1/listings/19724822/context"
+      ],
+      "nearby": [
+        {
+          "id": "MRT:SG:MRT:khatib",
+          "name": "Khatib",
+          "metric": "platform_reported",
+          "source": "PropertyGuru 挂牌标注",
+          "category": "MRT",
+          "radius_m": null,
+          "distance_m": 780,
+          "source_url": null,
+          "computed_at": null,
+          "walking_mins": 9,
+          "route_verified": false
+        }
+      ],
+      "dataset": "2026-10-09",
+      "details": {
+        "price": 3000,
+        "bedrooms": 1,
+        "bathrooms": 1,
+        "build_year": 2013,
+        "listing_id": 19724822,
+        "floor_level": null,
+        "nearest_mrt": "NS14 Khatib MRT",
+        "rental_scope": null,
+        "property_type": "Condominium",
+        "mrt_distance_m": 780,
+        "floor_area_sqft": 605
+      },
+      "sections": {
+        "nearby": "available",
+        "details": "available"
+      },
+      "listing_id": "19724822",
+      "request_id": "6a2bf5d2-313a-45b1-b0ee-df1451a7b35b",
+      "retrieved_at": "2026-10-23T17:04:54.977Z",
+      "source_ref": "1d2e1e77-4b8e-4b8f-8730-3a1bbfdb065a"
+    },
+    {
+      "kind": "explanation_enrichment_v1",
+      "paths": [
+        "/api/v1/listings/20114703",
+        "/api/v1/listings/20114703/context"
+      ],
+      "nearby": [
+        {
+          "id": "MRT:SG:MRT:hillview",
+          "name": "Hillview",
+          "metric": "platform_reported",
+          "source": "PropertyGuru 挂牌标注",
+          "category": "MRT",
+          "radius_m": null,
+          "distance_m": 760,
+          "source_url": null,
+          "computed_at": null,
+          "walking_mins": 9,
+          "route_verified": false
+        }
+      ],
+      "dataset": "2026-10-09",
+      "details": {
+        "price": 3000,
+        "bedrooms": 1,
+        "bathrooms": 1,
+        "build_year": 1998,
+        "listing_id": 20114703,
+        "floor_level": null,
+        "nearest_mrt": "DT3 Hillview MRT",
+        "rental_scope": null,
+        "property_type": "Condominium",
+        "mrt_distance_m": 760,
+        "floor_area_sqft": 800
+      },
+      "sections": {
+        "nearby": "available",
+        "details": "available"
+      },
+      "listing_id": "20114703",
+      "request_id": "6a2bf5d2-313a-45b1-b0ee-df1451a7b35b",
+      "retrieved_at": "2026-10-23T17:04:54.988Z",
+      "source_ref": "b7d3a8c1-1421-461b-93b2-6cb9939c2305"
+    }
+  ],
+  "query": "我补充了找房需求：\n挂牌面积500 至 1500 sqft，必须满足\n在预算以内，您希望月租尽量控制在多少？ 不限\n请按更新后的需求重新推荐。",
+  "plan": {
+    "body": {
+      "dataset": "2026-10-09",
+      "trigger": "mock",
+      "questions": [
+        {
+          "id": "area",
+          "help": "这里指挂牌面积，不代表单独卧室面积。",
+          "kind": "area",
+          "title": "您对房源的挂牌面积有要求吗？"
+        },
+        {
+          "id": "ideal_rent",
+          "help": "原预算上限 3,000 新币不变。",
+          "kind": "ideal_rent",
+          "title": "在预算以内，您希望月租尽量控制在多少？",
+          "upper_bound": 3000
+        }
+      ]
+    },
+    "answers": [
+      {
+        "max": 1500,
+        "min": 500,
+        "unit": "sqft",
+        "action": "set",
+        "strength": "hard",
+        "question_id": "area"
+      },
+      {
+        "action": "any",
+        "question_id": "ideal_rent"
+      }
+    ],
+    "answer_summary": [
+      "挂牌面积500 至 1500 sqft，必须满足",
+      "在预算以内，您希望月租尽量控制在多少？ 不限"
+    ],
+    "requirements_version": 1,
+    "source_request_id": "f93e5be4-0c78-4e22-a8b9-6cd375f0d385"
+  }
+}

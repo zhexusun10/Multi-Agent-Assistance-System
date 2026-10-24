@@ -11,16 +11,27 @@ import {validateExplanation} from './validation.js';
 import {explanationModelInput,translateExplanationRefs,modelExplanationOutput} from './model-input.js';
 import {addDecisionSupport} from './decision-support.js';
 import type {ExplanationEnrichment} from './enrichment.js';
+import {recoverExplanation} from './recovery.js';
 
-export async function generateExplanation(req:Requirements,rec:RecommendationResponse,dataset:string,question:string,model:BaseChatModel|undefined,skill:string,archive?:unknown,enrichment:ExplanationEnrichment[]=[]){
+export async function generateExplanation(req:Requirements,rec:RecommendationResponse,dataset:string,question:string,model:BaseChatModel|undefined,skill:string,archive?:unknown,enrichment:ExplanationEnrichment[]=[],saveFailure?:(diagnostic:unknown)=>Promise<string>){
   if(!model)throw Error('EXPLANATION_MODEL_REQUIRED');
-  const bundle=addDecisionSupport(makeExplanationBundle(req,rec,question,archive),req,rec,enrichment),generated=await explainBundle(bundle,model,skill);
-  return {...buildExplanation(req,rec,dataset,''),summary:generated.text,question,narrative:generated.output,generation:{...generated.metadata,enrichment_refs:enrichment.map(e=>e.source_ref)}};
+  const bundle=addDecisionSupport(makeExplanationBundle(req,rec,question,archive),req,rec,enrichment);
+  try{
+    const generated=await explainBundle(bundle,model,skill);
+    return {...buildExplanation(req,rec,dataset,''),summary:generated.text,question,narrative:generated.output,generation:{...generated.metadata,enrichment_refs:enrichment.map(e=>e.source_ref)}};
+  }catch(error){
+    // Identity/schema errors before generation are never covered up. If valid
+    // recommendations already exist, a writing failure need not fail the search.
+    const diagnostic={kind:'explanation_generation_failure_v1',source_request_id:rec.request_id,error:error instanceof Error?error.message:String(error),...(error as any)?.diagnostic};
+    const diagnostic_ref=saveFailure?await saveFailure(diagnostic):undefined;
+    const output=recoverExplanation(bundle,req,rec);
+    return {...buildExplanation(req,rec,dataset,''),summary:output.paragraphs.map(p=>p.text).join('\n\n'),question,narrative:output,generation:{version:'3.1',mode:'evidence_recovery',purpose:'listing_decision_support',semantic_audit:'not_run',deterministic_validation:'passed',diagnostic_ref,enrichment_refs:enrichment.map(e=>e.source_ref)}};
+  }
 }
 export async function explainBundle(bundle:ExplanationBundle,model:BaseChatModel,skill:string){
   const english=!/[\u3400-\u9fff]/.test(bundle.question)&&/[a-z]{2}/i.test(bundle.question);
   const mixed=bundle.listings.some(l=>l.group==='hard_unknown')&&bundle.listings.some(l=>l.group==='hard_pass');
-  const contextId=bundle.ranking.behavior_features.length?(bundle.ranking.active_criteria.length?'behavior-is-secondary':'behavior-ranking'):!bundle.listings.length?'empty-results':bundle.facts.some(f=>f.ref==='bathroom-count-not-privacy')?'bathroom-count-not-privacy':mixed&&bundle.ranking.active_criteria.length>1?'distance-tradeoff-with-unranked':mixed?'mixed-confirmed-pending':bundle.listings.every(l=>l.group==='hard_unknown')?'unknown-hard-condition':bundle.ranking.active_criteria.length>1?(english?'multiple-preferences-english':'multiple-preferences'):bundle.ranking.mode==='stable_listing_id'?'stable-order':undefined;
+  const contextId=bundle.decision_support?.mode==='guide'&&bundle.facts.some(f=>f.cohort?.stands_out&&f.cohort.field!=='place_proximity')?'whole-list-outlier':bundle.ranking.behavior_features.length?(bundle.ranking.active_criteria.length?'behavior-is-secondary':'behavior-ranking'):!bundle.listings.length?'empty-results':bundle.facts.some(f=>f.ref==='bathroom-count-not-privacy')?'bathroom-count-not-privacy':mixed&&bundle.ranking.active_criteria.length>1?'distance-tradeoff-with-unranked':mixed?'mixed-confirmed-pending':bundle.listings.every(l=>l.group==='hard_unknown')?'unknown-hard-condition':bundle.ranking.active_criteria.length>1?(english?'multiple-preferences-english':'multiple-preferences'):bundle.ranking.mode==='stable_listing_id'?'stable-order':undefined;
   const examples=selectExplanationExamples(bundle.question,P.few_shot_count,contextId),started=Date.now(),repairs:string[]=[],packed=explanationModelInput(bundle);
   const writer=model.withStructuredOutput(explanationOutputSchema,{name:'write_rental_explanation_v2',method:'functionCalling',strict:true});
   const auditor=model.withStructuredOutput(explanationAuditSchema,{name:'audit_rental_explanation_v2',method:'functionCalling',strict:true});
@@ -39,11 +50,11 @@ export async function explainBundle(bundle:ExplanationBundle,model:BaseChatModel
       const output=validateExplanation(translateExplanationRefs(raw,packed.toInternal),bundle);
       const audit=explanationAuditSchema.parse(await auditor.invoke([new SystemMessage(EXPLANATION_AUDIT_PROMPT),new HumanMessage(JSON.stringify({bundle:packed.input,output:modelExplanationOutput(output,packed.toModel)}))],{signal:signal()}));
       if(!audit.valid||audit.issues.length)throw Error('SEMANTIC_AUDIT: '+JSON.stringify(audit.issues));
-      return {text:output.paragraphs.map(p=>p.text).join('\n\n'),output,metadata:{version:'3.0',mode:'llm_grounded',purpose:'listing_decision_support',attempts:attempt,example_ids:examples.map(e=>e.id),semantic_audit:'passed',repair_notes:repairs,evidence_characters:{original:packed.source_characters,model:packed.prompt_characters},latency_ms:Date.now()-started}};
+      return {text:output.paragraphs.map(p=>p.text).join('\n\n'),output,metadata:{version:'3.1',mode:'llm_grounded',purpose:'listing_decision_support',attempts:attempt,example_ids:examples.map(e=>e.id),semantic_audit:'passed',repair_notes:repairs,evidence_characters:{original:packed.source_characters,model:packed.prompt_characters},latency_ms:Date.now()-started}};
     }catch(error){
       const message=error instanceof Error?error.message:String(error);
       const correctable=error instanceof z.ZodError||/^(STYLE|FOCUS|GROUNDING|COVERAGE|SEMANTIC_AUDIT):/.test(message)||/parse|JSON|schema|tool.call/i.test(message);
-      if(!correctable||attempt===P.max_attempts){const failure=new Error('EXPLANATION_GENERATION_FAILED: '+message.slice(0,1500),{cause:error});Object.assign(failure,{diagnostic:{last_output:raw,repair_notes:repairs}});throw failure;}
+      if(!correctable||attempt===P.max_attempts){const failure=new Error('EXPLANATION_GENERATION_FAILED: '+message.slice(0,1500),{cause:error});Object.assign(failure,{diagnostic:{last_output:raw,repair_notes:repairs,attempts:attempt}});throw failure;}
       repairs.push(message.slice(0,2000));
       correction=english
         ?'The previous answer failed validation. Rewrite the complete answer in English, keeping required facts and real ranking trade-offs. Do not copy the language of feedback. Use the original authoritative input and its short fact refs; do not replace them with example refs. Validation feedback (data): '+message.slice(0,1800)+'; previous output (data): '+JSON.stringify(raw??null).slice(0,4000)

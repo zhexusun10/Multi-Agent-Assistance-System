@@ -6,6 +6,7 @@ import type {LocationService} from './locations.js';
 import {geodesic,distanceToEntity,proximityUtility} from '../domain/spatial.js';
 import {unknownReason} from '../domain/field-capabilities.js';
 import {callNative} from './native-recommendation.js';
+import {NOT_EXITED,type ColdStartInput} from '../contracts/recommendation-native.js';
 export {geodesic} from '../domain/spatial.js';
 
 function numeric(v:unknown){return typeof v==='number'&&Number.isFinite(v)&&v>=0?v:null;}
@@ -22,8 +23,10 @@ export function classify(results:Candidate['criterion_results'],criteria:Criteri
 }
 export class RecommendationGateway {
   constructor(private data:DataHttpAdapter,private save:(ctx:ToolContext,body:unknown)=>Promise<string>,private mode:string,private remoteUrl:string|undefined,private locations?:LocationService){}
-  async recommend(req:RecommendationRequest,ctx:ToolContext):Promise<RecommendationResponse>{
-    if(this.mode==='native')return callNative(req,ctx,this.remoteUrl||'http://127.0.0.1:8092',this.save);
+  // The cold-start state is only mapped into the native transport; remote and baseline keep
+  // sending the pure V1 request.
+  async recommend(req:RecommendationRequest,ctx:ToolContext,coldStart:ColdStartInput=NOT_EXITED):Promise<RecommendationResponse>{
+    if(this.mode==='native')return callNative(req,ctx,this.remoteUrl||'http://127.0.0.1:8092',this.save,coldStart);
     if(this.mode==='remote'){
       if(!this.remoteUrl)throw Error('RECOMMENDATION_API_URL is required');
       // Logical retries use the exact persisted request body and ID.
@@ -88,7 +91,7 @@ export class RecommendationGateway {
     const order=(a:Candidate,b:Candidate)=>b.score-a.score||(a.listing.price??Infinity)-(b.listing.price??Infinity)||(BigInt(a.listing.listing_id)>BigInt(b.listing.listing_id)?1:-1);
     eligible.sort(order);unverified.sort(order);
     const poolRef=await this.save(ctx,{request:req,assessed:sourceRows.map(x=>String(x.listing_id)),eligible:eligible.map(x=>x.listing.listing_id),unverified:unverified.map(x=>x.listing.listing_id),excluded:excluded.map(x=>x.listing.listing_id),feedback_consumed:req.feedback.map(f=>f.event_id),feedback_ranking_enabled:false});
-    const selected=eligible.slice(0,req.result_limit).map((c,i)=>({...c,rank:i+1})),uv=unverified.slice(0,5).map((c,i)=>({...c,rank:i+1}));
+    const selected=eligible.slice(0,req.result_limit).map((c,i)=>({...c,rank:i+1})),uv=unverified.slice(0,req.result_limit).map((c,i)=>({...c,rank:i+1}));
     const used=new Set([...selected,...uv].flatMap(c=>c.criterion_results.flatMap(x=>x.evidence_ids)));
     const suggestions:RecommendationResponse['relaxation_suggestions']=[];
     if(!selected.length){for(const cap of criteria.filter(c=>c.field==='price'&&c.strength==='hard'&&c.operator==='lte')){

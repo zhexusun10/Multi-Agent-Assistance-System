@@ -11,6 +11,13 @@ from pydantic import BaseModel, Field
 
 
 app = FastAPI(title="Multi-Agent Assistance API")
+@app.middleware("http")
+async def frontend_cache_policy(request: Request, call_next):
+    response = await call_next(request)
+    if request.url.path == "/" or request.url.path.startswith("/assets/"):
+        response.headers["Cache-Control"] = "no-store"
+    return response
+
 GRAPH_SERVICE_URL = os.getenv("GRAPH_SERVICE_URL", "http://127.0.0.1:3001").rstrip("/")
 
 
@@ -181,6 +188,11 @@ async def business_proxy(path: str, request: Request):
 
 FRONTEND = Path(__file__).resolve().parents[1] / "frontend"
 if FRONTEND.is_dir():
+    @app.get("/assets/recommendation-display.js", include_in_schema=False)
+    def recommendation_display_module():
+        # One selector governs cards, navigation, explanations and current selection.
+        return FileResponse(FRONTEND.parent / "dist" / "shared" / "recommendation-display.js", media_type="application/javascript")
+
     @app.get("/assets/followup-message.js", include_in_schema=False)
     def followup_message_module():
         # One pure renderer is compiled for both Node and the browser; no duplicate message templates.

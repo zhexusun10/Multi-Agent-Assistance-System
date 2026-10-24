@@ -135,7 +135,7 @@ test('known distances support their real difference, and the related radius is a
 });
 test('derived comparison references retain their parent requirement radius and the current listing titles',()=>{
   const f=explanationFixture('mixed_groups'),b=makeExplanationBundle(f.req,f.rec,'比较');
-  validateExplanation({...response(),paragraphs:[...response().paragraphs,{text:'希望学校5公里内更近优先；Pending Court 1至4目前缺距离资料。',support_refs:['ranking:method','compare-distance:1:2:closer']}]},b);
+  validateExplanation({...response(),paragraphs:[...response().paragraphs,{text:'希望学校5公里内更近优先；Pending Court 1目前缺距离资料。',support_refs:['ranking:method','compare-distance:1:2:closer']}]},b);
   const behavior=explanationFixture('behavior'),interest=makeExplanationBundle(behavior.req,behavior.rec,'为什么第一');
   assert.match(interest.facts.find(f=>f.ref==='compare-interest:1:2')!.text,/第1套Willow Residence整体上比第2套Garden Court更贴近/);
   assert(!interest.facts.find(f=>f.ref==='compare-interest:1:2')!.text.includes('0.9'));
@@ -178,12 +178,12 @@ test('independent semantic review returns false ranking attribution for bounded 
   const {req,rec}=fixture(),m=mock(()=>guideResponse(req,rec),n=>n===1?{valid:false,issues:[{code:'ranking',detail:'不能说按价格排序'}]}:{valid:true,issues:[]});
   const out=await generateExplanation(req,rec,'test','解释',m.model,'role');assert.equal(out.generation.attempts,2);assert.equal(out.generation.repair_notes.length,1);
 });
-test('repeated invalid prose stops after three attempts',async()=>{
-  const {req,rec}=fixture(),m=mock(()=>({...response(),version:'wrong'}));await assert.rejects(generateExplanation(req,rec,'test','解释',m.model,'role'),/EXPLANATION_GENERATION_FAILED/);assert.equal(m.counts().writes,3);
+test('repeated invalid prose stops after three attempts and recovers a verified factual introduction',async()=>{
+  const {req,rec}=fixture(),m=mock(()=>({...response(),version:'wrong'}));const out=await generateExplanation(req,rec,'test','解释',m.model,'role');assert.equal(out.generation.mode,'evidence_recovery');assert.equal(m.counts().writes,3);assert(!out.summary.includes('本轮未完成'));assert.equal(out.narrative.focus_listing_ids.length,2);
 });
 test('provider and missing-model failures cannot dump the technical report as a fallback',async()=>{
   const {req,rec}=fixture();await assert.rejects(generateExplanation(req,rec,'test','解释',undefined,'role'),/MODEL_REQUIRED/);
-  const m=mock(()=>{throw Error('401 unauthorized');});await assert.rejects(generateExplanation(req,rec,'test','解释',m.model,'role'),/401/);assert.equal(m.counts().writes,1);assert(!describeAgentFailure('c','401').message.includes('401'));
+  const m=mock(()=>{throw Error('401 unauthorized');});const out=await generateExplanation(req,rec,'test','解释',m.model,'role');assert.equal(out.generation.mode,'evidence_recovery');assert(!out.summary.includes('401'));assert(!out.summary.includes('分数'));assert.equal(m.counts().writes,1);assert(!describeAgentFailure('c','401').message.includes('401'));
 });
 test('archived native rationale is accepted only for the same request and conversation',()=>{
   const {req,rec}=fixture();assert.throws(()=>makeExplanationBundle(req,rec,'解释',{response:{request_id:'other'}}));
