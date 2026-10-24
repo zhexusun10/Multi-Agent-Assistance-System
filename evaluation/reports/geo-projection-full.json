@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-10-23T15:32:09.750Z",
+  "checked_at": "2026-10-24T04:27:22.994Z",
   "status": "passed",
   "target": "verified full snapshot 7474",
   "planning_areas": 55,
@@ -7,6 +7,11 @@
   "stations": 188,
   "exits": 613,
   "memberships": 8630,
+  "neighbourhoods": {
+    "neighbourhoods": 2,
+    "edges": 327,
+    "version": "osm-neighbourhoods-2dbba36e6823"
+  },
   "source_hashes": [
     "f23856251b467089f788d0fff72ef5a38e753f21aa69b4352401d7ed50d380cc",
     "7a57cb14cf7c621203938e944f99b41891284e5e67876c43d9f8f3ee3aa88ee6"

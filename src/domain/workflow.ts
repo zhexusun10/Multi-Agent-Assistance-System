@@ -181,9 +181,12 @@ export class WorkflowService{
     return [feedbackSchema.parse({event_id:`explicit:${op}`,listing_id:candidate.listing.listing_id,occurred_at:new Date().toISOString(),event_type:'explicit_attribute_feedback',payload:{attribute:/小/.test(m[2])?'floor_area_sqft':'listing',sentiment:m[2]==='喜欢'?'positive':'negative',quote:m[0]}})];
   }
   async emitDueReminders(){
-    const rows=(await this.store.pool.query("SELECT id,session_id,body FROM workflow_actions WHERE body->>'next_followup_at' IS NOT NULL AND (body->>'next_followup_at')::timestamptz<=now() AND body->>'status'<>'CANCELLED' LIMIT 100")).rows;
+    const rows=(await this.store.pool.query("SELECT a.id,a.session_id,a.body FROM workflow_actions a JOIN session_domain_state s ON s.session_id=a.session_id WHERE s.deleted_at IS NULL AND a.body->>'next_followup_at' IS NOT NULL AND (a.body->>'next_followup_at')::timestamptz<=now() AND a.body->>'status'<>'CANCELLED' LIMIT 100")).rows;
     for(const row of rows)await this.store.transaction(async tx=>{
-      const s=await this.store.lock(tx,row.session_id),a=row.body,key=`reminder:${row.id}:${a.revision}:${a.next_followup_at}`;
+      // A conversation can be deleted between the scan and acquiring its lock.
+      const current=await tx.query('SELECT * FROM session_domain_state WHERE session_id=$1 FOR UPDATE',[row.session_id]);
+      const s=current.rows[0] as DomainState|undefined;if(!s||s.deleted_at)return;
+      const a=row.body,key=`reminder:${row.id}:${a.revision}:${a.next_followup_at}`;
       if((await tx.query('SELECT 1 FROM session_events WHERE session_id=$1 AND event_key=$2',[s.session_id,key])).rowCount)return;
       this.store.message(s,'assistant',`跟进提醒已到期：${a.subject}。请在工作台检查下一步；系统没有自动发送消息。`);
       await this.store.event(tx,s.session_id,{type:'action_update',payload:{action_id:row.id,reminder:'due',message:'跟进提醒已到期；没有自动发送外部消息。',mode:'simulation'}},key);await this.store.saveState(tx,s);
