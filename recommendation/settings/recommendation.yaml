@@ -36,7 +36,7 @@ ranking:
   soft_weight: 0.60                 # confirmed (total = 0.60 soft + 0.40 behaviour)
   behavior_weight: 0.40             # confirmed
   soft:
-    numeric_bounds:                 # existing-default (weighted-v1 minimize/maximize utility bounds)
+    numeric_bounds:                 # legacy file compatibility only; runtime uses full-pool min/max
       price: [0, 20000]             # existing-default
       bedrooms: [0, 10]             # existing-default
       floor_area_sqft: [0, 10000]   # existing-default
@@ -53,15 +53,15 @@ ranking:
     duration_cap_seconds: null      # confirmed: null = explicitly uncapped (not "uncalibrated")
     time_scale_seconds: 30          # provisional (not calibrated: no real dwell data exists); weight = log1p(t / scale)
   similarity:
-    suppression: hard_criteria      # confirmed (decision 1); alternatives: all_criteria | none
+    suppression: none               # confirmed (user revision): retain hard-constrained features
     feature_weights:                # provisional (not calibrated: preference weights, no real feedback to fit them)
       price: 0.20                   # provisional (decision 2: price is a similarity feature; its calibration is pending)
       property_type: 0.20           # provisional
       bedrooms: 0.16                # provisional
       floor_area_sqft: 0.20         # provisional
       geography: 0.24               # provisional
-    numeric_scaling: p05_p95        # experiment-result (std is dominated by price outliers; iqr is 0 for bedrooms in 5 of 9 pools)
-    geographic_scale_m: 3000        # existing-default (weighted-v1 geography scale)
+    numeric_scaling: minmax         # confirmed (user revision): current full eligible pool max - min
+    geographic_scale_m: 3000        # existing-default (legacy compatibility only); runtime uses pool distances per reference
     geography_district_fallback: true   # experiment-result (60 % of listings lack coordinates)
     min_comparison_coverage: 0.5    # experiment-result (> 0.5 makes most pairs unavailable: floor area missing)
 

@@ -204,7 +204,7 @@
       }
      ]
     },
-    "previous_state_id": "native:1fc7afab-fbc3-4f62-b774-4bf25c843763"
+    "previous_state_id": "native:5b4de549-b786-4daa-9873-ee2fc1d9c983"
    },
    "cold_start": {
     "exited": false,
@@ -315,7 +315,7 @@
       }
      ]
     },
-    "previous_state_id": "1fc7afab-fbc3-4f62-b774-4bf25c843763",
+    "previous_state_id": "5b4de549-b786-4daa-9873-ee2fc1d9c983",
     "result_limit": 10,
     "cold_start": {
      "exited": false,
@@ -401,7 +401,7 @@
      ],
      "book_viewing_listings": []
     },
-    "previous_state_id": "native:e1341dc7-e189-4dc6-957c-707272f3fe3c"
+    "previous_state_id": "native:c916afe5-c5e7-4b55-9184-0d1a1c00de8d"
    },
    "cold_start": {
     "exited": false,
@@ -476,7 +476,7 @@
      ],
      "book_viewing_listings": []
     },
-    "previous_state_id": "e1341dc7-e189-4dc6-957c-707272f3fe3c",
+    "previous_state_id": "c916afe5-c5e7-4b55-9184-0d1a1c00de8d",
     "result_limit": 10,
     "cold_start": {
      "exited": false,

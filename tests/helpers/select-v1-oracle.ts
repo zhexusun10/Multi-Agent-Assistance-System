@@ -109,27 +109,35 @@ export function haversine(a:{latitude:number;longitude:number},b:{latitude:numbe
   return 6371008.8*2*Math.asin(Math.sqrt(Math.min(1,Math.max(0,h))));
 }
 
-/** Pair similarity of every pool row to one reference (null = unavailable, incl. the self pair, R1d).
+/** Pair similarity of every pool row to one reference (null = unavailable; identity pair = 1).
  * Active features = weight > 0, not suppressed, numeric spread (p05_p95 over the FULL pool) > 0; a feature missing
  * on either side is not compared; renormalised over compared weight; unavailable below min_comparison_coverage. */
 export function pairSimilarities(pool:OracleRow[],referenceId:string,settings:OracleSettings,suppressed:string[]):Map<string,number|null>{
-  if(settings.numeric_scaling!=='p05_p95')throw Error(`oracle implements p05_p95 only, settings say ${settings.numeric_scaling}`);
+  if(!['p05_p95','minmax'].includes(settings.numeric_scaling))throw Error(`unsupported scaling ${settings.numeric_scaling}`);
   const ref=pool.find(r=>r.listing_id===referenceId);if(!ref)throw Error(`reference ${referenceId} is not in the pool`);
   const spread:Record<string,number>={},active:string[]=[];
   for(const f of SIMILARITY_FEATURES){
     if(!(settings.feature_weights[f]>0)||suppressed.includes(f))continue;
-    if(f==='price'||f==='bedrooms'||f==='floor_area_sqft'){const values=pool.map(r=>r[f]).filter(finite);const s=linearPercentile(values,95)-linearPercentile(values,5);if(!(s>0))continue;spread[f]=s;}
+    if(f==='price'||f==='bedrooms'||f==='floor_area_sqft'){const values=pool.map(r=>r[f]).filter(finite);const s=settings.numeric_scaling==='minmax'?Math.max(...values)-Math.min(...values):linearPercentile(values,95)-linearPercentile(values,5);if(!(s>0))continue;spread[f]=s;}
+    if(f==='property_type'&&new Set(pool.map(r=>r.property_type).filter(x=>x!=null)).size<=1)continue;
+    if(f==='geography'){
+      const points=new Set(pool.filter(validPoint).map(r=>`${r.latitude},${r.longitude}`));
+      const districts=new Set(pool.map(r=>r.district_code).filter(x=>x!=null));
+      if(points.size<=1&&!(settings.geography_district_fallback&&pool.some(r=>!validPoint(r))&&districts.size>1))continue;
+    }
     active.push(f);
   }
   const total=active.reduce((t,f)=>t+settings.feature_weights[f],0),out=new Map<string,number|null>();
+  const maxDistance=validPoint(ref)?Math.max(0,...pool.filter(validPoint).map(r=>haversine(r as any,ref as any))):0;
   for(const row of pool){
-    if(row.listing_id===referenceId||total<=0){out.set(row.listing_id,null);continue;}
+    if(row.listing_id===referenceId){out.set(row.listing_id,1);continue;}
+    if(total<=0){out.set(row.listing_id,null);continue;}
     let compared=0,weighted=0;
     for(const f of active){
       const w=settings.feature_weights[f];let s:number|null=null;
       if(f==='property_type'){if(row.property_type!=null&&ref.property_type!=null)s=Number(row.property_type===ref.property_type);}
       else if(f==='geography'){
-        if(validPoint(row)&&validPoint(ref))s=Math.max(0,1-haversine(row as any,ref as any)/settings.geographic_scale_m);
+        if(validPoint(row)&&validPoint(ref))s=maxDistance>0?Math.max(0,1-haversine(row as any,ref as any)/maxDistance):0.5;
         else if(settings.geography_district_fallback&&row.district_code!=null&&ref.district_code!=null)s=Number(row.district_code===ref.district_code);
       }else{const a=row[f],b=ref[f];if(finite(a)&&finite(b))s=Math.max(0,1-Math.abs(a-b)/spread[f]);}
       if(s!==null){compared+=w;weighted+=w*s;}

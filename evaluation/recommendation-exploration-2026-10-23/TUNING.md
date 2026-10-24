@@ -51,9 +51,9 @@ replays its stored response. Re-run the analyses after any change to scoring or 
 | `recommendation.max_result_limit` | `10` | confirmed | equals the native contract maximum (cross-layer test) |
 | `ranking.soft_weight` | `0.6` | confirmed | plan formula total = 0.60 soft + 0.40 behaviour |
 | `ranking.behavior_weight` | `0.4` | confirmed | plan formula |
-| `ranking.soft.numeric_bounds.price` | `[0.0, 20000.0]` | existing-default | weighted-v1 minimize/maximize bounds; live p95 price 18,800 (only soft minimize/maximize utilities use it) |
-| `ranking.soft.numeric_bounds.bedrooms` | `[0.0, 10.0]` | existing-default | weighted-v1 bound; live maximum 10 bedrooms |
-| `ranking.soft.numeric_bounds.floor_area_sqft` | `[0.0, 10000.0]` | existing-default | weighted-v1 bound |
+| `ranking.soft.numeric_bounds.price` | `[0.0, 20000.0]` | existing-default | Legacy compatibility only; current soft utilities use pool min/max |
+| `ranking.soft.numeric_bounds.bedrooms` | `[0.0, 10.0]` | existing-default | Legacy compatibility only; current soft utilities use pool min/max |
+| `ranking.soft.numeric_bounds.floor_area_sqft` | `[0.0, 10000.0]` | existing-default | Legacy compatibility only; current soft utilities use pool min/max |
 | `ranking.behavior.appointment_weight` | `0.6` | confirmed | plan formula |
 | `ranking.behavior.browsing_weight` | `0.4` | confirmed | plan formula |
 | `ranking.behavior.missing_branch_contribution` | `0.0` | confirmed | plan: a missing branch contributes 0 |
@@ -64,14 +64,14 @@ replays its stored response. Re-run the analyses after any change to scoring or 
 | `ranking.browsing.transform` | `"log1p"` | confirmed | plan: logarithmic growth, no cap |
 | `ranking.browsing.duration_cap_seconds` | `null` | confirmed | null = explicitly uncapped |
 | `ranking.browsing.time_scale_seconds` | `30.0` | provisional | Not calibrated (R2 value). No dwell data exists (the frontend has no browsing timer this phase), so the curve cannot be fitted. CALIBRATION.md §6 tabulates the trade-off: at 30 s a 5 s glance weighs 0.14 of a 60 s read, 600 s weighs 2.8×, and 120 → 240 s still adds +0.59. Scales of 10–60 s are all plausible; not calibratable until real dwell data exists. |
-| `ranking.similarity.suppression` | `"hard_criteria"` | confirmed | decision 1 |
+| `ranking.similarity.suppression` | `"none"` | confirmed | User revision: hard constraints do not suppress similarity features. |
 | `ranking.similarity.feature_weights.price` | `0.2` | provisional | Not calibrated (R2 value): preference weights cannot be fitted without real feedback, so user decision 2 ("its weight is calibrated") is not met yet (OPEN_ITEMS pending decision). Live figures (§5): price is suppressed in every scenario with a budget (8 of 9), and in the unfiltered pool it drives 18 % of pair-similarity variation |
 | `ranking.similarity.feature_weights.property_type` | `0.2` | provisional | Not calibrated (R2 value): no feedback to fit. property_type is a 0/1 feature, so it drives 38–67 % of the variation where price and geography are suppressed; removing it changes 10–100 % of the behaviour top 10 (§5). That is a known effect, not a reason to change the value without feedback |
 | `ranking.similarity.feature_weights.bedrooms` | `0.16` | provisional | Not calibrated (R2 value): no feedback to fit (existing 0.20 × 0.8). Compared in 95–99 % of pairs |
 | `ranking.similarity.feature_weights.floor_area_sqft` | `0.2` | provisional | Not calibrated (R2 value): no feedback to fit. Missing for 39 % of all listings and 64–85 % in six pools, so it is compared in only 5–46 % of pairs there; renormalisation over the compared features handles this (§4) |
 | `ranking.similarity.feature_weights.geography` | `0.24` | provisional | Not calibrated (R2 value): no feedback to fit (existing 0.30 × 0.8). Suppressed in the geographic hard scenarios (decision 1) |
-| `ranking.similarity.numeric_scaling` | `"p05_p95"` | experiment-result | Changed from iqr (§3). std is dominated by price outliers: full-table std is 874,463 because of a 128,000,000 listing, it shrinks to 0.7 % without the top 1 %, and median price similarity becomes 0.997, so price stops discriminating. iqr is 0 for bedrooms in 5 of 9 pools, so bedrooms is dropped wherever it is active (budget, property_type, region), and 27–55 % of random pairs saturate at similarity 0. p05_p95 is never zero in the 9 pools, stays within 0.80–1.0 of its value when the top 1 % is removed, and saturates 1–31 % of pairs |
-| `ranking.similarity.geographic_scale_m` | `3000.0` | existing-default | weighted-v1 scale. §5: random pairs are 11 km apart at the median, so 3,000 m gives a positive geographic similarity to 8.5 % of pairs city-wide and 28 % within a region pool. No feedback says what "near" means to a user |
+| `ranking.similarity.numeric_scaling` | `"minmax"` | confirmed | User revision: fit the range on the current full eligible pool; not a new empirical calibration. |
+| `ranking.similarity.geographic_scale_m` | `3000.0` | existing-default | Legacy configuration compatibility only; current geography similarity uses full-pool distances per reference. |
 | `ranking.similarity.geography_district_fallback` | `true` | experiment-result | Kept. 60 % of listings lack coordinates. Without the fallback, geography is unavailable for 90 % of pairs in the unfiltered pool and 60 % in the budget pool, and 57 % of budget-pool pairs fall below the coverage gate. With the fallback both are 0 % (§5) |
 | `ranking.similarity.min_comparison_coverage` | `0.5` | experiment-result | Kept. At 0.4–0.5 at most 0.7 % of pairs are unavailable in any pool. At 0.7, 80–90 % become unavailable in 5 of 9 pools because floor_area_sqft is missing. 0.5 is the largest value that keeps pairs comparable when one of two remaining features is missing (§4) |
 | `geography.station_distance_method` | `"nearest_exit"` | confirmed | R1c |

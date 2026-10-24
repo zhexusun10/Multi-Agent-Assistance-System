@@ -41,10 +41,11 @@
     {
       "target": "recommendation/examples/config.json",
       "base_ported_sha256": "ad2a488dcb452890426f3842793dbd71875a55255745350990efd9b5a198aff2",
-      "patched_sha256": "9e5fd550c1e78606c55b17d36fd41fb95546abded8e178f3814eb1846b502d64",
+      "patched_sha256": "daeab1b7ff9c884c4ebe172f60e4c46a865fb5160859dccbd8e55318e1c15b01",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): settings experiment file",
       "changes": [
-        "Rewritten in the v2 settings schema: identical to recommendation.yaml except cold_start.enabled false (not a production source)"
+        "Rewritten in the v2 settings schema: identical to recommendation.yaml except cold_start.enabled false (not a production source)",
+        "User-requested scoring revision: identity similarity 1, preserve informative hard-constrained features, current-pool min/max normalization; update associated offline expectations."
       ]
     },
     {
@@ -161,20 +162,22 @@
     {
       "target": "recommendation/ranking/ranker.py",
       "base_ported_sha256": "7f8466d27a35f91e8e31677d73985a2013b1c06f6f38f48a3f2af0e5c844a605",
-      "patched_sha256": "61ae653bae18f5aa03a424ea5684121f4e885a4ae07a6a357c6be5c4c8919278",
+      "patched_sha256": "e64b33d3694809896d939f756c1a4407be9b62b8d914d50e892decddbe44f397",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): scoring reference",
       "changes": [
-        "Rewritten as the scalar fused-v2 reference (soft_utility, feature_similarity, pair_similarity) reading the settings; weighted-v1 constants removed"
+        "Rewritten as the scalar fused-v2 reference (soft_utility, feature_similarity, pair_similarity) reading the settings; weighted-v1 constants removed",
+        "User-requested scoring revision: identity similarity 1, preserve informative hard-constrained features, current-pool min/max normalization; update associated offline expectations."
       ]
     },
     {
       "target": "recommendation/README.md",
       "base_ported_sha256": "5f4d39f15ca3781ab4470f7fe905d3a3c91c8527b0fc007dd644c6c5dc17c3aa",
-      "patched_sha256": "7a5baf497fb1c41879d9cae3f949cfe9a8dde647ebf587069a30c05bdc7b27ac",
+      "patched_sha256": "3f1ae471457450906d17759445413c11476742f52886bb8d4c859dc95877677b",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): documentation",
       "changes": [
         "Main behavior_context request, pool cache / data_version / final gate, fused-v2 scoring, select-v1 selection and cold start described",
-        "Settings section: single YAML source with confirmed / existing-default / experiment-result labels (provisional = not yet calibrated, pending) and TUNING.md; terminal debugging commands"
+        "Settings section: single YAML source with confirmed / existing-default / experiment-result labels (provisional = not yet calibrated, pending) and TUNING.md; terminal debugging commands",
+        "User-requested scoring revision: identity similarity 1, preserve informative hard-constrained features, current-pool min/max normalization; update associated offline expectations."
       ]
     },
     {
@@ -259,19 +262,21 @@
     {
       "target": "recommendation/tests/test_policy_controller.py",
       "base_ported_sha256": "516366637a44438cb510c1c99add5e0f5c361c2699ecf05c8d8d45f8d377d45d",
-      "patched_sha256": "68ed4625933de4e30e888851e0303ae459f447adecf792ebf1426095caacc50a",
+      "patched_sha256": "e47017a0f15abd08a0e752d741ef6027f979c587ce92cdf8aa39126c8ba7f518",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): tests",
       "changes": [
-        "Assertions changed one at a time for intended v2 rule changes, intent kept (listed per phase in VALIDATION.md)"
+        "Assertions changed one at a time for intended v2 rule changes, intent kept (listed per phase in VALIDATION.md)",
+        "User-requested scoring revision: identity similarity 1, preserve informative hard-constrained features, current-pool min/max normalization; update associated offline expectations."
       ]
     },
     {
       "target": "recommendation/tests/test_recommendation.py",
       "base_ported_sha256": "fb4b0df776232cd35a9b321d5918d927c43cd6d6877f1379dcd4f437ac5b5f0a",
-      "patched_sha256": "122fbdef13a1135f1cf0ec02edbf2ff967f81592f04733e5bcacc663e4883db2",
+      "patched_sha256": "a111fd028770594a75bc23547f81f7b23e8b7b512a4268521ab00422eefabbf8",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): tests",
       "changes": [
-        "Assertions changed one at a time for intended v2 rule changes, intent kept (listed per phase in VALIDATION.md)"
+        "Assertions changed one at a time for intended v2 rule changes, intent kept (listed per phase in VALIDATION.md)",
+        "User-requested scoring revision: identity similarity 1, preserve informative hard-constrained features, current-pool min/max normalization; update associated offline expectations."
       ]
     },
     {

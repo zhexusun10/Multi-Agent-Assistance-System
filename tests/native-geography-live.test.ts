@@ -27,10 +27,12 @@ test('native geographic ranking (contract 2.0) matches independently computed ha
    // seedless modes (ranked/small_pool) return O's prefix exactly.
    // Shared helper: tests/helpers/select-v1-oracle.ts (checked offline by tests/select-v1-oracle.test.ts).
    const softWeight=oracleSettings(await readFile('recommendation/settings/recommendation.yaml','utf8')).soft_weight;
-   const scores=new Map(eligible.map(p=>[String(p.listing_id),softWeight*(1/(1+p.d!/1000))]));
+   const lo=Math.min(...eligible.map(p=>p.d!)),hi=Math.max(...eligible.map(p=>p.d!));
+   const utility=(d:number)=>hi>lo?(hi-d)/(hi-lo):0.5;
+   const scores=new Map(eligible.map(p=>[String(p.listing_id),softWeight*utility(p.d!)]));
    assert.deepEqual(selectV1Violations(native,scoreOrder(scores),5,scores),[],JSON.stringify(native.selection));
    assert.deepEqual(scoreOrder(scores),eligible.map(p=>String(p.listing_id)));
-   for(const c of native.recommendations){const p=eligible.find(p=>String(p.listing_id)===c.listing.listing_id)!;assert(Math.abs(c.scores.combined_score-c.scores.soft_weight*(1/(1+p.d!/1000)))<.001);/* fused-v2: no feedback, so combined = soft_weight x soft (weighted-v1: = soft) */assert(c.criterion_results.find((x:any)=>x.criterion_id==='radius').outcome==='pass');}
+   for(const c of native.recommendations){const p=eligible.find(p=>String(p.listing_id)===c.listing.listing_id)!;assert(Math.abs(c.scores.combined_score-c.scores.soft_weight*utility(p.d!))<.001);/* fused-v2: no feedback, so combined = soft_weight x soft (weighted-v1: = soft) */assert(c.criterion_results.find((x:any)=>x.criterion_id==='radius').outcome==='pass');}
    let saved:any;const ctx={sessionId:req.conversation_id,operationId:randomUUID(),agent:'b' as const,dataset:'2026-10-09',deadline:Date.now()+120000,calls:0};const save=async(_ctx:unknown,body:unknown)=>{saved=body;return randomUUID();};
    const rec=await projectNative(req,ctx,envelope,save);assert.deepEqual(rec.native!.ranking,native.recommendations.map((x:any)=>x.listing.listing_id));assert.deepEqual(saved.response,native);
    req.requirements.criteria.push({criterion_id:'private',field:'amenities',operator:'eq',value:'private_bathroom',strength:'hard'});

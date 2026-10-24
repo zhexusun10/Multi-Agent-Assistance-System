@@ -110,7 +110,7 @@ def test_contract_cases_at_service_level(app_env, case):
         assert all(item["scores"]["browsing_score"] is None for item in response["recommendations"])
     drafts = {d["listing_id"] for d in (context or {}).get("book_viewing_listings", [])} & pool
     for item in response["recommendations"]:
-        others = drafts - {item["listing"]["listing_id"]}  # self pairs excluded (R1d)
+        others = drafts  # identity references are included
         assert (item["scores"]["appointment_score"] is None) == (not others)
 
 

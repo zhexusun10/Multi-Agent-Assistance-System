@@ -215,7 +215,7 @@ def test_bad_weights_rejected(overrides, key):
         ({"ranking.behavior.counted_appointment_signals": ["viewing_draft_saved", "viewing_draft_saved"]}, "duplicates"),
         ({"ranking.behavior.browsing_requires_interest_eligible": "yes"}, "ranking.behavior.browsing_requires_interest_eligible"),
         # enum values
-        ({"ranking.similarity.numeric_scaling": "minmax"}, "ranking.similarity.numeric_scaling"),
+        ({"ranking.similarity.numeric_scaling": "invalid"}, "ranking.similarity.numeric_scaling"),
         ({"ranking.similarity.suppression": "soft_criteria"}, "ranking.similarity.suppression"),
         ({"ranking.behavior.reference_scope": "all"}, "ranking.behavior.reference_scope"),
         ({"ranking.browsing.transform": "linear"}, "ranking.browsing.transform"),
@@ -419,7 +419,7 @@ def test_trace_records_settings_not_in_effect(tmp_path):
     policy = trace["context"]["scoring_policy"]
     assert policy["settings_not_in_effect"] == pending.NOT_IN_EFFECT
     # P5: the configured suppression mode is in effect (weighted-v1 forced all_criteria).
-    assert policy["similarity"]["suppression"] == default().ranking.similarity.suppression == "hard_criteria"
+    assert policy["similarity"]["suppression"] == default().ranking.similarity.suppression == "none"
 
 
 def test_requirements_declare_yaml_and_numpy():

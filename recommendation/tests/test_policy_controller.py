@@ -86,7 +86,7 @@ def test_invalid_policy(change, key):
 def test_versioned_policy_and_global_disabled_features(tmp_path):
     default = RecommendationConfig.default()
     # No code defaults any more: the identifier always names the settings digest.
-    assert scoring_identifier(default) == f"fused-v2:{default.selection_hash[:12]}"  # P5: was weighted-v1
+    assert scoring_identifier(default) == f"fused-v2-pool-minmax:{default.selection_hash[:12]}"  # P5: was weighted-v1
     custom = settings(**{"ranking.similarity.geographic_scale_m": 2000})
     assert scoring_identifier(custom) != scoring_identifier(default)
     assert scoring_identifier(custom) == scoring_identifier(
@@ -121,8 +121,8 @@ def test_versioned_policy_and_global_disabled_features(tmp_path):
             rows, request().requirements.criteria, browsing=[(rows[1].listing_id, 90)], config=only_bedrooms
         ).breakdown(rows[0].listing_id)
         assert (
-            result.behavior_score is None
-        )  # HARD bedroom criterion suppresses the only enabled feature (suppression: hard_criteria).
+            result.behavior_score is not None
+        )  # A hard bedroom criterion no longer suppresses a varying feature.
     finally:
         service.close()
 
@@ -335,17 +335,17 @@ def test_model_preview_limit_preserves_full_pool(tmp_path):
         service.close()
 
 
-def test_configured_scales_change_similarity_without_pool_normalization(tmp_path):
+def test_legacy_geography_scale_does_not_override_pool_normalization(tmp_path):
     service = make_service(tmp_path)
     try:
         a, b = service.listing.retrieve()[:2]
         default = pool_scores([a, b], browsing=[(b.listing_id, 90)]).breakdown(a.listing_id)
-        # Configurable fixed scale: geography (numeric spreads are fitted on the pool, P5).
+        # Legacy fixed scale cannot change current pool-normalized geography.
         custom = settings(**{"ranking.similarity.geographic_scale_m": 6000})
         modified = pool_scores([a, b], browsing=[(b.listing_id, 90)], config=custom).breakdown(a.listing_id)
-        assert modified.behavior_score > default.behavior_score
+        assert modified.behavior_score == default.behavior_score
         assert any(
-            c.scale == 6000 for c in modified.contributions if c.feature == "geography"
+            c.scale != 6000 for c in modified.contributions if c.feature == "geography"
         )
     finally:
         service.close()

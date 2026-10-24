@@ -40,7 +40,7 @@
       "time_scale_seconds": 30.0
     },
     "similarity": {
-      "suppression": "hard_criteria",
+      "suppression": "none",
       "feature_weights": {
         "price": 0.2,
         "property_type": 0.2,
@@ -48,7 +48,7 @@
         "floor_area_sqft": 0.2,
         "geography": 0.24
       },
-      "numeric_scaling": "p05_p95",
+      "numeric_scaling": "minmax",
       "geographic_scale_m": 3000.0,
       "geography_district_fallback": true,
       "min_comparison_coverage": 0.5

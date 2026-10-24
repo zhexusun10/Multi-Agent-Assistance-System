@@ -148,8 +148,8 @@ def test_formula_missing_branches_contribute_zero_without_redistribution():
         assert soft == pytest.approx(b.soft_score)
         appointment_sum = sum(c.contribution for c in b.contributions if c.branch == "appointment")
         assert appointment_sum == pytest.approx(appointment)
-    # The appointment listing is its own only reference: behaviour unavailable for it (R1d).
-    assert scores.breakdown("fixture-02").behavior_score is None
+    # The appointment listing receives full identity similarity.
+    assert scores.breakdown("fixture-02").appointment_score == 1.0
     # No soft criteria: soft_score None (contributes 0) and coverage 0.
     no_soft = pool_scores(rows, browsing=[("fixture-01", 40)]).breakdown("fixture-03")
     assert no_soft.soft_score is None and no_soft.soft_evidence_coverage == 0
@@ -385,19 +385,20 @@ def test_unit_change_invariance(scaling):
             assert np.allclose(other.fused.combined, base.fused.combined, rtol=0, atol=1e-12)
 
 
-def test_self_pairs_are_excluded():
+def test_self_pairs_receive_full_similarity():
     rows = fixture_rows()[:9]
     alone = pool_scores(rows, browsing=[("fixture-01", 60)])
-    assert alone.breakdown("fixture-01").behavior_score is None  # its own only reference
+    assert alone.breakdown("fixture-01").browsing_score == 1.0  # its own only reference has similarity 1
     assert all(alone.breakdown(i).behavior_score is not None for i in alone.ids if i != "fixture-01")
-    assert not alone.fused.pair_available[alone.index["fixture-01"], alone.ref_column[alone.index["fixture-01"]]]
+    assert alone.fused.pair_available[alone.index["fixture-01"], alone.ref_column[alone.index["fixture-01"]]]
     two = pool_scores(rows, browsing=[("fixture-01", 60), ("fixture-03", 60)])
     b = two.breakdown("fixture-01")
     weights = dict(zip(two.features, map(float, two.weights.features)))
     s, _, _ = pair_similarity(rows[0], rows[2], weights, two.spreads, two.settings.ranking.similarity)
-    assert b.browsing_score == pytest.approx(s)  # only the other reference counts
-    assert {c.reference for c in b.contributions if c.branch == "browsing"} == {"fixture-03"}
-    assert two.summary(10)["self_pairs_excluded"] == 2
+    assert b.browsing_score == pytest.approx((1 + s) / 2)  # both identity and the other reference count
+    assert {c.reference for c in b.contributions if c.branch == "browsing"} == {"fixture-01", "fixture-03"}
+    assert two.summary(10)["self_pairs_excluded"] == 0
+    assert two.summary(10)["self_pairs_included"] == 2
 
 
 def test_out_of_pool_references_are_ignored_and_counted(tmp_path):
@@ -424,13 +425,13 @@ def test_out_of_pool_references_are_ignored_and_counted(tmp_path):
         service.close()
 
 
-def test_suppression_follows_hard_criteria_only():
+def test_hard_criteria_do_not_suppress_similarity_by_default():
     rows = fixture_rows()[:9]
     soft_price = {"criterion_id": "p", "field": "price", "operator": "lte", "value": 2600, "unit": "SGD/month", "strength": "soft"}
     hard_price = {**soft_price, "strength": "hard"}
     assert "price" in pool_scores(rows, criteria(soft_price), browsing=[("fixture-01", 30)]).features
     hard = pool_scores(rows, criteria(hard_price), browsing=[("fixture-01", 30)])
-    assert "price" not in hard.features and hard.suppressed == ["price"]
+    assert "price" in hard.features and hard.suppressed == []
     every = settings(**{"ranking.similarity.suppression": "all_criteria"})
     assert "price" not in pool_scores(rows, criteria(soft_price), browsing=[("fixture-01", 30)], config=every).features
 

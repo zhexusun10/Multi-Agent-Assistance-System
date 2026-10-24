@@ -138,7 +138,7 @@ class FeatureWeights(Section):
 class SimilarityScoring(Section):
     suppression: Literal["hard_criteria", "all_criteria", "none"]
     feature_weights: FeatureWeights
-    numeric_scaling: Literal["std", "iqr", "p05_p95"] | None
+    numeric_scaling: Literal["std", "iqr", "p05_p95", "minmax"] | None
     geographic_scale_m: Positive | None
     geography_district_fallback: bool | None
     min_comparison_coverage: Unit | None

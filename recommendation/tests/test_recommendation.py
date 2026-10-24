@@ -272,8 +272,8 @@ def test_metrics(service):
     weights = {k: v for k, v in similarity.feature_weights.as_dict().items() if v > 0}
     spreads = {"price": 1000.0, "bedrooms": 1.0, "floor_area_sqft": 200.0}
     assert haversine(a, a) == 0
-    # P5 (R1d): a listing is never compared with itself (weighted-v1 returned similarity 1).
-    assert pair_similarity(a, a, weights, spreads, similarity) == (None, None, [])
+    # Identity similarity is explicitly 1.
+    assert pair_similarity(a, a, weights, spreads, similarity)[:2] == (1.0, 1.0)
     assert pair_similarity(a, b, weights, spreads, similarity)[0] == pytest.approx(
         pair_similarity(b, a, weights, spreads, similarity)[0])
     assert numeric_similarity(0, 3, 3)[0] == 0

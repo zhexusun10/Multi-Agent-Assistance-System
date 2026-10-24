@@ -4,7 +4,7 @@ Every eligible listing of the exploration pool is scored on every round. The sco
 numpy COMPONENT arrays and derives every score from them in ``PoolScores.combine``:
 
     soft utilities      util / known          (pool x soft criteria)
-    pair similarities   sim / compared        (features x pool x references), self pairs masked
+    pair similarities   sim / compared        (features x pool x references), self pairs have identity similarity 1
 
 so a caller can recombine the same components under other weights (cold-start stability
 trials, P5 part 2) without rescoring, and ScoreBreakdown / Contribution objects are built only
@@ -19,10 +19,10 @@ Rules (all parameters from recommendation/settings/recommendation.yaml, no code 
   suppressed by ranking.similarity.suppression (ranking/suppression.py) minus numeric features
   whose pool spread is 0 or non-finite ("zero_variance", dropped for this pool). Numeric spread
   per numeric_scaling over the FULL pool's known values: std (ddof=0) | iqr (p75 - p25) |
-  p05_p95 (p95 - p05), numpy percentiles with method "linear" (R11). A missing attribute is
+  p05_p95 (p95 - p05), or minmax (default), numpy percentiles with method "linear" (R11). A missing attribute is
   not compared; the pair similarity is renormalised over compared features and its
   comparison_coverage = compared weight / active weight; below min_comparison_coverage, or
-  nothing compared, the pair is unavailable. Self pairs are excluded (R1d).
+  nothing compared, the pair is unavailable. Self pairs have similarity and coverage 1, independent of missing attributes.
 - appointment_score: references = appointment listings with a counted status (one entry per
   listing, so a status upgrade adds nothing) that are IN the pool (reference_scope in_pool);
   mean of the available pair similarities; none available -> None.
@@ -58,7 +58,7 @@ from ..settings.pending import not_in_effect
 from .ranker import soft_utility
 from .suppression import suppressed_features
 
-SCORING_VERSION = "fused-v2"
+SCORING_VERSION = "fused-v2-pool-minmax"
 FEATURES = ("price", "property_type", "bedrooms", "floor_area_sqft", "geography")
 NUMERIC_FEATURES = ("price", "bedrooms", "floor_area_sqft")
 BRANCHES = ("appointment", "browsing")
@@ -95,6 +95,8 @@ def fit_spread(values, scaling):
     v = values[np.isfinite(values)]
     if not len(v):
         return math.nan
+    if scaling == "minmax":
+        return float(v.max() - v.min())
     if scaling == "std":
         return float(np.std(v, ddof=STD_DDOF))
     low, high = np.percentile(v, SPREAD_PERCENTILES[scaling], method=QUANTILE_METHOD)
@@ -115,7 +117,8 @@ def describe(settings):
             "appointment_weight": ranking.behavior.appointment_weight,
             "browsing_weight": ranking.behavior.browsing_weight,
         },
-        "numeric_bounds": {k: list(v) for k, v in ranking.soft.numeric_bounds.as_dict().items()},
+        "normalization": "full eligible pool min/max; constant known utility = 0.5",
+        "legacy_unused_settings": ["ranking.soft.numeric_bounds", "ranking.similarity.geographic_scale_m"],
         "similarity": {
             "suppression": similarity.suppression,
             "feature_weights": similarity.feature_weights.as_dict(),
@@ -125,7 +128,7 @@ def describe(settings):
             "geographic_scale_m": similarity.geographic_scale_m,
             "geography_district_fallback": similarity.geography_district_fallback,
             "min_comparison_coverage": similarity.min_comparison_coverage,
-            "self_pairs": "excluded",
+            "self_pairs": "identity similarity 1",
         },
         "browsing": {
             "transform": ranking.browsing.transform,
@@ -219,7 +222,17 @@ class PoolScores:
         m = len(self.soft_criteria)
         self.util = np.zeros((n, m))
         self.known = np.zeros((n, m), bool)
-        bounds = ranking.soft.numeric_bounds.as_dict()
+        bounds = {"numeric": {}, "distance": {}}
+        for field in ("price", "bedrooms", "floor_area_sqft"):
+            values = _column(self.rows, field)
+            finite = values[np.isfinite(values)]
+            bounds["numeric"][field] = (float(finite.min()), float(finite.max())) if len(finite) else (0., 0.)
+        for c in self.soft_criteria:
+            if c.utility == "proximity":
+                values = [e.value for row in self.rows for e in evidence.get(row.listing_id, [])
+                          if e.criterion_id == c.criterion_id and isinstance(e.value, (int, float)) and math.isfinite(e.value)]
+                bounds["distance"][c.criterion_id] = (min(values), max(values)) if values else (0., 0.)
+        self.normalization_bounds = bounds
         for i, row in enumerate(self.rows):
             if not m:
                 break
@@ -252,6 +265,17 @@ class PoolScores:
                         if not math.isfinite(spread) or spread <= 0:
                             self.dropped[f] = ZERO_VARIANCE
                             continue
+                    if f == "property_type" and len({r.property_type for r in self.rows if r.property_type is not None}) <= 1:
+                        self.dropped[f] = ZERO_VARIANCE
+                        continue
+                    if f == "geography":
+                        lat, lon, valid = coordinates(self.rows)
+                        positions = set(zip(lat[valid].tolist(), lon[valid].tolist()))
+                        districts = {r.district_code for r in self.rows if r.district_code is not None}
+                        meaningful = len(positions) > 1 or (ranking.similarity.geography_district_fallback and not valid.all() and len(districts) > 1)
+                    if f == "geography" and not meaningful:
+                        self.dropped[f] = ZERO_VARIANCE
+                        continue
                     self.features.append(f)
                     feature_weights[f] = configured[f]
             if len(self.refs):
@@ -330,8 +354,13 @@ class PoolScores:
                 lat, lon, valid = coordinates(self.rows)
                 both = valid[:, None] & valid[refs][None, :]
                 method = np.where(both, GEO_HAVERSINE, GEO_NONE).astype(np.int8)
-                with np.errstate(invalid="ignore"):
-                    s = np.maximum(0.0, 1.0 - haversine_matrix(lat, lon, lat[refs], lon[refs]) / similarity.geographic_scale_m)
+                distances = haversine_matrix(lat, lon, lat[refs], lon[refs])
+                # Each reference is compared against the entire current eligible pool.
+                # The reference itself is in-pool, so the minimum distance is zero.
+                maxima = np.max(np.where(both, distances, 0.0), axis=0)
+                self.spreads["geography_by_reference"] = {self.ids[p]: float(maxima[j]) for j, p in enumerate(refs)}
+                with np.errstate(invalid="ignore", divide="ignore"):
+                    s = np.where(maxima[None, :] > 0, 1.0 - distances / np.maximum(maxima, 1e-300), 0.5)
                 s = np.where(both, s, 0.0)
                 if similarity.geography_district_fallback:
                     codes = _codes([r.district_code for r in self.rows])
@@ -357,7 +386,7 @@ class PoolScores:
             soft_coverage = _clip(self.known @ cw)
         else:
             soft, soft_coverage = np.zeros(n), np.zeros(n)
-        # Pairs: renormalise over compared features, coverage gate, self pairs masked.
+        # Pairs: renormalise over compared features, coverage gate, self pairs have identity similarity 1.
         pair = np.zeros((n, u))
         pair_coverage = np.zeros((n, u))
         pair_available = np.zeros((n, u), bool)
@@ -367,10 +396,16 @@ class PoolScores:
             compared_weight = np.tensordot(w.features, self.compared.astype(float), axes=1)
             weighted = np.tensordot(w.features, self.sim, axes=1)
             pair_coverage = compared_weight / active
-            pair_available = self.notself & (compared_weight > 0) & (pair_coverage >= min_coverage)
+            pair_available = (compared_weight > 0) & (pair_coverage >= min_coverage)
             with np.errstate(invalid="ignore", divide="ignore"):
                 pair = np.where(pair_available, weighted / np.where(compared_weight > 0, compared_weight, 1.0), 0.0)
             pair = _clip(pair)
+        # Identity is known even when no descriptive feature is available.
+        if u:
+            identity = np.arange(n)[:, None] == self.refs[None, :]
+            pair[identity] = 1.0
+            pair_coverage[identity] = 1.0
+            pair_available[identity] = True
         # Behaviour branches: weighted mean over references with an available pair.
         branch = {}
         for name in BRANCHES:
@@ -452,7 +487,7 @@ class PoolScores:
 
     def _branch_contributions(self, i, name):
         """Per reference and active feature: weight = in-branch reference weight x renormalised
-        feature weight, so a branch's contributions sum to its score. Self pairs are skipped;
+        feature weight, so a branch's contributions sum to its score. Self pairs contribute explicit identity evidence;
         features not compared, and pairs below min_comparison_coverage, carry weight 0."""
         ref = self.references[name]
         f = self.fused
@@ -461,7 +496,11 @@ class PoolScores:
         for listing_id, rw in zip(ref["ids"], ref["weights"]):
             p = self.index[listing_id]
             if p == i:
-                continue  # R1d: never compared with itself
+                ref_weight = rw / den[i] if ok[i] else 0.0
+                out.append(Contribution(feature="identity", branch=name, reference=listing_id,
+                    similarity=1.0, weight=_unit(ref_weight), contribution=_unit(ref_weight),
+                    unknown=False, method="self_identity"))
+                continue
             u = self.ref_column[p]
             available = bool(f.pair_available[i, u])
             ref_weight = rw / den[i] if available and ok[i] else 0.0
@@ -495,7 +534,7 @@ class PoolScores:
         if method == GEO_HAVERSINE:
             d = haversine_matrix(np.array([a.latitude]), np.array([a.longitude]),
                                  np.array([b.latitude]), np.array([b.longitude]))[0, 0]
-            return "haversine", float(d), similarity.geographic_scale_m
+            return "haversine_pool_minmax", float(d), self.spreads["geography_by_reference"][b.listing_id]
         return ("district_fallback" if method == GEO_DISTRICT else "unavailable"), None, None
 
     # --- trace ---------------------------------------------------------------------------
@@ -517,7 +556,6 @@ class PoolScores:
             else:
                 entry["references"] = [{"listing_id": i} for i in ref["ids"]][:preview_rows]
             refs[name] = entry
-        self_pairs = int((~self.notself).sum()) if len(self.refs) and self.sim is not None else 0
         return {
             "scoring_version": scoring_identifier(self.settings),
             "pool_scored": len(self.rows),
@@ -540,7 +578,9 @@ class PoolScores:
                 "duration_cap_seconds": ranking.browsing.duration_cap_seconds,
             },
             "references": refs,
-            "self_pairs_excluded": self_pairs,
+            "self_pairs_excluded": 0,
+            "self_pairs_included": len(self.refs),
+            "normalization_bounds": self.normalization_bounds,
             "pairs_available": int(f.pair_available.sum()),
             "behavior_available": int(f.behavior_available.sum()),
             "duration_ms": self.duration_ms,

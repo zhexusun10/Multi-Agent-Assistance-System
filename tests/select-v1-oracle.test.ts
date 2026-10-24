@@ -68,20 +68,20 @@ test('scoreOrder sorts by score then code-point listing_id; linearPercentile mat
   assert(Number.isNaN(linearPercentile([NaN],50)));
 });
 
-test('fused-v2 single-reference oracle reproduces the native scores of the committed single-reference fixture (self pair excluded, duration cancels, interest gate)',async()=>{
+test('fused-v2 single-reference oracle reproduces the native scores of the committed single-reference fixture (self pair included, duration cancels, interest gate)',async()=>{
   const fx=await read('tests/fixtures/recommendation-v2/single-reference.json'),listings=(await read('recommendation/examples/listings.json')).map(oracleRow);
   // behavior_context (main contract): only interest_eligible summaries with positive cumulative seconds are references.
   const native=fx.response,usable=fx.native_body.behavior_context.listing_view_durations.filter((v:any)=>v.interest_eligible&&v.duration_seconds>0);
   assert.equal(usable.length,1);const reference=usable[0].listing_id;
-  // Hard budget <= 6000 keeps all 12 fixture listings; suppression hard_criteria removes only price.
+  // Hard budget <= 6000 keeps all 12 fixture listings; hard conditions no longer suppress price.
   const pool=listings.filter((r:any)=>r.price!==null&&r.price<=fx.native_body.requirements.criteria[0].value);assert.equal(pool.length,native.pool.size);
-  const scores=singleBrowsingReferenceScores(pool,reference,fx.oracle_settings,['price']);
+  const scores=singleBrowsingReferenceScores(pool,reference,fx.oracle_settings,[]);
   for(const c of native.recommendations){
     assert(Math.abs(c.scores.combined_score-scores.get(c.listing.listing_id)!)<1e-9,`${c.listing.listing_id}: native ${c.scores.combined_score} vs oracle ${scores.get(c.listing.listing_id)}`);
-    assert.deepEqual(c.scores.suppressed_features,['price']);
-    if(c.listing.listing_id===reference)assert.equal(c.scores.browsing_score,null);
+    assert.deepEqual(c.scores.suppressed_features,[]);
+    if(c.listing.listing_id===reference)assert.equal(c.scores.browsing_score,1);
   }
-  assert.equal(scores.get(reference),0,'self pair excluded (R1d)');
+  assert.equal(scores.get(reference),fx.oracle_settings.behavior_weight*fx.oracle_settings.browsing_weight,'identity similarity 1');
   assert.deepEqual(selectV1Violations(native,scoreOrder(scores),fx.native_body.result_limit,scores),[]);
   // The oracle settings embedded in the fixture are the shape oracleSettings() reads from the committed YAML.
   assert.deepEqual(Object.keys(oracleSettings(await readFile('recommendation/settings/recommendation.yaml','utf8'))).sort(),Object.keys(fx.oracle_settings).sort());
