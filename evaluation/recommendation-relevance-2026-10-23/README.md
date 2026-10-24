@@ -1,3 +1,8 @@
+> **Historical run:** this directory preserves the 23 October `d5af7e1`
+> evaluation. For the later main `4d687e3` results, 40 basic scenarios and
+> retained complex cases, use the [24 October final evaluation](../expanded-final-acceptance-2026-10-24/README.md).
+> The frozen files below are unchanged.
+
 # Recommendation relevance evaluation - Revision 3
 
 This publication contains the English preliminary report, scoring workbook,
@@ -117,3 +122,4 @@ held-out needs. A future increase in production result count requires contract,
 final-gate, model-flow and UI acceptance. Earlier project acceptance items remain
 tracked in the [main QA entry](../README.md); these evaluation results do not
 close them or represent real-user satisfaction.
+
