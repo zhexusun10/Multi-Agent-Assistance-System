@@ -7,7 +7,7 @@
       "const": "2.0"
     },
     "focus_listing_ids": {
-      "maxItems": 8,
+      "maxItems": 10,
       "type": "array",
       "items": {
         "type": "string"
@@ -15,7 +15,7 @@
     },
     "paragraphs": {
       "minItems": 1,
-      "maxItems": 5,
+      "maxItems": 12,
       "type": "array",
       "items": {
         "type": "object",
@@ -32,6 +32,12 @@
             "items": {
               "type": "string"
             }
+          },
+          "listing_id": {
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "required": [

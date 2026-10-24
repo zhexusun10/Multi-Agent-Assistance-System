@@ -37,6 +37,7 @@ def req(**changes):
         request_id="r1",
         conversation_id="c1",
         requirements_version=1,
+        result_limit=4,  # Historical fixture size; production default is Top 5.
         requirements=json.loads(
             (Path(__file__).parents[1] / "examples/requirements.json").read_text()
         ),

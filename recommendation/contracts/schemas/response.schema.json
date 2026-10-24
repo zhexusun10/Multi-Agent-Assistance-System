@@ -542,7 +542,7 @@
           "$ref": "#/$defs/ListingSummary"
         },
         "rank": {
-          "maximum": 4,
+          "maximum": 5,
           "minimum": 1,
           "title": "Rank",
           "type": "integer"
@@ -803,7 +803,7 @@
       "items": {
         "$ref": "#/$defs/RecommendationItem"
       },
-      "maxItems": 4,
+      "maxItems": 5,
       "title": "Recommendations",
       "type": "array"
     },

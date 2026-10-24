@@ -23,12 +23,12 @@ test('native full-data live: exact SQL/ranking oracle, model tools, feedback, ex
    assert.equal(properties.length,21431);
    const eligible=properties.filter(p=>p.price!==null&&Number(p.price)<=5000&&p.bedrooms!==null&&Number(p.bedrooms)>=2&&p.district_code==='D05');
    let s=await run('帮我找租房，预算不超过5000新币，至少2房，D05');
-   let rec=s.recommendation;assert(rec.native);assert.equal(rec.state.counts.assessed,21431);assert.equal(rec.state.counts.eligible,eligible.length);assert.deepEqual(rec.recommendations.map((c:any)=>c.listing.listing_id),eligible.slice(0,4).map(p=>String(p.listing_id)));assert.equal(rec.recommendations.length,4);
+   let rec=s.recommendation;assert(rec.native);assert.equal(rec.state.counts.assessed,21431);assert.equal(rec.state.counts.eligible,eligible.length);assert.deepEqual(rec.recommendations.map((c:any)=>c.listing.listing_id),eligible.slice(0,5).map(p=>String(p.listing_id)));assert.equal(rec.recommendations.length,5);
    const exchange=await api(`evidence?session_id=${sid}&ref=${rec.native.exchange_ref}`);
    assert.equal(exchange.data.response.execution.controller_mode,'live');assert(exchange.data.response.execution.model_calls>0);assert(exchange.data.response.execution.tool_calls>=4);assert.equal(exchange.data.response.state.source_count,21431);
-   assert.deepEqual(rec.native.ranking,exchange.data.response.recommendations.map((c:any)=>c.listing.listing_id));assert.equal(exchange.data.request.result_limit,4);
+   assert.deepEqual(rec.native.ranking,exchange.data.response.recommendations.map((c:any)=>c.listing.listing_id));assert.equal(exchange.data.request.result_limit,5);
    const source=s.latest_request_id,version=s.requirements_version;
-   s=await run('解释一下第一套为什么推荐，为什么排在前面');assert.equal(s.latest_request_id,source);assert.equal(s.requirements_version,version);assert(s.messages.at(-1).text.includes('原生房源ID')||s.messages.at(-1).text.includes('房源ID字符串'));
+   s=await run('解释一下第一套为什么推荐，为什么排在前面');assert.equal(s.latest_request_id,source);assert.equal(s.requirements_version,version);assert(s.messages.at(-1).text.includes(rec.recommendations[0].listing.title));assert(!/原生房源ID|房源ID字符串/.test(s.messages.at(-1).text));
    s=await run('请为第1套房源生成看房询问草稿');assert.equal(s.actions.length,1);assert.equal(s.actions[0].source_request_id,source);assert(!s.actions[0].body.includes('请为房源ID'));
    s=await run('生成当前推荐的总结文档');assert(s.artifacts.length>0);assert.equal(s.latest_request_id,source);
    const selected=rec.recommendations[0],reference=properties.find(p=>String(p.listing_id)===selected.listing.listing_id)!;
@@ -37,7 +37,7 @@ test('native full-data live: exact SQL/ranking oracle, model tools, feedback, ex
    const text=(p:any)=>typeof p.property_type==='string'?p.property_type.trim().toLowerCase():null;
    const implicit=(p:any)=>.5*(text(p)!==null&&text(reference)!==null?Number(text(p)===text(reference)):0)+.5*(p.floor_area_sqft===null||reference.floor_area_sqft===null?0:Math.max(0,1-Math.abs(Number(p.floor_area_sqft)-Number(reference.floor_area_sqft))/500));
    const ranked=[...eligible].sort((a,b)=>implicit(b)-implicit(a)||(String(a.listing_id)<String(b.listing_id)?-1:1));
-   assert.deepEqual(rec.recommendations.map((c:any)=>c.listing.listing_id),ranked.slice(0,4).map(p=>String(p.listing_id)));
+   assert.deepEqual(rec.recommendations.map((c:any)=>c.listing.listing_id),ranked.slice(0,5).map(p=>String(p.listing_id)));
    for(const c of rec.recommendations){const p=properties.find(p=>String(p.listing_id)===c.listing.listing_id);assert(Math.abs(c.score-implicit(p))<1e-9);assert.equal(rec.native.scores[c.listing.listing_id].ordering,'behavioral');assert(rec.native.scores[c.listing.listing_id].suppressed_features.includes('geography'));}
    assert.equal(s.requirements_version,version);
    const follow=await api(`evidence?session_id=${sid}&ref=${rec.native.exchange_ref}`);assert.equal(follow.data.request.previous_state_id,exchange.data.response.state.state_id);assert.equal(follow.data.response.state.feedback_version,1);assert.equal(follow.data.response.state.run_sequence,2);

@@ -11,6 +11,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 
 from .agent.controller import ScriptedController
 from .app_controller import ApplicationLiveController
+from .app_geography import ApplicationGeographicRepository
 from .config import RecommendationConfig
 from .contracts.request import RecommendationRequest
 from .app_contract import ApplicationRecommendationRequest
@@ -39,6 +40,8 @@ def authorize(x_recommendation_token: str = Header(default="")):
 def execute(request: RecommendationRequest, app_view=False, behavior_context=None):
     """Construct SQLite connection on the executing thread; never share it across threads."""
     listing, geographic = repositories(os.getenv("RECOMMENDATION_DATA_MODE", "database"))
+    if app_view:
+        geographic = ApplicationGeographicRepository(geographic)
     store = None
     try:
         store = StateStore(state_path())

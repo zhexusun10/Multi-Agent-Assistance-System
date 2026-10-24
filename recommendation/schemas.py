@@ -28,7 +28,8 @@ def generate(check=False):
             if not path.exists() or path.read_text() != expected:
                 raise ValueError(f"Stale generated schema: {path}")
         else:
-            path.write_text(expected)
+            # Deterministic fingerprints across Windows and Unix worktrees.
+            path.write_bytes(expected.encode('utf-8'))
 
 
 def validate_response(response):

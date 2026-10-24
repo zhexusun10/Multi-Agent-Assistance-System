@@ -1,6 +1,6 @@
 const names={price:'月租',bedrooms:'卧室数量',bathrooms:'卫浴数量',floor_area_sqft:'室内面积',land_area_sqft:'土地面积',build_year:'建成年份',property_type:'房屋类型',district:'邮区',region_code:'区域',postal_code:'邮编',lease_months:'租期',furnishing:'家具',rental_scope:'租赁范围',commute_time:'通勤时间',move_in_date:'入住日期',current_availability:'当前是否可租'};
 const amenities={private_bathroom:'独立卫浴',master_room:'主卧',common_room:'普通房',air_conditioning:'空调',cooking_allowed:'做饭规定',pet_policy:'宠物规定',no_live_in_landlord:'是否与房东同住',swimming_pool:'游泳池',gym:'健身房',balcony:'阳台',parking:'停车位',elevator:'电梯',wifi:'网络',washer:'洗衣机',refrigerator:'冰箱',security:'保安'};
-const places={'National University of Singapore':'新加坡国立大学','Nanyang Technological University':'南洋理工大学'};
+const places={'National University of Singapore':'新加坡国立大学','Nanyang Technological University':'南洋理工大学',CLEMENTI:'金文泰'};
 const finite=v=>typeof v==='number'&&Number.isFinite(v);
 export const money=value=>finite(value)?'$'+value.toLocaleString('en-SG'):'租金待确认';
 export const distance=value=>Math.round(value).toLocaleString('zh-CN')+' 米';
@@ -16,7 +16,7 @@ export function matchSummary(candidate,criteria,formatCriterion){
   const boundedPlaces=new Set(results.filter(({c})=>c.field==='place_proximity'&&c.distance_preference==='bounded').map(({c})=>placeKey(c)));
   for(const {r,c} of results){
     if(c.field==='place_proximity'&&c.distance_preference==='nearer'&&boundedPlaces.has(placeKey(c)))continue;
-    if(r.status==='unknown'){pending.add(label(c));continue;}
+    if(r.status==='unknown'){pending.add(label(c)+(c.field==='place_proximity'&&/missing valid (?:listing )?coordinates/i.test(r.reason||'')?'（缺少房源坐标）':''));continue;}
     let text;const relative=c.field==='place_proximity'&&c.strength==='soft'&&c.distance_preference==='nearer';
     if(c.field==='place_proximity'){
       const key=placeKey(c);

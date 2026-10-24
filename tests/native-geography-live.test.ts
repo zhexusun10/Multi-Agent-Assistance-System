@@ -21,7 +21,7 @@ test('native geographic ranking matches independently computed haversine/NEAR_PL
    // is unnecessary for ordering: this fixture's selected points use coordinate fallback.
    const eligible=source.map(p=>({...p,d:distance(p)})).filter(p=>p.d!==null&&p.d<=3000).sort((a,b)=>b.d===a.d?(String(a.listing_id)<String(b.listing_id)?-1:1):a.d!-b.d!);
    const native=envelope.response;assert.equal(envelope.presentation.counts.assessed,21431);assert.equal(envelope.presentation.counts.eligible,eligible.length);
-   assert.deepEqual(native.recommendations.map((c:any)=>c.listing.listing_id),eligible.slice(0,4).map(p=>String(p.listing_id)));
+   assert.deepEqual(native.recommendations.map((c:any)=>c.listing.listing_id),eligible.slice(0,5).map(p=>String(p.listing_id)));
    for(const c of native.recommendations){const p=eligible.find(p=>String(p.listing_id)===c.listing.listing_id)!;assert(Math.abs(c.scores.combined_score-1/(1+p.d!/1000))<.001);assert(c.criterion_results.find((x:any)=>x.criterion_id==='radius').outcome==='pass');}
    let saved:any;const ctx={sessionId:req.conversation_id,operationId:randomUUID(),agent:'b' as const,dataset:'2026-10-09',deadline:Date.now()+120000,calls:0};const save=async(_ctx:unknown,body:unknown)=>{saved=body;return randomUUID();};
    const rec=await projectNative(req,ctx,envelope,save);assert.deepEqual(rec.native!.ranking,native.recommendations.map((x:any)=>x.listing.listing_id));assert.deepEqual(saved.response,native);

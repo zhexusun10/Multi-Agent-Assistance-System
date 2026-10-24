@@ -12,7 +12,7 @@ class RecommendationRequest(Contract):
     requirements: Requirements
     feedback: list[ViewingEvent] = Field(default_factory=list)
     previous_state_id: str | None = None
-    result_limit: int = Field(default=4, ge=1, le=4)
+    result_limit: int = Field(default=5, ge=1, le=5)
 
     @model_validator(mode="after")
     def scoped(self):

@@ -27,6 +27,7 @@ def request():
         request_id="policy",
         conversation_id="policy",
         requirements_version=1,
+        result_limit=4,  # Recovery fixtures deliberately exercise a four-item prefix.
         requirements=json.loads(
             (Path(__file__).parents[1] / "examples/requirements.json").read_text()
         ),

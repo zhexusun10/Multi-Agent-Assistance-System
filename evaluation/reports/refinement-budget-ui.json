@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "model_calls": 0,
+  "structured_submissions": 1,
+  "visible_count": 5,
+  "checks": [
+    "500-1500 sqft hard requirement",
+    "keep original SGD3000 budget",
+    "preview and submitted captions agree",
+    "five introductions with existing facts and unknown-place warning",
+    "five cards, navigator entries and result count"
+  ],
+  "scope": "real frontend; saved inputs and server-compiled outputs; intercepted business APIs"
+}

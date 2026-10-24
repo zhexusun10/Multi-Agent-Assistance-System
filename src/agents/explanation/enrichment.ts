@@ -20,7 +20,7 @@ export class ExplanationEnricher{
   async load(rec:RecommendationResponse,ctx:ToolContext):Promise<ExplanationEnrichment[]>{
     if(ctx.agent!=='c'||rec.state.coverage.dataset_version!==ctx.dataset)throw Error('EXPLANATION_ENRICHMENT_SCOPE');
     const rows=displayedCandidates(rec);
-    if(rows.length>8||new Set(rows.map(r=>r.listing.listing_id)).size!==rows.length)throw Error('EXPLANATION_CANDIDATE_SCOPE');
+    if(rows.length>10||new Set(rows.map(r=>r.listing.listing_id)).size!==rows.length)throw Error('EXPLANATION_CANDIDATE_SCOPE');
     const out:ExplanationEnrichment[]=[];
     // Two homes at a time; each uses two bounded read-only requests. Partial
     // failures retain recommendation facts and never become "no amenities".
@@ -32,7 +32,7 @@ export class ExplanationEnricher{
             const value=detailSchema.parse(await this.data.request(`/api/v1/listings/${id}`));
             if(value.item.entity_id!==`Listing:${id}`||String(value.item.properties.listing_id)!==id)throw Error('EXPLANATION_DETAIL_IDENTITY');
             const detail=normalizeListingDetails(value.item.properties);
-            return Object.fromEntries(['listing_id','price','bedrooms','bathrooms','floor_area_sqft','property_type','nearest_mrt','mrt_distance_m'].map(field=>[field,detail[field]]));
+            return Object.fromEntries(['listing_id','price','bedrooms','bathrooms','floor_area_sqft','property_type','nearest_mrt','mrt_distance_m','floor_level','build_year','rental_scope'].map(field=>[field,field==='rental_scope'?value.item.properties[field]??null:detail[field]]));
           },30000),
           this.tools.run(ctx,'listing_context',{id,purpose:'decision_support'},async()=>{
             const value=contextSchema.parse(await this.data.request(`/api/v1/listings/${id}/context`));

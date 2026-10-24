@@ -1,7 +1,7 @@
 import {randomUUID} from 'node:crypto';
 import type {PoolClient} from 'pg';
 import {DomainStore,BusinessError,hash,type DomainState} from '../../../stores/domain.js';
-import {refinementSubmitSchema} from '../../../contracts/requirement-refinement.js';
+import {refinementSubmitSchema,refinementSubmissionText} from '../../../contracts/requirement-refinement.js';
 import {planRefinement} from './planner.js';
 import {compileRefinement} from './answers.js';
 
@@ -45,7 +45,7 @@ export class RequirementRefinementService{
       if(changed&&(await tx.query('SELECT 1 FROM domain_operations WHERE session_id=$1 AND request_id=$2',[session,submitted.submission_id])).rowCount)throw new BusinessError('REQUEST_ID_CONFLICT','提交编号已被其他操作使用，请刷新后重试。');
       await tx.query("UPDATE requirement_refinement_plans SET status='SUBMITTED',answers=$2,answer_summary=$3,submission_id=$4,submitted_operation_id=$5,submission_hash=$6,updated_at=now() WHERE id=$1",[id,JSON.stringify(compiled.answers),JSON.stringify(compiled.summary),submitted.submission_id,operation,submissionHash]);
       if(operation){
-        const query='我补充了找房需求：\n'+compiled.summary.join('\n')+'\n请按更新后的需求重新推荐。';
+        const query=refinementSubmissionText(compiled.summary);
         await tx.query("INSERT INTO domain_operations(id,session_id,request_id,query,kind,source_request_id,intent_plan) VALUES($1,$2,$3,$4,'search',$5,$6)",[operation,session,submitted.submission_id,query,s.latest_request_id,JSON.stringify({kind:'search',agent:'a',deferred_summary:false,source:'requirement_card',plan_id:id})]);
         if(s.active_operation_id)await tx.query("UPDATE domain_operations SET status='superseded' WHERE id=$1 AND status='queued'",[s.active_operation_id]);
         s.active_operation_id=operation;

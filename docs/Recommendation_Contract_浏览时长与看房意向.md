@@ -19,7 +19,7 @@
 | requirements | object | 必填 | 已有 | 显式需求，结构见下表 |
 | feedback | array | 默认[] | 已有 | 已满足质量门槛、尚未消费的浏览时长事件 |
 | previous_state_id | string/null | 默认null | 已有 | 原生上一状态；应用入口继续保留既有原生head适配与重放机制 |
-| result_limit | integer 1–4 | 默认4 | 已有 | 原生每组最多4套；应用内部请求上限不同，适配时截到4 |
+| result_limit | integer 1–5 | 默认5 | 已有字段，2026-10-24调整上限 | 正式推荐最多5套；不足不凑数；资料待确认列表独立返回（最多4套） |
 | behavior_context | object/null | 老客户端可省略；本应用每次提供 | **新增** | 两类行为的完整只读摘要，与显式需求并列，结构见下表 |
 
 这两类行为是“推荐输入中的用户上下文”，不是用户必须满足的房屋条件，因此放在 `behavior_context`，不塞进 `requirements.criteria`，不让LLM再从文本提取，不增加显式需求版本。

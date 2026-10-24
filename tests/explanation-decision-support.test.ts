@@ -28,8 +28,8 @@ function setup(question='这些房子各有什么值得考虑的地方？'){
 }
 function prose(f=setup()){
  const output=guideResponse(f.req,f.rec,f.bundle.question);
- output.paragraphs[1]={listing_id:'83000001',text:'第1套 Willow Residence：挂牌面积700平方英尺，比Garden Court多200平方英尺，可以进一步了解空间安排。挂牌标注East West MRT (EW24)约350米，为选择公共交通提供参考，实际步行路线还需了解。',support_refs:['advantage:83000001:floor_area_sqft','profile:83000001:nearby:MRT']};
- output.paragraphs[2]={listing_id:'83000002',text:'第2套 Garden Court：记录月租1,600新币，比Willow Residence每月少300新币；Fresh Mart超市直线约200米，日常采购多一个选择。',support_refs:['advantage:83000002:price','profile:83000002:nearby:Supermarket']};
+ output.paragraphs[1]={listing_id:'83000001',text:'第1套 Willow Residence：月租1,900新币，房源面积700平方英尺，比Garden Court多200平方英尺。附近有East West MRT (EW24)，资料里写约350米，为选择公共交通提供参考，实际步行路线还需了解。',support_refs:['price:83000001','advantage:83000001:floor_area_sqft','profile:83000001:nearby:MRT']};
+ output.paragraphs[2]={listing_id:'83000002',text:'第2套 Garden Court：月租1,600新币，比Willow Residence每月少300新币；房源面积500平方英尺。Fresh Mart超市直线约200米，买东西多一个选择。',support_refs:['advantage:83000002:price','area:83000002','profile:83000002:nearby:Supermarket']};
  return output;
 }
 test('new role, prompt, reviewer and examples allow useful unrequested facts without confusing them with ranking',()=>{
@@ -43,8 +43,8 @@ test('per-home profiles include additional bathroom/area/transport/shops while k
  assert.deepEqual({req:f.req,rec:f.rec,enrichment:f.enrichment},before);
  assert.deepEqual(again.decision_support!.target_listing_ids,['83000001','83000002']);
  assert(again.decision_support!.profiles.every(p=>p.additional_refs.includes(`profile:${p.listing_id}:bathrooms`)));
- assert.match(again.facts.find(f=>f.ref==='profile:83000001:nearby:MRT')!.text,/挂牌标注距离约350米/);
- assert.match(again.facts.find(f=>f.ref==='profile:83000002:nearby:Supermarket')!.text,/直线距离约200米/);
+ assert.match(again.facts.find(f=>f.ref==='profile:83000001:nearby:MRT')!.text,/资料里写的距离约350米/);
+ assert.match(again.facts.find(f=>f.ref==='profile:83000002:nearby:Supermarket')!.text,/直线约200米/);
  assert(!JSON.stringify(again).includes('步行5分钟'));
  validateExplanation(prose(f),again);
 });
@@ -53,6 +53,17 @@ test('a cheaper rent remains a selection advantage even when hard budget is not 
  const advantage=bundle.facts.find(f=>f.ref==='advantage:83000002:price')!;
  assert.match(advantage.text,/每月少300新币/);assert.match(advantage.text,/不等于.*实际排名原因/);
  validateExplanation(prose(),bundle);
+});
+
+test('unrequested original area and a grounded area comparison count as useful additional information',()=>{
+ const f=setup(),p=f.bundle.decision_support!.profiles[0];
+ assert(p.additional_refs.includes('area:83000001'));
+ const original=prose(f);original.paragraphs[1]={listing_id:'83000001',text:'第1套 Willow Residence：月租1,900新币，房源面积700平方英尺，便于进一步了解空间安排。',support_refs:['price:83000001','area:83000001']};
+ validateExplanation(original,f.bundle);
+ const comparison=structuredClone(original);comparison.paragraphs[1]={listing_id:'83000001',text:'第1套 Willow Residence：月租1,900新币，房源面积700平方英尺，比Garden Court多200平方英尺，实际租赁范围还需了解。',support_refs:['price:83000001','advantage:83000001:floor_area_sqft']};
+ validateExplanation(comparison,f.bundle);
+ const packed=explanationModelInput(f.bundle),fact=packed.input.facts.find((v:any)=>packed.toInternal.get(v.ref)==='cohort:83000001:floor_area_sqft');
+ assert.equal(fact.subject_listing_id,'83000001');assert.equal(fact.cohort.position,'highest');
 });
 test('additional known bathroom data does not upgrade an unsupported/unknown native requirement or claim private use',()=>{
  const {req,rec}=explanationFixture('bath_count'),extra=setup().enrichment,before=structuredClone(rec);
@@ -96,14 +107,16 @@ test('focused questions retain original display positions and requested ranking 
 test('guide packing retains additional fact references and per-home highlights, excludes all-pairs comparison noise',()=>{
  const f=setup(),packed=explanationModelInput(f.bundle),restored=packed.input.decision_support.profiles[0].additional_refs.map((r:string)=>packed.toInternal.get(r));
  assert.deepEqual(restored,f.bundle.decision_support!.profiles[0].additional_refs);
- assert(packed.input.facts.some((v:any)=>packed.toInternal.get(v.ref)==='advantage:83000002:price'));
+ assert(packed.input.facts.some((v:any)=>packed.toInternal.get(v.ref)==='cohort:83000002:price'));
+ assert(!packed.input.facts.some((v:any)=>packed.toInternal.get(v.ref)==='advantage:83000002:price'));
  assert(!packed.input.facts.some((v:any)=>packed.toInternal.get(v.ref)==='compare:1:2'));
  assert(!JSON.stringify(packed.input).includes('test-source-'));
 });
-test('up to eight same-title homes keep one paragraph each, with no collapse or rank mutation',()=>{
+test('the displayed five same-title homes keep one paragraph each, without leaking hidden candidates or changing native rank',()=>{
  const {req,rec}=explanationFixture('mixed_groups');rec.recommendations.forEach(r=>r.listing.title='Same Home');rec.unverified_candidates.forEach(r=>r.listing.title='Same Home');
- const b=addDecisionSupport(makeExplanationBundle(req,rec,'介绍'),req,rec),out=guideResponse(req,rec);
- assert.equal(out.paragraphs.length,10);assert.equal(out.focus_listing_ids.length,8);validateExplanation(out,b);
+ const b=addDecisionSupport(makeExplanationBundle(req,rec,'介绍前8套'),req,rec),out=guideResponse(req,rec,'介绍前8套');
+ assert.equal(out.paragraphs.length,7);assert.equal(out.focus_listing_ids.length,5);validateExplanation(out,b);
+ assert.equal(rec.recommendations.length+rec.unverified_candidates.length,8);
 });
 test('empty-result flow introduces no homes and does not require a nonexistent availability fact',()=>{
  const {req,rec}=explanationFixture('empty'),b=addDecisionSupport(makeExplanationBundle(req,rec,'找不到吗'),req,rec);
@@ -115,7 +128,7 @@ test('production generator sends new facts to writer and auditor, returns the ac
   calls.push({name:o.name,messages});return o.name==='write_rental_explanation_v2'?modelExplanationOutput(output,packed.toModel):{valid:true,issues:[]};
  }})} as unknown as BaseChatModel;
  const result=await generateExplanation(f.req,f.rec,'synthetic',f.bundle.question,model,'role v3',undefined,f.enrichment);
- assert.equal(calls.length,2);assert.equal(result.summary,output.paragraphs.map(p=>p.text).join('\n\n'));assert.equal(result.generation.version,'3.0');
+ assert.equal(calls.length,2);assert.equal(result.summary,output.paragraphs.map(p=>p.text).join('\n\n'));assert.equal(result.generation.version,'3.1');
  assert.equal(result.generation.enrichment_refs.length,2);assert.deepEqual(f.rec,before);
  const writerInput=JSON.parse(calls[0].messages.findLast((m:any)=>m._getType()==='human').content);
  assert(writerInput.decision_support.profiles[0].extra_refs.length>0);
@@ -163,7 +176,7 @@ test('the real C workflow reads supplementary data, invokes the new writer/revie
  const result=JSON.parse(await workflow.run('c','{}','session','task-c'));
  assert.equal(result.agent,'c');assert.equal(paths.length,4);assert.equal(modelCalls,2);
  assert.equal(saved.filter(v=>v.kind==='explanation_enrichment_v1').length,2);
- const completed=saved.find(v=>v.explanation);assert.equal(completed.explanation.generation.version,'3.0');
+ const completed=saved.find(v=>v.explanation);assert.equal(completed.explanation.generation.version,'3.1');
  assert.equal(completed.explanation.narrative.focus_listing_ids.length,2);assert.deepEqual(rec,before);
  assert(queries.some(sql=>sql.includes('INSERT INTO agent_result_payloads')));
 });

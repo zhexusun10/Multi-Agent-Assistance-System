@@ -1,0 +1,119 @@
+{
+  "status": "passed",
+  "model_calls": 3,
+  "model_request_cap": 3,
+  "checks": [
+    {
+      "check": "actual_location_replacement",
+      "passed": true,
+      "model_proposed": false,
+      "requirements": {
+        "listing_type": "RENT",
+        "criteria": [
+          {
+            "criterion_id": "minimum-bedrooms",
+            "field": "bedrooms",
+            "operator": "eq",
+            "value": 1,
+            "unit": "count",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "monthly-rent",
+            "field": "price",
+            "operator": "lte",
+            "value": 3000,
+            "unit": "SGD/month",
+            "strength": "hard"
+          },
+          {
+            "criterion_id": "place_proximity:OSM:node:8777049478-preference",
+            "field": "place_proximity",
+            "operator": "lte",
+            "value": 1000,
+            "unit": "m",
+            "strength": "soft",
+            "weight": 1,
+            "target": {
+              "place_id": "OSM:node:8777049478",
+              "name": "Holland Village"
+            },
+            "distance_type": "straight_line",
+            "distance_preference": "nearer"
+          }
+        ]
+      }
+    },
+    {
+      "check": "native_neighbourhood_ranking",
+      "place_id": "OSM:node:2511049756",
+      "passed": true,
+      "ids": [
+        "500286414",
+        "18656603",
+        "500248279",
+        "500277757"
+      ],
+      "distances_m": [
+        368.37,
+        573.48,
+        1284.3204119928569,
+        1284.3204119928569
+      ]
+    },
+    {
+      "check": "native_neighbourhood_ranking",
+      "place_id": "OSM:node:8777049478",
+      "passed": true,
+      "ids": [
+        "23368920",
+        "500226876",
+        "500266147",
+        "12620560"
+      ],
+      "distances_m": [
+        599.27,
+        732.78,
+        1038.140889749122,
+        1193.8824258961774
+      ]
+    },
+    {
+      "check": "real_explanation_writer_and_semantic_review",
+      "passed": true,
+      "summary": "以下信息可能帮助您更好地比较这几套房子：\n\n第1套 18D Holland Drive：记录月租1,300新币，比Chuan Hoe Ave每月少200新币，预算余量相对宽一些。离Holland Village直线约599米，是这几套里记录较近的；附近职总平价超市直线约85米，采购多一个选择。\n\n第2套 8 Holland Avenue：记录月租1,100新币，比18D Holland Drive每月少200新币；挂牌面积118平方英尺，也比它多16平方英尺，可以一并比较空间安排。离Holland Village直线约733米，附近食阁直线约221米。\n\n第3套 81 Commonwealth Close：挂牌面积495平方英尺，比Eastwood Regency多75平方英尺，是这几套里挂牌面积较大的，适合更看重空间的人进一步了解。Commonwealth站挂牌标注约340米，为公共交通出行提供参考；离Holland Village直线约1,038米。\n\n第4套 1 Queen's Road：记录月租850新币，比8 Holland Avenue每月少250新币，是这几套里记录租金较低的；挂牌面积1,291平方英尺，明显大于81 Commonwealth Close。Farrer Road站挂牌标注约160米，选公共交通时多一个便利条件；离Holland Village直线约1,194米。\n\n第5套 Kensington Square：记录月租2,300新币，比Eastwood Regency每月少300新币；挂牌面积300平方英尺，比Chuan Hoe Ave多100平方英尺。不过卧室数量还缺资料，暂时不能确认是否符合您的一间卧室要求。\n\n第6套 Chuan Hoe Ave：记录月租1,500新币，比#1 Suites (One Suites)每月少500新币；挂牌面积200平方英尺，比8 Holland Avenue多82平方英尺。附近S-Power Mini Supermarket直线约375米。卧室数量尚不能确认，需要您进一步核实。\n\n第7套 #1 Suites (One Suites)：记录月租2,000新币，比Kensington Square每月少300新币；挂牌面积370平方英尺，比它多70平方英尺。Aljunied站挂牌标注约540米，附近食阁直线约81米。卧室数量还缺资料，暂时不能确认。\n\n第8套 Eastwood Regency：记录月租2,600新币，比81 Commonwealth Close每月少398新币；挂牌面积420平方英尺，比#1 Suites (One Suites)多50平方英尺。Sungei Bedok站挂牌标注约110米。卧室数量尚不能确认，需要您进一步核实。\n\n以上租金和面积都是挂牌记录，现在是否仍可租、实际价格以及路线情况，请联系经纪人确认。",
+      "generation": {
+        "version": "3.0",
+        "mode": "llm_grounded",
+        "purpose": "listing_decision_support",
+        "attempts": 1,
+        "example_ids": [
+          "mixed-confirmed-pending",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "evidence_characters": {
+          "original": 68405,
+          "model": 20781
+        },
+        "latency_ms": 5877,
+        "enrichment_refs": [
+          "2836f800-359f-448a-9376-2a4a123f9d7b",
+          "66b8c2e5-c18e-437a-916c-12a247fb066c",
+          "22fc7dce-7ea1-4bbd-83c9-daa8bdaf5dab",
+          "5c063be9-499f-49ab-93b6-44981995e8c1",
+          "08ada0b3-3b32-479a-884a-9e4917c18565",
+          "c9074676-e2ab-4704-9196-3beeeda534e6",
+          "f2bb1128-48b1-454f-b4f2-43d9bbe01f5e",
+          "285ca2b9-5ed0-425d-a878-c0b5562a225f"
+        ]
+      }
+    }
+  ],
+  "previous_attempt": {
+    "requests": 1,
+    "error_code": 401,
+    "reason": "parent shell credential differed from project configuration"
+  }
+}

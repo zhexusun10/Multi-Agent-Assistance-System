@@ -1,6 +1,7 @@
 import type {Requirements,RecommendationResponse,Criterion} from '../../../contracts/recommendation-v1.js';
 import type {RefinementQuestion} from '../../../contracts/requirement-refinement.js';
 import {INTAKE_ENUMS} from '../contracts.js';
+import {displayedCandidates} from '../../../domain/selection.js';
 
 export const REFINEMENT_POLICY={max_questions:3,min_coverage:.75,min_price_spread:100,min_area_spread_sqft:50} as const;
 const valid=(v:unknown):v is number=>typeof v==='number'&&Number.isFinite(v)&&v>0;
@@ -8,7 +9,7 @@ const sameTarget=(c:Criterion,q:Criterion)=>JSON.stringify([c.target?.place_id||
 const typeLabels:Record<string,string>={'HDB Flat':'组屋',Condominium:'公寓',Apartment:'普通公寓','Walk-up Apartment':'步梯公寓','Terraced House':'排屋','Semi-Detached House':'半独立式住宅','Detached House':'独立式住宅','Bungalow House':'洋房','Corner Terrace':'角头排屋',Shophouse:'店屋','Good Class Bungalow':'优质洋房','Executive Condominium':'执行共管公寓'};
 export function planRefinement(requirements:Requirements,rec:RecommendationResponse,answered:ReadonlySet<string>=new Set()):RefinementQuestion[]{
   if(rec.status==='error')return [];
-  const candidates=[...rec.recommendations,...rec.unverified_candidates];if(!candidates.length)return [];
+  const candidates=displayedCandidates(rec);if(!candidates.length)return [];
   const known=(field:string)=>requirements.criteria.some(c=>c.field===field);
   const questions:RefinementQuestion[]=[];
   const enough=(n:number)=>n>=Math.ceil(candidates.length*REFINEMENT_POLICY.min_coverage);

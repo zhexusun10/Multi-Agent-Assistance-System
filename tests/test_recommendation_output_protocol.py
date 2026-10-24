@@ -20,11 +20,16 @@ def test_empty_proposal_with_prose_is_a_valid_empty_proposal(content):
     assert json.loads(canonical_proposal(content)) == {"listing_ids":[]}
 
 
+def test_five_item_ranked_proposal_is_accepted():
+    content='{"listing_ids":["A","B","C","D","E"]}'
+    assert json.loads(canonical_proposal(content)) == json.loads(content)
+
+
 @pytest.mark.parametrize("content", [
     '{"listing_ids":[]} {"listing_ids":["A"]}',
     '{"extra":{"listing_ids":[]}}',
     '{"listing_ids":[],"change_budget":true}',
-    '{"listing_ids":["A","B","C","D","E"]}',
+    '{"listing_ids":["A","B","C","D","E","F"]}',
     'not JSON',
 ])
 def test_invalid_or_ambiguous_envelopes_are_not_silently_repaired(content):

@@ -5,7 +5,7 @@ import {criterionText} from '../../domain/explanation.js';
 import {displayedCandidates} from '../../domain/selection.js';
 import type {ExplanationBundle,ExplanationFact} from './contracts.js';
 
-const placeNames:Record<string,string>={'Nanyang Technological University':'南洋理工大学','National University of Singapore':'新加坡国立大学'};
+const placeNames:Record<string,string>={'Nanyang Technological University':'南洋理工大学','National University of Singapore':'新加坡国立大学',CLEMENTI:'金文泰'};
 const featureNames:Record<string,string>={property_type:'房型',bedrooms:'卧室数量',floor_area_sqft:'面积',geography:'位置'};
 const numeric=(v:unknown):number[]=>typeof v==='number'&&Number.isFinite(v)?[v]:Array.isArray(v)?v.flatMap(numeric):[];
 function dateLiterals(value:string):string[]{
@@ -29,7 +29,8 @@ export function makeExplanationBundle(req:Requirements,rec:RecommendationRespons
   const literalValues=(c:Criterion,value:unknown):string[]=>['string','date'].includes(FIELD_RULES[c.field]?.kind)
     ?(Array.isArray(value)?value:[value]).filter((v):v is string=>typeof v==='string'&&/\d/.test(v)).flatMap(v=>FIELD_RULES[c.field].kind==='date'?dateLiterals(v):[v]):[];
   const rows=displayedCandidates(rec),byId=new Map(req.criteria.map(c=>[c.criterion_id,c]));
-  const rankedIds=rec.recommendations.map(r=>r.listing.listing_id);
+  const ranked=rows.filter(r=>rec.recommendations.includes(r)),pending=rows.filter(r=>rec.unverified_candidates.includes(r));
+  const rankedIds=ranked.map(r=>r.listing.listing_id);
   if(req.criteria.some(c=>c.field==='bathrooms')&&!req.criteria.some(c=>c.field==='amenities'&&c.value==='private_bathroom'))add('bathroom-count-not-privacy','limitation','本次卫浴要求仅为卫生间数量，不是专用或独立使用权。数量尚未确认时应说“卫生间数量待确认”，不能把它称为“独卫待确认”。1B1B不证明独卫，也不等于用户要求独卫。');
   const lists=rows.map((item,index)=>{
     const id=item.listing.listing_id,refs:string[]=[],unverified=rec.unverified_candidates.includes(item);
@@ -43,7 +44,8 @@ export function makeExplanationBundle(req:Requirements,rec:RecommendationRespons
       const observed=numeric(r.observed_value),distance=c.field==='place_proximity';
       let text=desc(c)+'；'+(r.status==='unknown'?'尚不能确认。':nearer(c)?'已用于比较离目的地的远近，没有另一达标半径。':r.status==='pass'?'符合。':c.strength==='hard'?'未达到这项必须要求。':'未达到这项偏好。');
       if(r.status!=='unknown'&&r.observed_value!==null){
-        const value=distance&&typeof r.observed_value==='number'?`${Math.round(r.observed_value)}米（直线距离，不能推断步行时间）`:String(r.observed_value)+(r.unit==='SGD/month'?'新币/月':r.unit||'');
+        const area=distance&&/^URA:/.test(c.target?.place_id||'');
+        const value=distance&&typeof r.observed_value==='number'?area?(r.observed_value===0?'位于该区域内，到区域的距离记为0米；不表示到同名车站或区域中心点0米':`距该区域边界${Math.round(r.observed_value)}米（最近直线距离，不能推断步行时间）`):`${Math.round(r.observed_value)}米（直线距离，不能推断步行时间）`:String(r.observed_value)+(r.unit==='SGD/month'?'新币/月':r.unit||'');
         text+='已知记录：'+value+'。';
       }
       if(r.status==='unknown')text+='资料不足不代表该设施不存在；不能据此说交通方便或条件已满足。';
@@ -105,7 +107,7 @@ export function makeExplanationBundle(req:Requirements,rec:RecommendationRespons
       if(matching.length)add('native-rationale:'+item.listing.listing_id,'listing','推荐方给出的符合项、取舍项和待确认项已对应到本套房的逐项条件。',[item.listing.listing_id],matching.flatMap(f=>f.source_refs));
     }
   }
-  const scores=rec.native?Object.values(rec.native.scores):[],active=new Set<string>(),behavior=new Set<string>();
+  const scores=rec.native?ranked.flatMap(r=>rec.native!.scores[r.listing.listing_id]?[rec.native!.scores[r.listing.listing_id]]:[]):[],active=new Set<string>(),behavior=new Set<string>();
   for(const score of scores){
     for(const c of score.contributions){
       if(c.unknown||c.similarity===null||c.weight<=0)continue;
@@ -118,7 +120,7 @@ export function makeExplanationBundle(req:Requirements,rec:RecommendationRespons
   const activeText=[...active].map(id=>desc(byId.get(id)!));
   const source=(archive as any)?.request?.feedback as {source?:string}[]|undefined;
   const sampleOnly=source?.length&&source.every(x=>x.source==='sample');
-  let rankText=rows.length?(rec.recommendations.length?(rec.unverified_candidates.length?'部分房源的已有资料满足必须要求；另一些房源资料不完整，不能笼统声称所有房源都符合全部要求。':'这些房源的已有资料满足本次必须要求。'):'这几套房源有部分必须要求缺少资料，还不能确定全部符合用户要求。'):'本次没有可展示的房源，不能推断整个市场没有合适房源。';
+  let rankText=rows.length?(ranked.length?(pending.length?'部分房源的已有资料满足必须要求；另一些房源资料不完整，不能笼统声称所有房源都符合全部要求。':'这些房源的已有资料满足本次必须要求。'):'这几套房源有部分必须要求缺少资料，还不能确定全部符合用户要求。'):'本次没有可展示的房源，不能推断整个市场没有合适房源。';
   // Selection is already described by the requirement/result pairs. Keep this
   // fact about the actual order, so it does not prime repetitive disclaimers.
   if(activeText.length)rankText+='有资料可比较的排序偏好是：'+activeText.join('；')+'。';
@@ -131,9 +133,9 @@ export function makeExplanationBundle(req:Requirements,rec:RecommendationRespons
   if(!active.size&&!behavior.size&&rows.length)rankText+='目前资料还不足以根据用户偏好判断哪套更合适，前后顺序仅供浏览；用这一句话说明即可，无须再说租金不是原因。';
   const rankedRows=rows.filter(r=>rec.native?.scores[r.listing.listing_id]);
   if(rankedRows.length>1&&rankedRows.every(r=>Math.abs(r.score-rankedRows[0].score)<1e-12))rankText+='当前展示的已评分房源排序依据没有拉开差距，沿用固定次序，不应称第一套明显更好。';
-  const unscored=rec.native?.unscored_listing_ids||[];
-  if(rankedIds.length)rankText+='入选排名的比较范围仅为：'+rec.recommendations.map(r=>r.listing.title).join('、')+'。';
-  if(rec.unverified_candidates.length)rankText+='其余补充展示的房源未进入这组排名；它们可能仍有学校、超市等已知距离。已知资料可供用户比较，但不代表通过全部必须条件或参与排名；不能用其某一项距离更短来否定入选排名。';
+  const unscored=(rec.native?.unscored_listing_ids||[]).filter(id=>rows.some(r=>r.listing.listing_id===id));
+  if(rankedIds.length)rankText+='入选排名的比较范围仅为：'+ranked.map(r=>r.listing.title).join('、')+'。';
+  if(pending.length)rankText+='其余补充展示的房源未进入这组排名；它们可能仍有学校、超市等已知距离。已知资料可供用户比较，但不代表通过全部必须条件或参与排名；不能用其某一项距离更短来否定入选排名。';
   add('ranking:method','ranking',rankText,rows.map(r=>r.listing.listing_id),rec.native?[rec.native.exchange_ref]:[],[...active].flatMap(id=>{const c=byId.get(id)!;return c.field==='place_proximity'?[...criterionNumbers(c),...criterionNumbers(c).map(n=>n/1000)]:criterionNumbers(c);}));
   required_refs.push('ranking:method');
   if(behavior.size){add('ranking:behavior','ranking',`本轮确实还使用了${sampleOnly?'浏览样例':'已有浏览记录'}中的${[...behavior].map(x=>featureNames[x]).join('、')}作兴趣线索；解释排序时须简短提到，不能只讲明确偏好。`);required_refs.push('ranking:behavior');}

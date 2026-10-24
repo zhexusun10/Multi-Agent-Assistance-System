@@ -2,8 +2,8 @@ import {readFile,writeFile} from 'node:fs/promises';
 import {EXPLANATION_ROLE_CONTRACT,EXPLANATION_PARAMETERS,EXPLANATION_AUDIT_PROMPT,explanationSystemPrompt} from '../src/agents/explanation/prompt.js';
 import {EXPLANATION_EXAMPLES} from '../src/agents/explanation/few-shot.js';
 const skill=await readFile('skills/evidence-based-explanation/SKILL.md','utf8');
-const fence=(body:unknown,lang='text')=>'```'+lang+'\n'+(typeof body==='string'?body:JSON.stringify(body,null,2))+'\n```\n';
-let doc='# Explanation Agent V3：当前契约、提示词与示例附录\n\n';
+const fence=(body:unknown,lang='text')=>'```'+lang+'\n'+(typeof body==='string'?body.replace(/\r\n/g,'\n'):JSON.stringify(body,null,2))+'\n```\n';
+let doc='# Explanation Agent V3.1：当前契约、提示词与示例附录\n\n';
 doc+='本附录由当前源码生成，采用逐套房源介绍与选房辅助角色。实现与验收范围见[实现说明](Explanation_Agent_选房介绍实现.md)。旧版V2文档保留历史，不被本脚本覆盖。生成附录不调用模型，不代表真实模型验收。\n\n';
 doc+='## 角色契约与参数\n\n'+fence(EXPLANATION_ROLE_CONTRACT,'json')+'\n'+fence(EXPLANATION_PARAMETERS,'json');
 doc+='\n## 应用Skill\n\n'+fence(skill,'markdown');
@@ -11,5 +11,5 @@ doc+='\n## 生成系统提示词（Skill以占位符展示）\n\n'+fence(explana
 doc+='\n## 独立语义复核提示词\n\n'+fence(EXPLANATION_AUDIT_PROMPT);
 doc+='\n## Few-shot模板\n\n示例房名和数字只用于表达教学，不是实际房源事实；每次选两条。\n\n';
 for(const e of EXPLANATION_EXAMPLES)doc+='### '+e.id+'\n\n问题：'+e.question+'\n\n事实：'+e.context+'\n\n'+fence(e.output,'json')+'\n';
-await writeFile('docs/Explanation_Agent_选房介绍_提示词附录.md',doc);
-console.log(JSON.stringify({role_version:'3.0',examples:EXPLANATION_EXAMPLES.length,model_calls:0,characters:doc.length}));
+await writeFile('docs/Explanation_Agent_选房介绍_提示词附录.md',doc.trimEnd()+'\n');
+console.log(JSON.stringify({role_version:EXPLANATION_ROLE_CONTRACT.version,examples:EXPLANATION_EXAMPLES.length,model_calls:0,characters:doc.length}));

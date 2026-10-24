@@ -10,7 +10,7 @@ from .score_breakdown import ScoreBreakdown
 
 class RecommendationItem(Contract):
     listing: ListingSummary
-    rank: int = Field(ge=1, le=4)
+    rank: int = Field(ge=1, le=5)
     scores: ScoreBreakdown
     criterion_results: list[CriterionResult]
     evidence_refs: list[str]

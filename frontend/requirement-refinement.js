@@ -69,7 +69,7 @@ export class RequirementRefinementUI{
     return result;
   }
   describe(q,a){
-    if(!a?.action||a.action==='skip')return q.title+' 暂未补充';if(a.action==='any')return q.title+' '+(q.kind==='closer'?'范围内即可':q.kind==='ideal_rent'?'保留原预算':'不限');
+    if(!a?.action||a.action==='skip')return q.title+' 暂未补充';if(a.action==='any')return q.kind==='ideal_rent'?`保留原预算${q.upper_bound?`上限 ${q.upper_bound.toLocaleString('en-SG')} 新币`:''}，不新增理想月租偏好`:q.title+' '+(q.kind==='closer'?'范围内即可':'不限');
     const level=a.strength==='hard'?'必须满足':a.strength==='soft'?'有更好':'未选择重要程度';
     if(q.kind==='bedrooms')return `卧室：${{eq:'恰好',gte:'至少',lte:'最多'}[a.operator]||''}${a.count||'待填写'}间，${level}`;
     if(q.kind==='property_type')return `房屋类型：${a.values?.map(v=>q.options.find(o=>o.value===v)?.label).join('、')||'待选择'}，${level}`;

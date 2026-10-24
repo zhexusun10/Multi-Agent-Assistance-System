@@ -6,7 +6,8 @@ import { PostgresAgentTaskStore } from '../agent-task-store.js';
 import { PostgresSessionEventStore } from '../session-store.js';
 import type { RecommendationResponse, Requirements } from '../contracts/recommendation-v1.js';
 import type { RequirementDraft } from '../domain/requirements.js';
-import {publicRefinement} from '../contracts/requirement-refinement.js';
+import {publicRefinement,refinementSubmissionText} from '../contracts/requirement-refinement.js';
+import {recommendationForDisplay,PRESENTATION_VERSION} from '../shared/recommendation-display.js';
 
 function canonical(value:unknown):unknown{if(Array.isArray(value))return value.map(canonical);if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value).sort(([a],[b])=>a.localeCompare(b)).map(([k,v])=>[k,canonical(v)]));return value;}
 export const hash=(value:unknown)=>createHash('sha256').update(typeof value==='string'?value:JSON.stringify(canonical(value))).digest('hex');
@@ -47,7 +48,9 @@ export class DomainStore{
     const pending=await tx.query("SELECT request_id,kind FROM domain_operations WHERE session_id=$1 AND status='queued' ORDER BY created_at",[id]);
     const refinements=await tx.query('SELECT * FROM requirement_refinement_plans WHERE session_id=$1 ORDER BY created_at',[id]);
     const {owner_hash,...safe}=s;
-    return {...safe,refinement_plans:refinements.rows.map(publicRefinement),recommendation_operation_id:recOp,last_event_id:Number(cur.rows[0]?.last_event_id||0),pending_operations:pending.rows,actions:actions.rows.map(x=>x.body),artifacts:artifacts.rows};
+    const plans=refinements.rows.map(publicRefinement),corrected=new Map(refinements.rows.filter(r=>r.status==='SUBMITTED').map(r=>[refinementSubmissionText(r.answer_summary||[]),refinementSubmissionText(plans.find(p=>p.id===r.id)!.answer_summary)]));
+    const messages=s.messages.map(m=>m.role==='user'&&corrected.has(m.text)?{...m,text:corrected.get(m.text)!}:m);
+    return {...safe,messages,recommendation:recommendationForDisplay(s.recommendation),presentation_version:PRESENTATION_VERSION,refinement_plans:plans,recommendation_operation_id:recOp,last_event_id:Number(cur.rows[0]?.last_event_id||0),pending_operations:pending.rows,actions:actions.rows.map(x=>x.body),artifacts:artifacts.rows};
   });}
   async saveState(tx:PoolClient,s:DomainState){s.revision++;await tx.query("INSERT INTO conversation_log(id,session_id,role,body,at) SELECT md5($1||m::text),$1,m->>'role',m->>'text',(m->>'at')::timestamptz FROM jsonb_array_elements($2::jsonb) m ON CONFLICT DO NOTHING",[s.session_id,JSON.stringify(s.messages)]);await tx.query(`UPDATE session_domain_state SET requirements_version=$2,requirements=$3,active_operation_id=$4,latest_request_id=$5,recommendation=$6,explanation=$7,pending=$8,revision=$9,messages=$10 WHERE session_id=$1`,[s.session_id,s.requirements_version,JSON.stringify(s.requirements),s.active_operation_id,s.latest_request_id,JSON.stringify(s.recommendation),JSON.stringify(s.explanation),JSON.stringify(s.pending),s.revision,JSON.stringify(s.messages.slice(-200))]);}
   async payload(tx:PoolClient,sessionId:string,operationId:string,body:unknown){const ref=randomUUID();await tx.query('INSERT INTO domain_payloads(ref,session_id,operation_id,body,sha256) VALUES($1,$2,$3,$4,$5)',[ref,sessionId,operationId,JSON.stringify(body),hash(body)]);return ref;}

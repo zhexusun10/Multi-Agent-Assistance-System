@@ -134,7 +134,7 @@ export class WorkflowService{
       const rec=body.recommendation;
       const archive=rec.native?await this.store.loadPayload(rec.native.exchange_ref,sessionId):undefined;
       const enrichment=await this.explanationEnricher.load(rec,ctx);
-      payload={explanation:await generateExplanation(body.requirements,rec,this.dataset,body.query||'',this.model,profile.instructions,archive,enrichment)};
+      payload={explanation:await generateExplanation(body.requirements,rec,this.dataset,body.query||'',this.model,profile.instructions,archive,enrichment,diagnostic=>this.store.savePayload(sessionId,env.operation_id,diagnostic))};
     }else if(body.kind==='daily')payload={kind:'daily',date:singaporeDate()};
     else if(body.kind==='knowledge'||body.kind==='status'){
       if(body.kind==='status'){

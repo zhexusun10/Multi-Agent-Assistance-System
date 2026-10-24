@@ -1,4 +1,4 @@
-import {renderMatches,rentElement} from './property-presentation.js?v=20261022-soft-preferences';
+import {renderMatches,rentElement} from './property-presentation.js?v=20261024-official-geo';
 
 export class PropertyDetailView{
   constructor(deps){Object.assign(this,deps);this.root=document.getElementById('property-detail');this.resultRoot=document.querySelector('.results');this.current=null;}

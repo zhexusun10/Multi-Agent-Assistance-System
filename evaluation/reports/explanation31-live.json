@@ -1,0 +1,109 @@
+{
+  "status": "passed",
+  "model_calls": 2,
+  "model_request_cap": 3,
+  "checks": [
+    {
+      "check": "real_data_top5_and_overall_profiles",
+      "passed": true,
+      "native_model_calls": 0,
+      "ids": [
+        "500286414",
+        "18656603",
+        "500248279",
+        "500277757",
+        "24591815"
+      ],
+      "profiles": [
+        {
+          "title": "Emerald Garden",
+          "core_refs": [
+            "price:500286414",
+            "area:500286414"
+          ],
+          "highlights": [
+            "cohort:500286414:price",
+            "cohort:500286414:floor_area_sqft"
+          ]
+        },
+        {
+          "title": "32 New Market Road",
+          "core_refs": [
+            "price:18656603",
+            "area:18656603"
+          ],
+          "highlights": [
+            "cohort:18656603:price",
+            "cohort:18656603:floor_area_sqft"
+          ]
+        },
+        {
+          "title": "106 Spottiswoode Park Road",
+          "core_refs": [
+            "price:500248279",
+            "area:500248279"
+          ],
+          "highlights": [
+            "cohort:500248279:price",
+            "cohort:500248279:floor_area_sqft"
+          ]
+        },
+        {
+          "title": "106 Spottiswoode Park Road",
+          "core_refs": [
+            "price:500277757",
+            "area:500277757"
+          ],
+          "highlights": [
+            "cohort:500277757:price",
+            "cohort:500277757:floor_area_sqft"
+          ]
+        },
+        {
+          "title": "123 Kim Tian Road",
+          "core_refs": [
+            "price:24591815",
+            "area:24591815"
+          ],
+          "highlights": [
+            "cohort:24591815:price",
+            "cohort:24591815:floor_area_sqft"
+          ]
+        }
+      ]
+    },
+    {
+      "check": "one_real_writer_and_review_case",
+      "passed": true,
+      "summary": "以下信息可能帮助您更好地比较这几套房子：\n\n第1套 Emerald Garden：离牛车水最近，资料里写直线约368米，想贴近这一带生活可以优先看。房源面积180平方英尺，是这五套里最大的，月租1,849新币也是最高的；附近有Telok Ayer站，资料里写约290米，Koryo Mart超市直线约133米，安祥山公园直线约87米，日常采购和散步都有去处。\n\n第2套 32 New Market Road：月租1,350新币，是这五套里最低的，能少占一些预算。房源面积150平方英尺，在这组里偏小；不过位置很贴牛车水，资料里写直线约573米，附近Chinatown站约220米，Swanston超市直线约73米，Chinatown Complex Foodcourt食阁直线约61米，吃饭买东西都近。\n\n第3套 106 Spottiswoode Park Road：月租1,400新币，在这五套里属中等，房源面积161平方英尺也居中。离牛车水资料里写直线约1,284米，比前两套远一些；附近Cantonment站约430米，职总平价超市直线约471米，NTWU canteen食阁直线约286米，Silat Avenue Park直线约543米。\n\n第4套 106 Spottiswoode Park Road：与第3套同名，记录条件也接近——月租1,400新币、面积161平方英尺，离牛车水同样约1,284米。周边配套也一致，Cantonment站约430米、职总平价超市直线约471米；两套差别不大，可以按实际看房感受来挑。\n\n第5套 123 Kim Tian Road：房源面积120平方英尺，是这五套里最小的，月租1,488新币则偏高，空间会比较紧凑。好处是周边生活方便：职总平价超市直线约113米，金榜公园直线约90米，Food Paradise食阁直线约266米，中峇鲁广场直线约340米；Tiong Bahru站资料里写约570米。\n\n以上租金都是记录价，现在是否仍可租、价格有没有变动，建议联系经纪人确认。",
+      "generation": {
+        "version": "3.1",
+        "mode": "llm_grounded",
+        "purpose": "listing_decision_support",
+        "attempts": 1,
+        "example_ids": [
+          "whole-list-outlier",
+          "whole-list-distance"
+        ],
+        "semantic_audit": "passed",
+        "repair_notes": [],
+        "evidence_characters": {
+          "original": 98567,
+          "model": 26961
+        },
+        "latency_ms": 5999,
+        "enrichment_refs": [
+          "672c921f-33d3-4903-91f2-12d9a1b1c0a2",
+          "1c57c5c4-a7dd-45fe-9023-99ae83ba5735",
+          "1fd4cca3-b339-4576-989f-b91333cf1824",
+          "436bdf75-60bf-40af-a58f-812eb28eb8ed",
+          "80a4a534-9b0f-4740-99c8-903eeff13cb2",
+          "7da92242-11c7-4199-95b7-fa9071ef8e0e",
+          "7c948933-7b2f-45ae-91e4-c13854822795",
+          "4e4090e7-825d-4b75-a51e-5e280a2586cc",
+          "1eb3cae7-e656-469e-9120-6fc8257eb0dc"
+        ]
+      }
+    }
+  ]
+}

@@ -20,9 +20,9 @@ test('mock planner gives at most three useful questions and excludes unsupported
 });
 test('75% valid coverage is required, with real differences rather than just populated fields',()=>{
   const base={...core,criteria:[...core.criteria,criterion('floor_area_sqft','gte',100,'sqft')]};
-  const x=rec();x.recommendations[6].listing.property_type=null;x.recommendations[7].listing.property_type=null;
+  const x=rec();x.recommendations[4].listing.property_type=null;
   assert(ids(base,x).includes('property_type'));
-  x.recommendations[5].listing.property_type=null;assert(!ids(base,x).includes('property_type'));
+  x.recommendations[3].listing.property_type=null;assert(!ids(base,x).includes('property_type'));
   for(const c of x.recommendations)c.listing.property_type='Apartment';assert(!ids(base,x).includes('property_type'));
   for(const c of x.recommendations)c.listing.floor_area_sqft=300;assert(!ids(core,x).includes('area'));
 });

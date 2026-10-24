@@ -1,5 +1,7 @@
 # Recommendation Contract V1 可执行联调模型
 
+2026-10-24：用户要求将正式推荐改为Top 5。原生`result_limit`默认5、范围1–5，正式结果及rank上限为5，应用适配层不再截为4。待确认候选仍单独返回（最多4），不能当作通过必须条件。评分、过滤、权重及工具计算核心不变；变更和生成Schema指纹记入`recommendation-downstream-patches.json`。旧请求显式携带4仍合法，历史结果不自动补写。
+
 2026-10-23新增行为上下文交接：完整字段与新增标记见[浏览时长与Book Viewing Listing契约](../../docs/Recommendation_Contract_浏览时长与看房意向.md)。`recommendation-app-request-1.0.schema.json`对应应用原生入口`/app/recommend`（含behavior_context）；原始`/recommend`保持原契约。新增看房意向已传递和存档，尚未改动江山的评分公式。
 
 > 当前默认提供方已切换为江山原生模块。本文原有字段表描述应用内部兼容模型 / 显式 baseline；不能将它作为原生 `/recommend` 规范。原生权威定义是 `recommendation/contracts/*.py`、`recommendation/models/*.py` 和 `recommendation/contracts/schemas/*.json`。双向映射与缺口见 [原生接入说明](../../docs/Recommendation_Agent_原生接入说明.md)。`recommendation-upstream-907cfa8.json` 保存原生文件来源及迁移后指纹。

@@ -20,7 +20,7 @@ async function fixture(){
 }
 test('native request uses native field/unit/utility/limit/version semantics, without faking missing fields',async()=>{
  const {req}=await fixture();req.requirements.criteria.push({criterion_id:'bath',field:'amenities',operator:'eq',value:'private_bathroom',strength:'hard'},{criterion_id:'near',field:'place_proximity',operator:'lte',value:1000,unit:'m',strength:'soft',weight:3,target:{place_id:'OSM:way:54519165',name:'NUS'},distance_type:'straight_line'});
- const mapped=nativeRequest(req);assert.equal(mapped.request.result_limit,4);assert.equal(mapped.request.requirements_version,1);assert.equal(mapped.request.previous_state_id,null);assert.equal(mapped.unsupported[0].field,'amenities');
+ const mapped=nativeRequest(req);assert.equal(mapped.request.result_limit,5);assert.equal(mapped.request.requirements_version,1);assert.equal(mapped.request.previous_state_id,null);assert.equal(mapped.unsupported[0].field,'amenities');
  const criteria=mapped.request.requirements.criteria;assert.equal(criteria.find(c=>c.field==='bedrooms')!.unit,undefined);assert.equal(criteria.find(c=>c.field==='district_code')!.utility,'threshold');const geo=criteria.find(c=>c.field==='distance')!;assert.equal(geo.utility,'proximity');assert.equal(geo.destination_id,'OSM:way:54519165');assert.equal(geo.destination_name,undefined);assert(!criteria.some(c=>c.field==='amenities'));
  req.previous_state_id='native:state-123';assert.equal(nativeRequest(req).request.previous_state_id,'state-123');req.previous_state_id='baseline:old';assert.equal(nativeRequest(req).request.previous_state_id,null);
 });

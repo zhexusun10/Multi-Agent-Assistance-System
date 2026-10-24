@@ -1,16 +1,98 @@
 {
   "upstream_commit": "907cfa839d2665b3702450eb40acd4c96fe9296c",
   "project_base_commit": "89131897f56bbc176c30246a451f118f7de0209f",
-  "purpose": "Declared local recommendation-fit remediation; original upstream fingerprints retained. Team review and final system signoff remain pending.",
+  "purpose": "Declared recommendation recovery patch and user-authorized Top 5 contract extension; original upstream fingerprints retained. Scoring and filtering formulas remain unchanged.",
   "files": [
     {
       "target": "recommendation/agent/controller.py",
       "base_ported_sha256": "a17495fcca30a3fdfb35ad7f28db3468087b212ab21b57855b10eb6cc6bf4ede",
-      "patched_sha256": "54a20b4c24304357a3086e79c295cac903916903d914743336eac31b0c6df2c3",
+      "patched_sha256": "428ad8882b1109b1856807607d051e8cf84273009438e889ad147ceda9bc9986",
       "issue": "DEF11 controller terminal output and final-gate recovery",
       "changes": [
         "Complete assessed empty rankings through the existing final gate",
-        "Retain tool history and explicit error feedback across bounded final-gate repairs"
+        "Retain tool history and explicit error feedback across bounded final-gate repairs",
+        "Accept or verify a five-item ranked prefix; ranking, metrics, constraints and tool kernels unchanged"
+      ]
+    },
+    {
+      "target": "recommendation/contracts/request.py",
+      "base_ported_sha256": "7abf36d1fad2a92d5e2e8d9abefb7806f1d8c4051d4cdaa3269963cc04f8d2c7",
+      "issue": "User-authorized Top 5 output limit (2026-10-24)",
+      "changes": [
+        "Accept or verify a five-item ranked prefix; ranking, metrics, constraints and tool kernels unchanged"
+      ],
+      "patched_sha256": "a643fd1e19c56fc42787328714a32e5d273bd26a27cc5db4dc4bdd68b2590a71"
+    },
+    {
+      "target": "recommendation/contracts/response.py",
+      "base_ported_sha256": "ae15815679bfb187fc6be86478c82b4865134c19f3a40cb5fe617d5a487c9fe2",
+      "issue": "User-authorized Top 5 output limit (2026-10-24)",
+      "changes": [
+        "Accept or verify a five-item ranked prefix; ranking, metrics, constraints and tool kernels unchanged"
+      ],
+      "patched_sha256": "6695fc32edede0d0acd5ba7e596814e994c7aa96ca823700712c2b3e35dcfbe6"
+    },
+    {
+      "target": "recommendation/models/candidate.py",
+      "base_ported_sha256": "a8cd420e9fab64ae83b0ce65a914bbe1b943179bbc592b1c4e35e803adfe5ddf",
+      "issue": "User-authorized Top 5 output limit (2026-10-24)",
+      "changes": [
+        "Accept or verify a five-item ranked prefix; ranking, metrics, constraints and tool kernels unchanged"
+      ],
+      "patched_sha256": "a355eaf8d199f23a8b48c794526bd0749a12e608f63d228b2e55a480959167eb"
+    },
+    {
+      "target": "recommendation/contracts/schemas/request.schema.json",
+      "base_ported_sha256": "6b17d14c209d8fe8f62e8937e4394c6611a24a1be51b965ab04ef9f0b9345036",
+      "issue": "User-authorized Top 5 output limit (2026-10-24)",
+      "changes": [
+        "Accept or verify a five-item ranked prefix; ranking, metrics, constraints and tool kernels unchanged"
+      ],
+      "patched_sha256": "64ea0202345173be560724747420fb7fbe9d9d0e183f20513d897a2aa089ec44"
+    },
+    {
+      "target": "recommendation/contracts/schemas/response.schema.json",
+      "base_ported_sha256": "a575ed3e057b5c355da2079f4aaedbec3ece14e85b146b15ed9396b2934e1e16",
+      "issue": "User-authorized Top 5 output limit (2026-10-24)",
+      "changes": [
+        "Accept or verify a five-item ranked prefix; ranking, metrics, constraints and tool kernels unchanged"
+      ],
+      "patched_sha256": "1fdc936039b6064df18b315eb85e1c19df6120859428ffe5056f83edeb4eca89"
+    },
+    {
+      "target": "recommendation/tests/test_recommendation.py",
+      "base_ported_sha256": "fb4b0df776232cd35a9b321d5918d927c43cd6d6877f1379dcd4f437ac5b5f0a",
+      "issue": "User-authorized Top 5 output limit (2026-10-24)",
+      "changes": [
+        "Accept or verify a five-item ranked prefix; ranking, metrics, constraints and tool kernels unchanged"
+      ],
+      "patched_sha256": "a1a482d8928ab166f92cfa6ea0b293f2fbbd07490a03010ccf775892b7399ade"
+    },
+    {
+      "target": "recommendation/tests/test_policy_controller.py",
+      "base_ported_sha256": "516366637a44438cb510c1c99add5e0f5c361c2699ecf05c8d8d45f8d377d45d",
+      "issue": "User-authorized Top 5 output limit (2026-10-24)",
+      "changes": [
+        "Accept or verify a five-item ranked prefix; ranking, metrics, constraints and tool kernels unchanged"
+      ],
+      "patched_sha256": "18482ec39d6fa7d4e55c191df415cb4e61f61547ecf425d2adba32d0e35f06b7"
+    },
+    {
+      "target": "recommendation/tests/test_terminal_repositories.py",
+      "base_ported_sha256": "db1f03d6d452a1736369c44ee05a59ddd055b31baf688635569255eae838cc19",
+      "issue": "User-authorized Top 5 output limit (2026-10-24)",
+      "changes": [
+        "Accept or verify a five-item ranked prefix; ranking, metrics, constraints and tool kernels unchanged"
+      ],
+      "patched_sha256": "e12d7be5c4bcceb824467c8b321ce88021b1911958e460a070a9ecb176702186"
+    },
+    {
+      "target": "recommendation/schemas.py",
+      "base_ported_sha256": "8f0b0e91121e51b4d60b39f25464c5d19445db06dc700c1ef1dd57fb797ebca7",
+      "patched_sha256": "bef4d6527f303bb580ce4bbb8a813a7c40b5b03879c56a583942eb2c6c96f11f",
+      "issue": "Reproducible Top 5 schema export on Windows",
+      "changes": [
+        "Write generated JSON schemas with deterministic UTF-8 LF bytes"
       ]
     }
   ]

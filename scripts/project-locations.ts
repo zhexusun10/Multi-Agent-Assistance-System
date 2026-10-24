@@ -2,6 +2,7 @@ import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import pg from 'pg';
 import {pointToPolygonDistance} from '@turf/point-to-polygon-distance';
+import {projectNeighbourhoods} from './project-neighbourhoods.js';
 
 // Explicitly choose the configured isolated sample or verified full snapshot.
 const full=process.env.DATA_MODE==='full',expected=full?21431:593;
@@ -43,6 +44,7 @@ try{
   const nodes=counts[0].data.map((d:any)=>d.row) as [string[],number][];
   for(const [label,expected] of [['GeoArea',areaRows.length],['GeoRegion',regionRows.length],['GeoStation',stationRows.length]] as const)if(nodes.filter(([labels])=>labels.includes(label)).reduce((n,[,c])=>n+c,0)!==expected)throw Error(`Graph count mismatch for ${label}`);
   if(counts[1].data[0].row[0]!==memberships.length||counts[2].data[0].row[0]!==exitRows.length)throw Error('Graph relationship count mismatch');
-  const report={checked_at:new Date().toISOString(),status:'passed',target:full?'verified full snapshot 7474':'isolated sample 7475',planning_areas:areaRows.length,regions:regionRows.length,stations:stationRows.length,exits:exitRows.length,memberships:memberships.length,source_hashes:[areas.raw_sha256,stations.raw_sha256],graph_counts:counts};
+  const neighbourhoods=await projectNeighbourhoods();
+  const report={checked_at:new Date().toISOString(),status:'passed',target:full?'verified full snapshot 7474':'isolated sample 7475',planning_areas:areaRows.length,regions:regionRows.length,stations:stationRows.length,exits:exitRows.length,memberships:memberships.length,neighbourhoods,source_hashes:[areas.raw_sha256,stations.raw_sha256],graph_counts:counts};
   await mkdir('evaluation/reports',{recursive:true});await writeFile(full?'evaluation/reports/geo-projection-full.json':'evaluation/reports/geo-projection.json',JSON.stringify(report,null,2));console.log(JSON.stringify({status:report.status,areas:report.planning_areas,regions:report.regions,stations:report.stations,memberships:report.memberships}));
 }finally{await pool.end();}

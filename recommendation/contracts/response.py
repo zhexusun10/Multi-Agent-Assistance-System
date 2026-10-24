@@ -44,7 +44,7 @@ class RecommendationResponse(Contract, Generic[T]):
     conversation_id: str
     requirements_version: int
     status: Literal["success", "needs_clarification", "no_match", "error"]
-    recommendations: list[T] = Field(default_factory=list, max_length=4)
+    recommendations: list[T] = Field(default_factory=list, max_length=5)
     unverified_candidates: list[Unverified] = Field(default_factory=list, max_length=4)
     evidence: list[Evidence] = Field(default_factory=list)
     clarifications: list[str] = Field(default_factory=list)

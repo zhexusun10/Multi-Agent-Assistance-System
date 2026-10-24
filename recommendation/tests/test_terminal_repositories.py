@@ -32,12 +32,12 @@ def test_terminal_staging_retry_resume(tmp_path, capsys):
     assert t.events
     assert t.store.current("terminal")["events"] == []
     t.command("recommend")
-    assert t.response.state.feedback_version == 4 and not t.events
+    assert t.response.state.feedback_version == len(first.recommendations) and not t.events
     bad = tmp_path / "bad.json"
     bad.write_text("{")
     with pytest.raises(ValueError):
         t.command(f"requirements @{bad}")
-    assert t.response.state.feedback_version == 4
+    assert t.response.state.feedback_version == len(first.recommendations)
     state = t.current["state_id"]
     t.service.close()
     resumed = Terminal(args)

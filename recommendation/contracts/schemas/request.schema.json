@@ -327,8 +327,8 @@
       "type": "integer"
     },
     "result_limit": {
-      "default": 4,
-      "maximum": 4,
+      "default": 5,
+      "maximum": 5,
       "minimum": 1,
       "title": "Result Limit",
       "type": "integer"

@@ -31,7 +31,7 @@ def visible_text(content):
 
 
 class Proposal(Contract):
-    listing_ids: list[str] = Field(max_length=4)
+    listing_ids: list[str] = Field(max_length=5)
 
 
 class ScriptedController:

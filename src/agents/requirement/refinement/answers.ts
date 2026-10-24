@@ -1,5 +1,5 @@
 import type {RefinementQuestion,RefinementAnswer} from '../../../contracts/requirement-refinement.js';
-import {refinementSubmitSchema} from '../../../contracts/requirement-refinement.js';
+import {refinementSubmitSchema,unchangedRefinementSummary} from '../../../contracts/requirement-refinement.js';
 import type {Requirements} from '../../../contracts/recommendation-v1.js';
 import {criterion,mergeRequirements} from '../../../domain/requirements.js';
 import {DEFAULT_PROXIMITY_SCALE_M} from '../../../domain/geo-intake.js';
@@ -15,7 +15,7 @@ export function compileRefinement(questions:RefinementQuestion[],input:unknown,b
     const a=answers.find(a=>a.question_id===q.id)!;
     if(a.action!=='set'){
       if(Object.keys(a).some(k=>!['question_id','action'].includes(k)))error('不限或跳过时不能同时提交条件值。');
-      summary.push(q.title+' '+(a.action==='any'?'不限':'暂未补充'));continue;
+      summary.push(unchangedRefinementSummary(q,a.action));continue;
     }
     const allowed=new Set(['question_id','action',...(q.kind==='bedrooms'?['count','operator','strength']:q.kind==='property_type'?['values','strength']:q.kind==='closer'?[]:q.kind==='ideal_rent'?['max']:q.kind==='budget'?['min','max']:['min','max','unit','strength'])]);
     if(Object.keys(a).some(k=>!allowed.has(k)))error('这项回答包含不适用的字段。');

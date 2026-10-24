@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "model_calls": 0,
+  "mocked_query_posts": 1,
+  "raw_count": 9,
+  "visible_count": 5,
+  "checks": [
+    "saved 5+4 response renders five cards, five navigation items and count five",
+    "fifth navigation, detail identity and return scroll position agree",
+    "save and contact retain the fifth listing ID without triggering a real model request",
+    "refresh of the unchanged nine-home saved response still shows five"
+  ],
+  "scope": "real UI and shared compiled selector; intercepted business APIs"
+}

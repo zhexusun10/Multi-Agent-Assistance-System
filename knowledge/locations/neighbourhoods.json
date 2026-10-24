@@ -1,0 +1,10 @@
+{
+  "version": "osm-neighbourhoods-2dbba36e6823",
+  "raw_sha256": "2dbba36e682387f13047ad3c654f31d3695426c8977525220acf6d793c5f56d9",
+  "source_url": "https://api.openstreetmap.org/api/0.6/nodes.json?nodes=2511049756,8777049478",
+  "retrieved_at": "2026-10-23T15:50:40.218445+00:00",
+  "license_url": "https://opendatacommons.org/licenses/odbl/1-0/",
+  "attribution": "© OpenStreetMap contributors",
+  "measurement": "neighbourhood_label_point_straight_line_not_boundary_or_station",
+  "count": 2
+}

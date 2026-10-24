@@ -1,6 +1,7 @@
 import type { Candidate,Criterion,RecommendationResponse,Requirements } from '../contracts/recommendation-v1.js';
 import {amenityLabels,valueLabels} from './field-capabilities.js';
 import type {NativeScores} from '../contracts/recommendation-native.js';
+import {displayedCandidates} from './selection.js';
 export function nativeScoreText(score:NativeScores|undefined,unscored=false){
   if(!score)return unscored?'原生模块没有为此待核实候选打分；按其返回顺序展示。':'没有原生评分信息。';
   if(score.ordering==='stable_listing_id')return '本轮没有可用的显式软偏好或行为信号，原生模块按房源ID字符串顺序返回；0分不代表不合适。';
@@ -20,7 +21,7 @@ export function explainCandidate(item:Candidate,requirements:Requirements){
 }
 export function buildExplanation(req:Requirements,rec:RecommendationResponse,dataset:string,question=''){
   const describe=(c:Candidate)=>({...explainCandidate(c,req),...(rec.native?{native_scores:rec.native.scores[c.listing.listing_id]??null,score_meaning:nativeScoreText(rec.native.scores[c.listing.listing_id],rec.native.unscored_listing_ids.includes(c.listing.listing_id))}:{})});
-  const verified=rec.recommendations.map(describe),unverified=rec.unverified_candidates.map(describe);
+  const visible=displayedCandidates(rec),verified=visible.filter(c=>rec.recommendations.includes(c)).map(describe),unverified=visible.filter(c=>rec.unverified_candidates.includes(c)).map(describe);
   const counts=rec.state.counts;
   // Structured evidence/document record only. The Explanation Agent writes chat prose.
   const summary=rec.status==='needs_clarification'?rec.clarifications.map(x=>x.question).join('；'):verified.length?'这些房源的已有资料符合本次必须要求；现在是否仍可租需要确认。':unverified.length?'这些房源仍有必须要求尚不能确认，可以进一步向经纪人了解。':'本次条件下没有可展示的匹配房源，可以讨论要调整哪项要求。';
@@ -33,7 +34,8 @@ export function buildExplanation(req:Requirements,rec:RecommendationResponse,dat
 export const escapeHtml=(s:unknown)=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
 export function renderSummary(requirements:Requirements,rec:RecommendationResponse,dataset:string){
   const model=buildExplanation(requirements,rec,dataset);const lines=['# 新加坡租房需求与推荐总结','',`数据范围：${dataset}`,`需求版本：${rec.requirements_version}；推荐请求：${rec.request_id}`,'',model.snapshot_notice,'','## 当前需求',...requirements.criteria.map(c=>`- ${criterionText(c)}`),'','## 推荐结果',model.summary];
-  for(const group of [{title:'通过全部硬条件',items:rec.recommendations},{title:'待核实候选（不能视为匹配）',items:rec.unverified_candidates}]){lines.push('',`## ${group.title}`);for(const c of group.items){const e=explainCandidate(c,requirements);lines.push('',`### ${c.rank}. ${c.listing.title}（${c.listing.listing_id}）`,...e.facts.map(x=>`- ${x}`),...e.claims.map(x=>`- ${x.text} [证据：${x.evidence_ids.join(', ')}]`),'- 当前可租状态：待经纪人核实',`- 来源：${c.listing.source_url||'未提供'}`);}}
+  const visible=displayedCandidates(rec);
+  for(const group of [{title:'通过全部硬条件',items:visible.filter(c=>rec.recommendations.includes(c))},{title:'待核实候选（不能视为匹配）',items:visible.filter(c=>rec.unverified_candidates.includes(c))}]){if(!group.items.length)continue;lines.push('',`## ${group.title}`);for(const c of group.items){const e=explainCandidate(c,requirements);lines.push('',`### ${visible.indexOf(c)+1}. ${c.listing.title}（${c.listing.listing_id}）`,...e.facts.map(x=>`- ${x}`),...e.claims.map(x=>`- ${x.text} [证据：${x.evidence_ids.join(', ')}]`),'- 当前可租状态：待经纪人核实',`- 来源：${c.listing.source_url||'未提供'}`);}}
   lines.push('','## 覆盖与限制',...model.warnings.map(x=>`- ${x}`),'','## 下一步','- 确认当前可租、租期、家具与实际路线。','- 选定房源后核实联系人，审核消息或看房草稿；本地执行为模拟。','','## 证据索引',...rec.evidence.map(e=>`- ${e.evidence_id}：${e.field_path}；来源引用 ${e.source_ref}；版本 ${e.dataset_version}`));
   const markdown=lines.join('\n');const html='<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>租房推荐总结</title><style>body{font:16px/1.8 system-ui;max-width:900px;margin:48px auto;padding:24px;color:#182a32}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}h1{color:#096b64}</style><h1>租房需求与推荐总结</h1><pre>'+escapeHtml(markdown)+'</pre></html>';
   return {markdown,html,model,template_version:'summary-v1.1'};
