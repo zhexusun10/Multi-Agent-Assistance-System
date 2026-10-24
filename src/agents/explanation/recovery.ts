@@ -92,10 +92,18 @@ export function recoverExplanation(bundle:ExplanationBundle,req:Requirements,rec
     for(const ref of profile.caution_refs)refs.add(ref);
     if(unknown.length)parts.push(english?'Some requested conditions still lack data, so please confirm them before deciding.':`${[...new Set(unknown)].join('、')}还缺少资料，需要确认后再决定。`);
     else if(profile.caution_refs.length)parts.push(english?'Some information is incomplete or conflicting; please check it with the agent.':'部分资料还不完整或有出入，需要向经纪人确认。');
+    const selectionRef=`selection:${id}`;
+    if(g.explain_order&&facts.has(selectionRef)){
+      refs.add(selectionRef);const reason=rec.native?.selection_reasons?.[id]?.selection_reason;
+      if(reason==='price_exploration_sample')parts.push(english?'It was included to offer a different price option, rather than because it had the highest match score.':'这套作为不同价位的比较选择加入，不表示匹配程度最高。');
+      else if(reason==='tie_group_sample')parts.push(english?'It was sampled from homes with similar matches; its position does not establish it as the better choice.':'这套从匹配程度很接近的房源中抽样选入，展示在前不表示更合适。');
+      else if(reason==='small_pool')parts.push(english?'All eligible homes fit within the display limit, so all were returned.':'合格房源不超过展示数量，因此一起展示供您比较。');
+      else parts.push(english?'It was retained based on the recommendation match results.':'这套根据推荐的匹配结果保留。');
+    }
     if(!refs.size){refs.add(`listing:${id}`);parts.push(english?'There is limited information for this home; ask the agent for details.':'这套房源目前资料较少，可以先向经纪人进一步了解。');}
     paragraphs.push({listing_id:id,text:(english?`${profile.position}. ${profile.title}: `:`第${profile.position}套 ${profile.title}：`)+parts.join(english?' ':''),support_refs:[...refs]});
   }
   paragraphs.push({listing_id:null,text:english?'Please confirm current rent and availability with the agent.':'当前租金和是否仍可租，请联系经纪人确认。',support_refs:['availability:current']});
-  if(g.explain_order){paragraphs.at(-1)!.support_refs.push(...bundle.required_refs.filter(r=>r.startsWith('ranking:')));paragraphs.at(-1)!.text+=(english?' The displayed recommendation order is preserved.':'这里保持推荐时的顺序。')+(bundle.ranking.behavior_features.length?(english?' That order also uses the available browsing-interest signals.':'推荐顺序也参考了已有浏览兴趣线索。'):'');}
+  if(g.explain_order){paragraphs.at(-1)!.support_refs.push(...bundle.required_refs.filter(r=>r.startsWith('ranking:')));paragraphs.at(-1)!.text+=(english?' The displayed recommendation order is preserved.':'这里保持推荐时的顺序。')+(bundle.ranking.behavior_features.length?(english?' That order also uses the available behavioral-interest signals.':'推荐顺序也参考了已有行为兴趣线索。'):'');}
   return validateExplanation({version:'2.0',focus_listing_ids:g.target_listing_ids,paragraphs},bundle);
 }

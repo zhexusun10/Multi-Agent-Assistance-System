@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Any, Literal
 from pydantic import Field
 from recommendation.contracts.requirements import Contract
 from recommendation.contracts.errors import ErrorDetail
@@ -11,12 +11,12 @@ class ToolArguments(Contract):
 
 
 class ScorePreview(Contract):
-    explicit_score: float | None
-    implicit_score: float | None
+    soft_score: float | None
+    behavior_score: float | None
     combined_score: float
-    explicit_weight: float
-    implicit_weight: float
-    evidence_coverage: float
+    soft_weight: float
+    behavior_weight: float
+    soft_evidence_coverage: float
     ordering: str
 
 
@@ -38,9 +38,15 @@ class ToolResult(Contract):
     candidate_ids_truncated: bool = False
     ranked_ids_truncated: bool = False
     ranked_ids: list[str] = Field(default_factory=list)
-    previews: list[CandidatePreview] = Field(default_factory=list, max_length=4)
+    # The final selection of the latest rank_candidates (the proposal must equal it exactly).
+    selected_ids: list[str] = Field(default_factory=list)
+    completed_stages: list[str] = Field(default_factory=list)
+    # At most trace.preview_rows previews (settings); the full pool stays in pool_cache.
+    previews: list[CandidatePreview] = Field(default_factory=list)
     previews_truncated: bool = False
     verified_count: int = 0
     evidence_count: int = 0
     warnings: list[str] = Field(default_factory=list)
     error: ErrorDetail | None = None
+    # Tool-specific result (resolution, search candidates, distances, ...); JSON data only.
+    data: dict[str, Any] | None = None

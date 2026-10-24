@@ -1,4 +1,4 @@
-import type {Candidate,RecommendationResponse} from '../contracts/recommendation-v1.js';
+import {feedbackSchema,type Candidate,type Feedback,type RecommendationResponse} from '../contracts/recommendation-v1.js';
 import {BusinessError} from '../stores/domain.js';
 
 import {displayedCandidates} from '../shared/recommendation-display.js';
@@ -12,4 +12,14 @@ export function resolveListingSelection(rec:RecommendationResponse|null|undefine
  const n=ordinal?(map[ordinal[1]]??Number(ordinal[1]||ordinal[2])):pool.length===1?1:0;
  const item=Number.isInteger(n)&&n>0?pool[n-1]:null;
  if(!item)throw new BusinessError('SELECTION_REQUIRED','请点击房源卡片的“联系经纪人”，或说“我要看第1套”，也可以提供房源 ID。');return item;
+}
+
+// Explicit NL feedback on a displayed listing: ordinals 1-10 (Chinese 一..十 or 1-2 digits), i.e.
+// up to the 10 results of the native recommendation; out-of-range ordinals (第11套) are ignored.
+const ORDINALS:Record<string,number>={'一':1,'二':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10};
+export function interpretFeedback(query:string,rec:any,source:string|null,op:string):Feedback[]{
+  if(!rec||source!==rec.request_id)return [];
+  const m=query.match(/第\s*([一二三四五六七八九十]|10|[1-9])\s*套.*?(太小|不喜欢|喜欢|面积小)/);if(!m)return [];
+  const candidate=displayedCandidates(rec)[(ORDINALS[m[1]]??Number(m[1]))-1];if(!candidate)return [];
+  return [feedbackSchema.parse({event_id:`explicit:${op}`,listing_id:candidate.listing.listing_id,occurred_at:new Date().toISOString(),event_type:'explicit_attribute_feedback',payload:{attribute:/小/.test(m[2])?'floor_area_sqft':'listing',sentiment:m[2]==='喜欢'?'positive':'negative',quote:m[0]}})];
 }

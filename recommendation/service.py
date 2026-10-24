@@ -5,28 +5,34 @@ from recommendation.contracts.request import (
 from recommendation.contracts.response import (
     StateReference,
     Execution,
-    Unverified,
 )
 from recommendation.contracts.errors import (
     RecommendationError,
     ErrorDetail,
 )
-from .models.candidate import Response, RecommendationItem
+from .models.candidate import Response
 from .context.manager import prepare
 from .tools.dispatcher import Dispatcher
-from .validation.gate import final_gate, replay_gate
-from .validation.rules import eligible
-from .tracing.trace import digest, redact
+from .validation.gate import final_gate, replay_gate, DataChanged
+from .tracing.trace import digest
+from .tracing import slim
 from .config import RecommendationConfig
+from .ranking import scoring_v2
+from .ranking import selection as selection_v1
+from .state.store import TRACE_FORMAT, SNAPSHOT_FORMAT
+from .state.pool_cache import PoolCache
+from .tools.pool_builder import parse_rows
+from . import assembly
 
 
 class RecommendationService:
     def __init__(
         self, listing, geographic, store, controller, progress=None, config=None
     ):
-        self.config = RecommendationConfig.model_validate(
-            (config or RecommendationConfig()).model_dump()
-        )
+        # Settings are immutable and validated at load; None means the committed YAML.
+        self.config = config if config is not None else RecommendationConfig.default()
+        if not isinstance(self.config, RecommendationConfig):
+            raise TypeError("config must be a RecommendationConfig loaded from the settings file")
         self.listing = listing
         self.geographic = geographic
         self.store = store
@@ -40,24 +46,34 @@ class RecommendationService:
             else request
         )
         started = time.monotonic()
+        config = self.config  # frozen per request: later reassignment never affects this run
         trace_id = str(uuid.uuid4())
         payload_hash = digest(request.model_dump(mode="json"))
         trace = {
+            "format": TRACE_FORMAT,
             "trace_id": trace_id,
             "request": request.model_dump(mode="json"),
             "data_mode": self.listing.mode,
             "controller_mode": self.controller.mode,
+            "layout": slim.LAYOUT,
+            "trace_mode": config.trace.mode,
+            "stages": [],
             "steps": [],
-            "configuration": self.config.model_dump(),
+            "configuration": config.to_data(),
+            **config.identity(),
         }
         execution = Execution(
             trace_id=trace_id,
             trace_ref=f"sqlite:{trace_id}",
-            strategy="complete-pool weighted ranking",
+            strategy="full-pool fused-v2 scoring + select-v1 selection",
             data_mode=self.listing.mode,
             controller_mode=self.controller.mode,
             model_identifier=self.controller.model_identifier,
-            scoring_version=self.config.scoring.identifier,
+            scoring_version=scoring_v2.scoring_identifier(config),
+            selection_algorithm=assembly.SELECTION_ALGORITHM,
+            config_version=config.config_version,
+            config_hash=config.config_hash,
+            selection_hash=config.selection_hash,
         )
         base = {
             "request_id": request.request_id,
@@ -65,6 +81,18 @@ class RecommendationService:
             "requirements_version": request.requirements_version,
         }
         dispatcher = None
+        behavior = request.behavior_context
+        validation = slim.Running(trace, "input_validation", config, inputs={
+            "criteria": len(request.requirements.criteria),
+            "hard_criteria": sum(c.strength == "hard" for c in request.requirements.criteria),
+            "previous_state_id": request.previous_state_id is not None,
+            "feedback_events": len(request.feedback),
+            "behavior_context": behavior is not None,
+            "listing_view_durations": len(behavior.listing_view_durations) if behavior else 0,
+            "book_viewing_listings": len(behavior.book_viewing_listings) if behavior else 0,
+            "result_limit": request.result_limit,
+            "cold_start_exited": request.cold_start.exited,
+        })
         try:
             with self.store.transaction():
                 self.store.reserve(request, payload_hash)
@@ -77,8 +105,12 @@ class RecommendationService:
                             "Request ID already used with another payload",
                         )
                     # Immutable replay, verified against its original snapshot. Never advertised as refreshed data.
+                    validation.done(outputs={"replay": True})
                     response = Response.model_validate(cached[1])
+                    gate = slim.Running(trace, "final_gate", config, params={"mode": "immutable_replay"})
                     replay_gate(response, cached[2])
+                    gate.done(outputs={"selected": len(response.recommendations)},
+                              note="stored response verified against its run snapshot (replay_gate)")
                     trace["steps"].append(
                         {
                             "kind": "final_gate",
@@ -88,20 +120,37 @@ class RecommendationService:
                         }
                     )
                     trace["response"] = response.model_dump(mode="json")
-                    trace["pool"] = cached[2]["pool"]
+                    # Compact snapshots reference the pool; P2-era ones embedded it.
+                    trace["pool_ref"] = cached[2].get("pool") if "selection_input" in cached[2] else None
                     self.store.save_trace(
                         request.conversation_id,
                         trace_id,
                         request.request_id,
-                        redact(trace),
+                        slim.finalize(trace),
                     )
                     return response
                 previous = self.store.current(request.conversation_id)
-                ctx = prepare(request, previous, self.store)
-                ctx["profile"]["scoring_version"] = self.config.scoring.identifier
+                ctx = prepare(request, previous, self.store, config)
+                # result_limit None -> settings default; the stored request keeps the original body.
+                limit = request.result_limit or config.recommendation.default_result_limit
+                if limit > config.recommendation.max_result_limit:
+                    raise RecommendationError(
+                        "INVALID_REQUEST",
+                        f"result_limit {limit} exceeds recommendation.max_result_limit "
+                        f"{config.recommendation.max_result_limit}",
+                    )
+                effective = request.model_copy(update={"result_limit": limit})
+                validation.done(
+                    outputs={"replay": False, "result_limit": limit, "run_sequence": ctx["sequence"],
+                             "previous_state_id": request.previous_state_id},
+                    params={"default_result_limit": config.recommendation.default_result_limit,
+                            "max_result_limit": config.recommendation.max_result_limit,
+                            "counted_appointment_signals": list(config.ranking.behavior.counted_appointment_signals)},
+                )
+                ctx["profile"]["scoring_version"] = scoring_v2.scoring_identifier(config)
                 context = {
                     "context_ref": trace_id,
-                    "request": request.model_dump(mode="json"),
+                    "request": effective.model_dump(mode="json"),
                     "profile": ctx["profile"],
                     "changes": ctx["changes"],
                     "previous_state_id": request.previous_state_id,
@@ -112,25 +161,42 @@ class RecommendationService:
                         "availability",
                         "lease_months",
                     ],
-                    "scoring_policy": self.config.scoring.model_dump(),
-                    "freshness": "per-run snapshots with final re-read",
+                    "scoring_policy": scoring_v2.describe(config),
+                    "selection_policy": selection_v1.describe(config),
+                    "freshness": "pool cache keyed by (conversation, pool_key, data_version); "
+                    "final gate re-queries the data version and re-reads the selection by id",
                 }
                 trace["context"] = context
                 dispatcher = Dispatcher(
-                    request,
+                    effective,
                     ctx,
                     self.listing,
                     self.geographic,
                     trace,
                     self.progress,
-                    self.config,
+                    config,
+                    pools=PoolCache(self.store, config, parse=parse_rows),
                 )
-                for attempt in range(self.config.limits.repairs + 1):
+                rebuilt = False
+                for attempt in range(config.controller.repairs + 1):
                     proposal = self.controller.propose(dispatcher, context, trace)
+                    gate = slim.Running(trace, "final_gate", config, inputs={
+                        "proposed": len(proposal.listing_ids), "attempt": attempt + 1})
                     try:
                         ids = final_gate(proposal, dispatcher, trace)
+                        gate.done(pool=dispatcher.pool_result, outputs={
+                            "selected": len(ids), "rows_read": trace["steps"][-1].get("rows_read")})
                         break
                     except RecommendationError as e:
+                        gate.failed(e.detail)
+                        # A changed data version rebuilds the pool through the cache ONCE. The
+                        # stale pool is discarded here, so no controller can re-propose from it:
+                        # only new resolve_entities + build_pool calls (a rebuild) can yield an acceptable proposal.
+                        if isinstance(e, DataChanged):
+                            if rebuilt:
+                                raise
+                            rebuilt = True
+                            dispatcher.invalidate_pool()
                         gate_steps = [
                             step
                             for step in trace["steps"]
@@ -140,70 +206,31 @@ class RecommendationService:
                             gate_steps[-1]["error"] = e.detail.model_dump()
                         if (
                             e.detail.code not in ("STALE_EVIDENCE", "INVALID_PROPOSAL")
-                            or attempt == self.config.limits.repairs
+                            or attempt == config.controller.repairs
                         ):
                             raise
                         context["repair"] = e.detail.model_dump()
-                rows = {r.listing_id: r for r in dispatcher.pool}
-                items = []
-                for rank, id in enumerate(ids, 1):
-                    results = dispatcher.results[id]
-                    items.append(
-                        RecommendationItem(
-                            listing=rows[id].model_copy(deep=True),
-                            rank=rank,
-                            scores=dispatcher.scores[id],
-                            criterion_results=results,
-                            evidence_refs=[
-                                ref for r in results for ref in r.evidence_refs
-                            ],
-                            strengths=[
-                                r.criterion_id for r in results if r.outcome == "pass"
-                            ],
-                            trade_offs=[
-                                r.criterion_id for r in results if r.outcome == "fail"
-                            ],
-                            unknowns=[
-                                r.criterion_id
-                                for r in results
-                                if r.outcome in ("unknown", "unsupported")
-                            ],
-                        )
-                    )
-                hard = {
-                    c.criterion_id
-                    for c in request.requirements.criteria
-                    if c.strength == "hard"
-                }
-                unverified = [
-                    Unverified(listing_id=k, criterion_results=v)
-                    for k, v in dispatcher.results.items()
-                    if not eligible(v, request.requirements.criteria)
-                    and not any(
-                        r.outcome == "fail" and r.criterion_id in hard for r in v
-                    )
-                ]
+                assembling = slim.Running(trace, "response_assembly", config)
+                pool = assembly.pool_summary(effective, dispatcher)
+                pool_ref = {**dispatcher.pool_result.reference(), "persisted": dispatcher.pool_result.persisted}
+                resolved = assembly.resolution(effective, dispatcher)
+                selection = assembly.selection_summary(dispatcher)
+                items = assembly.items(effective, dispatcher, ids)
+                problems = assembly.criterion_problems(effective, resolved)
+                # R8: needs_clarification only for criterion-level problems; unknown data is
+                # reported through pool counts, unknown_reasons and a warning.
                 status = (
                     "success"
                     if items
-                    else (
-                        "needs_clarification"
-                        if unverified
-                        or any(
-                            c.field in context["unsupported"] and c.strength == "hard"
-                            for c in request.requirements.criteria
-                        )
-                        else "no_match"
-                    )
+                    else ("needs_clarification" if problems else "no_match")
                 )
                 state = StateReference(
                     state_id=str(uuid.uuid4()),
                     candidate_pool_ref=f"{trace_id}/pool",
                     run_sequence=ctx["sequence"],
-                    feedback_version=len(ctx["events"]),
-                    source_count=len(dispatcher.rows),
-                    prefilter_excluded=len(dispatcher.rows) - len(dispatcher.pool),
-                    assessed_count=len(dispatcher.pool),
+                    source_count=pool.source_count,
+                    prefilter_excluded=pool.excluded_hard_fail + pool.excluded_hard_unknown,
+                    assessed_count=pool.size,
                 )
                 execution.tool_calls = dispatcher.calls
                 execution.model_calls = sum(
@@ -224,39 +251,42 @@ class RecommendationService:
                     **base,
                     status=status,
                     recommendations=items,
-                    unverified_candidates=unverified[:4],
-                    evidence=dispatcher.evidence,
-                    clarifications=(
-                        ["Resolve missing or unsupported hard-constraint evidence."]
-                        if status == "needs_clarification"
-                        else []
-                    ),
+                    evidence=assembly.returned_evidence(dispatcher, items),
+                    resolution=resolved,
+                    pool=pool,
+                    selection=selection,
+                    clarifications=problems if status == "needs_clarification" else [],
                     relaxation_suggestions=(
                         ["Submit an explicitly revised full requirements snapshot."]
                         if status == "no_match"
                         else []
                     ),
-                    warnings=[
-                        ("Browser detail durations are attention estimates, not verified preferences." if any(e["source"] == "web_detail" for e in ctx["events"]) else "Sample viewing durations are simulated observations."),
-                        "Posting time does not establish current availability.",
-                    ],
+                    warnings=assembly.warnings(effective, pool, dispatcher.pool_result.warnings),
                     state=state,
                     execution=execution,
                 )
                 snapshot = {
-                    "configuration": self.config.model_dump(),
+                    "format": SNAPSHOT_FORMAT,
+                    "configuration": config.to_data(),
+                    **config.identity(),
                     "state_id": state.state_id,
                     "sequence": ctx["sequence"],
                     "request": request.model_dump(mode="json"),
-                    "events": ctx["events"],
+                    "result_limit": limit,
                     "profile": ctx["profile"],
-                    "pool": dispatcher.snapshot(),
+                    # Compact (spec section 4, R6): the pool is referenced, never embedded.
+                    "pool": {k: pool_ref[k] for k in ("pool_key", "pool_version", "data_version", "cache")},
+                    "selection_input": dispatcher.selection_input,
+                    "resolution": [r.model_dump(mode="json") for r in resolved],
                 }
                 self.store.commit(request, payload_hash, response, snapshot)
-                trace["pool"] = dispatcher.snapshot()
+                assembling.done(pool=dispatcher.pool_result, outputs={
+                    "status": status, "recommendations": len(items), "evidence": len(response.evidence)})
+                trace["pool_ref"] = pool_ref
+                trace["pool_stats"] = dispatcher.pool_result.stats
                 trace["response"] = response.model_dump(mode="json")
                 self.store.save_trace(
-                    request.conversation_id, trace_id, request.request_id, redact(trace)
+                    request.conversation_id, trace_id, request.request_id, slim.finalize(trace)
                 )
                 return response
         except RecommendationError as e:
@@ -281,6 +311,13 @@ class RecommendationService:
         )
         if dispatcher:
             execution.tool_calls = dispatcher.calls
+            if dispatcher.pool_result:
+                # The run transaction rolled back, so its pool rows were not persisted (R13).
+                trace["pool_ref"] = {**dispatcher.pool_result.reference(), "persisted": False}
+        # Errors locate a stage (P6): the stage that was running, else the stage whose tool or
+        # gate error ended the run, else the model / controller event.
+        slim.fail_running(trace, error)
+        trace["error"] = {"stage": slim.locate_error(trace, error), **slim.error_of(error)}
         response = Response(
             **base,
             status="error",
@@ -291,7 +328,7 @@ class RecommendationService:
         trace["response"] = response.model_dump(mode="json")
         with self.store.transaction():
             self.store.save_trace(
-                request.conversation_id, trace_id, request.request_id, redact(trace)
+                request.conversation_id, trace_id, request.request_id, slim.finalize(trace)
             )
         return response
 

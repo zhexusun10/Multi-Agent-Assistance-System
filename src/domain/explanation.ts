@@ -1,14 +1,27 @@
 import type { Candidate,Criterion,RecommendationResponse,Requirements } from '../contracts/recommendation-v1.js';
 import {amenityLabels,valueLabels} from './field-capabilities.js';
-import type {NativeScores} from '../contracts/recommendation-native.js';
 import {displayedCandidates} from './selection.js';
-export function nativeScoreText(score:NativeScores|undefined,unscored=false){
+import type {NativeScores,LegacyNativeScores} from '../contracts/recommendation-native.js';
+type SelectionReason={selection_reason:string;selection_note:string;score_rank:number};
+const selectionLabels:Record<string,string>={ranked:'按分数顺序选入',leader:'明显领先，直接保留',tie_group_sample:'与其他候选分数难以区分，组内随机选入',price_exploration_sample:'冷启动阶段按价格分层探索选入',small_pool:'合格房源不超过展示数量，全部返回'};
+export function selectionText(reason:SelectionReason|undefined){return reason?`选择原因：${selectionLabels[reason.selection_reason]||reason.selection_reason}（完整探索池分数排名第 ${reason.score_rank}）。`:'';}
+// Accepts contract 2.0 scores (soft/behaviour) and archived contract 1.0 scores (explicit/implicit).
+export function nativeScoreText(score:NativeScores|LegacyNativeScores|undefined,unscored=false,selection?:SelectionReason){
   if(!score)return unscored?'原生模块没有为此待核实候选打分；按其返回顺序展示。':'没有原生评分信息。';
-  if(score.ordering==='stable_listing_id')return '本轮没有可用的显式软偏好或行为信号，原生模块按房源ID字符串顺序返回；0分不代表不合适。';
-  const names:Record<string,string>={property_type:'房型',bedrooms:'卧室数',floor_area_sqft:'面积',geography:'地理位置'};
-  const parts=[`原生融合匹配分 ${score.combined_score.toFixed(4)}（不是成交概率）`,...(score.explicit_score===null?[]:[`显式偏好 ${score.explicit_score.toFixed(4)} × ${score.explicit_weight}`]),...(score.implicit_score===null?[]:[`样例浏览兴趣 ${score.implicit_score.toFixed(4)} × ${score.implicit_weight}`]),`原生评分字段证据覆盖 ${score.evidence_coverage.toFixed(4)}`];
-  if(score.suppressed_features.length)parts.push(`已明确提出的特征不再用于隐式推断：${score.suppressed_features.map(x=>names[x]||x).join('、')}`);
-  return parts.join('；')+'。';
+  if(score.ordering==='stable_listing_id')return '本轮没有可用的软需求或行为信号，原生模块按房源ID字符串顺序返回；0分不代表不合适。'+selectionText(selection);
+  const names:Record<string,string>={price:'月租',property_type:'房型',bedrooms:'卧室数',floor_area_sqft:'面积',geography:'地理位置'};
+  const parts=[`原生融合匹配分 ${score.combined_score.toFixed(4)}（不是成交概率）`];
+  if('soft_score' in score){
+    if(score.soft_score!==null)parts.push(`软需求匹配 ${score.soft_score.toFixed(4)} × ${score.soft_weight}`);
+    if(score.behavior_score!==null)parts.push(`行为相似度 ${score.behavior_score.toFixed(4)} × ${score.behavior_weight}`+[score.appointment_score===null?'':`看房意向相似 ${score.appointment_score.toFixed(4)}`,score.browsing_score===null?'':`累计浏览相似 ${score.browsing_score.toFixed(4)}`].filter(Boolean).map(x=>`（${x}）`).join(''));
+    parts.push(`软需求证据覆盖 ${score.soft_evidence_coverage.toFixed(4)}`);
+  }else{
+    if(score.explicit_score!==null)parts.push(`显式偏好 ${score.explicit_score.toFixed(4)} × ${score.explicit_weight}`);
+    if(score.implicit_score!==null)parts.push(`样例浏览兴趣 ${score.implicit_score.toFixed(4)} × ${score.implicit_weight}`);
+    parts.push(`原生评分字段证据覆盖 ${score.evidence_coverage.toFixed(4)}`);
+  }
+  if(score.suppressed_features.length)parts.push(`${'soft_score' in score?'缺少可用或有区分度的行为比较特征':'已明确提出的特征不再用于行为相似度推断'}：${score.suppressed_features.map(x=>names[x]||x).join('、')}`);
+  return parts.join('；')+'。'+selectionText(selection);
 }
 export const labels:Record<string,string>={price:'月租',bedrooms:'卧室',bathrooms:'卫浴',floor_area_sqft:'室内面积',land_area_sqft:'土地面积',district:'邮区',property_type:'房型',place_proximity:'地点距离',mrt_distance_m:'平台标注 MRT 距离',mrt_walking_mins:'平台标注步行分钟',furnishing:'家具',rental_scope:'整租/单间',lease_months:'租期',commute_time:'通勤时间',current_availability:'当前可租',move_in_date:'入住日',amenities:'室内设施'};
 export function criterionText(c:Criterion){if(c.field==='amenities')return `${amenityLabels[String(c.value)]||c.value}${c.strength==='hard'?'，必须满足':'，软偏好'}`;if(c.field==='place_proximity'&&c.strength==='soft'&&c.distance_preference!=='bounded')return `更靠近 ${c.target?.name||c.target?.category||c.target?.place_id}（越近越好，软偏好；不设硬半径）`;const op={eq:'等于',in:'属于',gte:'至少',lte:'不超过',between:'介于'}[c.operator];const value=Array.isArray(c.value)?c.value.join(' — '):valueLabels[String(c.value)]||c.value;const target=c.target?[c.target.name||c.target.category||c.target.place_id,c.distance_type==='straight_line'?'直线距离':c.distance_type,c.transport_mode==='unspecified'?'交通方式未指定':c.transport_mode==='transit'?'公共交通':c.transport_mode].filter(Boolean).join('；'):null;return `${labels[c.field]||c.field}${op} ${value}${c.unit?' '+c.unit:''}${target?'（'+target+'）':''}${c.strength==='soft'?`，偏好权重 ${c.weight}`:'，必须满足'}`;}
@@ -20,7 +33,7 @@ export function explainCandidate(item:Candidate,requirements:Requirements){
   };
 }
 export function buildExplanation(req:Requirements,rec:RecommendationResponse,dataset:string,question=''){
-  const describe=(c:Candidate)=>({...explainCandidate(c,req),...(rec.native?{native_scores:rec.native.scores[c.listing.listing_id]??null,score_meaning:nativeScoreText(rec.native.scores[c.listing.listing_id],rec.native.unscored_listing_ids.includes(c.listing.listing_id))}:{})});
+  const describe=(c:Candidate)=>({...explainCandidate(c,req),...(rec.native?{native_scores:rec.native.scores[c.listing.listing_id]??null,score_meaning:nativeScoreText(rec.native.scores[c.listing.listing_id],rec.native.unscored_listing_ids.includes(c.listing.listing_id),rec.native.selection_reasons?.[c.listing.listing_id])}:{})});
   const visible=displayedCandidates(rec),verified=visible.filter(c=>rec.recommendations.includes(c)).map(describe),unverified=visible.filter(c=>rec.unverified_candidates.includes(c)).map(describe);
   const counts=rec.state.counts;
   // Structured evidence/document record only. The Explanation Agent writes chat prose.

@@ -1,0 +1,240 @@
+{
+ "attributes-soft-district/round-1": {
+  "status": "success",
+  "pool_size": 306,
+  "cache": "built",
+  "mode": "cold_start_exploration",
+  "leaders": 3,
+  "returned": 10,
+  "tie_group": {
+   "size": 303,
+   "min_score": 0.0,
+   "max_score": 0.0,
+   "span": 0.0,
+   "epsilon": 0.02
+  },
+  "exploration": {
+   "candidate_count": 303,
+   "sample_size": 30,
+   "bins": [
+    {
+     "lower": 450.0,
+     "upper": 2800.0,
+     "count": 59,
+     "sampled": 1,
+     "quota": 6
+    },
+    {
+     "lower": 2800.0,
+     "upper": 2900.0,
+     "count": 46,
+     "sampled": 1,
+     "quota": 4
+    },
+    {
+     "lower": 2900.0,
+     "upper": 3000.0,
+     "count": 198,
+     "sampled": 5,
+     "quota": 20
+    }
+   ]
+  },
+  "cold_start": {
+   "evaluated": true,
+   "active": true,
+   "reason": "b_above_max; s_below_min",
+   "C": 1.0,
+   "B": 303,
+   "S": 0.3149999999999999,
+   "exit_conditions_met": false
+  },
+  "reasons": [
+   "leader",
+   "leader",
+   "leader",
+   "price_exploration_sample",
+   "price_exploration_sample",
+   "price_exploration_sample",
+   "price_exploration_sample",
+   "price_exploration_sample",
+   "price_exploration_sample",
+   "price_exploration_sample"
+  ],
+  "score_ranks": [
+   1,
+   2,
+   3,
+   14,
+   28,
+   111,
+   127,
+   137,
+   256,
+   262
+  ],
+  "timing_ms": {
+   "wall": 1294.9,
+   "service_total": 1272.9,
+   "rank_candidates_step": 7.8,
+   "scoring": 0.8,
+   "selection_incl_diagnostics": 2.5,
+   "diagnostics": 2.0
+  }
+ },
+ "attributes-soft-district/round-2-simulated-exit": {
+  "status": "success",
+  "pool_size": 306,
+  "cache": "reused",
+  "mode": "near_tie_sampling",
+  "leaders": 3,
+  "returned": 10,
+  "tie_group": {
+   "size": 111,
+   "min_score": 0.06694651886526139,
+   "max_score": 0.08318723236743159,
+   "span": 0.016240713502170198,
+   "epsilon": 0.02
+  },
+  "exploration": null,
+  "cold_start": {
+   "evaluated": true,
+   "active": false,
+   "reason": "b_above_max; exited_by_orchestrator",
+   "C": 1.0,
+   "B": 111,
+   "S": 0.97,
+   "exit_conditions_met": false
+  },
+  "reasons": [
+   "leader",
+   "leader",
+   "leader",
+   "tie_group_sample",
+   "tie_group_sample",
+   "tie_group_sample",
+   "tie_group_sample",
+   "tie_group_sample",
+   "tie_group_sample",
+   "tie_group_sample"
+  ],
+  "score_ranks": [
+   1,
+   2,
+   3,
+   18,
+   22,
+   33,
+   46,
+   85,
+   92,
+   113
+  ],
+  "timing_ms": {
+   "wall": 393.8,
+   "service_total": 343.8,
+   "rank_candidates_step": 26.3,
+   "scoring": 2.8,
+   "selection_incl_diagnostics": 5.7,
+   "diagnostics": 5.5
+  },
+  "scenario_note": "Simulated orchestrator exit injected at round 1's pool_key although round 1 reported exit_conditions_met=False; R7 would not record this exit. Used only to exercise near-tie sampling."
+ },
+ "hard-geography-no-soft/round-1": {
+  "status": "success",
+  "pool_size": 4684,
+  "cache": "built",
+  "mode": "cold_start_exploration",
+  "leaders": 0,
+  "returned": 10,
+  "tie_group": {
+   "size": 4684,
+   "min_score": 0.0,
+   "max_score": 0.0,
+   "span": 0.0,
+   "epsilon": 0.02
+  },
+  "exploration": {
+   "candidate_count": 4684,
+   "sample_size": 30,
+   "bins": [
+    {
+     "lower": 350.0,
+     "upper": 899.6,
+     "count": 937,
+     "sampled": 2,
+     "quota": 6
+    },
+    {
+     "lower": 899.6,
+     "upper": 1000.0,
+     "count": 593,
+     "sampled": 1,
+     "quota": 4
+    },
+    {
+     "lower": 1000.0,
+     "upper": 1350.0,
+     "count": 1264,
+     "sampled": 3,
+     "quota": 8
+    },
+    {
+     "lower": 1350.0,
+     "upper": 3100.0,
+     "count": 929,
+     "sampled": 2,
+     "quota": 6
+    },
+    {
+     "lower": 3100.0,
+     "upper": 4000.0,
+     "count": 961,
+     "sampled": 2,
+     "quota": 6
+    }
+   ]
+  },
+  "cold_start": {
+   "evaluated": true,
+   "active": true,
+   "reason": "no_soft_requirements; b_above_max; s_below_min",
+   "C": 0.0,
+   "B": 4684,
+   "S": 0.005,
+   "exit_conditions_met": false
+  },
+  "reasons": [
+   "price_exploration_sample",
+   "price_exploration_sample",
+   "price_exploration_sample",
+   "price_exploration_sample",
+   "price_exploration_sample",
+   "price_exploration_sample",
+   "price_exploration_sample",
+   "price_exploration_sample",
+   "price_exploration_sample",
+   "price_exploration_sample"
+  ],
+  "score_ranks": [
+   576,
+   762,
+   1210,
+   1365,
+   1610,
+   1989,
+   2770,
+   3042,
+   3241,
+   3858
+  ],
+  "timing_ms": {
+   "wall": 1997.4,
+   "service_total": 1778.1,
+   "rank_candidates_step": 128.5,
+   "scoring": 2.0,
+   "selection_incl_diagnostics": 10.3,
+   "diagnostics": 6.3
+  }
+ }
+}

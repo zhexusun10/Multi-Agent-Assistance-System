@@ -1,5 +1,139 @@
 {
   "$defs": {
+    "BehaviorContext": {
+      "additionalProperties": false,
+      "properties": {
+        "as_of": {
+          "format": "date-time",
+          "title": "As Of",
+          "type": "string"
+        },
+        "book_viewing_listings": {
+          "items": {
+            "$ref": "#/$defs/BookViewingListing"
+          },
+          "title": "Book Viewing Listings",
+          "type": "array"
+        },
+        "listing_view_durations": {
+          "items": {
+            "$ref": "#/$defs/ListingViewDuration"
+          },
+          "title": "Listing View Durations",
+          "type": "array"
+        },
+        "version": {
+          "const": "1.0",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "version",
+        "as_of",
+        "listing_view_durations",
+        "book_viewing_listings"
+      ],
+      "title": "BehaviorContext",
+      "type": "object"
+    },
+    "BookViewingListing": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "format": "uuid",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "appointment_confirmed": {
+          "const": false,
+          "title": "Appointment Confirmed",
+          "type": "boolean"
+        },
+        "ends_at": {
+          "format": "date-time",
+          "title": "Ends At",
+          "type": "string"
+        },
+        "listing_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Listing Id",
+          "type": "string"
+        },
+        "recorded_at": {
+          "format": "date-time",
+          "title": "Recorded At",
+          "type": "string"
+        },
+        "requirements_version": {
+          "minimum": 0,
+          "title": "Requirements Version",
+          "type": "integer"
+        },
+        "signal": {
+          "const": "viewing_draft_saved",
+          "title": "Signal",
+          "type": "string"
+        },
+        "source_request_id": {
+          "format": "uuid",
+          "title": "Source Request Id",
+          "type": "string"
+        },
+        "starts_at": {
+          "format": "date-time",
+          "title": "Starts At",
+          "type": "string"
+        },
+        "time_zone": {
+          "const": "Asia/Singapore",
+          "title": "Time Zone",
+          "type": "string"
+        }
+      },
+      "required": [
+        "listing_id",
+        "action_id",
+        "source_request_id",
+        "requirements_version",
+        "starts_at",
+        "ends_at",
+        "time_zone",
+        "recorded_at",
+        "signal",
+        "appointment_confirmed"
+      ],
+      "title": "BookViewingListing",
+      "type": "object"
+    },
+    "ColdStartInput": {
+      "additionalProperties": false,
+      "description": "Cold-start exit state managed by the orchestrator (no native history).",
+      "properties": {
+        "exited": {
+          "default": false,
+          "title": "Exited",
+          "type": "boolean"
+        },
+        "exited_pool_key": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Exited Pool Key"
+        }
+      },
+      "title": "ColdStartInput",
+      "type": "object"
+    },
     "Criterion": {
       "additionalProperties": false,
       "properties": {
@@ -176,6 +310,55 @@
       "title": "Criterion",
       "type": "object"
     },
+    "ListingViewDuration": {
+      "additionalProperties": false,
+      "properties": {
+        "duration_seconds": {
+          "minimum": 0,
+          "title": "Duration Seconds",
+          "type": "number"
+        },
+        "interest_eligible": {
+          "title": "Interest Eligible",
+          "type": "boolean"
+        },
+        "last_viewed_at": {
+          "format": "date-time",
+          "title": "Last Viewed At",
+          "type": "string"
+        },
+        "listing_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Listing Id",
+          "type": "string"
+        },
+        "source_request_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Source Request Ids",
+          "type": "array"
+        },
+        "view_count": {
+          "minimum": 1,
+          "title": "View Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "listing_id",
+        "duration_seconds",
+        "view_count",
+        "last_viewed_at",
+        "source_request_ids",
+        "interest_eligible"
+      ],
+      "title": "ListingViewDuration",
+      "type": "object"
+    },
     "Requirements": {
       "additionalProperties": false,
       "properties": {
@@ -222,6 +405,7 @@
     },
     "ViewingEvent": {
       "additionalProperties": false,
+      "description": "Incremental, quality-gated duration event (main contract). Validated, not scored:\nbehavior_context.listing_view_durations already holds the same time cumulatively.",
       "properties": {
         "conversation_id": {
           "minLength": 1,
@@ -281,6 +465,20 @@
   },
   "additionalProperties": false,
   "properties": {
+    "behavior_context": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/BehaviorContext"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "cold_start": {
+      "$ref": "#/$defs/ColdStartInput"
+    },
     "contract_version": {
       "const": "1.0",
       "default": "1.0",
@@ -327,11 +525,18 @@
       "type": "integer"
     },
     "result_limit": {
-      "default": 5,
-      "maximum": 5,
-      "minimum": 1,
-      "title": "Result Limit",
-      "type": "integer"
+      "anyOf": [
+        {
+          "maximum": 10,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Result Limit"
     }
   },
   "required": [

@@ -1,86 +1,70 @@
 import json
 from pathlib import Path
-from types import SimpleNamespace
 import pytest
 
-from recommendation.app_geography import ApplicationGeographicRepository, measure_official
+from recommendation.app_geography import ApplicationGeographicRepository, neighbourhood_catalog
 from recommendation.contracts.requirements import Criterion
 from recommendation.contracts.errors import RecommendationError
 from recommendation.repositories.listing_repository import normalize
 from recommendation.repositories.geographic_repository import FixtureGeographicRepository
-from recommendation.validation.rules import evaluate
-
-ROOT = Path(__file__).resolve().parents[2]
-CATALOG = json.loads((ROOT / 'knowledge/locations/ura-areas.json').read_text(encoding='utf-8'))
 
 
-def criterion(destination='URA:AREA:CLEMENTI', metric='straight_line', strength='soft'):
-    return Criterion(criterion_id='geo', field='distance', operator='lte', value=3000, unit='m', strength=strength,
-                     destination_id=destination, distance_type=metric)
+def criterion(destination, name=None, metric='straight_line'):
+    return Criterion(criterion_id='geo', field='distance', operator='lte', value=3000, unit='m', strength='soft',
+                     destination_id=destination, destination_name=name, distance_type=metric)
 
 
-def listing(lat=1.315, lon=103.765, id='1'):
-    return normalize({'listing_id': id, 'listing_type': 'RENT', 'latitude': lat, 'longitude': lon}, 'test')
+def listing(lat=1.315, lon=103.765, identifier='1'):
+    return normalize({'listing_id': identifier, 'listing_type': 'RENT', 'latitude': lat, 'longitude': lon}, 'test')
 
 
-class Native(FixtureGeographicRepository):
-    def query(self, query, ids):
-        return [{'place_id': id, 'name': 'CLEMENTI', 'dataset_version': CATALOG['version'], 'source': 'ura_mp2019'}
-                for id in ids if id == 'URA:AREA:CLEMENTI']
+@pytest.mark.parametrize('destination', ['URA:AREA:CLEMENTI', 'LTA:MRT:CLEMENTI'])
+def test_official_distances_use_the_unmodified_native_measurement(destination):
+    native = FixtureGeographicRepository()
+    wrapped = ApplicationGeographicRepository(native)
+    rows, criteria = [listing(), listing(None, None, '2')], [criterion(destination)]
+    before = [c.model_dump() for c in criteria]
+    original = native.evidence(rows, criteria)
+    current = wrapped.evidence(rows, criteria)
+    assert [(e.value, e.method, e.destination_id, e.unknown_reason) for e in current] == [
+        (e.value, e.method, e.destination_id, e.unknown_reason) for e in original]
+    assert current[1].value is None
+    assert [c.model_dump() for c in criteria] == before
 
 
-def test_osm_repository_is_delegated_without_reinterpreting_its_evidence():
-    native = Native()
-    calls = []
-    c = criterion('fixture-school')
-    expected = native.evidence([listing()], [c])
-    repo = ApplicationGeographicRepository(native, lambda *_: calls.append('must not measure'))
-    actual = repo.evidence([listing()], [c])
-    assert not calls and actual[0].value == expected[0].value
-    assert actual[0].snapshot_hash == expected[0].snapshot_hash
-    assert actual[0].method == expected[0].method and actual[0].source == expected[0].source
+def test_existing_osm_fixture_places_keep_their_identity_and_distance():
+    native = FixtureGeographicRepository()
+    wrapped = ApplicationGeographicRepository(native)
+    place = native.catalog().places.places[0]
+    c, rows = criterion(place.place_id), [listing()]
+    assert wrapped.resolve_criteria([c])['geo'].entity_id == place.place_id
+    assert wrapped.evidence(rows, [c])[0].value == native.evidence(rows, [c])[0].value
 
 
-def test_real_catalog_area_inside_zero_and_outside_distance_feed_the_existing_hard_filter():
-    repo = ApplicationGeographicRepository(Native())
-    rows = [listing(), listing(1.4, 103.95, id='2'), listing(None, None, id='3')]
-    c = criterion(strength='hard')
-    first = repo.evidence(rows, [c])
-    assert first[0].value == 0 and first[1].value > 10000
-    assert first[2].value is None and 'listing coordinates' in first[2].unknown_reason
-    assert [evaluate(row, [c], first)[0].outcome for row in rows] == ['pass', 'fail', 'unknown']
-    assert first[0].method == 'turf.geodesic.distance_to_area_zero_inside'
-    assert repo.last_snapshot[0]['official_catalogues'][0]['raw_sha256'] == CATALOG['raw_sha256']
-    again = repo.evidence(rows, [c])
-    assert [e.snapshot_hash for e in again] == [e.snapshot_hash for e in first]
+@pytest.mark.parametrize('name', ['Chinatown', 'Holland Village'])
+def test_application_neighbourhoods_remain_neighbourhoods_not_same_named_stations(name):
+    wrapped = ApplicationGeographicRepository(FixtureGeographicRepository())
+    row = next(r for r in neighbourhood_catalog()[0] if r['name'] == name)
+    c = criterion(row['place_id'], row['name'])
+    result = wrapped.resolve_criteria([c])['geo']
+    assert result.status == 'resolved' and result.entity_id == row['place_id']
+    assert result.entity_kind == 'osm_place'
+    assert wrapped.evidence([listing(row['latitude'], row['longitude'])], [c], resolutions={'geo': result})[0].value == 0
+    wrong = criterion(row['place_id'], 'Clementi MRT Station')
+    assert wrapped.resolve_criteria([wrong])['geo'].status == 'ambiguous'
 
 
-def test_official_station_uses_nearest_recorded_exit_not_the_average_station_point():
-    data = json.loads((ROOT / 'knowledge/locations/lta-stations.json').read_text(encoding='utf-8'))
-    station = next(s for s in data['stations'] if s['place_id'] == 'LTA:MRT:CLEMENTI')
-    point = station['reference_points'][0]
-    measured = measure_official([listing(point['latitude'], point['longitude'])], [criterion(station['place_id'])])
-    assert measured['measurements'][0]['value'] == 0
-    assert measured['measurements'][0]['method'] == 'haversine.nearest_recorded_exit'
-    assert measured['catalogues'][0]['place_id'] == 'LTA:MRT:CLEMENTI'
-
-
-def test_unknown_graph_destination_and_route_modes_never_become_zero_or_a_station_substitution():
-    calls = []
-    repo = ApplicationGeographicRepository(Native(), lambda *_: calls.append('unexpected'))
-    unknown = repo.evidence([listing()], [criterion('URA:AREA:UNDEFINED')])[0]
-    assert unknown.value is None and unknown.mapping_status == 'missing' and not calls
-    route = ApplicationGeographicRepository(Native()).evidence([listing()], [criterion(metric='walking')])[0]
-    assert route.value is None and 'route evidence unavailable' in route.unknown_reason
-
-
-def test_graph_catalogue_mismatch_and_extra_or_duplicate_observations_are_rejected():
-    row, c = listing(), criterion()
-    measured = measure_official([row], [c])
-    measured['measurements'][0]['catalogue']['version'] = 'different-source'
-    with pytest.raises(RecommendationError):
-        ApplicationGeographicRepository(Native(), lambda *_: measured).evidence([row], [c])
-    measured = measure_official([row], [c])
-    measured['measurements'].append(measured['measurements'][0])
-    with pytest.raises(RecommendationError):
-        ApplicationGeographicRepository(Native(), lambda *_: measured).evidence([row], [c])
+def test_application_catalogue_fingerprint_participates_in_cache_identity_and_invalid_files_fail(tmp_path):
+    native = FixtureGeographicRepository()
+    wrapped = ApplicationGeographicRepository(native)
+    assert wrapped.catalog_version() != native.catalog_version()
+    assert wrapped.catalog_version() == wrapped.catalog_version()
+    root = Path(__file__).resolve().parents[2]
+    for name in ['knowledge/locations/neighbourhoods.json', 'data/datasets/osm_neighbourhoods.json']:
+        target = tmp_path / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes((root / name).read_bytes())
+    path = tmp_path / 'data/datasets/osm_neighbourhoods.json'
+    path.write_bytes(path.read_bytes() + b' ')
+    with pytest.raises(RecommendationError, match='catalogue'):
+        neighbourhood_catalog(tmp_path)

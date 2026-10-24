@@ -29,15 +29,18 @@ def test_terminal_staging_retry_resume(tmp_path, capsys):
     first = t.response
     t.command(f"feedback-example {tmp_path}/feedback.json")
     t.command(f"feedback @{tmp_path}/feedback.json")
-    assert t.events
-    assert t.store.current("terminal")["events"] == []
+    shown = [r.listing.listing_id for r in first.recommendations]
+    assert sorted(v.listing_id for v in t.behavior.listing_view_durations) == sorted(shown)
+    # Staged only: the committed request carried no behavior_context.
+    assert t.store.current("terminal")["request"]["behavior_context"] is None
     t.command("recommend")
-    assert t.response.state.feedback_version == len(first.recommendations) and not t.events
+    committed = t.store.current("terminal")["request"]["behavior_context"]
+    assert sorted(v["listing_id"] for v in committed["listing_view_durations"]) == sorted(shown) and t.behavior is None
     bad = tmp_path / "bad.json"
     bad.write_text("{")
     with pytest.raises(ValueError):
         t.command(f"requirements @{bad}")
-    assert t.response.state.feedback_version == len(first.recommendations)
+    assert t.store.current("terminal")["request"]["behavior_context"] == committed
     state = t.current["state_id"]
     t.service.close()
     resumed = Terminal(args)
@@ -130,7 +133,9 @@ def test_neo4j_schema_mapping_and_missing_edges():
     def query(q, **params):
         queries.append((q, params))
         if "p.active" in q:
-            return [{"place_id": "OSM:node:1", "latitude": 1.3, "longitude": 103.8}]
+            # P4: the place catalog carries name/category (category targets resolve natively).
+            return [{"place_id": "OSM:node:1", "name": "A School", "category": "School",
+                     "latitude": 1.3, "longitude": 103.8}]
         return []
 
     repo.query = query
@@ -150,12 +155,24 @@ def test_neo4j_schema_mapping_and_missing_edges():
     )
     result = repo.evidence([listing], [criterion])[0]
     assert result.value > 0 and result.method == "coordinate_haversine"
-    assert queries[1][1]["ids"] == [1]
-    assert "NEAR_PLACE" in queries[1][0]
+    # P4: distances come from SQL coordinates + the cached Place catalog (haversine); no
+    # listing-to-place graph query is issued, so a missing NEAR_PLACE edge cannot matter.
+    assert result.destination_id == "OSM:node:1" and result.mapping_status == "not_applicable"
+    assert not any("NEAR_PLACE" in q or "Listing" in q for q, _ in queries)
 
 
 @pytest.mark.parametrize(
-    "payload", [[], {"events": None}, {"events": [42]}, {"events": "wrong"}]
+    "payload",
+    [
+        [], {"events": None}, {"events": [42]}, {"events": "wrong"},
+        # the retired feedback-snapshot shape and malformed behavior_context shapes are rejected before staging
+        {"previous_round": None, "appointments": []},
+        {"version": "1.0", "as_of": "2026-10-23T08:00:00", "listing_view_durations": [], "book_viewing_listings": []},
+        {"version": "1.0", "as_of": "2026-10-23T08:00:00Z", "listing_view_durations": [
+            {"listing_id": "a", "duration_seconds": -1, "view_count": 1, "last_viewed_at": "2026-10-23T08:00:00Z",
+             "source_request_ids": ["a028cc35-820d-43f6-92ef-7875ccff67e0"], "interest_eligible": True}],
+         "book_viewing_listings": []},
+    ],
 )
 def test_terminal_rejects_malformed_event_shapes(tmp_path, payload):
     args = argparse.Namespace(
@@ -170,6 +187,6 @@ def test_terminal_rejects_malformed_event_shapes(tmp_path, payload):
         path.write_text(json.dumps(payload))
         with pytest.raises(ValueError):
             terminal.command(f"feedback @{path}")
-        assert terminal.events == [] and terminal.current is None
+        assert terminal.behavior is None and terminal.current is None
     finally:
         terminal.store.close()

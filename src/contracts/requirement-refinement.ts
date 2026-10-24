@@ -13,7 +13,7 @@ export const refinementAnswerSchema=z.object({
 }).strict();
 export const refinementSubmitSchema=z.object({submission_id:z.string().uuid(),answers:z.array(refinementAnswerSchema).max(3)}).strict();
 export type RefinementAnswer=z.infer<typeof refinementAnswerSchema>;
-export type RefinementPlan={id:string;session_id:string;source_request_id:string;source_operation_id:string;requirements_version:number;dataset:string;trigger:'mock';questions:RefinementQuestion[];status:'OPEN'|'SUBMITTED'|'DISMISSED'|'STALE';answers:RefinementAnswer[];answer_summary:string[];submitted_operation_id:string|null};
+export type RefinementPlan={id:string;session_id:string;source_request_id:string;source_operation_id:string;requirements_version:number;dataset:string;trigger:'mock'|'native_cold_start';cold_start?:import('zod').infer<typeof import('./recommendation-native.js').nativeSelectionSchema>['cold_start'];questions:RefinementQuestion[];status:'OPEN'|'SUBMITTED'|'DISMISSED'|'STALE';answers:RefinementAnswer[];answer_summary:string[];submitted_operation_id:string|null};
 export function unchangedRefinementSummary(q:RefinementQuestion,action:'any'|'skip'){
   if(action==='skip')return q.title+' 暂未补充';
   if(q.kind==='ideal_rent')return `保留原预算${q.upper_bound?`上限 ${q.upper_bound.toLocaleString('en-SG')} 新币`:''}，不新增理想月租偏好`;

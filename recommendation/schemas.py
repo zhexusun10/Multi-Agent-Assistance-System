@@ -5,6 +5,7 @@ from recommendation.contracts.request import (
 )
 from recommendation.contracts.requirements import Requirements
 from recommendation.contracts.feedback import ViewingEvent
+from recommendation.contracts.behavior import BehaviorContext
 from .models.candidate import Response
 
 DIRECTORY = (
@@ -19,6 +20,7 @@ def generate(check=False):
         ("response", Response),
         ("requirements", Requirements),
         ("feedback", ViewingEvent),
+        ("behavior-context", BehaviorContext),
     ]:
         expected = (
             json.dumps(model.model_json_schema(), indent=2, sort_keys=True) + "\n"
@@ -28,8 +30,7 @@ def generate(check=False):
             if not path.exists() or path.read_text() != expected:
                 raise ValueError(f"Stale generated schema: {path}")
         else:
-            # Deterministic fingerprints across Windows and Unix worktrees.
-            path.write_bytes(expected.encode('utf-8'))
+            path.write_text(expected)
 
 
 def validate_response(response):

@@ -1,6 +1,6 @@
-"""Application model-output protocol, outside the unchanged upstream algorithm.
+"""Application model-output protocol on top of the native LiveController.
 
-Keeps the native four tools, limits, proposal IDs and final gate. Only frames the
+Keeps the native tool registry, budgets, proposal IDs and final gate. Only frames the
 output contract and unwraps one unambiguous, schema-valid proposal from prose.
 """
 import json
@@ -9,18 +9,18 @@ from hashlib import sha256
 
 from .agent.controller import LiveController, Proposal, visible_text
 
-PROTOCOL_VERSION = "app-recommendation-output-v1"
+PROTOCOL_VERSION = "app-recommendation-output-v2"
 OUTPUT_CONTRACT = """Application response contract:
-Use the same four tools and the exact current context_ref. Data gaps are not
+Use only the supplied tools with the exact current context_ref. Data gaps are not
 tool errors: an unresolved place or unknown hard condition must remain unknown.
-After rank_candidates succeeds, stop gathering data and submit its ranked prefix
-as the final proposal. An empty ranked_ids array is a completed ranking: return
-{"listing_ids":[]} even when there are unverified candidate previews. The service
-assembles unverified options separately. Never promote preview/candidate IDs into
-the verified shortlist. Never repeat retrieval to repair unavailable source data.
+After rank_candidates succeeds, stop gathering data and submit its selected_ids,
+in the same order, as the final proposal. An empty selected_ids array is a
+completed selection: return {"listing_ids":[]}. Never promote preview or
+candidate IDs into the selection. Never repeat retrieval to repair unavailable
+source data.
 Final output is ONE JSON object with listing_ids only, without prose or fences.
-Example: ranking ready, ranked_ids=[] -> {"listing_ids":[]}.
-Example: ranked prefix ["A","B"] -> {"listing_ids":["A","B"]}.
+Example: selection ready, selected_ids=[] -> {"listing_ids":[]}.
+Example: selected_ids ["A","B"] -> {"listing_ids":["A","B"]}.
 The final gate, not your narrative, determines whether a proposal is accepted.
 """
 
@@ -60,10 +60,10 @@ class ApplicationLiveController(LiveController):
     def invoke(self, messages, tools, remaining):
         dispatcher = getattr(self, "_dispatcher", None)
         state = {
-            "rank_computed": dispatcher is not None and dispatcher.ranked is not None,
-            "current_ranked_prefix": (
-                dispatcher.ranked[: dispatcher.request.result_limit]
-                if dispatcher is not None and dispatcher.ranked is not None else None
+            "rank_computed": dispatcher is not None and dispatcher.selected is not None,
+            "current_selected_ids": (
+                list(dispatcher.selected)
+                if dispatcher is not None and dispatcher.selected is not None else None
             ),
         }
         suffix = OUTPUT_CONTRACT + "\nRead-only current run state: " + json.dumps(state)

@@ -1,0 +1,518 @@
+{
+ "place_catalog": {
+  "places": 3716,
+  "categories": {
+   "CampusBuilding": 353,
+   "Clinic": 475,
+   "FoodCourt": 693,
+   "Hospital": 60,
+   "Library": 56,
+   "Mall": 246,
+   "Market": 53,
+   "Park": 624,
+   "School": 602,
+   "Supermarket": 554
+  },
+  "cold_load_ms": 220.1,
+  "cached_ms": 3.3,
+  "catalog_version": "1805165d0c28f0de7415d7dce3f55ef860e6a762e42583fa801c5d20d3565174",
+  "source": "neo4j:Place"
+ },
+ "resolution": {
+  "NUS": {
+   "status": "resolved",
+   "entity_id": "OSM:way:54519165",
+   "entity_kind": "osm_place",
+   "method": "name",
+   "reason": "unique_exact_place_match",
+   "candidates": []
+  },
+  "NTU": {
+   "status": "resolved",
+   "entity_id": "OSM:way:115105262",
+   "entity_kind": "osm_place",
+   "method": "name",
+   "reason": "unique_exact_place_match",
+   "candidates": []
+  },
+  "新加坡国立大学": {
+   "status": "resolved",
+   "entity_id": "OSM:way:54519165",
+   "entity_kind": "osm_place",
+   "method": "name",
+   "reason": "unique_exact_place_match",
+   "candidates": []
+  },
+  "NUS ISS": {
+   "status": "unresolved",
+   "entity_id": null,
+   "entity_kind": null,
+   "method": "name",
+   "reason": "no_exact_match",
+   "candidates": []
+  },
+  "NUS-ISS": {
+   "status": "unresolved",
+   "entity_id": null,
+   "entity_kind": null,
+   "method": "name",
+   "reason": "no_exact_match",
+   "candidates": []
+  },
+  "Institute of Systems Science": {
+   "status": "resolved",
+   "entity_id": "OSM:relation:4548824",
+   "entity_kind": "osm_place",
+   "method": "name",
+   "reason": "unique_exact_place_match",
+   "candidates": []
+  },
+  "Clementi": {
+   "status": "resolved",
+   "entity_id": "URA:AREA:CLEMENTI",
+   "entity_kind": "ura_area",
+   "method": "name",
+   "reason": "unique_exact_area_match",
+   "candidates": []
+  },
+  "金文泰": {
+   "status": "resolved",
+   "entity_id": "URA:AREA:CLEMENTI",
+   "entity_kind": "ura_area",
+   "method": "name",
+   "reason": "unique_exact_area_match",
+   "candidates": []
+  },
+  "Clementi MRT": {
+   "status": "resolved",
+   "entity_id": "LTA:MRT:CLEMENTI",
+   "entity_kind": "lta_station",
+   "method": "name",
+   "reason": "unique_exact_station_match",
+   "candidates": []
+  },
+  "金文泰地铁站": {
+   "status": "resolved",
+   "entity_id": "LTA:MRT:CLEMENTI",
+   "entity_kind": "lta_station",
+   "method": "name",
+   "reason": "unique_exact_station_match",
+   "candidates": []
+  },
+  "Bukit Panjang": {
+   "status": "resolved",
+   "entity_id": "URA:AREA:BUKIT_PANJANG",
+   "entity_kind": "ura_area",
+   "method": "name",
+   "reason": "unique_exact_area_match",
+   "candidates": []
+  },
+  "Bukit Panjang Station": {
+   "status": "ambiguous",
+   "entity_id": null,
+   "entity_kind": null,
+   "method": "name",
+   "reason": "multiple_exact_matches (2)",
+   "candidates": [
+    [
+     "LTA:LRT:BUKIT_PANJANG",
+     "BUKIT PANJANG LRT STATION",
+     "lta_station"
+    ],
+    [
+     "LTA:MRT:BUKIT_PANJANG",
+     "BUKIT PANJANG MRT STATION",
+     "lta_station"
+    ]
+   ]
+  },
+  "Bukit Panjang LRT": {
+   "status": "resolved",
+   "entity_id": "LTA:LRT:BUKIT_PANJANG",
+   "entity_kind": "lta_station",
+   "method": "name",
+   "reason": "unique_exact_station_match",
+   "candidates": []
+  },
+  "西区": {
+   "status": "resolved",
+   "entity_id": "URA:REGION:WEST",
+   "entity_kind": "ura_region",
+   "method": "name",
+   "reason": "unique_exact_area_match",
+   "candidates": []
+  },
+  "one-north": {
+   "status": "resolved",
+   "entity_id": "LTA:MRT:ONE-NORTH",
+   "entity_kind": "lta_station",
+   "method": "name",
+   "reason": "unique_exact_station_match",
+   "candidates": []
+  },
+  "one-north MRT": {
+   "status": "resolved",
+   "entity_id": "LTA:MRT:ONE-NORTH",
+   "entity_kind": "lta_station",
+   "method": "name",
+   "reason": "unique_exact_station_match",
+   "candidates": []
+  },
+  "Cold Storage": {
+   "status": "ambiguous",
+   "entity_id": null,
+   "entity_kind": null,
+   "method": "name",
+   "reason": "multiple_exact_matches (38)",
+   "candidates": [
+    [
+     "OSM:node:12143316854",
+     "Cold Storage",
+     "osm_place"
+    ],
+    [
+     "OSM:node:1264537429",
+     "Cold Storage",
+     "osm_place"
+    ],
+    [
+     "OSM:node:1699440753",
+     "Cold Storage",
+     "osm_place"
+    ],
+    [
+     "OSM:node:1711105937",
+     "Cold Storage",
+     "osm_place"
+    ],
+    [
+     "OSM:node:1839603987",
+     "Cold Storage",
+     "osm_place"
+    ]
+   ]
+  },
+  "VivoCity": {
+   "status": "resolved",
+   "entity_id": "OSM:relation:2353588",
+   "entity_kind": "osm_place",
+   "method": "name",
+   "reason": "unique_exact_place_match",
+   "candidates": []
+  },
+  "Atlantis": {
+   "status": "unresolved",
+   "entity_id": null,
+   "entity_kind": null,
+   "method": "name",
+   "reason": "no_exact_match",
+   "candidates": []
+  },
+  "id:OSM:way:54519165": {
+   "status": "resolved",
+   "entity_id": "OSM:way:54519165",
+   "entity_kind": "osm_place",
+   "method": "id",
+   "reason": "verified_id",
+   "candidates": []
+  },
+  "category:MRTStation": {
+   "status": "resolved",
+   "entity_id": "MRTStation",
+   "entity_kind": "category",
+   "method": "category",
+   "reason": "nearest of 147 LTA MRT stations",
+   "candidates": []
+  },
+  "category:LRTStation": {
+   "status": "resolved",
+   "entity_id": "LRTStation",
+   "entity_kind": "category",
+   "method": "category",
+   "reason": "nearest of 41 LTA LRT stations",
+   "candidates": []
+  },
+  "category:Hospital": {
+   "status": "resolved",
+   "entity_id": "Hospital",
+   "entity_kind": "category",
+   "method": "category",
+   "reason": "nearest of 60 known Hospital places",
+   "candidates": []
+  },
+  "category:Gym": {
+   "status": "unresolved",
+   "entity_id": null,
+   "entity_kind": null,
+   "method": "category",
+   "reason": "unsupported_category",
+   "candidates": []
+  }
+ },
+ "listings": {
+  "rows": 21431,
+  "with_valid_coordinates": 8631,
+  "retrieve_ms": 690.9
+ },
+ "region_distance_8631": {
+  "URA:REGION:CENTRAL": {
+   "ms": 119.6,
+   "inside": 2285,
+   "max_m": 11326.9
+  },
+  "URA:REGION:EAST": {
+   "ms": 52.6,
+   "inside": 1248,
+   "max_m": 23148.7
+  },
+  "URA:REGION:NORTH": {
+   "ms": 59.3,
+   "inside": 1162,
+   "max_m": 13905.0
+  },
+  "URA:REGION:NORTH-EAST": {
+   "ms": 49.0,
+   "inside": 1917,
+   "max_m": 15341.1
+  },
+  "URA:REGION:WEST": {
+   "ms": 23.3,
+   "inside": 2018,
+   "max_m": 22210.5
+  }
+ },
+ "area_distance_clementi": {
+  "ms": 22.5,
+  "inside": 259
+ },
+ "nearest_mrt_exit": {
+  "ms": 34.3,
+  "exits": 541,
+  "median_m": 565.8,
+  "p95_m": 1538.9
+ },
+ "nearest_hospital": {
+  "ms": 3.7,
+  "places": 60,
+  "within_1500": 5550
+ },
+ "ura_membership_vs_graph": {
+  "graph_edges": 8630,
+  "python_inside_any": 8630,
+  "python_in_several_areas": 0,
+  "agree": 8631,
+  "compared": 8631,
+  "disagreements": [],
+  "graph_query_ms": 155.7
+ },
+ "end_to_end": {
+  "hard-hospital-1500": {
+   "status": "success",
+   "wall_ms": 2374.8,
+   "pool": {
+    "pool_key": "f705c178eb542373fabff9a91bba8adc55b9dad2f64fee307e74715e35f80f17",
+    "pool_version": "e4abcb4f5d6ea4d36bee07fe25a4377215c58c5ef14bd8868cb6a76b058b89d7",
+    "data_version": "fdfce5220311e85438213d9ee4839969db300708224018b2adce5c069892d726",
+    "cache": "bypassed",
+    "size": 4684,
+    "source_count": 21431,
+    "excluded_hard_fail": 11237,
+    "excluded_hard_unknown": 5510,
+    "unknown_reasons": {
+     "distance: missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity": 5510
+    }
+   },
+   "resolution": [
+    {
+     "criterion_id": "hospital",
+     "field": "distance",
+     "original": {
+      "destination_id": null,
+      "destination_name": null,
+      "category": "Hospital"
+     },
+     "status": "resolved",
+     "entity_id": "Hospital",
+     "entity_kind": "category",
+     "method": "category",
+     "reason": "nearest of 60 known Hospital places",
+     "candidates": []
+    }
+   ],
+   "returned": 10,
+   "clarifications": [],
+   "evidence_methods": [
+    "coordinate_haversine"
+   ],
+   "pool_stats": {
+    "catalog_ms": 2.7,
+    "retrieve_ms": 601.1,
+    "rows_transferred": 21431,
+    "cheap_evaluate_ms": 161.6,
+    "hard_geo_ms": 121.7,
+    "hard_geo_listings": 12883,
+    "cache_write_ms": 16.7
+   }
+  },
+  "hard-mrt-600-soft-clementi": {
+   "status": "success",
+   "wall_ms": 2419.9,
+   "pool": {
+    "pool_key": "9b7e7d9d86792e6f2eacfa47761f76a68d6695cd03e5d9740a851a634cd06420",
+    "pool_version": "e89129c427f4d9156a41b347428841fac257a72b509d8dbb86f0f4165bd3ded9",
+    "data_version": "fdfce5220311e85438213d9ee4839969db300708224018b2adce5c069892d726",
+    "cache": "bypassed",
+    "size": 3698,
+    "source_count": 21431,
+    "excluded_hard_fail": 12223,
+    "excluded_hard_unknown": 5510,
+    "unknown_reasons": {
+     "distance: missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity": 5510
+    }
+   },
+   "resolution": [
+    {
+     "criterion_id": "mrt",
+     "field": "distance",
+     "original": {
+      "destination_id": null,
+      "destination_name": null,
+      "category": "MRTStation"
+     },
+     "status": "resolved",
+     "entity_id": "MRTStation",
+     "entity_kind": "category",
+     "method": "category",
+     "reason": "nearest of 147 LTA MRT stations",
+     "candidates": []
+    },
+    {
+     "criterion_id": "clementi",
+     "field": "distance",
+     "original": {
+      "destination_id": null,
+      "destination_name": "金文泰",
+      "category": null
+     },
+     "status": "resolved",
+     "entity_id": "URA:AREA:CLEMENTI",
+     "entity_kind": "ura_area",
+     "method": "name",
+     "reason": "unique_exact_area_match",
+     "candidates": []
+    }
+   ],
+   "returned": 10,
+   "clarifications": [],
+   "evidence_methods": [
+    "haversine.nearest_recorded_exit",
+    "ura_polygon.zero_inside_nearest_edge_local_equirectangular"
+   ],
+   "pool_stats": {
+    "catalog_ms": 2.7,
+    "retrieve_ms": 536.9,
+    "rows_transferred": 21431,
+    "cheap_evaluate_ms": 97.9,
+    "hard_geo_ms": 146.7,
+    "hard_geo_listings": 12883,
+    "cache_write_ms": 12.7
+   }
+  },
+  "hard-west-region": {
+   "status": "success",
+   "wall_ms": 1713.2,
+   "pool": {
+    "pool_key": "226f899064d602af589ccb13b92995ed7c11cc86bacf081aba42dd214dcc38b0",
+    "pool_version": "2ad93a887f7aef2fba6f89d4ba3ad09a4962c57a63ab52f4b082a9fc381dc7d1",
+    "data_version": "fdfce5220311e85438213d9ee4839969db300708224018b2adce5c069892d726",
+    "cache": "bypassed",
+    "size": 1834,
+    "source_count": 21431,
+    "excluded_hard_fail": 14087,
+    "excluded_hard_unknown": 5510,
+    "unknown_reasons": {
+     "distance: missing valid coordinates/mapping; absent NEAR_PLACE edge is not absence of amenity": 5510
+    }
+   },
+   "resolution": [
+    {
+     "criterion_id": "west",
+     "field": "distance",
+     "original": {
+      "destination_id": "URA:REGION:WEST",
+      "destination_name": null,
+      "category": null
+     },
+     "status": "resolved",
+     "entity_id": "URA:REGION:WEST",
+     "entity_kind": "ura_region",
+     "method": "id",
+     "reason": "verified_id",
+     "candidates": []
+    }
+   ],
+   "returned": 10,
+   "clarifications": [],
+   "evidence_methods": [
+    "ura_polygon.zero_inside_nearest_edge_local_equirectangular"
+   ],
+   "pool_stats": {
+    "catalog_ms": 3.0,
+    "retrieve_ms": 633.3,
+    "rows_transferred": 21431,
+    "cheap_evaluate_ms": 35.8,
+    "hard_geo_ms": 220.9,
+    "hard_geo_listings": 12883,
+    "cache_write_ms": 5.8
+   }
+  },
+  "hard-nus-iss-unresolved": {
+   "status": "needs_clarification",
+   "wall_ms": 1341.0,
+   "pool": {
+    "pool_key": "81aeb8af21c9a4efbd7df3b6a2ec6b159c2e35ed85fd4e106422756fe424de04",
+    "pool_version": "d53081e0170c4e6f09445827e5c7ab78707bb1a78b15bc426698456c0de48109",
+    "data_version": "fdfce5220311e85438213d9ee4839969db300708224018b2adce5c069892d726",
+    "cache": "bypassed",
+    "size": 0,
+    "source_count": 21431,
+    "excluded_hard_fail": 0,
+    "excluded_hard_unknown": 21431,
+    "unknown_reasons": {
+     "distance: destination unresolved: no catalog entity matches the name exactly": 21431
+    }
+   },
+   "resolution": [
+    {
+     "criterion_id": "iss",
+     "field": "distance",
+     "original": {
+      "destination_id": null,
+      "destination_name": "NUS ISS",
+      "category": null
+     },
+     "status": "unresolved",
+     "entity_id": null,
+     "entity_kind": null,
+     "method": "name",
+     "reason": "no_exact_match",
+     "candidates": []
+    }
+   ],
+   "returned": 0,
+   "clarifications": [
+    "Hard criterion 'iss' (distance): destination unresolved (no catalog entity matches the name exactly)."
+   ],
+   "evidence_methods": [],
+   "pool_stats": {
+    "catalog_ms": 3.1,
+    "retrieve_ms": 551.6,
+    "rows_transferred": 21431,
+    "cheap_evaluate_ms": 7.5,
+    "hard_geo_ms": 172.5,
+    "hard_geo_listings": 21431,
+    "cache_write_ms": 0.3
+   }
+  }
+ }
+}

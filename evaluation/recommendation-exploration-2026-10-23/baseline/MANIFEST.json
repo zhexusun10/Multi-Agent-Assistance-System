@@ -1,0 +1,42 @@
+{
+  "captured_at_commit": "4d36507d987e142148ef0417cba91a2a81f7fbb8",
+  "controller_mode": "scripted",
+  "data_mode": "fixture",
+  "files": {
+    "examples-contracts/clarification.json": "c25a275cef88371b9f71a6488e1620139817e0a55135d00dfe66be7bd248f633",
+    "examples-contracts/error.json": "99d3a3a73be8047854bcf50ff6dcbdede0c833ab3797405f08b5d856146e3bc8",
+    "examples-contracts/feedback-only-update.json": "4ab96301f0a571f49dc7c6a3da25493cc1b1046efbb32c01d6f77434d3d8062e",
+    "examples-contracts/initial-search.json": "b3df49b60f851a597f2e048f44f19c325000af592f8097c582f12fd4ea3bfab0",
+    "examples-contracts/no-match.json": "7a9db3082026ea76d6d3ed454d7cfe18f9cae8739004adc5371c1355874af780",
+    "examples-contracts/preference-update.json": "470c7af9064ae6ba25a1ceceb3e701a49c977c7e3f919c5415151f441d94c0f8",
+    "examples-contracts/success.json": "017f056380151e5c7cd748506691a28747551479f9266179b72ac5767a8166df",
+    "feedback.request.json": "77782a6aa401f0a25bb7dfea91034f5d0717236ed0fafcfe02a98c1685cf871d",
+    "feedback.response.json": "54a6998b050cc80eeb45181a18d826cabd0258db924621131faefd3c15ec4bad",
+    "feedback.trace.json": "b293b213ebca2dcce5bcd8be3c19a0b1d64c4b5d9a95d0fe90222983cf819214",
+    "geography.request.json": "59cd3d49880e1ae5f44129f552a700b178fa79dc845c3ac9b90365b7b0372792",
+    "geography.response.json": "e2cb0b3096a37c44cf99f9a1485ba3acfc6b066183bf4f89c9452e780e3ad162",
+    "geography.trace.json": "89a679dece46cbbf63b266aff32d227e523fcc69ed7d5ae8f45b6cfc59d3d632",
+    "initial.request.json": "c46aaaddabc9db0cf968c096fde0befcd4b0f95b438c375f6beea36d77914386",
+    "initial.response.json": "42c0ad8eddc0aa707019cb8a7e3029f0e7acdd29f6e114f51550318e8d459d0f",
+    "initial.trace.json": "45ee26920502d9bbb13496e51c00ab1088ae7db5a4cb06b22428d4a3aba3d683",
+    "preference-update.request.json": "81226b317e014abe9cbd509a8eb8b433f015eb4cfcdc59eb1090239fbef56a66",
+    "preference-update.response.json": "c245d2fc3f795a3059dbfcace2e13ca46a47f8516d60a35425fca7f71d48a5b8",
+    "preference-update.trace.json": "d46eb3a75c5d19e427f6227a42da674edafb16582f67ece91942c1f9890cee6c"
+  },
+  "python": "3.11.16",
+  "recommendation_tree_clean": true,
+  "rounds": [
+    "initial",
+    "feedback",
+    "preference-update",
+    "geography"
+  ],
+  "volatile_fields": [
+    "state.state_id",
+    "state.candidate_pool_ref",
+    "execution.trace_id",
+    "execution.trace_ref",
+    "execution.duration_ms",
+    "trace step duration_ms / call_id / snapshot_ref"
+  ]
+}

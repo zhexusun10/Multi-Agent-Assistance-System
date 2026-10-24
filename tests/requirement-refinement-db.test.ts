@@ -9,6 +9,7 @@ import {PostgresSessionEventStore} from '../src/session-store.js';
 import {WorkflowService} from '../src/domain/workflow.js';
 import {compare,validateResponse,type RecommendationRequest,type RecommendationResponse} from '../src/contracts/recommendation-v1.js';
 import {classify} from '../src/adapters/recommendation.js';
+import {refinementNative} from './helpers/refinement-native.js';
 
 test('isolated PostgreSQL card lifecycle preserves requirements, resumes A/B/C, rejects stale plans and stops after all questions', {skip:process.env.REFINEMENT_DB_TEST!=='1'},async()=>{
   const admin=new pg.Pool({connectionString:process.env.TEST_DATABASE_URL||process.env.DATABASE_URL}),schema='refinement_test_'+randomUUID().replaceAll('-','');
@@ -20,6 +21,7 @@ test('isolated PostgreSQL card lifecycle preserves requirements, resumes A/B/C, 
     const f=JSON.parse(await readFile('evaluation/inputs/explanation-update-ranking.json','utf8')),dataset=f.recommendation.state.coverage.dataset_version;
     const workflow=new WorkflowService(store,dataset),session=await store.create('refinement-isolated-test-owner'),operation=randomUUID(),source=randomUUID();
     f.recommendation.request_id=source;f.recommendation.conversation_id=session;
+    f.recommendation.native={...f.recommendation.native,...refinementNative(true)};
     await pool.query("INSERT INTO domain_operations(id,session_id,request_id,query,kind,status) VALUES($1,$2,$3,'fixture','search','completed')",[operation,session,randomUUID()]);
     await pool.query('INSERT INTO recommendation_calls(id,session_id,operation_id,request,response) VALUES($1,$2,$3,$4,$5)',[source,session,operation,JSON.stringify({}),JSON.stringify(f.recommendation)]);
     await store.transaction(async tx=>{const s=await store.lock(tx,session);s.requirements=f.requirements;s.requirements_version=f.recommendation.requirements_version;s.active_operation_id=operation;s.latest_request_id=source;s.recommendation=f.recommendation;

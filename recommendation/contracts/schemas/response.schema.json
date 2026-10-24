@@ -1,8 +1,132 @@
 {
   "$defs": {
+    "ColdStartDiagnostics": {
+      "additionalProperties": false,
+      "properties": {
+        "active": {
+          "title": "Active",
+          "type": "boolean"
+        },
+        "boundary_group_b": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Boundary Group B"
+        },
+        "coverage_c": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Coverage C"
+        },
+        "evaluated": {
+          "title": "Evaluated",
+          "type": "boolean"
+        },
+        "exit_conditions_met": {
+          "title": "Exit Conditions Met",
+          "type": "boolean"
+        },
+        "pool_key": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pool Key"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "stability_s": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stability S"
+        },
+        "thresholds": {
+          "$ref": "#/$defs/ColdStartThresholds"
+        }
+      },
+      "required": [
+        "evaluated",
+        "active",
+        "reason",
+        "thresholds",
+        "exit_conditions_met"
+      ],
+      "title": "ColdStartDiagnostics",
+      "type": "object"
+    },
+    "ColdStartThresholds": {
+      "additionalProperties": false,
+      "properties": {
+        "b": {
+          "minimum": 1,
+          "title": "B",
+          "type": "integer"
+        },
+        "c": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "C",
+          "type": "number"
+        },
+        "s": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "S",
+          "type": "number"
+        }
+      },
+      "required": [
+        "c",
+        "b",
+        "s"
+      ],
+      "title": "ColdStartThresholds",
+      "type": "object"
+    },
     "Contribution": {
       "additionalProperties": false,
       "properties": {
+        "branch": {
+          "enum": [
+            "soft",
+            "appointment",
+            "browsing"
+          ],
+          "title": "Branch",
+          "type": "string"
+        },
         "contribution": {
           "maximum": 1,
           "minimum": 0,
@@ -12,6 +136,18 @@
         "feature": {
           "title": "Feature",
           "type": "string"
+        },
+        "method": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Method"
         },
         "raw_difference": {
           "anyOf": [
@@ -77,6 +213,7 @@
       },
       "required": [
         "feature",
+        "branch",
         "weight",
         "contribution"
       ],
@@ -276,6 +413,14 @@
     "Execution": {
       "additionalProperties": false,
       "properties": {
+        "config_hash": {
+          "title": "Config Hash",
+          "type": "string"
+        },
+        "config_version": {
+          "title": "Config Version",
+          "type": "integer"
+        },
         "controller_mode": {
           "title": "Controller Mode",
           "type": "string"
@@ -307,8 +452,15 @@
           "title": "Model Identifier"
         },
         "scoring_version": {
-          "default": "weighted-v1",
           "title": "Scoring Version",
+          "type": "string"
+        },
+        "selection_algorithm": {
+          "title": "Selection Algorithm",
+          "type": "string"
+        },
+        "selection_hash": {
+          "title": "Selection Hash",
           "type": "string"
         },
         "strategy": {
@@ -345,10 +497,95 @@
         "trace_id",
         "trace_ref",
         "strategy",
+        "scoring_version",
+        "selection_algorithm",
+        "config_version",
+        "config_hash",
+        "selection_hash",
         "data_mode",
         "controller_mode"
       ],
       "title": "Execution",
+      "type": "object"
+    },
+    "Exploration": {
+      "additionalProperties": false,
+      "properties": {
+        "bins": {
+          "items": {
+            "$ref": "#/$defs/ExplorationBin"
+          },
+          "title": "Bins",
+          "type": "array"
+        },
+        "candidate_count": {
+          "minimum": 0,
+          "title": "Candidate Count",
+          "type": "integer"
+        },
+        "sample_size": {
+          "minimum": 0,
+          "title": "Sample Size",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "candidate_count",
+        "sample_size",
+        "bins"
+      ],
+      "title": "Exploration",
+      "type": "object"
+    },
+    "ExplorationBin": {
+      "additionalProperties": false,
+      "properties": {
+        "count": {
+          "minimum": 0,
+          "title": "Count",
+          "type": "integer"
+        },
+        "lower": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Lower"
+        },
+        "quota": {
+          "minimum": 0,
+          "title": "Quota",
+          "type": "integer"
+        },
+        "sampled": {
+          "minimum": 0,
+          "title": "Sampled",
+          "type": "integer"
+        },
+        "upper": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Upper"
+        }
+      },
+      "required": [
+        "lower",
+        "upper",
+        "count",
+        "sampled",
+        "quota"
+      ],
+      "title": "ExplorationBin",
       "type": "object"
     },
     "ListingSummary": {
@@ -521,6 +758,73 @@
       "title": "ListingSummary",
       "type": "object"
     },
+    "PoolSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "cache": {
+          "enum": [
+            "built",
+            "reused",
+            "bypassed"
+          ],
+          "title": "Cache",
+          "type": "string"
+        },
+        "data_version": {
+          "title": "Data Version",
+          "type": "string"
+        },
+        "excluded_hard_fail": {
+          "minimum": 0,
+          "title": "Excluded Hard Fail",
+          "type": "integer"
+        },
+        "excluded_hard_unknown": {
+          "minimum": 0,
+          "title": "Excluded Hard Unknown",
+          "type": "integer"
+        },
+        "pool_key": {
+          "title": "Pool Key",
+          "type": "string"
+        },
+        "pool_version": {
+          "title": "Pool Version",
+          "type": "string"
+        },
+        "size": {
+          "minimum": 0,
+          "title": "Size",
+          "type": "integer"
+        },
+        "source_count": {
+          "minimum": 0,
+          "title": "Source Count",
+          "type": "integer"
+        },
+        "unknown_reasons": {
+          "additionalProperties": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "maxProperties": 11,
+          "title": "Unknown Reasons",
+          "type": "object"
+        }
+      },
+      "required": [
+        "pool_key",
+        "pool_version",
+        "data_version",
+        "cache",
+        "size",
+        "source_count",
+        "excluded_hard_fail",
+        "excluded_hard_unknown"
+      ],
+      "title": "PoolSummary",
+      "type": "object"
+    },
     "RecommendationItem": {
       "additionalProperties": false,
       "properties": {
@@ -542,13 +846,34 @@
           "$ref": "#/$defs/ListingSummary"
         },
         "rank": {
-          "maximum": 5,
+          "maximum": 10,
           "minimum": 1,
           "title": "Rank",
           "type": "integer"
         },
+        "score_rank": {
+          "minimum": 1,
+          "title": "Score Rank",
+          "type": "integer"
+        },
         "scores": {
           "$ref": "#/$defs/ScoreBreakdown"
+        },
+        "selection_note": {
+          "minLength": 1,
+          "title": "Selection Note",
+          "type": "string"
+        },
+        "selection_reason": {
+          "enum": [
+            "ranked",
+            "leader",
+            "tie_group_sample",
+            "price_exploration_sample",
+            "small_pool"
+          ],
+          "title": "Selection Reason",
+          "type": "string"
         },
         "strengths": {
           "items": {
@@ -575,24 +900,264 @@
       "required": [
         "listing",
         "rank",
+        "score_rank",
         "scores",
         "criterion_results",
         "evidence_refs",
         "strengths",
         "trade_offs",
-        "unknowns"
+        "unknowns",
+        "selection_reason",
+        "selection_note"
       ],
       "title": "RecommendationItem",
+      "type": "object"
+    },
+    "ResolutionCandidate": {
+      "additionalProperties": false,
+      "properties": {
+        "entity_id": {
+          "title": "Entity Id",
+          "type": "string"
+        },
+        "kind": {
+          "title": "Kind",
+          "type": "string"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
+        }
+      },
+      "required": [
+        "entity_id",
+        "kind"
+      ],
+      "title": "ResolutionCandidate",
+      "type": "object"
+    },
+    "ResolutionOriginal": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Category"
+        },
+        "destination_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Destination Id"
+        },
+        "destination_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Destination Name"
+        }
+      },
+      "title": "ResolutionOriginal",
+      "type": "object"
+    },
+    "ResolutionResult": {
+      "additionalProperties": false,
+      "properties": {
+        "candidates": {
+          "items": {
+            "$ref": "#/$defs/ResolutionCandidate"
+          },
+          "title": "Candidates",
+          "type": "array"
+        },
+        "criterion_id": {
+          "title": "Criterion Id",
+          "type": "string"
+        },
+        "entity_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Entity Id"
+        },
+        "entity_kind": {
+          "anyOf": [
+            {
+              "enum": [
+                "lta_station",
+                "ura_area",
+                "ura_region",
+                "osm_place",
+                "category"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Entity Kind"
+        },
+        "field": {
+          "title": "Field",
+          "type": "string"
+        },
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "original": {
+          "$ref": "#/$defs/ResolutionOriginal"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "status": {
+          "enum": [
+            "resolved",
+            "ambiguous",
+            "unresolved",
+            "not_applicable"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "criterion_id",
+        "field",
+        "original",
+        "status",
+        "method"
+      ],
+      "title": "ResolutionResult",
       "type": "object"
     },
     "ScoreBreakdown": {
       "additionalProperties": false,
       "properties": {
+        "appointment_score": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Appointment Score"
+        },
+        "appointment_weight": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Appointment Weight",
+          "type": "number"
+        },
+        "behavior_score": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Behavior Score"
+        },
+        "behavior_weight": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Behavior Weight",
+          "type": "number"
+        },
+        "browsing_score": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Browsing Score"
+        },
+        "browsing_weight": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Browsing Weight",
+          "type": "number"
+        },
         "combined_score": {
           "maximum": 1,
           "minimum": 0,
           "title": "Combined Score",
           "type": "number"
+        },
+        "comparison_coverage": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Comparison Coverage"
         },
         "contributions": {
           "items": {
@@ -601,55 +1166,35 @@
           "title": "Contributions",
           "type": "array"
         },
-        "evidence_coverage": {
-          "maximum": 1,
-          "minimum": 0,
-          "title": "Evidence Coverage",
-          "type": "number"
-        },
-        "explicit_score": {
-          "anyOf": [
-            {
-              "maximum": 1,
-              "minimum": 0,
-              "type": "number"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Explicit Score"
-        },
-        "explicit_weight": {
-          "maximum": 1,
-          "minimum": 0,
-          "title": "Explicit Weight",
-          "type": "number"
-        },
-        "implicit_score": {
-          "anyOf": [
-            {
-              "maximum": 1,
-              "minimum": 0,
-              "type": "number"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Implicit Score"
-        },
-        "implicit_weight": {
-          "maximum": 1,
-          "minimum": 0,
-          "title": "Implicit Weight",
-          "type": "number"
-        },
         "ordering": {
           "title": "Ordering",
           "type": "string"
+        },
+        "soft_evidence_coverage": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Soft Evidence Coverage",
+          "type": "number"
+        },
+        "soft_score": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Soft Score"
+        },
+        "soft_weight": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Soft Weight",
+          "type": "number"
         },
         "suppressed_features": {
           "items": {
@@ -661,13 +1206,93 @@
       },
       "required": [
         "combined_score",
-        "explicit_weight",
-        "implicit_weight",
-        "evidence_coverage",
+        "soft_weight",
+        "behavior_weight",
+        "appointment_weight",
+        "browsing_weight",
+        "soft_evidence_coverage",
         "contributions",
         "ordering"
       ],
       "title": "ScoreBreakdown",
+      "type": "object"
+    },
+    "SelectionSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "algorithm_version": {
+          "title": "Algorithm Version",
+          "type": "string"
+        },
+        "cold_start": {
+          "$ref": "#/$defs/ColdStartDiagnostics"
+        },
+        "exploration": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Exploration"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "leaders": {
+          "minimum": 0,
+          "title": "Leaders",
+          "type": "integer"
+        },
+        "mode": {
+          "enum": [
+            "ranked",
+            "near_tie_sampling",
+            "cold_start_exploration",
+            "small_pool",
+            "empty"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "result_limit": {
+          "maximum": 10,
+          "minimum": 1,
+          "title": "Result Limit",
+          "type": "integer"
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seed"
+        },
+        "tie_group": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TieGroup"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "mode",
+        "algorithm_version",
+        "result_limit",
+        "leaders",
+        "cold_start"
+      ],
+      "title": "SelectionSummary",
       "type": "object"
     },
     "StateReference": {
@@ -689,11 +1314,6 @@
           ],
           "default": null,
           "title": "Candidate Pool Ref"
-        },
-        "feedback_version": {
-          "default": 0,
-          "title": "Feedback Version",
-          "type": "integer"
         },
         "prefilter_excluded": {
           "default": 0,
@@ -736,26 +1356,45 @@
       "title": "StateReference",
       "type": "object"
     },
-    "Unverified": {
+    "TieGroup": {
       "additionalProperties": false,
       "properties": {
-        "criterion_results": {
-          "items": {
-            "$ref": "#/$defs/CriterionResult"
-          },
-          "title": "Criterion Results",
-          "type": "array"
+        "epsilon": {
+          "minimum": 0,
+          "title": "Epsilon",
+          "type": "number"
         },
-        "listing_id": {
-          "title": "Listing Id",
-          "type": "string"
+        "max_score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Max Score",
+          "type": "number"
+        },
+        "min_score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Min Score",
+          "type": "number"
+        },
+        "size": {
+          "minimum": 1,
+          "title": "Size",
+          "type": "integer"
+        },
+        "span": {
+          "minimum": 0,
+          "title": "Span",
+          "type": "number"
         }
       },
       "required": [
-        "listing_id",
-        "criterion_results"
+        "size",
+        "min_score",
+        "max_score",
+        "span",
+        "epsilon"
       ],
-      "title": "Unverified",
+      "title": "TieGroup",
       "type": "object"
     }
   },
@@ -769,8 +1408,8 @@
       "type": "array"
     },
     "contract_version": {
-      "const": "1.0",
-      "default": "1.0",
+      "const": "2.0",
+      "default": "2.0",
       "title": "Contract Version",
       "type": "string"
     },
@@ -799,11 +1438,22 @@
     "execution": {
       "$ref": "#/$defs/Execution"
     },
+    "pool": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/PoolSummary"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
     "recommendations": {
       "items": {
         "$ref": "#/$defs/RecommendationItem"
       },
-      "maxItems": 5,
+      "maxItems": 10,
       "title": "Recommendations",
       "type": "array"
     },
@@ -822,6 +1472,24 @@
       "title": "Requirements Version",
       "type": "integer"
     },
+    "resolution": {
+      "items": {
+        "$ref": "#/$defs/ResolutionResult"
+      },
+      "title": "Resolution",
+      "type": "array"
+    },
+    "selection": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/SelectionSummary"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
     "state": {
       "$ref": "#/$defs/StateReference"
     },
@@ -834,14 +1502,6 @@
       ],
       "title": "Status",
       "type": "string"
-    },
-    "unverified_candidates": {
-      "items": {
-        "$ref": "#/$defs/Unverified"
-      },
-      "maxItems": 4,
-      "title": "Unverified Candidates",
-      "type": "array"
     },
     "warnings": {
       "items": {

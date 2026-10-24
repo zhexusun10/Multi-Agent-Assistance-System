@@ -1,4 +1,20 @@
-"""Compare original and migrated native engines in isolated Python processes."""
+"""RETIRED: 907cfa8-baseline-only parity evidence (spec R15, recommendation v2 P7).
+
+This script compared the original upstream engine (907cfa8) with the migrated copy in this repository, using
+contract 1.0 (ViewingEvent feedback, feedback_version, weighted-v1 profile). The native module now implements
+contract 2.0 (feedback snapshot, full-pool fused-v2 scoring, select-v1 selection) and every intended difference
+is declared in contracts/releases/recommendation-downstream-patches.json, so business-output equality with
+907cfa8 is no longer the acceptance criterion. evaluation/reports/native-upstream-parity.json is kept as the
+historical record of the migration and is NOT regenerated.
+
+By default the script refuses to run (exit 2). It can still reproduce the historical comparison against an
+archived contract-1.0 checkout of this repository (for example commit 4d36507):
+
+  python scripts/compare-recommendation-upstream.py --reference <907cfa8 tree> \
+      --legacy-root <contract-1.0 checkout> --output <new report path>
+
+It never writes evaluation/reports/native-upstream-parity.json.
+"""
 import argparse
 import json
 from pathlib import Path
@@ -47,16 +63,26 @@ def canonical(value):
     return value
 
 
+RETIRED={'status':'retired','upstream':'907cfa8','reason':'907cfa8-baseline-only evidence: the native module implements contract 2.0; declared differences are in contracts/releases/recommendation-downstream-patches.json','historical_report':'evaluation/reports/native-upstream-parity.json (kept, not regenerated)','rerun':'--reference <907cfa8 tree> --legacy-root <contract-1.0 checkout> --output <path>'}
+HISTORICAL_REPORT=ROOT/'evaluation/reports/native-upstream-parity.json'
+
+
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--reference',required=True);args=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--reference');p.add_argument('--legacy-root');p.add_argument('--output');args=p.parse_args()
+    if not (args.reference and args.legacy_root and args.output):
+        print(json.dumps(RETIRED));sys.exit(2)
+    output=Path(args.output).resolve()
+    if output==HISTORICAL_REPORT.resolve():
+        p.error('the historical report is kept as evidence and never overwritten')
     results=[]
-    for folder,prefix,contract in [(Path(args.reference),'dev.recommendationSubagent','dev.sharedContract.recommendationSubagentContract'),(ROOT,'recommendation','recommendation.contracts')]:
+    for folder,prefix,contract in [(Path(args.reference),'dev.recommendationSubagent','dev.sharedContract.recommendationSubagentContract'),(Path(args.legacy_root),'recommendation','recommendation.contracts')]:
         code=PROGRAM.replace('PREFIX',repr(prefix)).replace('CONTRACT',repr(contract))
         result=subprocess.run([sys.executable,'-c',code],cwd=folder,text=True,capture_output=True,check=True)
         results.append(canonical(json.loads(result.stdout)))
     assert results[0]==results[1], 'Native business outputs differ from upstream'
     report={'status':'passed','upstream':'907cfa8','business_outputs_equal':True,'verified':['initial explicit ranking','behavioral fusion and suppressed features','immutable replay','duplicate feedback no double counting','tighter requirements','SQLite restart recovery','fresh final gate'],'ignored_nondeterministic_fields':['observed_at','duration_ms','trace_id','trace_ref','state_id','candidate_pool_ref'],'responses':results[1]['responses']}
-    (ROOT/'evaluation/reports/native-upstream-parity.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+    report['legacy_root']=str(Path(args.legacy_root).resolve())
+    output.write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     print(json.dumps({k:v for k,v in report.items() if k!='responses'}))
 
 

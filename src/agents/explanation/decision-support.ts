@@ -204,5 +204,9 @@ export function addDecisionSupport(source:ExplanationBundle,req:Requirements,rec
   bundle.decision_support={mode:focused?'focused':'guide',target_listing_ids,explain_order,profiles};
   add('guide:purpose','limitation','向用户逐套介绍本轮房源的具体特点和有依据的相对优势，补充用户未提出的已知信息，帮助选择；不是重排或保证每套都满足全部条件。',[]);
   bundle.required_refs=rows.length?['availability:current',...(explain_order?['ranking:method',...(bundle.ranking.behavior_features.length?['ranking:behavior']:[])]:[])]:['results:empty'];
+  if(explain_order)for(const p of profiles.filter(p=>target_listing_ids.includes(p.listing_id))){
+    const ref=`selection:${p.listing_id}`;
+    if(bundle.facts.some(f=>f.ref===ref)){p.known_refs.push(ref);bundle.required_refs.push(ref);}
+  }
   return bundle;
 }

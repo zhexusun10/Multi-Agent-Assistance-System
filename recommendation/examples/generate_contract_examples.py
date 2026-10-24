@@ -5,7 +5,7 @@ from pathlib import Path
 from recommendation.contracts.request import (
     RecommendationRequest,
 )
-from recommendation.contracts.feedback import ViewingEvent
+from recommendation.contracts.behavior import BehaviorContext
 from ..repositories.connections import repositories
 from ..service import RecommendationService
 from ..state.store import StateStore
@@ -39,16 +39,12 @@ def main():
         save("initial-search", request)
         validate_response(first)
         save("success", first)
-        events = [
-            ViewingEvent.model_validate(
-                {**e, "conversation_id": request.conversation_id}
-            )
-            for e in feedback_example(first)["events"]
-        ]
         feedback = request.model_copy(
             update={
                 "request_id": "sample-feedback",
-                "feedback": events,
+                "behavior_context": BehaviorContext.model_validate(
+                    feedback_example(first, as_of="2026-10-23T08:00:00Z")
+                ),
                 "previous_state_id": first.state.state_id,
             }
         )

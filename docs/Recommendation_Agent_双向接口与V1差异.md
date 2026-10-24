@@ -19,10 +19,16 @@
 | response.native.status | enum | 不改写的原生status |
 | response.native.state_id | string/null | 不改写的原生state_id |
 | response.native.ranking | string[] | 不改写的原生已验证推荐ID顺序 |
-| response.native.scores | 按listing_id的Record | 完整原生ScoreBreakdown，包含显式/隐式分、贡献、覆盖、停用特征 |
+| response.native.scores | 按listing_id的Record | 完整原生ScoreBreakdown：契约2.0为软需求/行为相似度分（soft/behavior，含预约与上一轮浏览分支）、贡献、覆盖、停用特征；旧存档仍为显式/隐式分 |
 | response.native.criterion_results | 按listing_id的Record | 原始pass/fail/unknown/unsupported结果 |
 | response.native.unsupported_criterion_ids | string[] | A中保留、原生契约不能表达的条件ID |
-| response.native.unscored_listing_ids | string[] | 原生未评分的待核实ID，不把兼容占位0当作原生得分 |
+| response.native.unscored_listing_ids | string[] | 原生未评分的待核实ID，不把兼容占位0当作原生得分；契约2.0原生不返回待核实候选，恒为空数组 |
+| response.native.contract | literal，可选 | `2.0`：该投影来自原生契约2.0（旧存档缺省）；编排器只对2.0轮次构建上一轮浏览快照 |
+| response.native.pool | object/null，可选 | 原生探索池摘要（pool_key、版本、数量与排除原因），无损保存 |
+| response.native.selection | object/null，可选 | 原生选择摘要（模式、种子、近似同分组、冷启动诊断），无损保存 |
+| response.native.resolution | object[]，可选 | 原生实体解析结果，无损保存 |
+| response.native.config_hash | string，可选 | 原生运行使用的配置 hash |
+| response.native.selection_reasons | 按listing_id的Record，可选 | 每套房源的 selection_reason、selection_note 和全池分数排名 score_rank |
 
 本文件只描述两个业务接口：
 
