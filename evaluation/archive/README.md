@@ -1,46 +1,42 @@
-# Historical testing and acceptance archive
+# Historical QA archives
 
-Start with the [current QA entry](../README.md) for the published report,
-tracker, results and outstanding acceptance work. This archive preserves earlier
-delivery packages and reporting history. The primary full evidence download is
-[the unchanged comprehensive v3.6 package](../acceptance-history/Group42_Latest_Acceptance_8913189.zip).
+Start at the [current QA handoff](../README.md) for the consolidated report.
+These original packages preserve earlier scopes, including failures and
+superseded reports. They overlap and must not be added into one pass rate.
+All ten pre-existing whole ZIPs and all seven original evidence parts remain
+byte-for-byte unchanged. No Git history was rewritten.
 
-## Original historical work
-
-| Package | Recorded scope | How to use it |
-| --- | --- | --- |
-| [Initial QA design pack](Group42_QA_Pack.zip) | Design pack v1.2; 60 planned synthetic cases, evaluator, proposed gates, owner guides and blank UAT materials. Product tests were NOT_RUN. | Original planning and reusable templates; published holdout inputs are no longer blind. |
-| [Earlier repository QA v2](Group42_Repository_QA_v2.zip) | Source `907cfa8`; original collection errors, isolated patch candidate, data audit, logs and seven baseline oracles. | Preserve the earlier source and original/candidate distinction. `team_historical` is inherited team evidence. |
-| [Historical report revisions](Historical_Report_Revisions.zip) | Six pre-update report/tracker/README/manifest sets, 24 unchanged files. | Audit the sequence of decisions; use the unified QA entry and PR 2 for the current review and merge status. |
-
-## Original focused downloads
-
-These self-contained packages are kept for original delivery provenance and
-focused reproduction. Their substantive evidence is already covered by the
-primary comprehensive package and the directly browsable catalogues.
-
-| Package | Coverage already available in the main materials |
+| Recorded scope | Preserved material |
 | --- | --- |
-| [Recommendation fix package](Group42_Recommendation_Fit_Fix_8913189.zip) | 69 of 71 members exactly match comprehensive-package content; the other two are its original README and manifest. |
-| [Recommendation baseline package](Group42_Recommendation_Fit_Tests_8913189.zip) | 46 of 48 members exactly match comprehensive-package content; the other two are its original README and manifest. The original eight failures remain preserved. |
-| [140-case data export](Group42_Test_Dataset_8913189.zip) | 22 of 24 members match comprehensive-package or standalone catalogue content; the other two are its original README and manifest. |
+| Design stage: 60 planned cases, NOT_RUN | [Original QA pack](Group42_QA_Pack.zip) |
+| Early repository baseline `907cfa8` | [Repository QA v2](Group42_Repository_QA_v2.zip) |
+| Earlier report editions | [Original report revisions](Historical_Report_Revisions.zip) |
+| 140-case extended dataset, source `8913189` | [Frozen test dataset](Group42_Test_Dataset_8913189.zip) |
+| Recommendation-fit 36/44 baseline | [Original baseline package](Group42_Recommendation_Fit_Tests_8913189.zip) |
+| Recommendation-fit 44/44 retest | [Original fix package](Group42_Recommendation_Fit_Fix_8913189.zip) |
+| Comprehensive earlier acceptance, 303 files | [Original latest-at-the-time package](../acceptance-history/Group42_Latest_Acceptance_8913189.zip) and [scope guide](../acceptance-history/README.md) |
+| Historical report publication edition v3.7 | [Relocated Word report](Group42_Testing_and_Acceptance_Report_2026-10-22.docx) |
+| 23 October, 20 scenarios, 577 judgments | [Historical relevance guide and seven archive parts](../recommendation-relevance-2026-10-23/README.md) |
+| 24 October, 40 basic + 60 complex scenarios | [Consolidated evaluation guide](../expanded-final-acceptance-2026-10-24/README.md) |
+| Superseded publication indexes, receipts and READMEs | [Historical publication files](Historical_Publication_Files_2026-10-24.zip) |
+| Frozen original case source | [Original rental cases v1](rental-cases.v1.ts) |
 
-## Original publication and report status
+The new publication ZIP stores original repository paths as member names. It
+contains unique old publication metadata and the original guides changed during
+cleanup, including their historical status wording. It does not replace or
+repackage the original raw-evidence archives. The current final PDF, Word report,
+workbook and metric CSV remain directly available at the QA entry.
 
-[The original publication metadata](publication-v1/README.md) preserves the
-previous phase index, manifest, validation and reading guides. The original v3.6
-Word report and tracker remain byte-preserved at the root of the comprehensive
-ZIP and the focused fix ZIP. Version 3.7 changes only the directly published
-report's version, publication status and related temporal wording; original
-tables, outcomes and human fields are unchanged.
+Use [CLEANUP_MANIFEST_EN.json](../CLEANUP_MANIFEST_EN.json) to look up **any
+pre-cleanup filename**, its original size/hashes and its exact preserved location.
+Archive-member paths are data paths, not executable instructions. Verify all
+93 original file identities from the repository root with:
 
-Every archive above has the same SHA-256 as before it moved. Internal paths and
-embedded metadata remain untouched. Older claims such as NOT_RUN, HTTP 402,
-failed or not pushed describe their original phase. Use the [current inventory](../acceptance-history/EVIDENCE_MANIFEST.json)
-for outer ZIP hashes and the old-to-current path map. Some historical outer-ZIP
-digest metadata differs from the retained ZIP and remains explicitly recorded;
-member-level verification remains the integrity check for those original records.
+```sh
+python3 evaluation/verify_material_preservation.py
+```
 
-All seven original published ZIPs remain in this branch, so this reorganization
-reduces competing primary downloads rather than repository byte size. No Git
-history was rewritten. No product test or model call was run for this cleanup.
+The original published packages retain their historical manifests unchanged.
+Some old outer-package digest metadata was generated at a different packaging
+step; this cleanup verifies retained bytes against the GitHub source snapshot
+and gives each removed loose file an independently checked member location.
