@@ -1,0 +1,35 @@
+{
+  "publication_date": "2026-10-24",
+  "publication_status": "PUBLISHED_FOR_REVIEW_IN_PR_3",
+  "pull_request": "https://github.com/zhexusun10/Multi-Agent-Assistance-System/pull/3",
+  "branch": "codex/recommendation-evaluation-rev3",
+  "merged_by_this_publication": false,
+  "overall_system_acceptance": "DEFERRED",
+  "basic_tested_commit": "4d687e3b27e016f622dd487909fc99f56096265c",
+  "complex_build": "same main commit plus retained local timeout patch",
+  "runtime_code_changed": false,
+  "local_timeout_patch_applied_by_this_pr": false,
+  "paid_calls_for_publication": 0,
+  "original_archive": {
+    "file": "Group42_Expanded_Final_Acceptance_2026-10-24.zip",
+    "bytes": 18256502,
+    "sha256": "3befb560e837c2d8ce1f1e45013316361c386b5f4b9a347e4c8025e8bd76fe84",
+    "files": 251,
+    "bytes_preserved": true
+  },
+  "direct_copies": [
+    "Group42_Expanded_Final_Test_Acceptance_Report_EN.pdf",
+    "Group42_Expanded_Final_Test_Acceptance_Report_EN.docx",
+    "Group42_Expanded_Recommendation_And_Complex_Results_EN.xlsx",
+    "metrics/Final_TopK_Metrics_EN.csv",
+    "metrics/Expanded_Metrics_Summary_EN.json",
+    "metrics/Combined_Scenario_Register_EN.json",
+    "metrics/All_Ratings_EN.json",
+    "metrics/Returned_Rankings_EN.json",
+    "evidence/Complex_Case_Tracker_EN.json",
+    "evidence/Complex_Execution_Summary.json",
+    "reports/Independent_Verification_EN.json"
+  ],
+  "publication_wording": "Original report/archive retain the pre-upload evidence-cutoff state; this manifest and README record the later PR publication.",
+  "historical_results": "Preserved without replacement or deletion"
+}
