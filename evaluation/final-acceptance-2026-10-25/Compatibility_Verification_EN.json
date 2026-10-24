@@ -1,0 +1,191 @@
+{
+  "result": "PASS",
+  "reviewed_main": "35304d0f4d7781383690594884a77adf1af238cc",
+  "historical_live_benchmark": "4d687e3b27e016f622dd487909fc99f56096265c",
+  "execution_date": "2026-10-25",
+  "offline_tests_passed": 8,
+  "offline_tests_failed": 0,
+  "offline_tests_skipped": 0,
+  "paid_model_requests": 0,
+  "command": "node --import tsx --test tests/recommendation-more.test.ts tests/recommendation-display.test.ts",
+  "tests": [
+    {
+      "name": "five formal plus four pending homes expose exactly five IDs everywhere without mutating the native result",
+      "status": "passed"
+    },
+    {
+      "name": "pending homes only fill remaining places, retain unknown status, and use global visible numbering",
+      "status": "passed"
+    },
+    {
+      "name": "detail enrichment reads only the five visible homes, never the four hidden candidates",
+      "status": "passed"
+    },
+    {
+      "name": "five then ten preserves the first batch, original order and all data, including after public projection",
+      "status": "passed"
+    },
+    {
+      "name": "legacy defaults stay five, shortages are not padded, and unknown-condition homes keep their status",
+      "status": "passed"
+    },
+    {
+      "name": "general explanations cover ten visible homes; continuation recovery describes only new homes at positions 6-10",
+      "status": "passed"
+    },
+    {
+      "name": "LLM continuation contract is contextual, schema constrained and separate from changed requirements",
+      "status": "passed"
+    },
+    {
+      "name": "continuation writer and reviewer receive only the new target IDs and publish a reviewed narrative",
+      "status": "passed"
+    }
+  ],
+  "test_source_hashes": {
+    "tests/recommendation-more.test.ts": "9e5c4f3320468993447c41cf3be46ead62afae7fc504e3e283e7b4818b50ca9c",
+    "tests/recommendation-display.test.ts": "6a363a5b071734ecd8d5cb3fb2561b0153a9a425fc764484f191a0a9a00ef849",
+    "tests/helpers/recommendation-more.ts": "8994cadeb27c72addae59e11652db9e39a053d96561674b4b5e73857a01df6af"
+  },
+  "unchanged_native_files": [
+    {
+      "path": "recommendation/contracts/README.md",
+      "git_blob_sha1": "c7071d78bc4ddba778c99cf39c265cff32f2141b",
+      "sha256": "906b9423a8fb25e8308d524ec65c2851a4d50025ba9c56f1a900786c120acc69"
+    },
+    {
+      "path": "recommendation/contracts/__init__.py",
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "recommendation/contracts/behavior.py",
+      "git_blob_sha1": "dee8cc6f6cd398a3665c6f18e97b121a7a9ed2f3",
+      "sha256": "b3dd397b7d79439dba8cf8b6414e4d874a72adc12e6833655a41e023a3f9ea9d"
+    },
+    {
+      "path": "recommendation/contracts/errors.py",
+      "git_blob_sha1": "5247f30f6ee82f69f1d35e87b604dbc6d5edeeec",
+      "sha256": "f9f2d0e752d316171678a56ab071e148aebdb70fabb3b45c35d2cf608354ad3d"
+    },
+    {
+      "path": "recommendation/contracts/evidence.py",
+      "git_blob_sha1": "2157e61362faece67fa1639868f1f32570185928",
+      "sha256": "9ccb67de5adca1ea94f90c133f0eb8cecc23e485ad546a4f757ff372c1d7bb12"
+    },
+    {
+      "path": "recommendation/contracts/feedback.py",
+      "git_blob_sha1": "13202a7689bed60f8dbadd6f19b7793104374df3",
+      "sha256": "5b9991753b37519ba376b50e9ed2db04f5e237b95793e2e72f7c2c893d66546c"
+    },
+    {
+      "path": "recommendation/contracts/limits.py",
+      "git_blob_sha1": "d95c5cbc1a7ca0480ed9aa2a679b4a82aaba1d10",
+      "sha256": "e349b2312e94f2ebad4e682b73f02a00820947aad0c827c0d8d7de036af2b923"
+    },
+    {
+      "path": "recommendation/contracts/request.py",
+      "git_blob_sha1": "2c200212e0323e8c8d8284897c6394019fabd853",
+      "sha256": "674f218a5cd6cb3701168f245a6e478debf0e549f14797979b63525eac75aa69"
+    },
+    {
+      "path": "recommendation/contracts/requirements.py",
+      "git_blob_sha1": "adc434bc42dafd17f7bc950d25b235a75d77e3f8",
+      "sha256": "748579089dc683fd0335bd21fcec9eb8018d577c97e8c46a90e02e9061596365"
+    },
+    {
+      "path": "recommendation/contracts/response.py",
+      "git_blob_sha1": "af46b1f87d2553085e3f077e04407f3248262927",
+      "sha256": "2f19fc7e87953e9487d59629c31bd2ff53604a26fe56bb8309b79afc124f4660"
+    },
+    {
+      "path": "recommendation/contracts/schemas/behavior-context.schema.json",
+      "git_blob_sha1": "eda981660fc873b088be16cd22f2252b68d2396b",
+      "sha256": "24991dcc11b5649167f23ce4b334eefc45f3cf090dab43673f19602e7d266152"
+    },
+    {
+      "path": "recommendation/contracts/schemas/feedback.schema.json",
+      "git_blob_sha1": "f5f8d5e0c293d5d275ae727320b267ae0ec41b4e",
+      "sha256": "ca47073ad2e0953474bf55a2424c664d2c7898a92cf54826409d0ab11f11aca4"
+    },
+    {
+      "path": "recommendation/contracts/schemas/request.schema.json",
+      "git_blob_sha1": "0228c0657356a705a2c0967b448285d3459a9525",
+      "sha256": "27163e698935cd6b52bdaeea6ad8fef5aca7033a2bfefdc7bdaf0834738ea8ee"
+    },
+    {
+      "path": "recommendation/contracts/schemas/requirements.schema.json",
+      "git_blob_sha1": "1e6671dddc9665054e2770233d5d5c5e313d4320",
+      "sha256": "6f282c2eb6de9e6d4b089131c5f8628509813c96fde8cc7c80f0c549eda26405"
+    },
+    {
+      "path": "recommendation/contracts/schemas/response.schema.json",
+      "git_blob_sha1": "deef30e827bc6d013dd89445746c364ac3dfedb7",
+      "sha256": "aaa7acd0772ab5f83e9b4d0bfadc27845eae044ad56b9109ea0dcdb45b5ddffe"
+    },
+    {
+      "path": "recommendation/contracts/summary.py",
+      "git_blob_sha1": "63deca072426525d8abf7047f04f6598016b0d40",
+      "sha256": "42bc32797e79da36f37c338b1aca88ecab64d84ba33559f8cba1dd1e22d70b38"
+    },
+    {
+      "path": "recommendation/ranking/__init__.py",
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "recommendation/ranking/exploration.py",
+      "git_blob_sha1": "799c4b3a17314cd68d61df4291d04843ca3e6f82",
+      "sha256": "3abe06c48227453685ae688e4505c157984d055682c8b39c77b859afa3b3dac0"
+    },
+    {
+      "path": "recommendation/ranking/metrics.py",
+      "git_blob_sha1": "45dd1352301ba98c15987afb94e8d8b9c2ebc92d",
+      "sha256": "9127babd34dd22792f0b6628923be43a2bc1f3cdd8e1f98c3027784d5f2d4353"
+    },
+    {
+      "path": "recommendation/ranking/ranker.py",
+      "git_blob_sha1": "341832853f6fa1bcfea99b2c18c9e0be6fad9538",
+      "sha256": "e64b33d3694809896d939f756c1a4407be9b62b8d914d50e892decddbe44f397"
+    },
+    {
+      "path": "recommendation/ranking/scoring_v2.py",
+      "git_blob_sha1": "a75933b1a7258b7584859ad352f0c918cd95bffb",
+      "sha256": "b93c6b7bcd0871d3cc36f54f4e8406c47d02c24ab5ac45c74c3ea5848c1b0af3"
+    },
+    {
+      "path": "recommendation/ranking/selection.py",
+      "git_blob_sha1": "0c47420b7632b70c76236d57858bcaa5b33887d9",
+      "sha256": "a68458a04565b8685c1f6cf11f3a5bde687739963025cc5445a5cbbc957504e1"
+    },
+    {
+      "path": "recommendation/ranking/suppression.py",
+      "git_blob_sha1": "4bd2c1b017f4dc0929a65e1a8bc7ec82fe5d000d",
+      "sha256": "d22909788fe6b5ef59cbd2198fa4488aec167630e0ec5d5474e7aac8f5e3e039"
+    },
+    {
+      "path": "recommendation/validation/__init__.py",
+      "git_blob_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "recommendation/validation/gate.py",
+      "git_blob_sha1": "bfb52c91130b1a4a0561fc220ef082067fac429a",
+      "sha256": "a8f8fd970bcf0df27d89f8e80d9f96ec75b06a79a8b10a7d49ce7d6d19de3302"
+    },
+    {
+      "path": "recommendation/validation/rules.py",
+      "git_blob_sha1": "6cb231d015e72eb5af31f663311fe26187a4ce26",
+      "sha256": "9af4bbe090b51bf3cd65dc11e32c22073ae4c7207ce30e75af1746ad29bd71f4"
+    },
+    {
+      "path": "recommendation/validation/selection_replay.py",
+      "git_blob_sha1": "5ee097a4acbe56b285e1b99d64e90b3e247e273b",
+      "sha256": "7cfdfe15ef3731c77c176c34e31eb14d511ab13563be64a640364571439adc52"
+    }
+  ],
+  "interpretation": "Saved-result expansion preserves the initial batch, order, values and native response. Existing K=1-10 values remain results of the recorded lists.",
+  "legacy_exception": "Legacy sessions without a reserved tail may refresh from saved requirements. New returned identities in that branch need not equal a historical saved list.",
+  "test_limits": "Deterministic local models and fixtures. No new live-provider, database lifecycle or browser replay is claimed.",
+  "earlier_setup_attempts": "The initial sparse checkout omitted evaluation fixture modules. Tests were executed successfully after restoring the tracked fixture files. Production source was not edited."
+}

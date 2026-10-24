@@ -1,9 +1,11 @@
 # Consolidated recommendation and complex-scenario evaluation
 
-**Recorded 24 October 2026. Acceptance: DEFERRED.** Basic results test main
-`4d687e3b27e016f622dd487909fc99f56096265c` with the 9 October listing snapshot.
-These results do not certify later English-edition or continuation changes on
-main. Return to the [QA handoff](../README.md) for current scope and history.
+**Historical evidence edition, recorded 24 October 2026.** Its frozen reports
+retain the original DEFERRED decision. The current decision is **COMPLETED FOR
+THE AGREED PROJECT SCOPE**, issued 25 October; use the
+[final report and workbook](../final-acceptance-2026-10-25/README.md) or
+[QA handoff](../README.md). Basic live results below remain pinned to main
+`4d687e3b27e016f622dd487909fc99f56096265c` and the 9 October listing snapshot.
 
 | Material | Contents |
 | --- | --- |
@@ -62,9 +64,11 @@ reused. This cleanup makes no model calls and changes no recorded metric.
 
 The evidence was merged in
 [PR 3](https://github.com/zhexusun10/Multi-Agent-Assistance-System/pull/3).
-Frozen report and ZIP bytes retain their original pre-publication wording;
-this guide records the later publication state. Human relevance validation,
-participant UAT, remaining failures and team signoff are still open.
+Frozen report and ZIP bytes retain their original pre-publication wording
+and historical acceptance decision. The [25 October final decision](../final-acceptance-2026-10-25/Acceptance_Decision_EN.json)
+supersedes this edition for the agreed scope. Participant UAT and independent
+human scoring/signatures are no longer final prerequisites; the complex study
+is retained as a non-blocking experiment with its original failures unchanged.
 
 The original ZIP is 18,256,502 bytes. SHA256:
 `3befb560e837c2d8ce1f1e45013316361c386b5f4b9a347e4c8025e8bd76fe84`.

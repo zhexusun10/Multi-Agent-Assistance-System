@@ -1,0 +1,23 @@
+{
+  "result": "PASS",
+  "issued_at_utc": "2026-10-24T18:08:43.264302+00:00",
+  "acceptance_status": "COMPLETED FOR THE AGREED PROJECT SCOPE",
+  "report_pages": 11,
+  "workbook_sheets": 8,
+  "preserved_formula_cells": 14808,
+  "approved_text_cell_changes": 17,
+  "preserved_aggregate_metrics": 90,
+  "cached_numeric_cells_unchanged": 23624,
+  "unchanged_cached_cells_checked": 48822,
+  "unchanged_report_result_tables": 11,
+  "csv_byte_identity": true,
+  "workbook_formula_errors_found": 0,
+  "current_main_offline_compatibility_tests_passed": 8,
+  "selected_native_core_files_unchanged": 27,
+  "visual_review": "All eleven report pages and every changed workbook view inspected; no clipping or overflow identified.",
+  "historical_raw_results_and_grades": "Preserved unchanged; difficult cases remain a separate non-blocking study.",
+  "human_acceptance_gate": "Not required under the requester-confirmed final protocol.",
+  "new_paid_model_calls": 0,
+  "new_full_live_end_to_end_run": false,
+  "github_publication": "Prepared for publication on codex/final-acceptance-completed-2026-10-25; remote file verification is recorded with the pull request."
+}
