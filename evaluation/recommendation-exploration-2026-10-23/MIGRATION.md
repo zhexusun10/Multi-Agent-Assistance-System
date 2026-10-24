@@ -133,6 +133,24 @@ native listing ID (1–128 chars) so fixture data mode works — a superset of e
 - **Unchanged**: request/response contracts (Execution fields, selection summary), select-v1, scoring, eligibility,
   idempotency and immutable replay, pool cache, step budgets (`controller.*`).
 
+### 0.7 select-v2 cold-start selection (2026-10-24)
+
+- **Algorithm** `select-v2` (`ranking/selection.select_v2`; `Execution.strategy` / `selection_algorithm` name it).
+  Outside cold start it is select-v1. In cold start: window W = overall top `cold_start.price_sampling.exploration_window`
+  (30) of O incl. leaders (never beyond); leaders by the tie rule around rank min(`intermediate_size` (10), |W|)
+  inside W; intermediate = leaders + a price-band sample of W's non-leaders, bands = 5 quantiles of W's prices (leaders
+  included; user change), quotas by largest remainder over each band's non-leader count; returned =
+  intermediate[:result_limit], never rebalanced. |W| <= intermediate_size keeps W in score order (`ranked`).
+- **Settings**: `cold_start.price_sampling.target_sample_size` replaced by `exploration_window` (30) and
+  `intermediate_size` (10; >= `recommendation.max_result_limit`, <= `exploration_window`); the loader rejects the old key.
+- **Contract (2.0, additive union)**: `selection.exploration` is `ExplorationV2` for new runs (window / intermediate /
+  final counts, bands with `window_count`, `count`, `quota`, `sampled`, `final_sampled`) or the stored select-v1
+  `Exploration`. `selection.leaders` counts the leaders among the RETURNED listings.
+- **Replay**: `selection_input` for select-v2 stores `exploration_window`, `intermediate_size`, the window as `head`,
+  the window's `bin_edges` and seeds `{base, tie, explore}`; `REPLAYERS` keeps `select-v1` (and ranked-prefix-v1), so
+  stored runs replay with their own algorithm and inputs. The final gate also checks that the head is the current
+  ranking prefix, the window is exactly the top `exploration_window`, and the returned IDs are the intermediate prefix.
+
 ## 1. Summary of breaking changes
 
 | Area | 1.0 | 2.0 |

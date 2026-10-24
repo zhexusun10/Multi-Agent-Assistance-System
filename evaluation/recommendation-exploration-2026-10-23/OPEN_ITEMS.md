@@ -3,6 +3,13 @@
 Items that are unverified, interim or waiting for a later phase. Each one is closed (with the
 command and result) in VALIDATION.md of the phase that resolves it.
 
+## select-v2 cold-start selection (2026-10-24)
+
+- Window 30, intermediate 10 and the band rule (bands from the window's prices incl. leaders, quotas by non-leader
+  counts) are user decisions; how often each band is represented in returned lists on real pools was not measured.
+  With result_limit below the number of leaders the returned list holds only leaders (no sampled listing), by design.
+- `recommendation/analysis/calibrate.py` exploration_grid still analyses select-v1 (historical P7 figures).
+
 ## Dedicated Python LangChain agent (2026-10-24)
 
 - **Not run** (AGENTS.md cost rule): no real-model request was made. The live client is verified offline with a fake

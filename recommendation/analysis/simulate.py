@@ -184,7 +184,9 @@ def check(response, body, pool_ids, pool_version, store):
     hard = {c["criterion_id"] for c in body["requirements"]["criteria"] if c["strength"] == "hard"}
     cached = store.cached(body["conversation_id"], body["request_id"])
     snapshot = cached[2] if cached else {}
-    replayed = selection_v1.replay(snapshot["selection_input"]).ids if snapshot.get("selection_input") else None
+    from ..validation.selection_replay import replay_select
+
+    replayed = replay_select(snapshot["selection_input"]).ids if snapshot.get("selection_input") else None
     return {
         "status_ok": response.status in ("success", "no_match"),
         "no_duplicates": len(ids) == len(set(ids)),

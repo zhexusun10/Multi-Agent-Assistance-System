@@ -28,6 +28,16 @@ test('native 2.0 exploration reaches ranking evidence without being described as
  for(const id of output.focus_listing_ids)assert(output.paragraphs.find(p=>p.listing_id===id)!.support_refs.includes(`selection:${id}`));
 });
 
+test('a cold-start list whose returned prefix holds only leaders is not described as price-tier picks',async()=>{
+ const f=JSON.parse(readFileSync(new URL('./fixtures/recommendation-v2/cold-start-exploration.json',import.meta.url),'utf8').replace(/fixture-(\d+)/g,(_m,n)=>'910000'+n));
+ for(const item of f.envelope.response.recommendations)item.selection_reason='leader';// e.g. result_limit below the leaders
+ const req=recommendationRequestSchema.parse(f.v1_request);let archive:unknown;
+ const rec=await projectNative(req,{sessionId:req.conversation_id,operationId:'00000000-0000-4000-8000-000000000012',agent:'b',dataset:'synthetic-leaders',deadline:Date.now()+60000,calls:0},f.envelope,async(_c,v)=>{archive=v;return '00000000-0000-4000-8000-000000000013';});
+ const bundle=makeExplanationBundle(req.requirements,rec,'解释一下这次房源为什么这样排序',archive);
+ assert.equal(rec.native!.selection!.mode,'cold_start_exploration');
+ assert(!bundle.facts.find(x=>x.ref==='ranking:method')!.text.includes('不同价格层次'));
+});
+
 test('native 2.0 near-tie sampling is described as a draw among near-equal matches',async()=>{
  const {rec,bundle}=await setup('解释一下这次房源为什么这样排序','ten-results.json');
  assert.equal(rec.native!.selection!.mode,'near_tie_sampling');

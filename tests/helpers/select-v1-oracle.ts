@@ -9,15 +9,53 @@
 //     right after them (R contains G);
 //   - optional: with the caller's own scores, the tie group start/size match |s_i - s_K| <= epsilon/2
 //     (evaluated with a small tolerance, because the oracle's doubles may differ in the last bits).
+// select-v2 (current) is select-v1 outside cold start. In cold start it is checked by selectV2ColdViolations:
+// window = O's first window_size items (window_size <= exploration window, all of O when smaller),
+// intermediate = leaders (O prefix) + sampled non-leaders of the window, in O order, intermediate_limit =
+// min(intermediate size, window); returned = intermediate[:K] (leader reasons first, never rebalanced).
 // Which items were drawn depends on the seed, so it is never compared to a fixed list.
 export type SelectV1Item={listing:{listing_id:string};rank:number;score_rank:number;selection_reason:string};
+export type SelectV2Exploration={window_size:number;intermediate_limit:number;intermediate_ids:string[];intermediate_leaders:number;
+  intermediate_ranked:number;final_ids:string[];final_leaders:number;final_sampled:number;final_ranked:number};
 export type SelectV1Native={recommendations:SelectV1Item[];selection:null|{mode:string;algorithm_version:string;result_limit:number;leaders:number;
-  tie_group:null|{size:number;epsilon:number};exploration:null|{candidate_count:number}}};
+  tie_group:null|{size:number;epsilon:number};exploration:null|{candidate_count:number}|(SelectV2Exploration&{candidate_count:number})}};
+
+/** select-v2 cold start: the window / intermediate / returned-prefix rules, from O alone. */
+export function selectV2ColdViolations(native:SelectV1Native,order:string[],resultLimit:number,scores?:Map<string,number>,tolerance=1e-9,explorationWindow=30,intermediateSize=10):string[]{
+  const v:string[]=[],sel=native.selection!,e=sel.exploration as SelectV2Exploration,ids=native.recommendations.map(c=>c.listing.listing_id);
+  const window=Math.min(explorationWindow,order.length),limit=Math.min(intermediateSize,window),k=Math.min(resultLimit,order.length);
+  const position=new Map(order.map((id,i)=>[id,i+1])),same=(a:string[],b:string[])=>a.length===b.length&&a.every((x,i)=>x===b[i]);
+  if(e.window_size!==window)v.push(`window_size ${e.window_size} != min(${explorationWindow}, |O|) = ${window}`);
+  if(e.intermediate_limit!==limit||e.intermediate_ids.length!==limit)v.push(`intermediate must hold ${limit} listings`);
+  if(new Set(e.intermediate_ids).size!==e.intermediate_ids.length)v.push('duplicate intermediate IDs');
+  const ranks=e.intermediate_ids.map(id=>position.get(id)??Infinity);
+  if(ranks.some(r=>r>window))v.push(`intermediate listings must come from O positions 1..${window}`);
+  if(ranks.some((r,i)=>i&&r<=ranks[i-1]))v.push('intermediate selection not in O order');
+  if(!same(e.intermediate_ids.slice(0,e.intermediate_leaders),order.slice(0,e.intermediate_leaders)))v.push('intermediate leaders must be O prefix');
+  if(!same(ids,e.intermediate_ids.slice(0,k))||!same(ids,e.final_ids))v.push('returned listings must be the first K intermediate listings');
+  const ranked=sel.mode==='ranked',leaders=ranked?0:Math.min(e.intermediate_leaders,k),reason=ranked?'ranked':'price_exploration_sample';
+  if(ranked&&(window>intermediateSize||e.intermediate_leaders||e.intermediate_ranked!==window))v.push('ranked cold start keeps a window of at most intermediate size, all as ranked');
+  const expected=ranked?Array(k).fill('ranked'):[...Array(leaders).fill('leader'),...Array(k-leaders).fill(reason)];
+  if(!same(native.recommendations.map(c=>c.selection_reason),expected))v.push(`reasons must be leader x ${leaders} then ${reason}`);
+  if(sel.leaders!==leaders||e.final_leaders!==leaders||e.final_ranked!==(ranked?k:0)||e.final_sampled!==(ranked?0:k-leaders))v.push('leader / sampled / ranked counts disagree with the returned prefix');
+  if(scores&&!ranked){
+    // Leaders = the window items before the tie group around rank min(intermediate size, window), within the window.
+    const s=order.slice(0,window).map(id=>scores.get(id));
+    if(s.some(x=>x===undefined))v.push('oracle scores missing for some window items');
+    else{
+      const half=(sel.tie_group?.epsilon??0)/2,sk=s[limit-1]!,inside=(x:number,slack:number)=>Math.abs(x-sk)<=half+slack;
+      const startOf=(slack:number)=>{let i=limit-1;while(i>0&&inside(s[i-1]!,slack))i--;return i;};
+      const [startMin,startMax]=[startOf(tolerance),startOf(-tolerance)];
+      if(e.intermediate_leaders<startMin||e.intermediate_leaders>startMax)v.push(`intermediate leaders ${e.intermediate_leaders} outside the oracle tie-group start [${startMin}, ${startMax}] around rank ${limit}`);
+    }
+  }
+  return v;
+}
 
 export function selectV1Violations(native:SelectV1Native,order:string[],resultLimit:number,scores?:Map<string,number>,tolerance=1e-9):string[]{
   const v:string[]=[],sel=native.selection,items=native.recommendations,ids=items.map(c=>c.listing.listing_id);
   if(!sel)return ['selection summary missing'];
-  if(sel.algorithm_version!=='select-v1')v.push(`algorithm_version ${sel.algorithm_version} != select-v1`);
+  if(sel.algorithm_version!=='select-v1'&&sel.algorithm_version!=='select-v2')v.push(`algorithm_version ${sel.algorithm_version} is not select-v1/select-v2`);
   if(sel.result_limit!==resultLimit)v.push(`selection.result_limit ${sel.result_limit} != ${resultLimit}`);
   const k=Math.min(resultLimit,order.length),position=new Map(order.map((id,i)=>[id,i+1]));
   if(ids.length!==k)v.push(`returned ${ids.length} items, expected K = ${k}`);
@@ -37,6 +75,8 @@ export function selectV1Violations(native:SelectV1Native,order:string[],resultLi
     if(reasons.some(r=>r!=='small_pool'))v.push('small_pool reasons expected');
     return v;
   }
+  if(sel.algorithm_version==='select-v2'&&sel.exploration&&'window_size' in sel.exploration)
+    return [...v,...selectV2ColdViolations(native,order,resultLimit,scores,tolerance)];
   const leaders=sel.leaders,m=k-leaders,g=sel.tie_group?.size??0;
   if(!same(ids.slice(0,leaders),order.slice(0,leaders)))v.push(`leaders are not O's first ${leaders} items`);
   if(m<1)v.push(`m = K - leaders = ${m} < 1`);

@@ -254,7 +254,7 @@ def test_ranking_artifact_is_current_code_managed_and_invalidated_by_upstream_ch
     assert stale.value.detail.code == "INVALID_SELECTION"
     call(d, "rank_candidates")
     selected = d.select_ranking(d.artifact.artifact_id)
-    assert selected == d.selected and d.selection_input["algorithm_version"] == "select-v1"
+    assert selected == d.selected and d.selection_input["algorithm_version"] == "select-v2"
 
 
 def test_bind_entity_invalidates_the_artifact_and_unknown_hard_evidence_never_passes():

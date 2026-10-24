@@ -525,6 +525,7 @@
     },
     "Exploration": {
       "additionalProperties": false,
+      "description": "select-v1 exploration summary (stored responses): R after the leaders, stage A / B.",
       "properties": {
         "bins": {
           "items": {
@@ -601,6 +602,170 @@
         "quota"
       ],
       "title": "ExplorationBin",
+      "type": "object"
+    },
+    "ExplorationBinV2": {
+      "additionalProperties": false,
+      "description": "One price band of the select-v2 exploration window (bands from the window's prices).",
+      "properties": {
+        "count": {
+          "minimum": 0,
+          "title": "Count",
+          "type": "integer"
+        },
+        "final_sampled": {
+          "minimum": 0,
+          "title": "Final Sampled",
+          "type": "integer"
+        },
+        "lower": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Lower"
+        },
+        "quota": {
+          "minimum": 0,
+          "title": "Quota",
+          "type": "integer"
+        },
+        "sampled": {
+          "minimum": 0,
+          "title": "Sampled",
+          "type": "integer"
+        },
+        "upper": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Upper"
+        },
+        "window_count": {
+          "minimum": 0,
+          "title": "Window Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "lower",
+        "upper",
+        "window_count",
+        "count",
+        "quota",
+        "sampled",
+        "final_sampled"
+      ],
+      "title": "ExplorationBinV2",
+      "type": "object"
+    },
+    "ExplorationV2": {
+      "additionalProperties": false,
+      "description": "select-v2 cold-start exploration, with every count labelled by what it describes:\nthe exploration window (overall top ``window_size`` incl. leaders), the intermediate selection\n(leaders + sampled, ``intermediate_limit`` in total) and the final returned prefix.",
+      "properties": {
+        "bins": {
+          "items": {
+            "$ref": "#/$defs/ExplorationBinV2"
+          },
+          "title": "Bins",
+          "type": "array"
+        },
+        "candidate_count": {
+          "minimum": 0,
+          "title": "Candidate Count",
+          "type": "integer"
+        },
+        "final_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Final Ids",
+          "type": "array"
+        },
+        "final_leaders": {
+          "minimum": 0,
+          "title": "Final Leaders",
+          "type": "integer"
+        },
+        "final_limit": {
+          "minimum": 0,
+          "title": "Final Limit",
+          "type": "integer"
+        },
+        "final_ranked": {
+          "minimum": 0,
+          "title": "Final Ranked",
+          "type": "integer"
+        },
+        "final_sampled": {
+          "minimum": 0,
+          "title": "Final Sampled",
+          "type": "integer"
+        },
+        "intermediate_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Intermediate Ids",
+          "type": "array"
+        },
+        "intermediate_leaders": {
+          "minimum": 0,
+          "title": "Intermediate Leaders",
+          "type": "integer"
+        },
+        "intermediate_limit": {
+          "minimum": 0,
+          "title": "Intermediate Limit",
+          "type": "integer"
+        },
+        "intermediate_ranked": {
+          "minimum": 0,
+          "title": "Intermediate Ranked",
+          "type": "integer"
+        },
+        "intermediate_sampled": {
+          "minimum": 0,
+          "title": "Intermediate Sampled",
+          "type": "integer"
+        },
+        "sampling_candidates": {
+          "minimum": 0,
+          "title": "Sampling Candidates",
+          "type": "integer"
+        },
+        "window_size": {
+          "minimum": 0,
+          "title": "Window Size",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "window_size",
+        "candidate_count",
+        "sampling_candidates",
+        "intermediate_limit",
+        "intermediate_ids",
+        "intermediate_leaders",
+        "intermediate_sampled",
+        "intermediate_ranked",
+        "final_limit",
+        "final_ids",
+        "final_leaders",
+        "final_sampled",
+        "final_ranked",
+        "bins"
+      ],
+      "title": "ExplorationV2",
       "type": "object"
     },
     "LegacyColdStartDiagnostics": {
@@ -1340,13 +1505,21 @@
         "exploration": {
           "anyOf": [
             {
-              "$ref": "#/$defs/Exploration"
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/ExplorationV2"
+                },
+                {
+                  "$ref": "#/$defs/Exploration"
+                }
+              ]
             },
             {
               "type": "null"
             }
           ],
-          "default": null
+          "default": null,
+          "title": "Exploration"
         },
         "leaders": {
           "minimum": 0,

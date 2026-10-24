@@ -662,24 +662,24 @@
     },
     {
      "listing": {
-      "listing_id": "fixture-06",
+      "listing_id": "fixture-08",
       "listing_type": "RENT",
-      "title": "Synthetic rental 6",
-      "price": 2600.0,
-      "bedrooms": 3.0,
-      "floor_area_sqft": 900.0,
+      "title": "Synthetic rental 8",
+      "price": 2800.0,
+      "bedrooms": 2.0,
+      "floor_area_sqft": 1000.0,
       "property_type": "hdb",
       "district_code": "D21",
       "postal_code": "012345",
-      "latitude": 1.312,
+      "latitude": 1.316,
       "longitude": 103.8,
-      "url": "https://example.invalid/listings/6",
+      "url": "https://example.invalid/listings/8",
       "observed_at": "2026-10-18T00:00:00Z",
       "source": "synthetic-fixture",
       "normalization_warnings": []
      },
      "rank": 9,
-     "score_rank": 9,
+     "score_rank": 10,
      "scores": {
       "soft_score": 0.0,
       "behavior_score": null,
@@ -724,7 +724,7 @@
      ],
      "unknowns": [],
      "selection_reason": "tie_group_sample",
-     "selection_note": "Drawn uniformly from 6 near-tied listings at the cutoff (score ranks 7-12, epsilon 0.01); score rank 9"
+     "selection_note": "Drawn uniformly from 6 near-tied listings at the cutoff (score ranks 7-12, epsilon 0.01); score rank 10"
     },
     {
      "listing": {
@@ -808,8 +808,8 @@
    },
    "selection": {
     "mode": "near_tie_sampling",
-    "algorithm_version": "select-v1",
-    "seed": "b3ae75b484747e5edad0483a0a5287e74b1b08016d900b2641b6589f3aa6b754",
+    "algorithm_version": "select-v2",
+    "seed": "220903495273b4054cb3856101c017692e11325e0f85d64e705f162388e0e3b2",
     "result_limit": 10,
     "leaders": 6,
     "tie_group": {
@@ -841,8 +841,8 @@
     "Posting time does not establish current availability."
    ],
    "state": {
-    "state_id": "3331d0a9-58ea-49e3-98a1-14949fd4f2f6",
-    "candidate_pool_ref": "f0a17c88-b08e-419d-994e-052fa2509ac3/pool",
+    "state_id": "d8772619-fa52-41e7-baf9-b8323c728f02",
+    "candidate_pool_ref": "e8944bb0-16b1-493a-9d09-8ceb36e6ca4b/pool",
     "run_sequence": 1,
     "scope": "all RENT listings",
     "truncated": false,
@@ -851,18 +851,18 @@
     "assessed_count": 12
    },
    "execution": {
-    "trace_id": "f0a17c88-b08e-419d-994e-052fa2509ac3",
-    "trace_ref": "sqlite:f0a17c88-b08e-419d-994e-052fa2509ac3",
-    "strategy": "full-pool fused-v2 scoring + select-v1 selection",
-    "scoring_version": "fused-v2-pool-minmax:d56688f28109",
-    "selection_algorithm": "select-v1",
+    "trace_id": "e8944bb0-16b1-493a-9d09-8ceb36e6ca4b",
+    "trace_ref": "sqlite:e8944bb0-16b1-493a-9d09-8ceb36e6ca4b",
+    "strategy": "full-pool fused-v2 scoring + select-v2 selection",
+    "scoring_version": "fused-v2-pool-minmax:be6b2bd6073b",
+    "selection_algorithm": "select-v2",
     "config_version": 1,
-    "config_hash": "d3ee67b179391ebd0a832d1da09e5cef84058de8ad1c4195979e602f2c3c632a",
-    "selection_hash": "d56688f2810985eb5adc7691c550debe84ca52b29bc1afca16c9161b051f9d15",
+    "config_hash": "c0cece65b91b5b13f1318da66c71e40f0d9d2e4b1636c160d3d284582dc917fb",
+    "selection_hash": "be6b2bd6073b187040093f7767f05124ec009a7e9fbd9139eb2f01518559a3e3",
     "model_identifier": null,
     "model_calls": 0,
     "tool_calls": 4,
-    "duration_ms": 2.9467920030583628,
+    "duration_ms": 2.8692089981632307,
     "tokens": null,
     "data_mode": "fixture",
     "controller_mode": "scripted"
@@ -1008,18 +1008,18 @@
      "normalization_warnings": []
     },
     {
-     "listing_id": "fixture-06",
+     "listing_id": "fixture-08",
      "listing_type": "RENT",
-     "title": "Synthetic rental 6",
-     "price": 2600.0,
-     "bedrooms": 3.0,
-     "floor_area_sqft": 900.0,
+     "title": "Synthetic rental 8",
+     "price": 2800.0,
+     "bedrooms": 2.0,
+     "floor_area_sqft": 1000.0,
      "property_type": "hdb",
      "district_code": "D21",
      "postal_code": "012345",
-     "latitude": 1.312,
+     "latitude": 1.316,
      "longitude": 103.8,
-     "url": "https://example.invalid/listings/6",
+     "url": "https://example.invalid/listings/8",
      "observed_at": "2026-10-18T00:00:00Z",
      "source": "synthetic-fixture",
      "normalization_warnings": []

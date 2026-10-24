@@ -187,8 +187,13 @@ def test_terminal_transcript_covers_the_p6_flows(tmp_path, capsys):
         compared = (run("recommend"), t.response)[1]
         assert compared.execution.config_hash != first.execution.config_hash
         assert compared.selection.seed == first.selection.seed  # the fixed base seed
-        assert first.selection.mode == "cold_start_exploration" and compared.selection.mode == "near_tie_sampling"
-        assert set(ids(compared)) <= D05 and set(ids(first)) - D05  # exploration drew outside the tie group
+        # select-v2: cold start is active, but the 9-listing window is not larger than the intermediate size 10, so
+        # the whole window is kept in score order and its first result_limit (3) are returned.
+        assert first.selection.cold_start.active and first.selection.mode == "ranked"
+        assert ids(first) == list(t.run_dispatcher.scored.ranked[:3])
+        assert {i.selection_reason for i in first.recommendations} == {"ranked"}
+        assert first.selection.exploration.window_size == 9 and first.selection.exploration.intermediate_limit == 9
+        assert compared.selection.mode == "near_tie_sampling" and set(ids(compared)) <= D05
         # Weight comparison under the same fixed seed (plan: 可固定测试种子比较不同权重): the same
         # previous-round feedback is staged for both runs and only the fusion weights change, so
         # the component scores are identical and the combined scores, the order and the selection

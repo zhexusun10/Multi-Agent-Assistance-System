@@ -191,7 +191,12 @@ def test_bad_weights_rejected(overrides, key):
         ({"cold_start.detector.min_mean_pairwise_difference": "0.01"}, "cold_start.detector.min_mean_pairwise_difference"),
         ({"cold_start.detector.min_mean_pairwise_difference": True}, "cold_start.detector.min_mean_pairwise_difference"),
         ({"cold_start.detector.min_mean_pairwise_difference": float("inf")}, "cold_start.detector.min_mean_pairwise_difference"),
-        ({"cold_start.price_sampling.target_sample_size": 5}, "cold_start.price_sampling.target_sample_size"),
+        ({"cold_start.price_sampling.intermediate_size": 5}, "cold_start.price_sampling.intermediate_size must be >="),
+        ({"cold_start.price_sampling.exploration_window": 0}, "cold_start.price_sampling.exploration_window"),
+        ({"cold_start.price_sampling.exploration_window": 10, "cold_start.price_sampling.intermediate_size": 12},
+         "cold_start.price_sampling.exploration_window must be >= cold_start.price_sampling.intermediate_size"),
+        ({"cold_start.price_sampling.target_sample_size": 30},
+         "cold_start.price_sampling.target_sample_size: unknown key (replaced by cold_start.price_sampling.exploration_window"),
         ({"cold_start.price_sampling.quantile_bins": 0}, "cold_start.price_sampling.quantile_bins"),
         ({"selection.tie_max_score_span": -0.01}, "selection.tie_max_score_span"),
         ({"recommendation.max_result_limit": 11}, "recommendation.max_result_limit"),
@@ -246,7 +251,8 @@ REQUIRED = [
     (key, "ranking.behavior_weight > 0") for key in loader.SIMILARITY_KEYS
 ] + [
     ("ranking.browsing.time_scale_seconds", "browsing_weight > 0"),
-    ("cold_start.price_sampling.target_sample_size", "cold_start.enabled"),
+    ("cold_start.price_sampling.exploration_window", "cold_start.enabled"),
+    ("cold_start.price_sampling.intermediate_size", "cold_start.enabled"),
     ("cold_start.price_sampling.quantile_bins", "cold_start.enabled"),
     ("cold_start.detector.candidate_window", "cold_start.enabled"),
     ("cold_start.detector.min_mean_pairwise_difference", "cold_start.enabled"),
@@ -294,7 +300,7 @@ def test_unreachable_parameters_may_be_null():
                 "ranking.browsing.time_scale_seconds": None})
     )
     RecommendationConfig.from_data(
-        data(**{"cold_start.enabled": False, "cold_start.price_sampling": {"target_sample_size": None, "quantile_bins": None},
+        data(**{"cold_start.enabled": False, "cold_start.price_sampling": {"exploration_window": None, "intermediate_size": None, "quantile_bins": None},
                 "cold_start.detector": {"candidate_window": None, "min_mean_pairwise_difference": None}})
     )
     RecommendationConfig.from_data(data(**{"cache.enabled": False, "cache.ttl_seconds": None}))

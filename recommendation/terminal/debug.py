@@ -826,6 +826,14 @@ def stored_configuration(data, current):
                 del cold[key]
             cold["detector"] = current.to_data()["cold_start"]["detector"]
             filled.append("cold_start.detector")
+    sampling = cold.get("price_sampling") if isinstance(cold, dict) else None
+    if isinstance(sampling, dict) and "target_sample_size" in sampling:
+        # select-v1 stage-A size (before 2026-10-24): replaced by the select-v2 window keys.
+        del sampling["target_sample_size"]
+        current_sampling = current.to_data()["cold_start"]["price_sampling"]
+        sampling["exploration_window"] = current_sampling["exploration_window"]
+        sampling["intermediate_size"] = current_sampling["intermediate_size"]
+        filled.append("cold_start.price_sampling")
     source = "stored run configuration" + (f" + current {', '.join(filled)}" if filled else "")
     return RecommendationConfig.from_data(data, source), filled
 
@@ -849,6 +857,9 @@ def inspect_listing(t, arg):
             print("Note: the stored configuration uses the superseded C/B/S cold-start keys; they are dropped and the "
                   "current cold_start.detector is used, so this recompute's cold-start status and selection follow "
                   "the current detector, not the original run.")
+        if "cold_start.price_sampling" in filled:
+            print("Note: the stored configuration predates select-v2; the current exploration window settings are "
+                  "used, so this recompute's selection follows select-v2, not the original run.")
         session = StepSession(t, request, config, None, validate=False, label="recompute")
         session.run_until("select")
         d, recomputed = session.dispatcher, True

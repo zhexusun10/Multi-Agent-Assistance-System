@@ -95,6 +95,19 @@ test('cold-start exits are no longer recorded: the stored compat state is carrie
  assert.equal(coldStartAfterAdoption(kept,{native:{provider:'jiangshan-native'}} as any),kept);
 });
 
+test('selection.exploration: a stored select-v1 summary parses as stored; select-v2 summaries carry labelled counts',async()=>{
+ const legacy=(await read(dir+'legacy-select-v1-cold-start.json')).response;
+ const v1=nativeResponseSchema.parse(legacy).selection!.exploration as any;
+ assert.equal(nativeResponseSchema.parse(legacy).selection!.algorithm_version,'select-v1');
+ assert('sample_size' in v1&&!('window_size' in v1));// never reinterpreted as select-v2
+ const v2=nativeResponseSchema.parse((await read(dir+'cold-start-exploration.json')).envelope.response).selection!.exploration as any;
+ assert.equal(v2.window_size,12);assert.deepEqual(v2.final_ids,v2.intermediate_ids.slice(0,v2.final_limit));
+ const mixed=structuredClone(legacy);mixed.selection.exploration.window_size=30;// a mixed v1/v2 object matches neither shape
+ assert.equal(nativeResponseSchema.safeParse(mixed).success,false);
+ const prefix=structuredClone((await read(dir+'cold-start-exploration.json')).envelope.response);prefix.selection.exploration.final_ids.reverse();
+ assert.equal(nativeResponseSchema.safeParse(prefix).success,false);
+});
+
 test('selection.cold_start: stored legacy C/B/S records parse as stored; regenerated fixtures carry mpd-v1',async()=>{
  const legacy=JSON.parse((await readFile('tests/fixtures/recommendation-v2/teammate-round-3.response.json','utf8')).replace(/^\uFEFF/,''));
  const cold=nativeResponseSchema.parse(legacy).selection!.cold_start as any;

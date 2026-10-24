@@ -747,8 +747,8 @@
   },
   "selection": {
     "mode": "small_pool",
-    "algorithm_version": "select-v1",
-    "seed": "ce254487e5d1334d1721b19a3f06c43df0b41b95eb43d60c5d3db2529f4c041a",
+    "algorithm_version": "select-v2",
+    "seed": "f64cf5ea7ded838c37aa5da7415ce94821af6083281bf0b2ebf69a434faa461f",
     "result_limit": 10,
     "leaders": 0,
     "tie_group": null,
@@ -775,8 +775,8 @@
     "1 listings were excluded because hard-criterion data is unknown (see pool.unknown_reasons); they are not verified matches."
   ],
   "state": {
-    "state_id": "77813f25-1785-4599-87b0-c5795befaf67",
-    "candidate_pool_ref": "72c17b42-4de9-4af6-88f5-0e9d0072808e/pool",
+    "state_id": "51548df2-207b-43db-81c5-b37d409695b6",
+    "candidate_pool_ref": "9cece1e9-65ba-48b0-b5cf-f38072631cbc/pool",
     "run_sequence": 1,
     "scope": "all RENT listings",
     "truncated": false,
@@ -785,18 +785,18 @@
     "assessed_count": 9
   },
   "execution": {
-    "trace_id": "72c17b42-4de9-4af6-88f5-0e9d0072808e",
-    "trace_ref": "sqlite:72c17b42-4de9-4af6-88f5-0e9d0072808e",
-    "strategy": "full-pool fused-v2 scoring + select-v1 selection",
-    "scoring_version": "fused-v2-pool-minmax:d56688f28109",
-    "selection_algorithm": "select-v1",
+    "trace_id": "9cece1e9-65ba-48b0-b5cf-f38072631cbc",
+    "trace_ref": "sqlite:9cece1e9-65ba-48b0-b5cf-f38072631cbc",
+    "strategy": "full-pool fused-v2 scoring + select-v2 selection",
+    "scoring_version": "fused-v2-pool-minmax:be6b2bd6073b",
+    "selection_algorithm": "select-v2",
     "config_version": 1,
-    "config_hash": "d3ee67b179391ebd0a832d1da09e5cef84058de8ad1c4195979e602f2c3c632a",
-    "selection_hash": "d56688f2810985eb5adc7691c550debe84ca52b29bc1afca16c9161b051f9d15",
+    "config_hash": "c0cece65b91b5b13f1318da66c71e40f0d9d2e4b1636c160d3d284582dc917fb",
+    "selection_hash": "be6b2bd6073b187040093f7767f05124ec009a7e9fbd9139eb2f01518559a3e3",
     "model_identifier": null,
     "model_calls": 0,
     "tool_calls": 4,
-    "duration_ms": 48.29795800469583,
+    "duration_ms": 43.00574999797391,
     "tokens": null,
     "data_mode": "fixture",
     "controller_mode": "scripted"

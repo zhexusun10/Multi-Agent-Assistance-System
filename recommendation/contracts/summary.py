@@ -85,9 +85,66 @@ class ExplorationBin(Contract):
 
 
 class Exploration(Contract):
+    """select-v1 exploration summary (stored responses): R after the leaders, stage A / B."""
+
     candidate_count: Count
     sample_size: Count
     bins: list[ExplorationBin]
+
+
+class ExplorationBinV2(Contract):
+    """One price band of the select-v2 exploration window (bands from the window's prices)."""
+
+    lower: float | None
+    upper: float | None
+    window_count: Count  # window listings in the band, leaders included
+    count: Count  # non-leader sampling candidates in the band
+    quota: Count  # intermediate slots allocated to the band (largest remainder over ``count``)
+    sampled: Count  # band members in the intermediate selection (== quota)
+    final_sampled: Count  # band members among the returned listings
+
+
+class ExplorationV2(Contract):
+    """select-v2 cold-start exploration, with every count labelled by what it describes:
+    the exploration window (overall top ``window_size`` incl. leaders), the intermediate selection
+    (leaders + sampled, ``intermediate_limit`` in total) and the final returned prefix."""
+
+    window_size: Count
+    candidate_count: Count  # == window_size (the exploration window)
+    sampling_candidates: Count  # non-leaders of the window (the only ones sampled)
+    intermediate_limit: Count
+    intermediate_ids: list[str]
+    intermediate_leaders: Count
+    intermediate_sampled: Count
+    intermediate_ranked: Count  # window <= intermediate size: kept in score order, neither leader nor sampled
+    final_limit: Count
+    final_ids: list[str]
+    final_leaders: Count
+    final_sampled: Count
+    final_ranked: Count
+    bins: list[ExplorationBinV2]
+
+    @model_validator(mode="after")
+    def prefix(self):
+        if self.final_ids != self.intermediate_ids[:self.final_limit]:
+            raise ValueError("final_ids must be the first final_limit intermediate_ids")
+        if len(self.intermediate_ids) != self.intermediate_leaders + self.intermediate_sampled + self.intermediate_ranked:
+            raise ValueError("intermediate_ids must be its leaders, sampled and ranked listings")
+        if len(self.final_ids) != self.final_leaders + self.final_sampled + self.final_ranked:
+            raise ValueError("final_ids must be its leaders, sampled and ranked listings")
+        return self
+
+
+def _exploration_shape(value):
+    if isinstance(value, dict):
+        return "v2" if "window_size" in value else "v1"
+    return "v2" if isinstance(value, ExplorationV2) else "v1"
+
+
+AnyExploration = Annotated[
+    Annotated[ExplorationV2, Tag("v2")] | Annotated[Exploration, Tag("v1")],
+    Discriminator(_exploration_shape),
+]
 
 
 DETECTOR = "mean_pairwise_difference"
@@ -176,5 +233,5 @@ class SelectionSummary(Contract):
     result_limit: Annotated[int, Field(ge=1, le=MAX_RESULT_LIMIT)]
     leaders: Count
     tie_group: TieGroup | None = None
-    exploration: Exploration | None = None
+    exploration: AnyExploration | None = None
     cold_start: AnyColdStartDiagnostics

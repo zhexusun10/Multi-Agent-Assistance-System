@@ -318,9 +318,11 @@ def debug_rows(scored, selection, config, ref):
     si = selection.selection_input
     head = si["head"]
     outcome = selection.outcome
-    leaders = outcome.leaders if outcome is not None else 0
+    # select-v2 cold start: leaders / drawn refer to the intermediate selection over the window.
+    cold = outcome is not None and outcome.mode == "cold_start_exploration"
+    leaders = (outcome.intermediate_leaders if cold else outcome.leaders) if outcome is not None else 0
     chosen = set(outcome.ids) if outcome is not None else set(selection.ids)
-    drawn = set(outcome.ids[leaders:]) if outcome is not None else set()
+    drawn = (set(outcome.sample) if cold else set(outcome.ids[leaders:])) if outcome is not None else set()
     tie = []
     if outcome is not None and outcome.tie is not None:
         start, end = outcome.tie
@@ -329,9 +331,8 @@ def debug_rows(scored, selection, config, ref):
     explored, edges = None, None
     if outcome is not None and outcome.mode == "cold_start_exploration":
         edges = si["bin_edges"]
-        in_a = set(outcome.sample)
         explored = [{"listing_id": h[0], "score": h[1], "score_rank": leaders + i + 1, "price": h[2],
-                     "bin": exploration.bin_index(h[2], edges), "stage_a": h[0] in in_a, "drawn": h[0] in drawn}
+                     "bin": exploration.bin_index(h[2], edges), "drawn": h[0] in drawn, "returned": h[0] in chosen}
                     for i, h in enumerate(head[leaders:])]
     ranked = scored.ranked
     # Candidate order of each list: drawn entries first, then score order.

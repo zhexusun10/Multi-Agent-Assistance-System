@@ -71,13 +71,14 @@ geography:                          # native geography: recommendation/geography
 cold_start:                         # cold-start detector mpd-v1 + price exploration: recommendation/ranking/selection.py, exploration.py
   enabled: true                     # confirmed (plan Step 7)
   price_sampling:
-    target_sample_size: 30          # confirmed as initial experimental value (not a statistical guarantee)
+    exploration_window: 30          # confirmed (user plan 2026-10-24: overall top 30 incl. leaders, never beyond rank 30)
+    intermediate_size: 10           # confirmed (user plan 2026-10-24: intermediate 10, then the first result_limit)
     quantile_bins: 5                # experiment-result (kept; more bins leave more price bins without a slot)
   detector:                         # D = mean absolute pairwise difference of the top candidate_window combined scores
     candidate_window: 30            # confirmed (user decision 2026-10-24; overall top 30 incl. leaders, all when fewer; independent of target_sample_size)
     min_mean_pairwise_difference: 0.01  # confirmed (user decision 2026-10-24: starting value, not calibrated; active when D < it)
 
-selection:                          # select-v1 (tie group, seeds R3): recommendation/ranking/selection.py
+selection:                          # select-v2 (tie group, seeds R3): recommendation/ranking/selection.py
   tie_max_score_span: 0.01          # experiment-result (epsilon; score gaps > 0.005 keep their order under the calibration perturbation f = 0.2)
   random_policy: uniform_without_replacement  # confirmed
   seed_namespace: recommendation-selection-v1 # confirmed

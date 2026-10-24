@@ -328,7 +328,8 @@ def stability_convergence(scored, settings, label):
 
 
 def exploration_grid(scored, request, settings, label):
-    """Cold-start price exploration for each (quantile_bins, target_sample_size): bin balance of
+    """(Historical P7 analysis of select-v1, kept reproducible; select-v2 replaced stage A.)
+    Cold-start price exploration for each (quantile_bins, target_sample_size): bin balance of
     the candidate set R, the share of non-empty R bins that get a displayed item, the share of R
     drawn at least once over 100 seeds, the displayed price span relative to R's, and the score
     loss sum(drawn + leaders) vs the deterministic top K. Seeds: R3 derivation with synthetic
@@ -358,7 +359,7 @@ def exploration_grid(scored, request, settings, label):
             r_span = (max(r_prices) - min(r_prices)) if r_prices else 0.0
             score_of = {h[0]: h[1] for h in head}
             for s in range(SEEDS_PER_CELL):
-                seeds = selection.derive_seeds(settings, "calibration", f"r{s}", "pool")
+                seeds = selection.derive_seeds(settings, "calibration", f"r{s}", "pool", streams=selection.STREAMS)
                 outcome = selection.select_v1(head, n, K, epsilon, True, target, edges, seeds)
                 drawn = outcome.ids[outcome.leaders:]
                 drawn_ever.update(drawn)

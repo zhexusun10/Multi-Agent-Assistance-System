@@ -123,7 +123,10 @@ export function makeExplanationBundle(req:Requirements,rec:RecommendationRespons
   const source=(archive as any)?.request?.feedback as {source?:string}[]|undefined;
   const sampleOnly=source?.length&&source.every(x=>x.source==='sample');
   const v2=rec.native?.contract==='2.0',selection=v2?rec.native?.selection:undefined;
-  const exploratory=selection?.mode==='cold_start_exploration'||selection?.mode==='near_tie_sampling';
+  // Describe the RETURNED listings: a cold-start list whose returned prefix holds only leaders is plain score order.
+  const priceSampled=Object.values(rec.native?.selection_reasons||{}).some(r=>r.selection_reason==='price_exploration_sample');
+  const explored=selection?.mode==='cold_start_exploration'&&priceSampled;
+  const exploratory=explored||selection?.mode==='near_tie_sampling';
   const appointment=scores.some(s=>'appointment_score' in s&&s.appointment_score!==null&&s.appointment_weight>0);
   const browsing=scores.some(s=>'browsing_score' in s&&s.browsing_score!==null&&s.browsing_weight>0);
   const behaviorSource=v2?[...(browsing?['已有浏览记录']:[]),...(appointment?['已保存的看房意向']:[])].join('和')||'已有行为线索':sampleOnly?'本轮提供的浏览样例':'已有浏览记录';
@@ -141,7 +144,7 @@ export function makeExplanationBundle(req:Requirements,rec:RecommendationRespons
   const rankedRows=rows.filter(r=>rec.native?.scores[r.listing.listing_id]);
   if(rankedRows.length>1&&rankedRows.every(r=>Math.abs(r.score-rankedRows[0].score)<1e-12))rankText+=exploratory?'当前匹配分没有拉开差距，不能把展示在前说成明显更好。':'当前展示的已评分房源排序依据没有拉开差距，沿用固定次序，不应称第一套明显更好。';
   if(selection?.mode==='near_tie_sampling')rankText+='匹配程度非常接近的房源中进行抽样选择，先后位置不表示每套都比后面更合适。';
-  if(selection?.mode==='cold_start_exploration')rankText+='为了帮助用户比较不同价位，保留部分匹配较好的房源，并从不同价格层次选取补充选择。展示次序不等于纯匹配分排名，不保证第一套更适合；保存看房草稿只是兴趣线索，不是实际预约。';
+  if(explored)rankText+='为了帮助用户比较不同价位，保留部分匹配较好的房源，并从不同价格层次选取补充选择。展示次序不等于纯匹配分排名，不保证第一套更适合；保存看房草稿只是兴趣线索，不是实际预约。';
   const unscored=(rec.native?.unscored_listing_ids||[]).filter(id=>rows.some(r=>r.listing.listing_id===id));
   if(rankedIds.length)rankText+='入选排名的比较范围仅为：'+ranked.map(r=>r.listing.title).join('、')+'。';
   if(pending.length)rankText+='其余补充展示的房源未进入这组排名；它们可能仍有学校、超市等已知距离。已知资料可供用户比较，但不代表通过全部必须条件或参与排名；不能用其某一项距离更短来否定入选排名。';

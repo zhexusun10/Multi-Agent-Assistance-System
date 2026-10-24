@@ -60,7 +60,8 @@
   "cold_start": {
     "enabled": false,
     "price_sampling": {
-      "target_sample_size": 30,
+      "exploration_window": 30,
+      "intermediate_size": 10,
       "quantile_bins": 5
     },
     "detector": {

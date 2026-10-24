@@ -45,8 +45,22 @@ test('select-v1 oracle rejects exact-prefix assumptions broken by the response: 
   assert(selectV1Violations(swapped,order,limit,scores).some(v=>v.includes('leaders')||v.includes('O order')));
   const cold=await explorationFixture(),drawn=cold.native.recommendations.at(-1);
   assert(drawn.score_rank>5);// the last displayed draw lies beyond a 5-candidate window
-  const outside=clone(cold.native);outside.selection.exploration.candidate_count=5;
-  assert(selectV1Violations(outside,cold.order,cold.limit,cold.scores).some(v=>v.includes('drawn items must come from')));
+  // select-v2 cold start: a window that is not min(30, |O|), or a returned list that is not the intermediate prefix.
+  const outside=clone(cold.native);outside.selection.exploration.window_size=5;
+  assert(selectV1Violations(outside,cold.order,cold.limit,cold.scores).some(v=>v.includes('window_size')));
+  const notPrefix=clone(cold.native);notPrefix.selection.exploration.intermediate_ids.reverse();
+  assert(selectV1Violations(notPrefix,cold.order,cold.limit,cold.scores).some(v=>v.includes('first K intermediate')||v.includes('O order')));
+  assert.deepEqual(selectV1Violations(cold.native,cold.order,cold.limit,cold.scores),[]);
+  assert.equal(cold.native.selection.algorithm_version,'select-v2');
+  const bad=(mutate:(n:any)=>void,needle:string)=>{const n=clone(cold.native);mutate(n);
+    assert(selectV1Violations(n,cold.order,cold.limit,cold.scores).some(v=>v.includes(needle)),needle);};
+  bad(n=>{n.selection.exploration.intermediate_ids[9]='fixture-99';},'O positions 1..');// beyond the window
+  bad(n=>{n.selection.exploration.intermediate_ids[9]=n.selection.exploration.intermediate_ids[8];},'duplicate intermediate');
+  bad(n=>{n.selection.exploration.intermediate_ids=n.selection.exploration.intermediate_ids.slice(0,9);},'intermediate must hold');
+  bad(n=>{n.recommendations[0].selection_reason='leader';},'reasons must be');
+  bad(n=>{n.selection.exploration.final_leaders=1;},'counts disagree');
+  // All tied (D = 0): no leader can precede the tie group around rank 10, so claiming one is caught by scores.
+  bad(n=>{n.selection.exploration.intermediate_leaders=1;n.selection.exploration.intermediate_sampled-=1;},'tie-group start');
   const rank=clone(native);rank.recommendations[3].score_rank=40;
   assert(selectV1Violations(rank,order,limit,scores).some(v=>v.includes('score_rank')));
   const dup=clone(native);dup.recommendations[9].listing.listing_id=dup.recommendations[8].listing.listing_id;

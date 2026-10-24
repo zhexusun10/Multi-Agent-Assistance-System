@@ -813,7 +813,7 @@ def test_compact_snapshot_and_replay_gate(tmp_path):
         assert not keys(run_data) & {"rows", "evidence", "scores", "ranking", "validation", "pool_summary"}
         assert len(json.dumps(run_data)) < 8000
         selection = snapshot["selection_input"]
-        assert selection["algorithm_version"] == "select-v1" and selection["K"] == len(response.recommendations)
+        assert selection["algorithm_version"] == "select-v2" and selection["K"] == len(response.recommendations)
         assert [h[0] for h in selection["head"]] == [r.listing.listing_id for r in response.recommendations]
         replay_gate(response, snapshot)
         assert service.recommend(body([BUDGET, BEDROOMS, DISTRICT])) == response  # stored response

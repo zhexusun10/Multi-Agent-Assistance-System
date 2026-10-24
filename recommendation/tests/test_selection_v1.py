@@ -38,14 +38,15 @@ SOFT_PRICE_MIN = {"criterion_id": "cheap", "field": "price", "operator": "lte", 
 PLAN = [SOFT_D01, SOFT_BR3]
 # Explicit fixture settings (spec section 2): every expectation below is pinned to these values,
 # not to the committed YAML. The soft/behaviour weights 0.6/0.4 are confirmed values and are read
-# from the YAML; target_sample_size 30 is confirmed as the initial experimental value but is
-# pinned here as well. The mpd-v1 threshold is pinned high (0.25) so that the synthetic plan
+# from the YAML; the select-v2 exploration window 30 and intermediate size 10 are confirmed
+# values but are pinned here as well. The mpd-v1 threshold is pinned high (0.25) so that the synthetic plan
 # pools (D 0.06-0.21) exercise cold-start exploration; NEAR_TIE pins the committed starting value
 # 0.01, under which those pools are inactive (near-tie sampling / ranked).
-EPSILON, WINDOW, THRESHOLD, TARGET, BINS = 0.02, 30, 0.25, 30, 5
+EPSILON, WINDOW, THRESHOLD, TARGET, INTERMEDIATE, BINS = 0.02, 30, 0.25, 30, 10, 5
 FIXTURE = {"selection.tie_max_score_span": EPSILON, "cold_start.detector.candidate_window": WINDOW,
            "cold_start.detector.min_mean_pairwise_difference": THRESHOLD,
-           "cold_start.price_sampling.target_sample_size": TARGET, "cold_start.price_sampling.quantile_bins": BINS}
+           "cold_start.price_sampling.exploration_window": TARGET,
+           "cold_start.price_sampling.intermediate_size": INTERMEDIATE, "cold_start.price_sampling.quantile_bins": BINS}
 NEAR_TIE = {"cold_start.detector.min_mean_pairwise_difference": 0.01}
 
 
@@ -205,9 +206,11 @@ def test_no_soft_requirements_and_all_tied_enters_price_exploration():
     assert cold.mean_pairwise_difference == 0.0 and cold.evaluated_count == WINDOW  # window < pool of 40
     assert chosen.summary.mode == "cold_start_exploration" and len(chosen.ids) == 10
     explored = chosen.summary.exploration
-    assert (explored.candidate_count, explored.sample_size) == (40, TARGET)  # stage A: TARGET of R = 40
-    assert sum(b.count for b in explored.bins) == 40
-    assert sum(b.quota for b in explored.bins) == TARGET and sum(b.sampled for b in explored.bins) == 10
+    # select-v2: the window is the overall top TARGET; all tied, so no leader and every window item a candidate.
+    assert (explored.window_size, explored.sampling_candidates, explored.intermediate_leaders) == (TARGET, TARGET, 0)
+    assert sum(b.window_count for b in explored.bins) == sum(b.count for b in explored.bins) == TARGET
+    assert sum(b.quota for b in explored.bins) == sum(b.sampled for b in explored.bins) == INTERMEDIATE
+    assert explored.final_ids == explored.intermediate_ids == chosen.ids
 
 
 def test_unresolved_data_is_not_treated_as_under_specification(tmp_path, monkeypatch):
@@ -370,18 +373,30 @@ def test_price_bins_full_pool_quantiles_duplicates_merged_last_bin_closed():
         exploration.bin_index(99999.0, edges)
 
 
-def test_price_bins_come_from_the_full_pool_not_the_candidates():
+def test_price_bands_come_from_the_window_including_leaders_not_the_pool():
     rows = plan_rows(3, 20, 40)
-    for k, r in enumerate(rows):  # candidates (ranks 4 to 3 + TARGET) cheap, the tail expensive
-        rows[k] = r.model_copy(update={"price": 1000.0 + k if k < 3 + TARGET else 50000.0 + k})
+    for k, r in enumerate(rows):  # leaders very expensive, the rest of the window cheap, the tail expensive
+        price = 90000.0 + k if k < 3 else (1000.0 + k if k < TARGET else 50000.0 + k)
+        rows[k] = r.model_copy(update={"price": price})
     rows[5] = rows[5].model_copy(update={"price": None})
     _, chosen = run(rows, PLAN)
     edges = chosen.selection_input["bin_edges"]
-    assert edges[-1] == max(r.price for r in rows if r.price is not None)
-    assert edges == exploration.price_bin_edges([r.price for r in rows], BINS)
-    bins = chosen.summary.exploration.bins
-    assert bins[-1].lower is None and bins[-1].count == 1  # unknown-price candidate bin
-    assert sum(b.count for b in bins) == TARGET
+    window = [r.price for r in rows[:TARGET]]  # O follows k: the window is the first TARGET rows
+    assert edges == exploration.price_bin_edges(window, BINS)  # leaders' prices included ...
+    assert edges[-1] == 90002.0 and 50000.0 + TARGET not in edges  # ... the pool's tail never
+    explored = chosen.summary.exploration
+    bins = explored.bins
+    assert bins[-1].lower is None and bins[-1].count == bins[-1].window_count == 1  # unknown-price band
+    assert sum(b.window_count for b in bins) == TARGET and sum(b.count for b in bins) == TARGET - 3
+    # Quotas are the largest-remainder allocation over the NON-leader counts per band (same explore stream),
+    # never over the window counts: the leaders sit in the top band but do not take its slots.
+    top = next(b for b in bins if b.upper == 90002.0)
+    assert top.window_count == top.count + 3
+    m = explored.intermediate_sampled
+    expected = exploration.allocate([b.count for b in bins if b.count], m,
+                                    selection.stream(chosen.selection_input["seeds"]["explore"]))
+    assert [b.quota for b in bins if b.count] == expected
+    assert set(explored.intermediate_ids[3:]) <= {r.listing_id for r in rows[3:TARGET]}  # only non-leaders
 
 
 def test_quota_allocation_largest_remainder_with_caps_and_rng_ties():
@@ -408,23 +423,30 @@ def test_quota_allocation_largest_remainder_with_caps_and_rng_ties():
 
 
 @pytest.mark.parametrize("leaders,last_tied,size,limit", [(3, 30, 40, 10), (3, 20, 40, 10), (0, 40, 40, 10),
-                                                          (0, 60, 60, 10), (2, 9, 12, 5)])
-def test_exploration_quota_totals_and_stage_sizes(leaders, last_tied, size, limit):
+                                                          (0, 60, 60, 10), (2, 9, 12, 5), (3, 30, 40, 1),
+                                                          (3, 30, 40, 5)])
+def test_exploration_window_intermediate_and_final_sizes(leaders, last_tied, size, limit):
     rows = plan_rows(leaders, last_tied, size)
+    window, intermediate = min(TARGET, size), min(INTERMEDIATE, min(TARGET, size))
     for r in range(25):
-        _, chosen = run(rows, PLAN, limit=limit, request_id=f"q-{r}")
+        scored, chosen = run(rows, PLAN, limit=limit, request_id=f"q-{r}")
         assert chosen.summary.mode == "cold_start_exploration"
         explored = chosen.summary.exploration
-        m = limit - chosen.summary.leaders
-        g = chosen.summary.tie_group.size
-        r_size = max(g, min(TARGET, size - chosen.summary.leaders))
-        assert explored.candidate_count == r_size and explored.sample_size == min(TARGET, r_size)
-        assert sum(b.count for b in explored.bins) == r_size
-        assert sum(b.quota for b in explored.bins) == explored.sample_size
-        assert sum(b.sampled for b in explored.bins) == m == len(chosen.ids) - chosen.summary.leaders
-        assert all(b.sampled <= b.quota <= b.count for b in explored.bins)
-        for b in explored.bins:  # proportional (largest remainder) at each stage
-            assert abs(b.quota - explored.sample_size * b.count / r_size) < 1
+        lead = explored.intermediate_leaders
+        assert explored.window_size == explored.candidate_count == window
+        assert explored.intermediate_limit == len(explored.intermediate_ids) == intermediate
+        assert explored.intermediate_ids[:lead] == scored.ranked[:lead]  # leaders first, score order
+        assert explored.sampling_candidates == window - lead == sum(b.count for b in explored.bins)
+        assert sum(b.window_count for b in explored.bins) == window
+        assert sum(b.quota for b in explored.bins) == sum(b.sampled for b in explored.bins) == intermediate - lead
+        assert all(b.sampled == b.quota <= b.count for b in explored.bins)
+        assert all(abs(b.quota - (intermediate - lead) * b.count / (window - lead)) < 1 for b in explored.bins)
+        # Never drawn beyond the window; intermediate in score order; returned = its first result_limit.
+        ranks = [scored.score_rank[i] for i in explored.intermediate_ids]
+        assert ranks == sorted(ranks) and max(ranks) <= window and len(set(ranks)) == len(ranks)
+        assert chosen.ids == explored.final_ids == explored.intermediate_ids[:limit]
+        assert explored.final_leaders == min(lead, limit) == chosen.summary.leaders
+        assert sum(b.final_sampled for b in explored.bins) == explored.final_sampled == len(chosen.ids) - min(lead, limit)
 
 
 def test_inactive_cold_start_keeps_near_tie_sampling_and_remembered_exit_is_ignored():
@@ -460,8 +482,8 @@ def test_scoring_happens_before_sampling():
     order_scores = scored.fused.combined[scored.order].tolist()
     assert [h[0] for h in head] == scored.ranked[:len(head)] and [h[1] for h in head] == order_scores[:len(head)]
     assert chosen.ids[:3] == scored.ranked[:3]
-    assert set(chosen.ids[3:]) <= set(scored.ranked[3:3 + TARGET])  # drawn only from R, after full scoring
-    assert all(scored.score_rank[i] <= 3 + TARGET for i in chosen.ids)
+    assert set(chosen.ids[3:]) <= set(scored.ranked[3:TARGET])  # drawn only from the window, after full scoring
+    assert all(scored.score_rank[i] <= TARGET for i in chosen.ids)
 
 
 # --- randomness: seeds, coverage of the tie group, no duplicates -------------------------------
@@ -473,7 +495,9 @@ def test_seeds_follow_r3():
     base = hashlib.sha256(f"{config.selection.seed_namespace}|conv|req|pv|{config.selection_hash}".encode()).hexdigest()
     assert seeds["base"] == base and not seeds["override"]
     assert seeds["tie"] == hashlib.sha256(f"{base}|tie".encode()).hexdigest()
-    assert len({seeds["tie"], seeds["stageA"], seeds["stageB"]}) == 3
+    assert set(seeds) == {"base", "tie", "explore", "override"} and seeds["explore"] != seeds["tie"]
+    v1 = selection.derive_seeds(config, "conv", "req", "pv", streams=selection.STREAMS)  # select-v1 history
+    assert len({v1["tie"], v1["stageA"], v1["stageB"]}) == 3 and v1["tie"] == seeds["tie"]
     assert selection.derive_seeds(config, "conv", "req2", "pv")["base"] != base
     changed = settings(**{"selection.tie_max_score_span": 0.03})
     assert selection.derive_seeds(changed, "conv", "req", "pv")["base"] != base  # selection_hash in the seed
@@ -523,22 +547,63 @@ def test_every_tie_group_member_is_selected_across_seeds_and_ids_are_not_fixed()
 
 
 # --- replay and gates --------------------------------------------------------------------------
-# Draws for a fixed seed override, computed by the pre-mpd-v1 (HEAD 4d687e3) select_v1 from the same stored
-# selection_input: the detector change leaves sampling unchanged for equivalent selection inputs.
+# Draws for a fixed seed override, computed by the pre-change (HEAD 4d687e3) select_v1 from the same stored
+# selection_input. Outside cold start select-v2 is select-v1, so the near-tie draws are unchanged; the
+# select-v1 cold-start draws must still replay from a stored select-v1 input (history).
 GOLDEN_DRAWS = {
     "cold_start_exploration": ["L001", "L002", "L003", "L008", "L009", "L012", "L018", "L019", "L027", "L031"],
     "near_tie_sampling": ["L001", "L002", "L003", "L011", "L017", "L018", "L019", "L025", "L026", "L027"],
 }
+# select-v2 cold-start draws for the same scenario and seed (pinned: replay must reproduce them).
+GOLDEN_V2_COLD = ["L001", "L002", "L003", "L004", "L012", "L017", "L020", "L022", "L025", "L028"]
 
 
-@pytest.mark.parametrize("overrides,mode", [({}, "cold_start_exploration"), (NEAR_TIE, "near_tie_sampling")])
-def test_sampling_is_unchanged_for_equivalent_selection_inputs(overrides, mode):
-    config = settings(**overrides)
+def test_near_tie_sampling_is_unchanged_for_equivalent_selection_inputs():
+    config = settings(**NEAR_TIE)
     req = make_request(PLAN, "golden", "golden")
     scored = scored_pool(plan_rows(3, 30, 40), req, config)
     chosen = selection.select(scored, req, config, POOL_KEY, POOL_VERSION, seed_override="fixed")
-    assert chosen.summary.mode == mode and chosen.ids == GOLDEN_DRAWS[mode]
-    assert replay_select(json.loads(json.dumps(chosen.selection_input))).ids == GOLDEN_DRAWS[mode]
+    assert chosen.summary.mode == "near_tie_sampling" and chosen.ids == GOLDEN_DRAWS["near_tie_sampling"]
+    assert chosen.summary.algorithm_version == "select-v2"
+    assert replay_select(json.loads(json.dumps(chosen.selection_input))).ids == GOLDEN_DRAWS["near_tie_sampling"]
+    # The same head under select-v1 gives the same draws.
+    v1 = selection.select_v1(chosen.selection_input["head"], 40, 10, EPSILON, False, None, None,
+                             chosen.selection_input["seeds"])
+    assert v1.ids == chosen.ids and v1.reasons == chosen.reasons
+
+
+def v1_selection_input(scored, request, config, seed_override):
+    """A select-v1 selection_input as the pre-select-v2 code stored it (history fixture)."""
+    import platform
+
+    n, limit, epsilon = len(scored.ids), request.result_limit, config.selection.tie_max_score_span
+    scores = scored.fused.combined[scored.order].tolist()
+    prices = [scored.rows[p].price for p in scored.order]
+    start, end = selection.tie_group(scores, min(limit, n), epsilon)
+    length = start + max(end - start, min(TARGET, n - start))
+    return {"algorithm_version": "select-v1", "python_version": platform.python_version(), "pool_size": n,
+            "result_limit": limit, "K": min(limit, n), "epsilon": epsilon, "target_sample_size": TARGET,
+            "quantile_bins": BINS, "cold_start_active": True,
+            "head": [[scored.ranked[p], scores[p], prices[p]] for p in range(length)],
+            "bin_edges": exploration.price_bin_edges(prices, BINS),
+            "seeds": selection.derive_seeds(config, "golden", "golden", POOL_VERSION, seed_override,
+                                            streams=selection.STREAMS)}
+
+
+def test_stored_select_v1_inputs_replay_under_select_v1_semantics():
+    config = settings()
+    req = make_request(PLAN, "golden", "golden")
+    scored = scored_pool(plan_rows(3, 30, 40), req, config)
+    stored = json.loads(json.dumps(v1_selection_input(scored, req, config, "fixed")))
+    replayed = replay_select(stored)
+    assert replayed.mode == "cold_start_exploration" and replayed.ids == GOLDEN_DRAWS["cold_start_exploration"]
+    # The new runs of the same scenario use select-v2: deterministic, and replayable from their own input.
+    chosen = selection.select(scored, req, config, POOL_KEY, POOL_VERSION, seed_override="fixed")
+    again = selection.select(scored, req, config, POOL_KEY, POOL_VERSION, seed_override="fixed")
+    assert chosen.summary.algorithm_version == "select-v2" and chosen.ids == again.ids
+    assert replay_select(json.loads(json.dumps(chosen.selection_input))).ids == chosen.ids
+    if GOLDEN_V2_COLD is not None:
+        assert chosen.ids == GOLDEN_V2_COLD
 
 
 def test_replay_recomputes_select_v1_from_the_stored_input_only():
@@ -553,8 +618,8 @@ def test_replay_recomputes_select_v1_from_the_stored_input_only():
         assert replayed.ids == chosen.ids and replayed.mode == chosen.summary.mode
         assert replayed.reasons == chosen.reasons
         assert set(stored) == {"algorithm_version", "python_version", "pool_size", "result_limit", "K", "epsilon",
-                               "target_sample_size", "quantile_bins", "cold_start_active", "head", "bin_edges",
-                               "seeds"}
+                               "exploration_window", "intermediate_size", "quantile_bins", "cold_start_active",
+                               "head", "bin_edges", "seeds"}
     for broken in ({"K": 9}, {"head": stored["head"][::-1]}, {"head": stored["head"][:-1]},
                    {"algorithm_version": "select-v0"}):
         with pytest.raises(RecommendationError):
@@ -582,7 +647,7 @@ def test_service_round_trip_cold_start_follows_d_and_ignores_the_exit_input(tmp_
         first = service.recommend(make_request(PLAN, "e2e-1", "e2e"))
         assert first.status == "success" and len(first.recommendations) == 10
         sel = first.selection
-        assert sel.mode == "cold_start_exploration" and sel.algorithm_version == first.execution.selection_algorithm == "select-v1"
+        assert sel.mode == "cold_start_exploration" and sel.algorithm_version == first.execution.selection_algorithm == "select-v2"
         assert len(sel.seed) == 64 and sel.result_limit == 10 and sel.leaders == 3
         assert [i.selection_reason for i in first.recommendations] == ["leader"] * 3 + ["price_exploration_sample"] * 7
         assert [i.rank for i in first.recommendations] == list(range(1, 11))
@@ -604,7 +669,7 @@ def test_service_round_trip_cold_start_follows_d_and_ignores_the_exit_input(tmp_
         assert step["result"]["ranking_artifact_id"] == selection["ranking_artifact_id"]
         assert selection["selected_ids"] == [i.listing.listing_id for i in first.recommendations]
         trace = service.store.trace("e2e", "e2e-1")
-        assert trace["context"]["selection_policy"]["algorithm_version"] == "select-v1"
+        assert trace["context"]["selection_policy"]["algorithm_version"] == "select-v2"
         gate = [s for s in trace["steps"] if s["kind"] == "final_gate"][-1]
         assert gate["passed"] and gate["selection"]["mode"] == sel.mode
         snapshot = service.store.current("e2e")
@@ -700,7 +765,7 @@ def test_same_request_replays_identically_and_tampering_is_rejected(tmp_path):
         with pytest.raises(RecommendationError):
             replay_gate(Response.model_validate(reason), snapshot)
         for change in ({"cold_start_active": False}, {"seeds": {**snapshot["selection_input"]["seeds"],
-                                                               "stageB": "f" * 64}}):
+                                                               "explore": "f" * 64}}):
             broken = json.loads(json.dumps(snapshot))
             broken["selection_input"].update(change)
             with pytest.raises(RecommendationError):

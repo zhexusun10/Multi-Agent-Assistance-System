@@ -134,6 +134,18 @@ for _target, _line in {
 }.items():
     DESCRIPTIONS[_target][1].append(AGENT + _line)
 
+SELECT2 = "select-v2 cold-start selection (2026-10-24, MIGRATION.md section 0.7): "
+for _target, _line in {
+    "recommendation/validation/gate.py": "head = current ranking prefix; window = top exploration_window; returned = intermediate prefix",
+    "recommendation/service.py": "Execution.strategy names the active selection algorithm",
+    "recommendation/terminal/acceptance.py": "request-independent exploration identity for select-v2 summaries",
+    "recommendation/README.md": "select-v2 window / intermediate / returned-prefix selection described",
+    "recommendation/contracts/README.md": "selection.exploration union (select-v2 labelled counts / stored select-v1)",
+    "recommendation/contracts/schemas/response.schema.json": "selection.exploration oneOf ExplorationV2 / Exploration",
+    "recommendation/examples/config.json": "price_sampling exploration_window 30 + intermediate_size 10 (target_sample_size removed)",
+}.items():
+    DESCRIPTIONS[_target][1].append(SELECT2 + _line)
+
 # Ported files removed on purpose (declared deletions: no patched bytes; the checker requires absence).
 DELETIONS = {
     "recommendation/agent/model_bridge.ts": (
@@ -142,7 +154,8 @@ DELETIONS = {
          "subprocess for model requests; the outer application's TypeScript model factory is unchanged"]),
 }
 for name in ("clarification", "error", "feedback-only-update", "initial-search", "no-match", "preference-update", "success"):
-    DESCRIPTIONS[f"recommendation/examples/contracts/{name}.json"] = (V2 + ": contract example", [EXAMPLES, MPD + "regenerated (new selection_hash; mpd-v1 cold_start)"])
+    DESCRIPTIONS[f"recommendation/examples/contracts/{name}.json"] = (V2 + ": contract example", [EXAMPLES, MPD + "regenerated (new selection_hash; mpd-v1 cold_start)",
+                                                                             SELECT2 + "regenerated (select-v2 identity)"])
 
 
 def main():

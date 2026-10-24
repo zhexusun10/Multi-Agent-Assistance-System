@@ -142,8 +142,10 @@ def test_stage_records_cover_every_stage_with_counts_params_versions_and_bounded
                               "request_cold_start": {"exited": False, "exited_pool_key": None},
                               "request_cold_start_used": False}
     sampling = stage(trace, "price_sampling")
-    assert sampling["inputs"]["candidates"] == response.selection.exploration.candidate_count
-    assert sampling["outputs"]["drawn"] == 7 and len(sampling["preview"]) == len(response.selection.exploration.bins)
+    explored = response.selection.exploration
+    assert sampling["inputs"] == {"window": explored.window_size, "sampling_candidates": explored.sampling_candidates}
+    assert sampling["outputs"]["intermediate_sampled"] == 7 == sampling["outputs"]["returned_sampled"]
+    assert len(sampling["preview"]) == len(explored.bins) and sampling["params"]["exploration_window"] == 30
     final = stage(trace, "final_selection")
     assert final["outputs"]["mode"] == "cold_start_exploration" and final["params"]["seed"] == response.selection.seed
     assert [r["listing_id"] for r in final["preview"]] == [i.listing.listing_id for i in response.recommendations]
@@ -397,12 +399,12 @@ def test_debug_mode_adds_bounded_rows_with_contributions_tie_group_and_bins(tmp_
     assert debug["tie_group"]["total"] == tie.size == len(debug["tie_group"]["members"]) == 27
     assert {m["score"] for m in debug["tie_group"]["members"]} == {tie.max_score}
     explored = debug["exploration"]
-    assert explored["total"] == response.selection.exploration.candidate_count == len(explored["candidates"])
-    assert sum(c["drawn"] for c in explored["candidates"]) == 7
-    assert sum(c["stage_a"] for c in explored["candidates"]) == response.selection.exploration.sample_size
+    # select-v2: the exploration candidates are the window's non-leaders.
+    assert explored["total"] == response.selection.exploration.sampling_candidates == len(explored["candidates"]) == 27
+    assert sum(c["drawn"] for c in explored["candidates"]) == 7 == sum(c["returned"] for c in explored["candidates"])
     top = debug["top_scores"]["rows"]
     assert len(top) == 40 and top[0]["listing_id"] == "L001" and top[0]["contributions"]
-    assert debug["rows"] == 27 + 30 + 40 <= debug["max_rows"]
+    assert debug["rows"] == 27 + 27 + 40 <= debug["max_rows"]
     # Summary mode (default) adds no debug data.
     plain = synthetic_service(sub(tmp_path, "plain"), plan_rows(3, 30, 40))
     try:
@@ -433,15 +435,20 @@ def test_debug_rows_never_exceed_debug_max_rows_and_keep_every_kind_of_row(tmp_p
     assert top["total"] == 400 and top["included"] == len(top["rows"]) == config.trace.preview_rows
     assert top["rows"][0]["contributions"] and [r["score_rank"] for r in top["rows"]] == list(range(1, 11))
     assert tie["total"] == 27 and tie["included"] == len(tie["members"]) == 2
-    assert explored["total"] == 30 and explored["included"] == len(explored["candidates"]) == 8
+    assert explored["total"] == 27 and explored["included"] == len(explored["candidates"]) == 8
     drawn = [i.listing.listing_id for i in response.recommendations if i.selection_reason == "price_exploration_sample"]
     assert sorted(c["listing_id"] for c in explored["candidates"] if c["drawn"]) == sorted(drawn) and len(drawn) == 7
     for rows in (tie["members"], explored["candidates"], top["rows"]):
         assert [r["score_rank"] for r in rows] == sorted(r["score_rank"] for r in rows)  # score order kept
-    # The reviewer's case: a tie group (297) larger than debug_max_rows (200).
-    response, debug, _ = _debug_of(tmp_path, "big", plan_rows(3, 300, 400))
+    # The reviewer's case: a tie group (297) larger than debug_max_rows (200). Outside cold start the
+    # tie group is pool-wide (select-v2 limits it to the exploration window only in cold start).
+    response, debug, _ = _debug_of(tmp_path, "big", plan_rows(3, 300, 400), **{"cold_start.enabled": False})
     assert response.selection.tie_group.size == 297 and debug["rows"] == 200
     assert debug["top_scores"]["included"] >= 10 and debug["tie_group"]["included"] > 0
+    assert sum(m["drawn"] for m in debug["tie_group"]["members"]) == 7
+    # In cold start the window caps everything at rank 30, however large the score tie.
+    response, debug, _ = _debug_of(tmp_path, "bigcold", plan_rows(3, 300, 400))
+    assert response.selection.tie_group.size == 27 and response.selection.exploration.window_size == 30
     assert sum(c["drawn"] for c in debug["exploration"]["candidates"]) == 7
     # Near-tie sampling (no exploration): the drawn tie members come first.
     response, debug, _ = _debug_of(tmp_path, "nt", plan_rows(3, 30, 400),

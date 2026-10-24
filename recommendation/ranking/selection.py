@@ -1,4 +1,5 @@
-"""Cold-start diagnostics and final selection, algorithm select-v1 (spec section 8, R3, R6, R9, R11).
+"""Cold-start diagnostics and final selection, algorithm select-v2 (spec section 8, R3, R6, R9, R11;
+select-v1 is kept unchanged for replaying stored runs).
 
 Runs after full-pool scoring (ranking/scoring_v2.py) on the score order O = sort(-combined,
 listing_id). Nothing here changes an official score.
@@ -15,7 +16,7 @@ Cold-start detector mpd-v1 (2026-10-24; replaces the C/B/S exit checks and the r
   window -> not evaluated (insufficient_scores, no division by zero).
 - Window: the first W = cold_start.detector.candidate_window items of O (all when fewer),
   leaders included, official combined scores as computed (no per-list rescaling). W is its own
-  setting, independent of price_sampling.target_sample_size.
+  setting, independent of the exploration settings (price_sampling.*).
 - D = 2 / (n (n - 1)) * sum_{i<j} |s_i - s_j| (Gini's mean difference). The pairwise sum is a
   math.fsum, so D is correctly rounded and does not depend on summation order.
 - active = D < cold_start.detector.min_mean_pairwise_difference (reasons
@@ -30,34 +31,42 @@ Cold-start detector mpd-v1 (2026-10-24; replaces the C/B/S exit checks and the r
   recommendation/analysis/stability.py, where the epsilon derivation still uses them).
 - D is not part of selection_input: replay uses only the stored cold_start_active.
 
-Selection (``select_v1``, shared with replay_gate):
+Selection (``select_v2``, shared with replay_gate; ``select_v1`` replays select-v1 history):
 - |pool| = 0 -> mode empty. |pool| <= result_limit -> every item in O order, mode small_pool.
-- Not cold start: |G| == m -> L + G in O order, mode ranked. Otherwise m items of G drawn
-  uniformly without replacement, ``random.Random(tie).sample(G in O order, m)``, mode
-  near_tie_sampling (reasons leader / tie_group_sample).
-- Cold start: R = the first max(|G|, min(target_sample_size, |pool| - |L|)) items after L
-  (R contains G). Price bins over the FULL pool (ranking/exploration.py). Stage A: when |R| >
-  target_sample_size, a proportional stratified sample of target_sample_size from R (stageA
-  stream), else A = R. Stage B: the same allocation of m from A (stageB stream). Mode
-  cold_start_exploration (reasons leader / price_exploration_sample).
-- Display order: leaders in O order, then the drawn items in O order.
+- Not cold start (identical to select-v1): |G| == m -> L + G in O order, mode ranked. Otherwise m
+  items of G drawn uniformly without replacement, ``random.Random(tie).sample(G in O order, m)``,
+  mode near_tie_sampling (reasons leader / tie_group_sample).
+- Cold start (user plan 2026-10-24): the exploration window W = the overall top
+  ``price_sampling.exploration_window`` items of O, leaders included (all when fewer), never extended
+  beyond it for boundary ties. I = min(``price_sampling.intermediate_size``, |W|). When |W| <= I every
+  window item is kept in O order (mode ranked, reasons ranked). Else leaders L = the items of W before
+  the tie group around W's I-th score (same epsilon rule, G cut at the window end) and the I - |L|
+  remaining intermediate slots are drawn from the non-leaders of W only: five quantile price bands
+  (``quantile_bins``) from the prices of the WHOLE window, leaders included (duplicate edges merged,
+  unknown-price band), quotas by largest remainder over each band's NON-LEADER count, uniform
+  sampling without replacement inside each band (``explore`` stream). Intermediate = L + drawn, each
+  in O order; returned = intermediate[:result_limit], never resampled or rebalanced, so the returned
+  price mix can differ from the intermediate one. Mode cold_start_exploration (reasons leader /
+  price_exploration_sample).
 
 Seeds (R3): base = sha256(seed_namespace|conversation_id|request_id|pool_version|selection_hash);
-tie / stageA / stageB = sha256(base|"tie"), ... ; each stream is random.Random(int(hex[:16], 16))
+select-v2 streams tie / explore (select-v1: tie / stageA / stageB) = sha256(base|"tie"), ... ; each stream is random.Random(int(hex[:16], 16))
 (CPython Mersenne Twister, python version recorded). A seed override (terminal set-seed, P6)
 replaces ``base`` only and is recorded. A new request_id gives new seeds and can therefore
 resample; replaying a request returns its stored response.
 
-Exploration summary (response.selection.exploration): candidate_count = |R|, sample_size = |A|;
-per price bin: count = candidates of R in the bin, quota = the bin's stage-A allocation (its
-members in A; equal to count when |R| <= target_sample_size), sampled = the bin's displayed
-items (stage-B allocation). So sum(count) = |R|, sum(quota) = |A|, sum(sampled) = m.
+Exploration summary (select-v2, response.selection.exploration, contracts.summary.ExplorationV2):
+window_size / candidate_count = |W|, sampling_candidates = non-leaders of W, intermediate_limit = I,
+intermediate_ids / _leaders / _sampled, final_limit = result_limit, final_ids / _leaders / _sampled;
+per band: window_count (W incl. leaders), count (non-leader candidates), quota = sampled (intermediate
+slots), final_sampled (among the returned listings). select-v1 stored summaries keep their shape.
 
-selection_input (R6, stored in the run snapshot; replay_gate uses ONLY these values):
-{algorithm_version, python_version, pool_size, result_limit, K, epsilon, target_sample_size,
-quantile_bins, cold_start_active, head: [[id, score, price|null]] of length |L| + |G| (|L| + |R|
-in cold start, the whole pool when it is not larger than result_limit), bin_edges (cold start
-only, else null), seeds {base, tie, stageA, stageB, override}}.
+selection_input (R6, stored in the run snapshot; replay_gate uses ONLY these values): select-v2
+{algorithm_version, python_version, pool_size, result_limit, K, epsilon, exploration_window,
+intermediate_size, quantile_bins, cold_start_active, head: [[id, score, price|null]] (|L| + |G| outside
+cold start, the window W in cold start, the whole pool when it is not larger than result_limit),
+bin_edges (cold start only, from W's prices, else null), seeds {base, tie, explore, override}}.
+select-v1 inputs keep target_sample_size and seeds {base, tie, stageA, stageB, override}.
 """
 
 import hashlib
@@ -71,15 +80,17 @@ from recommendation.contracts.summary import (
     DETECTOR,
     DETECTOR_VERSION,
     ColdStartDiagnostics,
-    Exploration,
-    ExplorationBin,
+    ExplorationBinV2,
+    ExplorationV2,
     SelectionSummary,
     TieGroup,
 )
 from . import exploration
 
-ALGORITHM_VERSION = "select-v1"
-STREAMS = ("tie", "stageA", "stageB")
+ALGORITHM_VERSION = "select-v2"
+V1 = "select-v1"
+STREAMS = ("tie", "stageA", "stageB")  # select-v1
+STREAMS_V2 = ("tie", "explore")
 MODES = ("empty", "small_pool", "ranked", "near_tie_sampling", "cold_start_exploration")
 
 
@@ -92,8 +103,10 @@ def describe(settings):
         "tie_group": "G = {i : |s_i - s_K| <= epsilon/2} around the K-th score of O; leaders = items before G",
         "random_policy": sel.random_policy,
         "seed_namespace": sel.seed_namespace,
-        "seeds": "base = sha256(namespace|conversation|request|pool_version|selection_hash); tie/stageA/stageB "
-        "streams",
+        "seeds": "base = sha256(namespace|conversation|request|pool_version|selection_hash); tie/explore streams",
+        "cold_start_selection": "window = overall top exploration_window of O (leaders included); intermediate = "
+        "leaders at the tie boundary of rank min(intermediate_size, window) + price-band sample of the window's "
+        "non-leaders (bands from the window's prices, quotas by non-leader counts); returned = first result_limit",
         "cold_start": {
             "enabled": cold.enabled,
             "detector": DETECTOR,
@@ -115,14 +128,14 @@ def _sha(*parts):
     return hashlib.sha256("|".join(parts).encode()).hexdigest()
 
 
-def derive_seeds(settings, conversation_id, request_id, pool_version, override=None):
-    """{base, tie, stageA, stageB, override} as 64-hex strings (override: bool)."""
+def derive_seeds(settings, conversation_id, request_id, pool_version, override=None, streams=STREAMS_V2):
+    """{base, <stream>..., override} as 64-hex strings (override: bool); select-v2 streams by default."""
     if override is not None:
         base = _sha("override", str(override))
     else:
         base = _sha(settings.selection.seed_namespace, conversation_id, request_id, pool_version,
                     settings.selection_hash)
-    return {"base": base, **{name: _sha(base, name) for name in STREAMS}, "override": override is not None}
+    return {"base": base, **{name: _sha(base, name) for name in streams}, "override": override is not None}
 
 
 def stream(seed_hex):
@@ -202,7 +215,10 @@ class Outcome:
     tie: tuple | None = None  # (start, end) of G in O
     candidates: list = field(default_factory=list)  # R (cold start)
     sample: list = field(default_factory=list)  # A (cold start)
-    stage_a_quotas: dict = field(default_factory=dict)  # bin -> quota (A members per bin)
+    stage_a_quotas: dict = field(default_factory=dict)  # bin -> quota (A members per bin; select-v2: slots)
+    intermediate: list = field(default_factory=list)  # select-v2 cold start: leaders + drawn, O order
+    intermediate_leaders: int = 0
+    window: list = field(default_factory=list)  # select-v2 cold start: W (ids, O order)
 
 
 def _invalid(message):
@@ -258,6 +274,37 @@ def select_v1(head, pool_size, result_limit, epsilon, cold_start_active, target,
                    candidates, sample, stage_a)
 
 
+def select_v2(head, pool_size, result_limit, epsilon, cold_start_active, window, intermediate, bin_edges, seeds):
+    """Deterministic select-v2 over the stored head ([[id, score, price], ...] in O order)."""
+    if not cold_start_active or pool_size <= result_limit:
+        # Outside cold start select-v2 is select-v1 (the tie stream is the only one used).
+        return select_v1(head, pool_size, result_limit, epsilon, False, None, None, seeds)
+    size = min(window, pool_size)
+    if len(head) != size:
+        _invalid("head must hold exactly the exploration window")
+    if bin_edges is None or any(a >= b for a, b in zip(bin_edges, bin_edges[1:])):
+        _invalid("exploration needs strictly increasing price bin edges")
+    ids = [h[0] for h in head]
+    limit = min(intermediate, size)
+    if size <= intermediate:
+        # Nothing to explore: the whole window, in official score order, then the returned prefix.
+        final = ids[:result_limit]
+        return Outcome(final, {i: "ranked" for i in final}, "ranked", 0, None, [], [], {}, ids, 0, ids)
+    scores = [h[1] for h in head]
+    start, end = tie_group(scores, limit, epsilon)  # within the window only (never beyond it)
+    leaders, candidates = ids[:start], ids[start:]
+    price_of = {h[0]: h[2] for h in head}
+    groups = exploration.group_by_bin(candidates, price_of, bin_edges)
+    drawn_set, quotas = exploration.stratified_sample(groups, limit - start, stream(seeds["explore"]))
+    drawn = [i for i in candidates if i in drawn_set]
+    inter = leaders + drawn
+    final = inter[:result_limit]
+    leader_set = set(leaders)
+    reasons = {i: "leader" if i in leader_set else "price_exploration_sample" for i in final}
+    return Outcome(final, reasons, "cold_start_exploration", min(start, result_limit), (start, end),
+                   candidates, drawn, {b: q for (b, _), q in zip(groups, quotas)}, inter, start, ids)
+
+
 def check_head(head):
     """The head is in O order (score descending, then listing ID) without duplicates."""
     if any(not isinstance(h, list) or len(h) != 3 for h in head):
@@ -272,7 +319,7 @@ def check_head(head):
 def replay(selection_input):
     """Recompute the selection from a stored select-v1 selection_input (parameters only from it)."""
     si = selection_input
-    if si.get("algorithm_version") != ALGORITHM_VERSION:
+    if si.get("algorithm_version") != V1:
         _invalid("not a select-v1 selection input")
     head = si["head"]
     check_head(head)
@@ -280,6 +327,23 @@ def replay(selection_input):
         _invalid("K differs from min(result_limit, pool_size)")
     return select_v1(head, si["pool_size"], si["result_limit"], si["epsilon"], si["cold_start_active"],
                      si["target_sample_size"], si["bin_edges"], si["seeds"])
+
+
+def replay_v2(selection_input):
+    """Recompute the selection from a stored select-v2 selection_input (parameters only from it)."""
+    si = selection_input
+    if si.get("algorithm_version") != ALGORITHM_VERSION:
+        _invalid("not a select-v2 selection input")
+    head = si["head"]
+    check_head(head)
+    if si["K"] != min(si["result_limit"], si["pool_size"]):
+        _invalid("K differs from min(result_limit, pool_size)")
+    if si["cold_start_active"] and si["pool_size"] > si["result_limit"]:
+        # The bands must be the window's own price quantiles (leaders included), never other edges.
+        if si["bin_edges"] != exploration.price_bin_edges([h[2] for h in head], si["quantile_bins"]):
+            _invalid("price band edges are not the exploration window's price quantiles")
+    return select_v2(head, si["pool_size"], si["result_limit"], si["epsilon"], si["cold_start_active"],
+                     si["exploration_window"], si["intermediate_size"], si["bin_edges"], si["seeds"])
 
 
 # --- the rank stage's selection ----------------------------------------------------------------
@@ -295,25 +359,53 @@ class Selection:
 
 
 def _bins(outcome, edges, price_of):
-    """ExplorationBin per numeric price bin (+ the unknown-price bin when a candidate has no price)."""
-    count, sampled = {}, {}
-    for i in outcome.candidates:
-        b = exploration.bin_index(price_of[i], edges)
-        count[b] = count.get(b, 0) + 1
-    drawn = set(outcome.ids) - {i for i, r in outcome.reasons.items() if r == "leader"}
-    for i in drawn:
-        b = exploration.bin_index(price_of[i], edges)
-        sampled[b] = sampled.get(b, 0) + 1
+    """ExplorationBinV2 per numeric price band of the window (+ the unknown-price band when a window
+    listing has no price): window_count (leaders included), count (non-leader candidates), quota =
+    sampled (intermediate slots) and final_sampled (among the returned listings)."""
+    def per_band(items):
+        out = {}
+        for i in items:
+            b = exploration.bin_index(price_of[i], edges)
+            out[b] = out.get(b, 0) + 1
+        return out
+
+    window, count = per_band(outcome.window), per_band(outcome.candidates)
+    sampled = per_band(outcome.sample)
+    final = per_band([i for i in outcome.ids if outcome.reasons[i] == "price_exploration_sample"])
     indexes = list(range(exploration.numeric_bins(edges)))
     unknown = exploration.numeric_bins(edges)
-    if unknown in count:
+    if unknown in window:
         indexes.append(unknown)
     bins = []
     for b in indexes:
         lower, upper = exploration.bin_bounds(b, edges)
-        bins.append(ExplorationBin(lower=lower, upper=upper, count=count.get(b, 0),
-                                   sampled=sampled.get(b, 0), quota=outcome.stage_a_quotas.get(b, 0)))
+        bins.append(ExplorationBinV2(lower=lower, upper=upper, window_count=window.get(b, 0), count=count.get(b, 0),
+                                     quota=outcome.stage_a_quotas.get(b, 0), sampled=sampled.get(b, 0),
+                                     final_sampled=final.get(b, 0)))
     return bins
+
+
+def _exploration(outcome, edges, price_of, result_limit):
+    ranked = len(outcome.intermediate) if outcome.mode == "ranked" else 0
+    count = lambda reason: sum(outcome.reasons[i] == reason for i in outcome.ids)  # noqa: E731
+    return ExplorationV2(
+        window_size=len(outcome.window), candidate_count=len(outcome.window),
+        sampling_candidates=len(outcome.candidates), intermediate_limit=len(outcome.intermediate),
+        intermediate_ids=list(outcome.intermediate), intermediate_leaders=outcome.intermediate_leaders,
+        intermediate_sampled=len(outcome.sample), intermediate_ranked=ranked,
+        final_limit=result_limit, final_ids=list(outcome.ids), final_leaders=count("leader"),
+        final_sampled=count("price_exploration_sample"), final_ranked=count("ranked"),
+        bins=_bins(outcome, edges, price_of) if outcome.mode == "cold_start_exploration" else [])
+
+
+def exploration_of(selection_input):
+    """The select-v2 cold-start exploration summary recomputed from a stored selection_input alone
+    (None outside cold start): the final gate and replay_gate compare the reported summary with it."""
+    si = selection_input
+    if not si.get("cold_start_active") or si["pool_size"] <= si["result_limit"]:
+        return None
+    outcome = replay_v2(si)
+    return _exploration(outcome, si["bin_edges"], {h[0]: h[2] for h in si["head"]}, si["result_limit"])
 
 
 def _notes(outcome, score_rank, size, epsilon, edges, price_of):
@@ -325,6 +417,9 @@ def _notes(outcome, score_rank, size, epsilon, edges, price_of):
             notes[listing_id] = f"All {size} eligible listings returned (pool not larger than the result limit)"
         elif reason == "ranked":
             notes[listing_id] = f"Score rank {r} of {size} eligible listings"
+        elif reason == "leader" and outcome.window:
+            notes[listing_id] = (f"Clear leader: score rank {r} of {size}, ahead of the near-tie group at rank "
+                                 f"{len(outcome.intermediate)} of the top-{len(outcome.window)} exploration window")
         elif reason == "leader":
             notes[listing_id] = (f"Clear leader: score rank {r} of {size}, ahead of the near-tie group at the "
                                  "result cutoff")
@@ -335,11 +430,11 @@ def _notes(outcome, score_rank, size, epsilon, edges, price_of):
             index = exploration.bin_index(price_of[listing_id], edges)
             lower, upper = exploration.bin_bounds(index, edges)
             closing = "]" if index == exploration.numeric_bins(edges) - 1 else ")"
-            band = "unknown-price bin" if lower is None else f"price bin [{lower:g}, {upper:g}{closing}"
-            first = outcome.leaders + 1
-            notes[listing_id] = (f"Cold-start price exploration: drawn from the {band} among "
-                                 f"{len(outcome.candidates)} candidates (score ranks {first}-"
-                                 f"{first + len(outcome.candidates) - 1}); score rank {r}")
+            band = "unknown-price band" if lower is None else f"price band [{lower:g}, {upper:g}{closing}"
+            first = outcome.intermediate_leaders + 1
+            notes[listing_id] = (f"Cold-start price exploration: drawn from the {band} of the top-"
+                                 f"{len(outcome.window)} window among {len(outcome.candidates)} non-leaders "
+                                 f"(score ranks {first}-{len(outcome.window)}); score rank {r}")
     return notes
 
 
@@ -357,6 +452,7 @@ def select(scored, request, settings, pool_key, pool_version, seed_override=None
     k = min(limit, n)
     epsilon = settings.selection.tie_max_score_span
     sampling = settings.cold_start.price_sampling
+    window, intermediate = sampling.exploration_window, sampling.intermediate_size
     scores = scored.fused.combined[scored.order].tolist()
     prices = [scored.rows[p].price for p in scored.order]
     start = end = 0
@@ -371,26 +467,24 @@ def select(scored, request, settings, pool_key, pool_version, seed_override=None
     if n <= limit:
         length = n
     elif active:
-        length = start + max(end - start, min(sampling.target_sample_size, n - start))
+        length = min(window, n)  # the exploration window: overall top W, leaders included
     else:
         length = end
     head = [[scored.ranked[p], scores[p], prices[p]] for p in range(length)]
-    edges = exploration.price_bin_edges(prices, sampling.quantile_bins) if active else None
+    # Price bands from the window's prices (leaders included), never from the rest of the pool.
+    edges = exploration.price_bin_edges([h[2] for h in head], sampling.quantile_bins) if active else None
     seeds = derive_seeds(settings, request.conversation_id, request.request_id, pool_version, seed_override)
-    outcome = select_v1(head, n, limit, epsilon, active, sampling.target_sample_size, edges, seeds)
+    outcome = select_v2(head, n, limit, epsilon, active, window, intermediate, edges, seeds)
     sampled_ms = (time.perf_counter() - stage_started) * 1000
     marks["price_sampling"] = sampled_ms if active else 0.0
     stage_started = time.perf_counter()
     price_of = {h[0]: h[2] for h in head}
     tie = None
     if outcome.tie is not None:
-        group = scores[start:end]
-        tie = TieGroup(size=end - start, min_score=min(group), max_score=max(group),
+        group = [h[1] for h in head[outcome.tie[0]:outcome.tie[1]]]
+        tie = TieGroup(size=len(group), min_score=min(group), max_score=max(group),
                        span=max(group) - min(group), epsilon=epsilon)
-    explored = None
-    if outcome.mode == "cold_start_exploration":
-        explored = Exploration(candidate_count=len(outcome.candidates), sample_size=len(outcome.sample),
-                               bins=_bins(outcome, edges, price_of))
+    explored = _exploration(outcome, edges, price_of, limit) if active else None
     summary = SelectionSummary(mode=outcome.mode, algorithm_version=ALGORITHM_VERSION, seed=seeds["base"],
                                result_limit=limit, leaders=outcome.leaders, tie_group=tie,
                                exploration=explored, cold_start=diagnostics)
@@ -401,7 +495,8 @@ def select(scored, request, settings, pool_key, pool_version, seed_override=None
         "result_limit": limit,
         "K": k,
         "epsilon": epsilon,
-        "target_sample_size": sampling.target_sample_size,
+        "exploration_window": window,
+        "intermediate_size": intermediate,
         "quantile_bins": sampling.quantile_bins,
         "cold_start_active": active,
         "head": head,
@@ -413,7 +508,9 @@ def select(scored, request, settings, pool_key, pool_version, seed_override=None
         "mode": outcome.mode,
         "K": k,
         "leaders": outcome.leaders,
-        "m": k - outcome.leaders if n > limit else None,
+        "m": k - outcome.leaders if n > limit and not active else None,
+        "intermediate": {"ids": list(outcome.intermediate), "leaders": outcome.intermediate_leaders,
+                         "window": len(outcome.window)} if active else None,
         "tie_group": tie.model_dump() if tie else None,
         "exploration": explored.model_dump() if explored else None,
         "cold_start": {**diagnostics.model_dump(mode="json"), **record},

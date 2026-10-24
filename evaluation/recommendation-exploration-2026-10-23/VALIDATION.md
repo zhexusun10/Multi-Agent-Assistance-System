@@ -1600,3 +1600,28 @@ Gates: `pytest recommendation/tests tests -q` 580 passed; `python -m recommendat
 -s typecheck` and `typecheck:recommendation` exit 0; `npm test` 0 failed; upstream `--check` 71 files, 40 declared
 (one declared deletion). Not run: any real-model request (AGENTS.md cost rule); tool-calling quality with a real
 provider is unverified.
+
+## select-v2 cold-start selection (2026-10-24)
+
+User plan section 9 with the user's change (bands from the overall top-30 window's prices incl. leaders; quotas by
+non-leader band counts; sample only non-leaders). Details: MIGRATION.md section 0.7. All offline.
+
+| Item | Proof | Outcome |
+|---|---|---|
+| Never beyond overall rank 30, also with boundary ties past it; head = exactly the window | `test_selection_v2.py::test_never_draws_beyond_the_window_*`, `test_trace_v2.py` (bigcold) | pass |
+| Pools of 11-29; ten or fewer candidates kept in score order | `::test_pools_of_11_to_29_*`, `::test_ten_or_fewer_candidates_*`, terminal transcript (9-listing window) | pass |
+| Leaders in the intermediate total; final limits 1, 5, 10; ordering before truncation; no rebalancing | `::test_leaders_count_toward_*` (1/5/10), `test_selection_v1.py::test_exploration_window_intermediate_and_final_sizes` (7 scenarios x 25 seeds) | pass |
+| Bands from window prices incl. leaders (never the pool tail); repeated and missing prices; quotas = largest remainder over non-leader counts; only non-leaders sampled | `test_selection_v1.py::test_price_bands_come_from_the_window_*`, `test_selection_v2.py::test_bands_from_window_prices_*` | pass |
+| No duplicates; deterministic; replay from the stored select-v2 input; tampered inputs never silently reproduce | `::test_no_duplicates_*`, `::test_tampered_stored_window_*`, service round trip | pass |
+| Non-cold-start selection unchanged (equals select-v1 for equivalent inputs; HEAD 4d687e3 near-tie golden draws) | `::test_non_cold_start_selection_equals_select_v1`, `test_selection_v1.py::test_near_tie_sampling_is_unchanged_*` | pass |
+| Historical replay: a stored select-v1 input replays the pre-change cold-start golden draws; stored legacy runs replay byte-for-byte | `test_selection_v1.py::test_stored_select_v1_inputs_replay_*`, `::test_stored_legacy_cold_start_run_replays_as_stored` | pass |
+| Final validation rejects wrong final IDs, order, prefix, out-of-window listings and a wrong intermediate | `test_selection_v2.py::test_final_validation_rejects_*` (4 tampers) | pass |
+| Labelled diagnostics (window / intermediate / final; a window of <= 10 counted as `*_ranked`, never sampled) consistent in Python and TS | `::test_service_response_carries_labelled_*`, `::test_a_small_window_counts_*`; TS strict union, `select-v1-oracle.test.ts` (select-v2 cold rules incl. the leader boundary from the oracle's own scores and six negative cases) | pass |
+| Final gate and replay_gate compare the whole select-v2 summary (intermediate order, leaders, band counts) with the replay; band edges must be the window's price quantiles | `test_selection_v2.py::test_final_validation_compares_the_whole_summary_*` (6 tampers), `::test_a_stored_select_v2_response_with_an_altered_summary_*`, `::test_replay_rejects_band_edges_*` | pass |
+| Score order before truncation with prices unrelated to scores (limits 1/5/10) | `::test_intermediate_is_in_score_order_*` | pass |
+| Mutation check: band-ordered draws, pool-wide edges, window-count allocation, sampling leaders each fail the suite | source mutants run offline (each `1 failed`), file restored | pass |
+| Stored select-v1 cold-start summary parses and re-dumps as stored (Python), parses as select-v1 (TS); mixed shapes rejected | `::test_stored_select_v1_cold_start_response_*`, `tests/recommendation-v2-fixtures.test.ts` (frozen `legacy-select-v1-cold-start.json`) | pass |
+| Explanation text follows the returned listings (no price-tier claim when only leaders are returned) | `tests/explanation-native-v2.test.ts` | pass |
+
+Gates: `pytest recommendation/tests tests -q` 0 failed; `npm test` 0 failed; `npm run -s typecheck` exit 0; schema and
+upstream checks pass. Not run: live/paid tests.

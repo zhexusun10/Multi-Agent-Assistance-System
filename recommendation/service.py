@@ -66,7 +66,7 @@ class RecommendationService:
         execution = Execution(
             trace_id=trace_id,
             trace_ref=f"sqlite:{trace_id}",
-            strategy="full-pool fused-v2 scoring + select-v1 selection",
+            strategy=f"full-pool fused-v2 scoring + {assembly.SELECTION_ALGORITHM} selection",
             data_mode=self.listing.mode,
             controller_mode=self.controller.mode,
             model_identifier=self.controller.model_identifier,

@@ -22,8 +22,8 @@
   },
   "selection": {
     "mode": "empty",
-    "algorithm_version": "select-v1",
-    "seed": "acd838e302f8d1340da498dd8f4ffa176b67d6c343d1c8fd804eee413b06d184",
+    "algorithm_version": "select-v2",
+    "seed": "5e9fa412190dec700b6219b934cea4cb8c49641921f0deff9d9f51c615295cd3",
     "result_limit": 10,
     "leaders": 0,
     "tie_group": null,
@@ -52,8 +52,8 @@
     "12 listings were excluded because hard-criterion data is unknown (see pool.unknown_reasons); they are not verified matches."
   ],
   "state": {
-    "state_id": "82d2e6d5-06a2-4723-8d95-9a4845b13e00",
-    "candidate_pool_ref": "d53c1020-98ae-4e50-9714-8866509529c1/pool",
+    "state_id": "c0c04581-83fb-4a7a-b66f-439eaa030cda",
+    "candidate_pool_ref": "6c431007-eb9b-4723-bbad-856f0145183a/pool",
     "run_sequence": 1,
     "scope": "all RENT listings",
     "truncated": false,
@@ -62,18 +62,18 @@
     "assessed_count": 0
   },
   "execution": {
-    "trace_id": "d53c1020-98ae-4e50-9714-8866509529c1",
-    "trace_ref": "sqlite:d53c1020-98ae-4e50-9714-8866509529c1",
-    "strategy": "full-pool fused-v2 scoring + select-v1 selection",
-    "scoring_version": "fused-v2-pool-minmax:d56688f28109",
-    "selection_algorithm": "select-v1",
+    "trace_id": "6c431007-eb9b-4723-bbad-856f0145183a",
+    "trace_ref": "sqlite:6c431007-eb9b-4723-bbad-856f0145183a",
+    "strategy": "full-pool fused-v2 scoring + select-v2 selection",
+    "scoring_version": "fused-v2-pool-minmax:be6b2bd6073b",
+    "selection_algorithm": "select-v2",
     "config_version": 1,
-    "config_hash": "d3ee67b179391ebd0a832d1da09e5cef84058de8ad1c4195979e602f2c3c632a",
-    "selection_hash": "d56688f2810985eb5adc7691c550debe84ca52b29bc1afca16c9161b051f9d15",
+    "config_hash": "c0cece65b91b5b13f1318da66c71e40f0d9d2e4b1636c160d3d284582dc917fb",
+    "selection_hash": "be6b2bd6073b187040093f7767f05124ec009a7e9fbd9139eb2f01518559a3e3",
     "model_identifier": null,
     "model_calls": 0,
     "tool_calls": 4,
-    "duration_ms": 2.7066250040661544,
+    "duration_ms": 1.9888340029865503,
     "tokens": null,
     "data_mode": "fixture",
     "controller_mode": "scripted"

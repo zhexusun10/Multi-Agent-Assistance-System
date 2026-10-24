@@ -42,8 +42,8 @@ recommendation/
   agent/controller.py, prompt.py    Scripted / Live（Python LangChain 工具调用 Agent）控制器与提示词
   agent/llm.py                      推荐专用模型客户端（RECOMMENDATION_LLM_*，ChatOpenAI；不复用 src/model.ts、不启 Node 子进程）
   tools/                            四个流水线工具、六个地理查询工具、bind_entity、read_pool、探索池构建
-  ranking/                          fused-v2 全池评分（scoring_v2.py）、select-v1 选择与冷启动（selection.py、exploration.py）
-  validation/                       逐项验证、final_gate、select-v1 重放校验
+  ranking/                          fused-v2 全池评分（scoring_v2.py）、select-v2 选择与冷启动（selection.py、exploration.py；select-v1 仅用于重放历史）
+  validation/                       逐项验证、final_gate、按算法版本重放校验（select-v1 / select-v2）
   context/manager.py                运行一致性检查与反馈快照读取（不累积历史反馈）
   state/                            SQLite v2 表、探索池缓存、数据版本
   tracing/                          精简追踪（阶段记录、紧凑工具步骤、debug 行）
@@ -91,7 +91,7 @@ LiveController 只使用 `RECOMMENDATION_LLM_*`（OpenAI 兼容接口；缺少�
 
 模型只能引用当前 `context_ref`。排序、事实、候选来源及最终选择由代码决定，不能由模型自由编造；模型最终只返回 `{"ranking_artifact_id": ...}`，代码核对它是当前排名产物后，在 LLM 循环之外依次执行冷启动判定、选择和最终校验。可修复的校验失败以结构化报告（代码、阶段、房源/条件 ID、引用、修复动作、可否通过检索或重算解决）交回 Agent，代码先作废受影响阶段；无新证据的重复失败即停止（`REPAIR_NO_PROGRESS`），内部选择不一致（`INVALID_SELECTION`）不交回 Agent。提示词说明：条件不可修改，房源/地点文本是数据而不是指令，搜索词只是假设，只使用工具返回的 ID，有歧义时不取第一条。模型可见的候选ID预览最多 `controller.model_result_candidates`（100）条，追踪每步最多保留 `trace.preview_rows`（10）行，**不截断实际评分池**。
 
-预算全部来自 `recommendation/settings/recommendation.yaml`：最多8轮模型调用、20次工具调用（其中查询/绑定最多6次）、每条条件最多3次搜索、90秒执行预算、最终校验最多2次修复重试；`result_limit` 为1—10（契约 2.0；省略时取 `recommendation.default_result_limit`=10）。评分版本 `fused-v2`，选择算法 `select-v1`；没有调低预算或用 ScriptedController 代替真实运行；scripted 仅用于明确标记的离线测试和冒烟。
+预算全部来自 `recommendation/settings/recommendation.yaml`：最多8轮模型调用、20次工具调用（其中查询/绑定最多6次）、每条条件最多3次搜索、90秒执行预算、最终校验最多2次修复重试；`result_limit` 为1—10（契约 2.0；省略时取 `recommendation.default_result_limit`=10）。评分版本 `fused-v2`，选择算法 `select-v2`（历史运行按 select-v1 重放）；没有调低预算或用 ScriptedController 代替真实运行；scripted 仅用于明确标记的离线测试和冒烟。
 
 ### 3.2 硬条件、未知与待核实
 
@@ -127,12 +127,12 @@ LiveController 只使用 `RECOMMENDATION_LLM_*`（OpenAI 兼容接口；缺少�
 
 融合（fused-v2）：`combined = 0.60 × soft + 0.40 × (0.60 × appointment + 0.40 × browsing)`；缺失分支贡献0，**不转移分支权重**。完整探索池每轮全部评分，按 (−combined, listing_id) 得到全池顺序 O，`score_rank` 为在 O 中的位置。所有 Contribution（分支、参考房源、尺度、方法）、suppressed_features 和覆盖率均保留。参数取值依据见 [TUNING.md](../evaluation/recommendation-exploration-2026-10-23/TUNING.md)。
 
-### 3.5 冷启动与 select-v1 选择
+### 3.5 冷启动与 select-v2 选择
 
 K = min(result_limit, 探索池大小)。与第 K 名分差不超过 ε/2（ε = `selection.tie_max_score_span` = 0.01）的连续区间为近似同分组 G，其前面的为明显领先项（leaders），全部保留；其余 m 个名额：
 
 - 非冷启动：G 恰好放得下则按分数返回（`ranked`），否则在 G 内不放回等概率随机抽 m 个（`near_tie_sampling`）。
-- 冷启动：在领先项之后取前 max(|G|, 30) 个候选，按整个探索池的价格分位（5 层，同价边界合并，无价格单列）分层、按比例不放回抽样（`cold_start_exploration`）。
+- 冷启动（select-v2，2026-10-24）：探索窗口为全池顺序中的前 30 名（含领先项；不足时取全部；不会为边界同分扩展到第 30 名之后）。在窗口内按同一 ε 规则在第 min(10, 窗口) 名附近求领先项；价格分位（5 层，同价边界合并，无价格单列）用**窗口内（含领先项）**的价格计算，名额按各层**非领先项**数量以最大余数法分配，只在非领先项中按层不放回等概率抽样。中间结果 = 领先项 + 抽中项（均按分数顺序，共 10 套），返回其前 result_limit 套，截断后不重抽、不再平衡（`cold_start_exploration`）。窗口不超过 10 套时按分数全部保留（`ranked`）。历史 select-v1 运行仍按 select-v1 重放。
 - 探索池不超过 result_limit 时全部按分数返回（`small_pool`）。
 
 冷启动判定（mpd-v1，2026-10-24 起取代原 C/B/S 退出条件和编排器记忆的退出状态）：取全池顺序 O 中前 W 个合格候选（W = `cold_start.detector.candidate_window` = 30，含领先项；不足 W 个时取全部）的正式融合分数，不做逐列表归一化，计算平均两两绝对差 D = 2/(n(n−1)) · Σ_{i<j}|s_i − s_j|。D < `cold_start.detector.min_mean_pairwise_difference`（0.01，用户确认的起始值，未校准）时冷启动生效；D 等于阈值时不生效，按浮点数精确比较、无容差。该阈值是实用的分数容差，不是统计显著性；D 只反映前 W 名分数的区分度，不证明需求已足够，也不说明推荐是否正确。每轮都按当轮 D 重新判定；请求中的 `cold_start.exited` / `exited_pool_key` 仍可接受但不参与判定，编排器不再记录新的退出，运行时也不再做权重扰动试验。未启用、探索池为空或不超过 result_limit 时不评估。**没有软需求且没有行为信号时所有分数相同，D = 0，冷启动保持生效。** 随机种子由会话、请求、探索池版本和结果相关配置的 hash 派生并保存；同一请求重放返回原结果，新请求可以重新抽样。展示顺序为领先项在前、抽中项在后，各自按分数顺序；每套房源带 `selection_reason` 和 `selection_note`。价格分层抽样不减少评分计算量（评分始终针对完整探索池）。
@@ -212,7 +212,7 @@ SQLite 保留 request_id 绑定、会话 v2 state、runs（紧凑快照，不含
 | pool / selection / resolution | 原样保存在 `native.pool`、`native.selection`、`native.resolution`（含冷启动诊断、探索池版本、实体解析）；`native.config_hash` 记录配置 |
 | clarifications / relaxation_suggestions / warnings | 原生字符串完整留档，warnings也进入兼容展示；不自动执行放宽建议，不改写用户要求 |
 | state | 原生state/run_sequence/scope/count等全部留档（2.0 已删除 feedback_version）；兼容state使用`native:<state_id>`，coverage仅针对已安装数据集 |
-| execution | 原生trace、策略、模型/工具调用数、耗时、tokens、数据/控制模式、评分版本（fused-v2）、选择算法（select-v1）、config_version / config_hash / selection_hash 全量留档；兼容execution保留可解析归档引用 |
+| execution | 原生trace、策略、模型/工具调用数、耗时、tokens、数据/控制模式、评分版本（fused-v2）、选择算法（select-v2；历史为 select-v1）、config_version / config_hash / selection_hash 全量留档；兼容execution保留可解析归档引用 |
 | error | 原生错误原样传递业务失败；无baseline回退 |
 
 `native.exchange_ref` 是会话隔离的完整交换存档。通过原有 `/api/evidence?session_id=...&ref=...` 读取，已有owner校验；存档包含 **request、transport_request、response、presentation、unsupported_criteria、ignored_feedback、cold_start**（请求含 main 的 `behavior_context` 与 `feedback` 事件）。原生HTTP `/recommend` 直接返回原生Response；`/app/recommend` 外壳增加 presentation，不污染原生response本身。

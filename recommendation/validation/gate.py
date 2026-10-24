@@ -67,6 +67,23 @@ def final_gate(dispatcher, trace):
     replayed = replay_select(dispatcher.selection_input)
     if replayed.ids != ids or replayed.reasons != dispatcher.selection.reasons:
         raise _inconsistent("Selection does not replay from its selection input")
+    # The stored head is the current official order (the exploration window in cold start).
+    si = dispatcher.selection_input
+    head = [h[0] for h in si["head"]]
+    if head != list(dispatcher.ranked[:len(head)]):
+        raise _inconsistent("Selection input is not the current ranking's head")
+    explored = dispatcher.selection.summary.exploration
+    if si.get("cold_start_active") and si["algorithm_version"] == "select-v2":
+        window = min(si["exploration_window"], si["pool_size"])
+        if len(head) != window or explored is None or explored.window_size != window:
+            raise _inconsistent("Cold-start selection must use exactly the overall top exploration window")
+        if explored.final_ids != ids or explored.intermediate_ids[:request.result_limit] != ids:
+            raise _inconsistent("Returned listings must be the first result_limit of the intermediate selection")
+        if len(explored.intermediate_ids) != min(si["intermediate_size"], window) or set(explored.intermediate_ids) - set(head):
+            raise _inconsistent("Intermediate selection must hold intermediate_size listings of the window")
+        # Intermediate leaders, sampled members, their order and every band count must equal the replay.
+        if replayed.exploration is None or explored != replayed.exploration:
+            raise _inconsistent("Exploration summary does not match the replayed intermediate selection")
     fresh_rows, fingerprint = dispatcher.listing.lookup_versioned(ids)
     report["rows_read"] = len(fresh_rows)
     report["pool"] = pool.reference()
@@ -170,7 +187,8 @@ def replay_gate(response, snapshot):
     Retrying an ID returns the historical result, never a claim of live freshness. New requests
     always use final_gate's live re-read policy. Compact snapshots (P3+) carry no pool rows:
     the selection is recomputed from ``selection_input`` alone (dispatch on its
-    algorithm_version: select-v1, or ranked-prefix-v1 for older snapshots), item scores must
+    algorithm_version: select-v2, select-v1, or ranked-prefix-v1 for older snapshots; a select-v2
+    cold-start summary must equal the recomputed one), item scores must
     equal the stored inputs, and every item must be eligible by its own stored criterion results and
     evidence. Snapshots that embed a full pool (P2-era v2 runs) keep the old check.
     """
@@ -198,6 +216,11 @@ def replay_gate(response, snapshot):
     ):
         raise RecommendationError(
             "INVALID_SNAPSHOT", "Stored selection mode, seed or reasons differ from the replayed selection"
+        )
+    if replayed.exploration is not None and response.selection.exploration != replayed.exploration:
+        # select-v2 cold start: window, intermediate selection and band counts recomputed from the input.
+        raise RecommendationError(
+            "INVALID_SNAPSHOT", "Stored exploration summary differs from the replayed intermediate selection"
         )
     pool = snapshot["pool"]
     if response.pool is None or response.pool.pool_version != pool["pool_version"]:
