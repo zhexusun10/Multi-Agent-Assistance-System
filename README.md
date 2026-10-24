@@ -136,8 +136,22 @@ npm run test:live
 
 ## Testing and acceptance evidence
 
-Start with the [Group 42 QA handoff](evaluation/README.md) for the current English
-report and tracker, recorded results, open issues, complete original evidence
-and historical archive. The recommendation fixes and QA evidence are published
-in [PR 2](https://github.com/zhexusun10/Multi-Agent-Assistance-System/pull/2)
-for review; overall system acceptance remains PENDING.
+Start with the [Group 42 QA handoff](evaluation/README.md). The
+[24 October expanded final evaluation](evaluation/expanded-final-acceptance-2026-10-24/README.md) contains the
+English final report and workbook, 40 basic scenarios, K=1–10 Precision,
+judged-pool Recall and NDCG, the retained 60-case complex suite and all 251
+original evidence files in one sealed ZIP. Basic results use main `4d687e3`
+and the 9 October listing snapshot.
+
+The materials are published for review in
+[PR 3](https://github.com/zhexusun10/Multi-Agent-Assistance-System/pull/3).
+Overall system acceptance remains **DEFERRED**. This publication does not apply
+the local timeout patch or change production behavior.
+
+The [23 October relevance evaluation](evaluation/recommendation-relevance-2026-10-23/README.md)
+preserves the earlier `d5af7e1` results and 577 frozen judgments.
+[PR 2](https://github.com/zhexusun10/Multi-Agent-Assistance-System/pull/2)
+merged the earlier matching fixes and historical QA evidence. Retained reports
+record their original dates and scopes; independent participant acceptance and
+human relevance validation remain open.
+
