@@ -505,8 +505,8 @@ def fake_model_counts(data, settings, names):
                 self.pending = criterion
                 return {"content": "", "tool_calls": [{"id": f"s{self.turn}", "name": "search_places", "args": {
                     "context_ref": ref, "query": name, "criterion_id": criterion, **narrow}}]}
-            if "selected_ids" in last and last.get("tool") == "rank_candidates":
-                return {"content": json.dumps({"listing_ids": last["selected_ids"]}), "tool_calls": []}
+            if last.get("ranking_artifact_id") and last.get("tool") == "rank_candidates":
+                return {"content": json.dumps({"ranking_artifact_id": last["ranking_artifact_id"]}), "tool_calls": []}
             return {"content": "", "tool_calls": [{"id": f"p{self.turn}-{i}", "name": n, "args": {"context_ref": ref}}
                                                   for i, n in enumerate(PIPELINE[1:])]}
 

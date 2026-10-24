@@ -101,6 +101,38 @@ native listing ID (1–128 chars) so fixture data mode works — a superset of e
   ranking formulas, result limits, eligibility and `selection_input` (replay reads only `cold_start_active`, so stored
   runs replay as recorded). `cold_start` is part of `selection_hash`, so new-request seeds and `scoring_version` change.
 
+### 0.6 Dedicated Python LangChain agent and ranking-artifact handoff (2026-10-24)
+
+- **Model client**: `recommendation/agent/llm.py` (langchain + langchain-openai, declared in
+  `recommendation/requirements.txt`), configured only by `RECOMMENDATION_LLM_*` (provider `openai`, model, API key,
+  optional base URL, temperature, output tokens, per-request timeout, SDK retries; see `.env.example`). Missing or
+  invalid configuration is `MODEL_NOT_CONFIGURED`; nothing falls back to `CHAT_MODEL` / `OPENAI_*`.
+  `RECOMMENDATION_LLM_API_KEY` is a credential (`app.CREDENTIAL_KEYS`, test isolation). `recommendation/agent/model_bridge.ts`
+  is deleted (a declared deletion in `contracts/releases/recommendation-downstream-patches.json`; the upstream checker
+  requires its absence) and `app_controller.py` (ApplicationLiveController) is removed; `src/model.ts` is unchanged.
+- **Completion**: the agent's final answer is `{"ranking_artifact_id": ...}` (`agent/controller.Completion`), never
+  listing IDs. `ToolResult.selected_ids` is replaced by `ranking_artifact_id`.
+- **Tools**: `rank_candidates` ranks only (hard recheck, evidence coverage, full-pool fused-v2 scores) and yields a
+  run-scoped ranking artifact; new `read_pool` (kind `inspect`) pages the current pool read-only.
+- **After the loop (code)**: artifact check, `Dispatcher.select_ranking` (mpd-v1 detection + select-v1; trace step
+  `selection`, stages `cold_start_diagnostics` / `price_sampling` / `final_selection` with `call` = artifact ID),
+  `final_gate(dispatcher, trace)`, persistence. Gate failures are `GateFailure` / `FailureReport`
+  (`recommendation/models/repair.py`): codes `STALE_EVIDENCE` (refresh / targeted retrieval), `HARD_CONSTRAINT_FAILED`
+  (refilter and rerank), `INVALID_SELECTION` (implementation error, never sent back), `REPAIR_NO_PROGRESS`; the run
+  trace keeps `repairs` with each outcome. `INVALID_PROPOSAL` is no longer produced.
+- **Trace changes** (layout name unchanged; older traces still read): rank_candidates records only the `scoring`
+  stage; `cold_start_diagnostics` / `price_sampling` / `final_selection` are code stages with `call` = the artifact ID
+  (resolvable: the new `selection` step has `snapshot_ref` = that ID); new top-level `agent` (protocol, non-secret
+  model settings) and `repairs` (one entry per failure with its outcome); debug rows are keyed on the artifact.
+  Model steps keep their message deltas.
+- **Error codes**: new `MODEL_NOT_CONFIGURED`, `INVALID_SELECTION`, `HARD_CONSTRAINT_FAILED`, `REPAIR_NO_PROGRESS`,
+  `RANKING_INCOMPLETE`; `INVALID_PROPOSAL` is no longer produced (src/domain/errors.ts maps them to user text).
+- **Configuration loading**: `RECOMMENDATION_LLM_*` keys load as one group (all from the caller when it set any,
+  else all from `.env`; empty values never overwrite), and the OpenAI client is built with every `OPENAI_*`
+  variable hidden, so the recommendation key never reaches the application's endpoint.
+- **Unchanged**: request/response contracts (Execution fields, selection summary), select-v1, scoring, eligibility,
+  idempotency and immutable replay, pool cache, step budgets (`controller.*`).
+
 ## 1. Summary of breaking changes
 
 | Area | 1.0 | 2.0 |

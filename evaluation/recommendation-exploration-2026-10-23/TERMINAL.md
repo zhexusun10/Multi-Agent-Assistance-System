@@ -24,7 +24,7 @@ requests and inspects runs. The debugging commands live in `recommendation/termi
 | `--config <file>` | alternative settings file of the same schema (default: `recommendation/settings/recommendation.yaml`) |
 | `--script <file>` | run the commands of a file (one per line, `#` comments) and echo each one after the prompt; for transcripts |
 | `--brief` | print a response summary instead of the full JSON (the response artifact file still has the full JSON) |
-| `--check-connections` | contact both stores and exit (no model call) |
+| `--check-connections` | contact both stores and exit (no model call); the `llm` entry reports the RECOMMENDATION_LLM_* configuration (model, non-secret settings, the missing/invalid variable) |
 
 `help` prints the command list. Staged input (requirements, feedback, a loaded request, session
 settings, the seed override) is never saved on exit. Committed runs, traces and pool-cache entries
@@ -86,9 +86,9 @@ The inspection commands read, in this order:
 
 | Command | What it does |
 |---|---|
-| `step` | Run the next stage of the staged request: resolve_entities -> build_pool -> get_geographic_evidence -> rank_candidates -> final_gate. |
+| `step` | Run the next stage of the staged request: resolve_entities -> build_pool -> get_geographic_evidence -> rank_candidates -> select -> final_gate. `select` is the code step after the agent loop: cold-start detection and selection on the ranking artifact. |
 | `step <stage>` | Run exactly that stage. The dispatcher enforces dependencies, so a stage whose predecessor is not current fails with `STALE_REFERENCE: Call <predecessor> for the current inputs first`. Re-running a stage discards every later stage. |
-| `run-until <stage>` | Run stages in order up to `<stage>`. Accepted names: the tool names, the trace stage names (entity_resolution, pool_build_or_load, geographic_evidence, scoring, cold_start_diagnostics, price_sampling, final_selection, final_gate) and short aliases (resolve, pool, geo, rank, selection, gate). |
+| `run-until <stage>` | Run stages in order up to `<stage>`. Accepted names: the tool names, the trace stage names (entity_resolution, pool_build_or_load, geographic_evidence, scoring, cold_start_diagnostics, price_sampling, final_selection, final_gate) and short aliases (resolve, pool, geo, rank, select, selection, gate); cold_start_diagnostics, price_sampling, final_selection and selection map to `select`. |
 | `step reset` | Discard the step session. |
 
 Rules:
@@ -123,15 +123,15 @@ Rules:
 [progress] model: turn 1 start (messages=2)
 [progress] model: turn 1 end 812.4 ms (tool_calls=4)
 [progress] tool: build_pool start
-[progress] tool: build_pool end ok 41.0 ms (pool=306, ranked=0, selected=0, evidence=0)
-[progress] tool: rank_candidates end ok 18.2 ms (pool=306, ranked=306, selected=10, evidence=0)
+[progress] tool: build_pool end ok 41.0 ms (pool=306, ranked=0, artifact=False, evidence=0)
+[progress] tool: rank_candidates end ok 18.2 ms (pool=306, ranked=306, artifact=True, evidence=0)
 [progress] model: turn 2 end 640.0 ms (tool_calls=0, final answer)
-[progress] gate: checking proposal of 10 listing(s)
+[progress] gate: selecting from ranking artifact <trace>/ranking/<digest> (306 ranked), then final_gate
 [progress] gate: final_gate ok (selected=10, rows_read=10) 180.6 ms
 ```
 
-A rejected proposal is reported (`gate: final_gate error INVALID_PROPOSAL: ...`) before the repair
-turn. A response summary follows: status, pool `cache=built (MISS)` / `reused (HIT)`, selection
+(Illustrative lines.) A failed gate is reported (`gate: final_gate error STALE_EVIDENCE: ...`) before the agent
+receives the structured failure report and repairs. A response summary follows: status, pool `cache=built (MISS)` / `reused (HIT)`, selection
 mode, seed, the cold-start status (active / inactive with its reason, D, the threshold and the window)
 and the items.
 

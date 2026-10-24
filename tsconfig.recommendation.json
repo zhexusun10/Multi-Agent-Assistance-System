@@ -1,5 +1,5 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {"rootDir": ".", "noEmit": true},
-  "include": ["src/**/*.ts", "recommendation/agent/*.ts"]
+  "include": ["src/**/*.ts"]
 }

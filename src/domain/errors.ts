@@ -1,6 +1,7 @@
 /** Public errors never expose SDK payloads, Zod arrays or provider diagnostics. */
 export function recommendationFailureMessage(code:string){
   if(code==='MODEL_UNAVAILABLE')return '找房服务暂时无法连接，请稍后重试。你的找房条件已保留。';
+  if(code==='MODEL_NOT_CONFIGURED')return '找房服务的推荐模型尚未配置，请联系管理员。你的找房条件已保留。';
   if(code==='DATA_UNAVAILABLE')return '房源资料暂时读取失败，请稍后重试。你的找房条件已保留。';
   return '这次找房暂时没能完成，请稍后重试。你的找房条件已保留。';
 }

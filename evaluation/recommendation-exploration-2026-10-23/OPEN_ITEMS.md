@@ -3,6 +3,14 @@
 Items that are unverified, interim or waiting for a later phase. Each one is closed (with the
 command and result) in VALIDATION.md of the phase that resolves it.
 
+## Dedicated Python LangChain agent (2026-10-24)
+
+- **Not run** (AGENTS.md cost rule): no real-model request was made. The live client is verified offline with a fake
+  LangChain chat model (message conversion, tool binding, usage, timeouts, error scrubbing); a real provider round
+  trip, its tool-calling quality and the DeepSeek `thinking` switch are unverified.
+- Structured repair has three repairable causes today (data change, stale/missing geographic evidence, a hard
+  failure on fresh data); "conflicting" evidence status is never produced (one source per criterion and listing).
+
 ## Cold-start detector mpd-v1 (2026-10-24)
 
 - **Decision** (user): cold start is active when D, the mean pairwise difference of the top 30 official combined

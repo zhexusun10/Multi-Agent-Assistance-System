@@ -1,27 +1,41 @@
 from ..validation.rules import evaluate, eligible
 from ..tracing.trace import digest
+from ..models.repair import GateFailure
 from recommendation.contracts.errors import RecommendationError
 
+ALL_STAGES = ("resolve_entities", "build_pool", "get_geographic_evidence", "rank_candidates")
 
-class DataChanged(RecommendationError):
+
+class DataChanged(GateFailure):
     """STALE_EVIDENCE because the listing/catalog data version moved (the service rebuilds once)."""
 
+    def __init__(self, code, message, retryable=True):
+        super().__init__(code, message, retryable, action="refresh_and_recompute", resolvable_by="recomputation",
+                         invalidate=ALL_STAGES)
 
-def final_gate(proposal, dispatcher, trace):
-    """Check the proposal against fresh data before output (spec section 5, P3).
 
-    The proposal must equal the dispatcher's selection exactly (select-v1: leaders then drawn
-    items, in display order), never merely a prefix of the score order. The data version is queried
-    again, in the same REPEATABLE READ transaction as a BY-ID lookup of the selected listings,
-    and must equal the pool's. The re-read rows must equal the pool rows. Hard criteria are
-    evaluated again for the selected rows only, with geographic evidence recomputed for those
-    rows. A cache hit therefore never causes a full re-read.
+def _inconsistent(message):
+    # Code produced the selection from the current artifact: a mismatch is an implementation error,
+    # never something the agent can repair.
+    return GateFailure("INVALID_SELECTION", message, False)
+
+
+def final_gate(dispatcher, trace):
+    """Validate the code-made selection against the current artifact and fresh data before output
+    (spec section 5, P3). Returns the returned listing IDs.
+
+    The selection must belong to the current ranking artifact and replay exactly from its own
+    selection_input (algorithm, order, reasons). The data version is queried again, in the same
+    REPEATABLE READ transaction as a BY-ID lookup of the returned listings, and must equal the
+    pool's. The re-read rows must equal the pool rows. Hard criteria are evaluated again for the
+    returned rows only, with geographic evidence recomputed for those rows. A cache hit therefore
+    never causes a full re-read. Failures are GateFailure with structured repair metadata.
     """
     from ..state import data_version as versions
     from ..tools.pool_builder import GEO_FIELDS, by_listing, normalize_evidence
 
     dispatcher.check_deadline()
-    ids = proposal.listing_ids
+    ids = list(dispatcher.selected or [])
     request = dispatcher.request
     pool = dispatcher.pool_result
     report = {
@@ -29,27 +43,30 @@ def final_gate(proposal, dispatcher, trace):
         "proposed_ids": ids,
         "passed": False,
         "requirements_version": request.requirements_version,
-        "policy": "proposal == recorded selection (algorithm_version + display order); data_version re-query + by-id re-read of the selection; "
-        "hard criteria and geographic evidence recomputed for the selected rows only",
+        "policy": "code selection of the current ranking artifact, replayed from its selection_input; data_version "
+        "re-query + by-id re-read of the returned listings; hard criteria and geographic evidence recomputed for them",
     }
     if dispatcher.selection is not None:
         report["selection"] = {"algorithm_version": dispatcher.selection.summary.algorithm_version,
                                "mode": dispatcher.selection.summary.mode,
-                               "selected_ids": list(dispatcher.selected)}
+                               "selected_ids": list(dispatcher.selected),
+                               "ranking_artifact_id": dispatcher.artifact.artifact_id if dispatcher.artifact else None}
     trace["steps"].append(report)
-    if dispatcher.selected is None or pool is None or ids != dispatcher.selected:
-        raise RecommendationError(
-            "INVALID_PROPOSAL", "Shortlist must be the current recorded selection"
-        )
+    if (dispatcher.selection is None or dispatcher.artifact is None or pool is None
+            or dispatcher.selection_artifact != dispatcher.artifact.artifact_id):
+        raise _inconsistent("Final validation needs a selection of the current ranking artifact")
     if len(ids) != len(set(ids)) or len(ids) > request.result_limit:
-        raise RecommendationError("INVALID_PROPOSAL", "Invalid shortlist IDs/count")
+        raise _inconsistent("Invalid returned IDs/count")
     if set(ids) - {r.listing_id for r in dispatcher.pool}:
-        raise RecommendationError("INVALID_PROPOSAL", "Shortlist contains listings outside the pool")
+        raise _inconsistent("Returned listings outside the pool")
+    if set(ids) - set(dispatcher.ranked or []):
+        raise _inconsistent("Returned listings outside the ranking artifact")
     # The selection that will be stored must replay from its own selection_input (replay_gate).
     from .selection_replay import replay_select
 
-    if replay_select(dispatcher.selection_input).ids != ids:
-        raise RecommendationError("INVALID_PROPOSAL", "Recorded selection does not replay from its selection input")
+    replayed = replay_select(dispatcher.selection_input)
+    if replayed.ids != ids or replayed.reasons != dispatcher.selection.reasons:
+        raise _inconsistent("Selection does not replay from its selection input")
     fresh_rows, fingerprint = dispatcher.listing.lookup_versioned(ids)
     report["rows_read"] = len(fresh_rows)
     report["pool"] = pool.reference()
@@ -78,9 +95,11 @@ def final_gate(proposal, dispatcher, trace):
     rows = {r.listing_id: r for r in fresh_rows}
     pool_rows = {r.listing_id: r for r in dispatcher.pool}
     selected = [rows.get(i) for i in ids]
-    if any(row is None or row != pool_rows.get(row.listing_id) for row in selected):
-        raise RecommendationError(
-            "STALE_EVIDENCE", "Selected listings changed or disappeared during this run; retry", True
+    changed = [i for i, row in zip(ids, selected) if row is None or row != pool_rows.get(row.listing_id)]
+    if changed:
+        raise GateFailure(
+            "STALE_EVIDENCE", "Returned listings changed or disappeared during this run", True,
+            action="refresh_and_recompute", resolvable_by="recomputation", listing_ids=changed, invalidate=ALL_STAGES,
         )
     criteria = [c for c in request.requirements.criteria if c.field in GEO_FIELDS]
     fresh = normalize_evidence(
@@ -106,11 +125,24 @@ def final_gate(proposal, dispatcher, trace):
         for e in dispatcher.evidence
         if e.listing_id in wanted
     )
-    if sorted((e.criterion_id, e.listing_id, e.snapshot_hash) for e in fresh) != recorded:
-        raise RecommendationError(
-            "STALE_EVIDENCE",
-            "Geographic evidence changed or was not retrieved; retry",
-            True,
+    fresh_keys = sorted((e.criterion_id, e.listing_id, e.snapshot_hash) for e in fresh)
+    if fresh_keys != recorded:
+        differing = set(fresh_keys) ^ set(recorded)
+        listing_ids = sorted({k[1] for k in differing})
+        criterion_ids = sorted({k[0] for k in differing})
+        hard = {c.criterion_id for c in criteria if c.strength == "hard"}
+        if hard & set(criterion_ids):
+            # Hard geographic facts live in the pool: only a rebuild (refilter + rerank) refreshes them.
+            raise GateFailure(
+                "STALE_EVIDENCE", "Hard geographic evidence changed", True, action="refresh_and_recompute",
+                resolvable_by="recomputation", listing_ids=listing_ids, criterion_ids=criterion_ids,
+                invalidate=ALL_STAGES,
+            )
+        raise GateFailure(
+            "STALE_EVIDENCE", "Soft geographic evidence changed or was not retrieved", True,
+            action="targeted_retrieval", resolvable_by="retrieval",
+            listing_ids=listing_ids, criterion_ids=criterion_ids,
+            invalidate=("get_geographic_evidence", "rank_candidates"),
         )
     grouped = by_listing(fresh)
     report["checks"] = {}
@@ -120,8 +152,12 @@ def final_gate(proposal, dispatcher, trace):
         if row.listing_type != "RENT" or not eligible(
             results, request.requirements.criteria
         ):
-            raise RecommendationError(
-                "INVALID_PROPOSAL", "Final hard constraints did not pass"
+            hard = {c.criterion_id for c in request.requirements.criteria if c.strength == "hard"}
+            raise GateFailure(
+                "HARD_CONSTRAINT_FAILED", "Final hard constraints did not pass", True,
+                action="refilter_and_rerank", resolvable_by="recomputation", listing_ids=[row.listing_id],
+                criterion_ids=sorted(r.criterion_id for r in results if r.criterion_id in hard and r.outcome != "pass"),
+                invalidate=ALL_STAGES,
             )
     dispatcher.check_deadline()
     report["passed"] = True

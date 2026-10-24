@@ -9,7 +9,7 @@ from collections import Counter
 import numpy as np
 import pytest
 
-from recommendation.agent.controller import LiveController, Proposal, ScriptedController
+from recommendation.agent.controller import Completion, LiveController, ScriptedController
 from recommendation.config import RecommendationConfig
 from recommendation.contracts.errors import RecommendationError
 from recommendation.contracts.request import RecommendationRequest
@@ -595,11 +595,14 @@ def test_service_round_trip_cold_start_follows_d_and_ignores_the_exit_input(tmp_
         assert cold.threshold == THRESHOLD and cold.mean_pairwise_difference < THRESHOLD
         assert sel.tie_group.size == 27 and sel.exploration.candidate_count == TARGET and len(sel.exploration.bins) == BINS
         step = rank_step(service, "e2e", "e2e-1")
-        record = step["result"]["data"]["selection"]
+        assert "selection" not in step["result"]["data"]  # the rank tool never selects
+        selection = next(s for s in service.store.trace("e2e", "e2e-1")["steps"] if s["kind"] == "selection")
+        record = selection["record"]
         assert step["result"]["data"]["scoring"]["pool_scored"] == first.pool.size == 40
         assert record["mode"] == sel.mode and record["cold_start"]["duration_ms"] >= 0
         assert record["cold_start"]["request_cold_start_used"] is False and record["duration_ms"] >= 0
-        assert step["result"]["selected_ids"] == [i.listing.listing_id for i in first.recommendations]
+        assert step["result"]["ranking_artifact_id"] == selection["ranking_artifact_id"]
+        assert selection["selected_ids"] == [i.listing.listing_id for i in first.recommendations]
         trace = service.store.trace("e2e", "e2e-1")
         assert trace["context"]["selection_policy"]["algorithm_version"] == "select-v1"
         gate = [s for s in trace["steps"] if s["kind"] == "final_gate"][-1]
@@ -613,8 +616,9 @@ def test_service_round_trip_cold_start_follows_d_and_ignores_the_exit_input(tmp_
         assert second.status == "success" and second.pool.cache == "reused"
         assert second.selection.mode == "cold_start_exploration" and second.selection.cold_start == cold
         assert [i.selection_reason for i in second.recommendations] == ["leader"] * 3 + ["price_exploration_sample"] * 7
-        assert rank_step(service, "e2e", "e2e-2")["result"]["data"]["selection"]["cold_start"][
-            "request_cold_start"] == {"exited": True, "exited_pool_key": first.pool.pool_key}
+        second_selection = next(s for s in service.store.trace("e2e", "e2e-2")["steps"] if s["kind"] == "selection")
+        assert second_selection["record"]["cold_start"]["request_cold_start"] == {
+            "exited": True, "exited_pool_key": first.pool.pool_key}
     finally:
         service.close()
 
@@ -743,16 +747,21 @@ def test_config_change_requires_a_new_request(tmp_path):
         service.close()
 
 
-def test_final_gate_rejects_the_score_prefix_when_it_is_not_the_selection(tmp_path):
-    class PrefixController(ScriptedController):
-        def propose(self, dispatcher, context, trace):
-            super().propose(dispatcher, context, trace)
-            return Proposal(listing_ids=dispatcher.ranked[: dispatcher.request.result_limit])
+def test_final_gate_rejects_the_score_prefix_when_it_is_not_the_selection(tmp_path, monkeypatch):
+    from recommendation.tools.dispatcher import Dispatcher
 
-    service = synthetic_service(tmp_path, plan_rows(3, 30, 40), controller=PrefixController())
+    original = Dispatcher.select_ranking
+
+    def prefix(self, artifact_id):
+        original(self, artifact_id)
+        self.selected = self.ranked[: self.request.result_limit]  # the score prefix, not the selection
+        return self.selected
+
+    monkeypatch.setattr(Dispatcher, "select_ranking", prefix)
+    service = synthetic_service(tmp_path, plan_rows(3, 30, 40))
     try:
         response = service.recommend(make_request(PLAN, "px-1", "px"))
-        assert response.status == "error" and response.error.code == "INVALID_PROPOSAL"
+        assert response.status == "error" and response.error.code == "INVALID_SELECTION"
     finally:
         service.close()
 
@@ -769,15 +778,16 @@ def test_live_controller_returns_the_recorded_selection(tmp_path):
                     {"id": str(i), "name": n, "args": {"context_ref": ref}}
                     for i, n in enumerate(("resolve_entities", "build_pool", "get_geographic_evidence",
                                            "rank_candidates"))]}
-            selected = json.loads(messages[-1]["content"])["selected_ids"]
-            return {"content": json.dumps({"listing_ids": selected}), "tool_calls": []}
+            artifact = json.loads(messages[-1]["content"])["ranking_artifact_id"]
+            return {"content": json.dumps({"ranking_artifact_id": artifact}), "tool_calls": []}
 
     service = synthetic_service(tmp_path, plan_rows(3, 30, 40), controller=Model())
     try:
         response = service.recommend(make_request(PLAN, "lv-1", "lv"))
         assert response.status == "success" and response.selection.mode == "cold_start_exploration"
-        assert [i.listing.listing_id for i in response.recommendations] == \
-            rank_step(service, "lv", "lv-1")["result"]["selected_ids"]
+        selection = next(s for s in service.store.trace("lv")["steps"] if s["kind"] == "selection")
+        assert [i.listing.listing_id for i in response.recommendations] == selection["selected_ids"]
+        assert selection["ranking_artifact_id"] == rank_step(service, "lv", "lv-1")["result"]["ranking_artifact_id"]
     finally:
         service.close()
 

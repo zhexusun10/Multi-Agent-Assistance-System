@@ -111,18 +111,21 @@ def check_connections(data_mode, controller):
         finally:
             if obj:
                 obj.close()
-    model = os.getenv("CHAT_MODEL", "openai:gpt-4.1-mini")
-    key = {
-        "openai": "OPENAI_API_KEY",
-        "anthropic": "ANTHROPIC_API_KEY",
-        "google-genai": "GOOGLE_API_KEY",
-    }.get(model.split(":")[0])
+    from ..agent import llm
+
+    try:
+        settings, problem = llm.LlmSettings.from_env(), None
+    except RecommendationError as e:
+        settings, problem = None, e.detail.message
     report["llm"] = {
         "mode": controller,
-        "model": model,
-        "configured": bool(key and os.getenv(key)),
+        "model": settings.identifier if settings else None,
+        "configured": settings is not None,
+        "settings": settings.public() if settings else None,
+        "problem": problem,
         "contacted": False,
-        "note": "Model execution is tested by recommend, not by configuration inspection.",
+        "note": "Recommendation agent model (RECOMMENDATION_LLM_*); execution is tested by recommend, not by "
+                "configuration inspection.",
     }
     return report
 

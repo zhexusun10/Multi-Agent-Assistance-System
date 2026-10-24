@@ -443,7 +443,7 @@ def test_step_mode_enforces_dependencies_invalidates_on_input_change_and_is_neve
         assert "INTERMEDIATE" in run("show-selection") and "INTERMEDIATE" in run("show-scores")
         # Seed (or feedback) change -> only the rank stage and the gate.
         out = run("set-seed other")
-        assert "invalidated: rank_candidates, final_gate" in out
+        assert "invalidated: rank_candidates, select, final_gate" in out
         assert t.step.completed() == ["resolve_entities", "build_pool", "get_geographic_evidence"]
         # Soft non-geographic change -> rank only; the pool and geographic evidence are kept.
         run("run-until rank_candidates")
@@ -505,8 +505,8 @@ class FakeLive(LiveController):
         if self.turn == 1:
             return {"content": "", "tool_calls": [{"id": str(i), "name": n, "args": {"context_ref": ref}}
                                                   for i, n in enumerate(PIPELINE)]}
-        selected = json.loads(messages[-1]["content"])["selected_ids"]
-        return {"content": json.dumps({"listing_ids": selected}), "tool_calls": []}
+        selected = json.loads(messages[-1]["content"])["ranking_artifact_id"]
+        return {"content": json.dumps({"ranking_artifact_id": selected}), "tool_calls": []}
 
 
 def test_live_mode_prints_structured_progress_events(tmp_path, capsys, monkeypatch):
@@ -525,11 +525,12 @@ def test_live_mode_prints_structured_progress_events(tmp_path, capsys, monkeypat
         tools = [e for e in log if e.get("event") == "tool_end"]
         assert [e["tool"] for e in tools] == list(PIPELINE)
         assert all(e["status"] == "ok" and e["duration_ms"] >= 0 for e in tools)
-        assert tools[1]["pool"] == 9 and tools[-1]["ranked"] == 9 and tools[-1]["selected"] == 9
+        assert tools[1]["pool"] == 9 and tools[-1]["ranked"] == 9 and tools[-1]["artifact"] is True
         assert kinds[-3:] == ["model_end", "gate_start", "gate_end"] and log[-1]["status"] == "ok"
         assert "[progress] model: turn 1 start" in out and "[progress] model: turn 2 end" in out
         assert "final answer" in out and "[progress] gate: final_gate ok (selected=9, rows_read=9)" in out
-        assert "[progress] tool: rank_candidates end ok" in out and "pool=9, ranked=9, selected=9" in out
+        assert "[progress] tool: rank_candidates end ok" in out and "pool=9, ranked=9, artifact=True" in out
+        assert "selecting from ranking artifact" in out
     finally:
         run.close()
 
@@ -537,25 +538,35 @@ def test_live_mode_prints_structured_progress_events(tmp_path, capsys, monkeypat
 def test_live_progress_reports_a_failed_gate_before_the_repair(tmp_path, capsys, monkeypatch):
     import recommendation.terminal.__main__ as main
 
-    class WrongFirst(FakeLive):
+    class Repairing(FakeLive):
         def invoke(self, messages, tools, remaining):
-            if self.turn == 0:
+            last = messages[-1]
+            if self.turn == 0 or (last["role"] == "user" and '"repair"' in last["content"]):
+                self.turn = 0  # the structured failure report: run the pipeline again
                 return super().invoke(messages, tools, remaining)
             self.turn += 1
-            if self.turn == 2:  # not the recorded selection -> INVALID_PROPOSAL, then a repair turn
-                return {"content": json.dumps({"listing_ids": ["fixture-01"]}), "tool_calls": []}
             ranked = [json.loads(m["content"]) for m in messages if m.get("role") == "tool"][-1]
-            return {"content": json.dumps({"listing_ids": ranked["selected_ids"]}), "tool_calls": []}
+            return {"content": json.dumps({"ranking_artifact_id": ranked["ranking_artifact_id"]}), "tool_calls": []}
 
-    monkeypatch.setattr(main, "LiveController", WrongFirst)
+    monkeypatch.setattr(main, "LiveController", Repairing)
     run = Session(terminal(tmp_path, controller="live"), capsys)
     try:
+        service = run.t.ensure_service()
+        original, state = service.listing.lookup_versioned, {"calls": 0}
+
+        def change_once(ids):  # the data changes between ranking and final validation, once
+            state["calls"] += 1
+            if state["calls"] == 1:
+                service.listing.rows[0].title = "changed"
+            return original(ids)
+
+        service.listing.lookup_versioned = change_once
         run(f"requirements @{requirements(tmp_path, base_criteria())}")
         out = run("recommend")
         assert run.t.response.status == "success"
         gates = [e for e in run.t.events.log if e.get("event") == "gate_end"]
         assert [g["status"] for g in gates] == ["error", "ok"]
-        assert "gate: final_gate error INVALID_PROPOSAL" in out
+        assert "gate: final_gate error STALE_EVIDENCE" in out
     finally:
         run.close()
 

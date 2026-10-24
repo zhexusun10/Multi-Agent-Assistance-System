@@ -70,19 +70,18 @@ def test_empty_verified_ranking_keeps_unknown_candidates_unverified(tmp_path):
         service.close()
 
 
-def test_invalid_final_ids_are_repaired_with_existing_tool_history(tmp_path):
+def test_invalid_completion_is_corrected_with_existing_tool_history(tmp_path):
     class RepairModel(RankedModel):
         def invoke(self, messages, tools, remaining):
             if self.turn == 0:
                 return super().invoke(messages, tools, remaining)
             self.turn += 1
             if self.turn == 2:
-                return {"content": json.dumps({"listing_ids": ["not-in-the-ranking"]}), "tool_calls": []}
-            assert any(m["role"] == "tool" for m in messages), "Repair discarded the validated tool history"
-            assert "INVALID_PROPOSAL" in messages[-1]["content"]
-            ranking = [json.loads(m["content"])["ranked_ids"] for m in messages if m["role"] == "tool"][-1]
-            limit = json.loads(messages[1]["content"])["request"]["result_limit"]
-            return {"content": json.dumps({"listing_ids": ranking[:limit]}), "tool_calls": []}
+                return {"content": json.dumps({"ranking_artifact_id": "not-the-current-artifact"}), "tool_calls": []}
+            assert any(m["role"] == "tool" for m in messages), "Correction discarded the validated tool history"
+            assert json.loads(messages[-1]["content"])["completion_rejected"] == "not_the_current_ranking_artifact"
+            artifact = [json.loads(m["content"])["ranking_artifact_id"] for m in messages if m["role"] == "tool"][-1]
+            return {"content": json.dumps({"ranking_artifact_id": artifact}), "tool_calls": []}
 
     service = make_service(tmp_path, RepairModel())
     try:
@@ -91,6 +90,6 @@ def test_invalid_final_ids_are_repaired_with_existing_tool_history(tmp_path):
         assert result.execution.model_calls == 3
         assert result.execution.tool_calls == 4
         gates = [s for s in service.store.trace("policy")["steps"] if s["kind"] == "final_gate"]
-        assert [g["passed"] for g in gates] == [False, True]
+        assert [g["passed"] for g in gates] == [True]  # rejected before any selection or gate
     finally:
         service.close()

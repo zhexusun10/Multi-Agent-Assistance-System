@@ -37,15 +37,22 @@ def test_every_changed_manifest_file_is_declared_with_base_patched_issue_and_cha
     ported = {e["target"]: e["ported_sha256"] for e in manifest["files"]}
     targets = [p["target"] for p in declared["files"]]
     assert len(targets) == len(set(targets)), "one entry per target"
-    changed = {t for t, h in ported.items() if (ROOT / t).is_file() and sha(ROOT / t) != h}
+    changed = {t for t, h in ported.items() if not (ROOT / t).is_file() or sha(ROOT / t) != h}
     assert changed == set(targets), {"undeclared": sorted(changed - set(targets)), "declared but unchanged": sorted(set(targets) - changed)}
     for patch in declared["files"]:
         path = ROOT / patch["target"]
         assert patch["base_ported_sha256"] == ported[patch["target"]], patch["target"]
+        if patch.get("deleted"):
+            # Declared deletion: absent on purpose, no patched bytes, with its reason.
+            assert not path.exists() and patch["patched_sha256"] is None, patch["target"]
+            assert patch["issue"].strip() and patch["changes"], patch["target"]
+            continue
         assert patch["patched_sha256"] == sha(path) != patch["base_ported_sha256"], patch["target"]
         assert b"\r\n" not in path.read_bytes(), f"{patch['target']} must be hashed as LF bytes"
         assert patch["issue"].strip() and patch["changes"] and all(c.strip() for c in patch["changes"]), patch["target"]
-    assert all((ROOT / t).is_file() for t in ported), "manifest files are never deleted"
+    deleted = {p["target"] for p in declared["files"] if p.get("deleted")}
+    assert all((ROOT / t).is_file() for t in ported if t not in deleted), "only declared deletions may be absent"
+    assert deleted == {"recommendation/agent/model_bridge.ts"}
 
 
 def test_upstream_check_passes_without_touching_the_manifest():

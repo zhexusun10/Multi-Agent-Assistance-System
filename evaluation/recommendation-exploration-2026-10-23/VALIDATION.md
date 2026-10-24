@@ -1578,3 +1578,25 @@ how often real pools fall below 0.01. Fixture notes: `ten-results.json` is now n
 `single-reference.json` ranked (D ≈ 0.039); `cold-start-exploration.json` (D = 0) was added for exploration coverage.
 Their regenerated `pool_key` / `data_version` and the regenerated examples' `suppressed_features` were already stale
 at HEAD (a HEAD regeneration gives the same values), not caused by this change.
+
+## Dedicated Python LangChain agent and ranking-artifact handoff (2026-10-24)
+
+User plan (sections 1-7, 10-13): the recommendation agent is a recommendation-local Python LangChain tool-calling
+agent (RECOMMENDATION_LLM_*); the LLM coordinates tools before cold-start detection; detection, selection, final
+validation and persistence run in code after the loop. Details: MIGRATION.md section 0.6. All checks offline; no
+model request was made (fake LangChain chat models and scripted fakes only).
+
+| Item | Proof | Outcome |
+|---|---|---|
+| Configuration only from RECOMMENDATION_LLM_*; missing/invalid -> MODEL_NOT_CONFIGURED naming the variable; no fallback to CHAT_MODEL/OPENAI_* (also not via the SDKs' implicit OPENAI_BASE_URL/ORG/PROJECT); group loading; key never in repr/trace/response | `test_agent_langchain.py::test_settings_come_only_*`, `::test_invalid_settings_*`, `::test_the_client_never_reads_*`, `::test_model_settings_load_as_one_group_*`, `::test_settings_never_print_the_key_*`, `::test_live_agent_runs_through_python_langchain_*` | pass |
+| No Node subprocess; LangChain message/tool conversion, usage, per-attempt timeout, invalid tool calls reported and corrected, provider text never forwarded | `::test_live_agent_runs_through_python_langchain_with_no_subprocess`, `::test_invalid_tool_calls_*`, `::test_provider_failure_*`; model_bridge.ts a declared deletion (`test_delivery_p7.py`, upstream `--check`) | pass |
+| Completion = current ranking artifact; listing IDs, invented or stale artifacts refused in the loop; cannot finish before ranking; empty ranking completes without another model call | `tests/test_recommendation_output_protocol.py`, `test_geo_tools.py` (Inventor, Obedient), `test_fit_controller_regression.py` | pass |
+| Artifact code-managed, current, invalidated by stage reruns / bind; identical evidence -> identical scores and artifact digest; evidence coverage (known/missing/ambiguous/conflicting/unsupported) | `test_agent_langchain.py::test_ranking_artifact_*`, `::test_bind_entity_*`, `::test_scores_are_unchanged_*`, `::test_an_id_and_name_conflict_*` | pass |
+| read_pool: pagination/totals, fields, listing selection, schema page ceiling, lean envelope, stale / cross-run / out-of-pool rejection, no mutation, not a resolution call, partial reading keeps full-pool ranking, untrusted text, not_retrieved status, ranking fields | `test_agent_langchain.py::test_read_pool_*` (4 tests) | pass |
+| Code-side selection after the loop; re-rank discards an old selection; gate ties selection to the artifact; selection step resolvable | `::test_rerank_discards_*`, `::test_selection_step_resolves_*`, `test_trace_v2.py`, `test_selection_v1.py` | pass |
+| Repair: structured FailureReport; data change -> refresh (rebuild once); stale soft geo evidence -> targeted retrieval; stale hard geo evidence -> refilter + rerank; bounded; no-progress stop; failed repair turn recorded; internal inconsistency never sent back; no_match vs operational error | `::test_repairable_failure_*`, `::test_stale_geographic_evidence_*` (soft, hard), `::test_repairs_are_bounded`, `::test_repeated_failure_*`, `::test_a_failed_repair_turn_*`, `::test_internal_selection_*`, `::test_empty_ranking_*`, `::test_operational_errors_*` | pass |
+
+Gates: `pytest recommendation/tests tests -q` 580 passed; `python -m recommendation.schemas --check` exit 0; `npm run
+-s typecheck` and `typecheck:recommendation` exit 0; `npm test` 0 failed; upstream `--check` 71 files, 40 declared
+(one declared deletion). Not run: any real-model request (AGENTS.md cost rule); tool-calling quality with a real
+provider is unverified.

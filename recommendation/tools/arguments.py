@@ -88,3 +88,32 @@ class BindEntityArguments(ToolArguments):
     criterion_id: str = Field(min_length=1, max_length=MAX_ID_CHARS)
     entity_id: str = Field(min_length=1, max_length=MAX_ID_CHARS,
                            description="The single candidate of a search_places result for this criterion")
+
+
+POOL_FIELDS = ("listing_type", "title", "price", "bedrooms", "floor_area_sqft", "property_type", "district_code",
+               "postal_code", "latitude", "longitude", "url", "observed_at")
+PoolField = Literal[POOL_FIELDS]
+DEFAULT_PAGE_SIZE = 10
+MAX_PAGE_ROWS = 25  # validation ceiling of one read_pool page (model context size), not a tunable
+
+
+class ReadPoolArguments(ToolArguments):
+    pool_version: str = Field(min_length=1, description="pool.pool_version of the current build_pool result")
+    listing_ids: list[str] | None = Field(default=None, min_length=1,
+                                          description="Optional listing IDs of the current pool to read")
+    fields: list[PoolField] | None = Field(default=None, min_length=1,
+                                           description="Optional listing fields to return (default: all)")
+    offset: int = Field(default=0, ge=0, description="Page start in the pool order")
+    limit: int = Field(default=DEFAULT_PAGE_SIZE, ge=1, le=MAX_PAGE_ROWS, description="Page size")
+
+    @field_validator("listing_ids")
+    @classmethod
+    def unique_ids(cls, values):
+        if values is not None and any(not v or len(v) > MAX_ID_CHARS for v in values):
+            raise ValueError("listing IDs must be non-empty strings")
+        return values if values is None else _unique(values)
+
+    @field_validator("fields")
+    @classmethod
+    def unique_fields(cls, values):
+        return values if values is None else _unique(values)

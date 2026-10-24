@@ -9,8 +9,7 @@ from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.gzip import GZipMiddleware
 
-from .agent.controller import ScriptedController
-from .app_controller import ApplicationLiveController
+from .agent.controller import LiveController, ScriptedController
 from .app_geography import ApplicationGeographicRepository
 from .config import RecommendationConfig
 from .contracts.request import RecommendationRequest
@@ -27,12 +26,21 @@ from .tracing.trace import digest
 # The service token is a credential, not a runtime selection.
 RUNTIME_SELECTION_PREFIX = "RECOMMENDATION_"
 CREDENTIAL_KEYS = frozenset({"RECOMMENDATION_SERVICE_TOKEN"})
+# The recommendation model settings (key, endpoint, model, ...) are one unit: they come all from the
+# caller when the caller set any of them, else all from the project file, so a key is never paired
+# with another source's endpoint. Empty values in the file never overwrite anything.
+LLM_GROUP_PREFIX = "RECOMMENDATION_LLM_"
 
 
 def load_project_environment(path=ROOT / ".env"):
     """The project file stays authoritative for provider/database credentials, as in src/server.ts."""
+    caller_llm = any(k.startswith(LLM_GROUP_PREFIX) for k in os.environ)
     for key, value in dotenv_values(path).items():
         if value is None:
+            continue
+        if key.startswith(LLM_GROUP_PREFIX):
+            if not caller_llm and value.strip():
+                os.environ[key] = value
             continue
         if key.startswith(RUNTIME_SELECTION_PREFIX) and key not in CREDENTIAL_KEYS and key in os.environ:
             continue
@@ -94,7 +102,7 @@ def execute(request: RecommendationRequest, app_view=False):
             raise ValueError("RECOMMENDATION_CONTROLLER must be live or scripted")
         # Committed recommendation/settings/recommendation.yaml unless RECOMMENDATION_CONFIG names an alternative.
         config = RecommendationConfig.from_file(os.getenv("RECOMMENDATION_CONFIG"))
-        controller = ApplicationLiveController() if controller_mode == "live" else ScriptedController()
+        controller = LiveController() if controller_mode == "live" else ScriptedController()
         service = RecommendationService(listing, geographic, store, controller, config=config)
         response = Response.model_validate(service.recommend(request).model_dump())
         native = response.model_dump(mode="json")

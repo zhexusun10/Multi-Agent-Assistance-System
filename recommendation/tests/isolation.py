@@ -12,7 +12,8 @@ LIVE_RUNTIME_DIRS = (ROOT / "data/.runtime", ROOT / "recommendation/.runtime")
 # Inherited by subprocesses via os.environ; never needed in fixture mode.
 CREDENTIAL_ENV = ("OPENAI_API_KEY", "DATABASE_URL", "TEST_DATABASE_URL", "PROPERTYGURU_DATABASE_URL",
                   "PROPERTYGURU_READ_DATABASE_URL", "NEO4J_AUTH", "NEO4J_USER", "NEO4J_PASSWORD",
-                  "NEO4J_URI", "RECOMMENDATION_SERVICE_TOKEN")
+                  "NEO4J_URI", "RECOMMENDATION_SERVICE_TOKEN", "RECOMMENDATION_LLM_API_KEY",
+                  "RECOMMENDATION_LLM_MODEL", "RECOMMENDATION_LLM_BASE_URL", "RECOMMENDATION_LLM_PROVIDER")
 
 
 def is_live_path(path):

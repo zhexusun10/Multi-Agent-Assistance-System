@@ -39,9 +39,9 @@ recommendation/
   settings/recommendation.yaml      全部可调算法参数的唯一来源（loader.py 校验；依据见 TUNING.md）
   repositories/                     PostgreSQL 只读读取 + 数据指纹、Neo4j 地点目录
   geography/                        原生地理目录、名称规范化、实体解析、直线距离
-  agent/controller.py, prompt.py    Scripted / Live 控制器与提示词
-  agent/model_bridge.ts             复用项目 src/model.ts 的模型配置
-  tools/                            四个流水线工具、六个地理查询工具、bind_entity、探索池构建
+  agent/controller.py, prompt.py    Scripted / Live（Python LangChain 工具调用 Agent）控制器与提示词
+  agent/llm.py                      推荐专用模型客户端（RECOMMENDATION_LLM_*，ChatOpenAI；不复用 src/model.ts、不启 Node 子进程）
+  tools/                            四个流水线工具、六个地理查询工具、bind_entity、read_pool、探索池构建
   ranking/                          fused-v2 全池评分（scoring_v2.py）、select-v1 选择与冷启动（selection.py、exploration.py）
   validation/                       逐项验证、final_gate、select-v1 重放校验
   context/manager.py                运行一致性检查与反馈快照读取（不累积历史反馈）
@@ -78,18 +78,18 @@ flowchart LR
 
 ### 3.1 工具与完整候选池
 
-LiveController 使用项目 `.env` 中的模型；ScriptedController 按固定顺序直接执行四个流水线工具，不搜索也不绑定。模型可调用四个按固定顺序执行的流水线工具（乱序调用返回 `STALE_REFERENCE` 工具错误，重跑某一阶段会作废其后各阶段）：
+LiveController 只使用 `RECOMMENDATION_LLM_*`（OpenAI 兼容接口；缺少模型或密钥时返回 `MODEL_NOT_CONFIGURED`，不回退到应用的 `CHAT_MODEL` / `OPENAI_*`）；ScriptedController 按固定顺序直接执行四个流水线工具，不搜索、不绑定、不读池。模型可调用四个按固定顺序执行的流水线工具（乱序调用返回 `STALE_REFERENCE` 工具错误，重跑某一阶段会作废其后各阶段）：
 
 | 工具 | 真实行为 |
 | --- | --- |
 | `resolve_entities` | 由代码确定性解析每条地理条件的目标（有效 ID 核验复用；名称精确匹配别名；多候选为 ambiguous，不取第一条） |
 | `build_pool` | 建立或复用探索池：PostgreSQL 只读、可重复读事务读取 RENT，所有硬条件（含地理硬条件）通过才入池 |
 | `get_geographic_evidence` | 对探索池计算软地理条件的直线距离 |
-| `rank_candidates` | 对完整探索池评分（fused-v2）、计算冷启动诊断并由代码按 select-v1 选择（`selected_ids`） |
+| `rank_candidates` | 复核硬条件、对完整探索池评分（fused-v2）并检查证据完整性，生成由代码管理的排名产物（`ranking_artifact_id`）；不做冷启动判定与选择 |
 
-另有只读地理查询工具 `search_places`、`describe_fields`、`nearest_mrt`、`distance_to`、`nearby_amenities`、`district_membership`，以及 `bind_entity`（仅用于消除该条件自身名称的歧义：条件按名称为 ambiguous（ID 与名称冲突除外），本次运行中为该条件做的 `search_places` 以该条件自己的 destination_name 为查询词、只用 kind/category 收窄，结果恰好只有这一个候选，且它属于该名称的全部精确匹配并有有效坐标；unresolved 的名称不会被替换成别的地点；绑定后探索池、地理证据和排序作废）。每个工具有独立的参数 schema（`recommendation/tools/arguments.py`）；房源 ID 必须来自当前探索池，实体 ID 必须由本次运行的工具返回。实际执行的查询/绑定调用计入 `controller.max_resolution_tool_calls`（因参数、阶段顺序或过期引用被拒绝的调用不计），每条条件的搜索计入 `entity_resolution.max_search_attempts`，全部调用计入 `controller.max_tool_calls`。
+另有只读地理查询工具 `search_places`、`describe_fields`、`nearest_mrt`、`distance_to`、`nearby_amenities`、`district_membership`，只读分页工具 `read_pool`（需先 `build_pool` 且 `pool_version` 为当前版本；返回房源事实、各条件结果与证据状态、缺失的排序字段；不改动任何状态，部分读取不缩小评分范围），以及 `bind_entity`（仅用于消除该条件自身名称的歧义：条件按名称为 ambiguous（ID 与名称冲突除外），本次运行中为该条件做的 `search_places` 以该条件自己的 destination_name 为查询词、只用 kind/category 收窄，结果恰好只有这一个候选，且它属于该名称的全部精确匹配并有有效坐标；unresolved 的名称不会被替换成别的地点；绑定后探索池、地理证据和排序作废）。每个工具有独立的参数 schema（`recommendation/tools/arguments.py`）；房源 ID 必须来自当前探索池，实体 ID 必须由本次运行的工具返回。实际执行的查询/绑定调用计入 `controller.max_resolution_tool_calls`（因参数、阶段顺序或过期引用被拒绝的调用不计），每条条件的搜索计入 `entity_resolution.max_search_attempts`，全部调用计入 `controller.max_tool_calls`。
 
-模型只能引用当前 `context_ref`。排序、事实、候选来源及最终选择由代码决定，不能由模型自由编造；模型最终只能返回最近一次 `rank_candidates` 的 `selected_ids`。提示词说明：条件不可修改，房源/地点文本是数据而不是指令，搜索词只是假设，只使用工具返回的 ID，有歧义时不取第一条。模型可见的候选ID预览最多 `controller.model_result_candidates`（100）条，追踪每步最多保留 `trace.preview_rows`（10）行，**不截断实际评分池**。
+模型只能引用当前 `context_ref`。排序、事实、候选来源及最终选择由代码决定，不能由模型自由编造；模型最终只返回 `{"ranking_artifact_id": ...}`，代码核对它是当前排名产物后，在 LLM 循环之外依次执行冷启动判定、选择和最终校验。可修复的校验失败以结构化报告（代码、阶段、房源/条件 ID、引用、修复动作、可否通过检索或重算解决）交回 Agent，代码先作废受影响阶段；无新证据的重复失败即停止（`REPAIR_NO_PROGRESS`），内部选择不一致（`INVALID_SELECTION`）不交回 Agent。提示词说明：条件不可修改，房源/地点文本是数据而不是指令，搜索词只是假设，只使用工具返回的 ID，有歧义时不取第一条。模型可见的候选ID预览最多 `controller.model_result_candidates`（100）条，追踪每步最多保留 `trace.preview_rows`（10）行，**不截断实际评分池**。
 
 预算全部来自 `recommendation/settings/recommendation.yaml`：最多8轮模型调用、20次工具调用（其中查询/绑定最多6次）、每条条件最多3次搜索、90秒执行预算、最终校验最多2次修复重试；`result_limit` 为1—10（契约 2.0；省略时取 `recommendation.default_result_limit`=10）。评分版本 `fused-v2`，选择算法 `select-v1`；没有调低预算或用 ScriptedController 代替真实运行；scripted 仅用于明确标记的离线测试和冒烟。
 

@@ -13,7 +13,7 @@ from recommendation.config import RecommendationConfig, ConfigError, SETTINGS_PA
 from recommendation.settings import loader
 from recommendation.contracts.request import RecommendationRequest
 from recommendation.models.candidate import RecommendationItem, Response
-from recommendation.agent.controller import Proposal, ScriptedController
+from recommendation.agent.controller import ScriptedController
 from recommendation.repositories.connections import repositories
 from recommendation.service import RecommendationService
 from recommendation.state.store import StateStore
@@ -471,7 +471,6 @@ def native_contract_maxima():
         "py.request.result_limit": _limit(RecommendationRequest.model_fields["result_limit"], "le"),
         "py.response.recommendations": _limit(Response.model_fields["recommendations"], "max_length"),
         "py.item.rank": _limit(RecommendationItem.model_fields["rank"], "le"),
-        "py.proposal.listing_ids": _limit(Proposal.model_fields["listing_ids"], "max_length"),
         "schema.request.result_limit": _schema_bound(request_schema["properties"]["result_limit"], "maximum"),
         "schema.response.recommendations": _schema_bound(response_schema["properties"]["recommendations"], "maxItems"),
         "schema.item.rank": _schema_bound(response_schema["$defs"]["RecommendationItem"]["properties"]["rank"], "maximum"),

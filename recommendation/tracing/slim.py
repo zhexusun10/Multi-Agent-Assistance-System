@@ -64,12 +64,13 @@ STAGES = (
     "final_gate",
     "response_assembly",  # response, run snapshot and commit (locates errors after the gate)
 )
-# Pipeline tool -> the stages it runs (rank_candidates runs four, in this order).
+# Pipeline tool -> the stage it runs. cold_start_diagnostics, price_sampling and final_selection are
+# code stages after the agent loop (Dispatcher.select_ranking; call = the ranking artifact ID).
 TOOL_STAGES = {
     "resolve_entities": ("entity_resolution",),
     "build_pool": ("pool_build_or_load",),
     "get_geographic_evidence": ("geographic_evidence",),
-    "rank_candidates": ("scoring", "cold_start_diagnostics", "price_sampling", "final_selection"),
+    "rank_candidates": ("scoring",),
 }
 LEGACY_NOTE = (
     "legacy v1 trace (contract 1.0 run, read-only): recorded before contract 2.0 and the slim "
@@ -176,7 +177,7 @@ def locate_error(trace, detail):
     for step in reversed(trace.get("steps", [])):
         if step.get("kind") == "model" and (step.get("error") or {}).get("code") == detail.code:
             return "model"
-    if detail.code == "INVALID_PROPOSAL" or detail.code == "STALE_EVIDENCE":
+    if detail.code in ("INVALID_SELECTION", "STALE_EVIDENCE", "HARD_CONSTRAINT_FAILED", "REPAIR_NO_PROGRESS"):
         return "final_gate"
     return "controller"
 
@@ -208,7 +209,7 @@ def compact_result(result, config, pipeline):
     rows = config.trace.preview_rows
     full = result.model_dump(mode="json")
     out = {k: full[k] for k in ("call_id", "tool", "status", "input_version", "output_version",
-                                "result_ref", "candidate_count", "selected_ids", "completed_stages",
+                                "result_ref", "candidate_count", "ranking_artifact_id", "completed_stages",
                                 "previews_truncated", "verified_count", "evidence_count", "warnings",
                                 "error")}
     out["candidate_ids"] = full["candidate_ids"][:rows]

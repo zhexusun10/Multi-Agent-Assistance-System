@@ -58,6 +58,12 @@ def downstream_patches(manifest):
             raise ValueError("Duplicate or unknown downstream patch target")
         if patch["base_ported_sha256"] != originals[target]["ported_sha256"]:
             raise ValueError("Downstream patch base fingerprint does not match upstream")
+        if patch.get("deleted"):
+            # A declared deletion: the ported file was removed on purpose (no replacement bytes).
+            if patch["patched_sha256"] is not None:
+                raise ValueError("A declared deletion has no patched fingerprint")
+            patches[target] = patch
+            continue
         digest = patch["patched_sha256"]
         if len(digest) != 64 or any(c not in "0123456789abcdef" for c in digest):
             raise ValueError("Invalid downstream patch fingerprint")
@@ -76,6 +82,10 @@ def main():
     if args.check and not args.reference:
         for entry in manifest['files']:
             target=ROOT/entry['target']
+            if patches.get(entry['target'],{}).get('deleted'):
+                if target.exists():
+                    raise ValueError(f"Declared deleted file still exists: {target}")
+                continue
             expected=patches.get(entry['target'],{}).get('patched_sha256',entry['ported_sha256'])
             if not matches_port(target, expected):
                 raise ValueError(f"Upstream port fingerprint changed: {target}")
@@ -105,6 +115,11 @@ def main():
                 patch=patches.get(target.relative_to(ROOT).as_posix())
                 if patch and patch['base_ported_sha256']!=expected_hash:
                     raise ValueError(f"Reference differs from declared patch base: {target}")
+                if patch and patch.get('deleted'):
+                    if target.exists():
+                        raise ValueError(f"Declared deleted file still exists: {target}")
+                    records.append({"source": file.relative_to(reference).as_posix(), "target": target.relative_to(ROOT).as_posix(), "upstream_sha256": hashlib.sha256(original).hexdigest(), "ported_sha256": expected_hash})
+                    continue
                 if not matches_port(target, patch['patched_sha256'] if patch else expected_hash):
                     raise ValueError(f"Unapproved upstream modification: {target}")
             else:
