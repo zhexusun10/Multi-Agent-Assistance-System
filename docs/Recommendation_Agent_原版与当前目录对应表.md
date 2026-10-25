@@ -34,7 +34,7 @@
 | 配置、参数 | `config.py` |
 | Schema 生成与检查 | `schemas.py` |
 | Agent 控制器、工具调用循环 | `agent/controller.py` |
-| 大模型调用桥接 | `agent/model_bridge.ts` |
+| 大模型调用桥接 | 原版 `agent/model_bridge.ts`；当前已删除（声明删除），改为 Python LangChain 客户端 `agent/llm.py` |
 | 工具分发与候选池管理 | `tools/dispatcher.py` |
 | 核心排序、显式与隐式评分融合 | `ranking/ranker.py` |
 | 评分计算函数 | `ranking/metrics.py` |

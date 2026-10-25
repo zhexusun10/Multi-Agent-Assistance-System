@@ -1,4 +1,6 @@
 import time, uuid
+from collections import Counter
+from dataclasses import dataclass
 from pydantic import ValidationError
 from ..models.tool_results import (
     ToolResult,
@@ -15,6 +17,7 @@ from ..tracing import slim
 from ..tracing.stages import tool_stages
 from ..config import RecommendationConfig
 from .registry import BY_NAME, NAMES, PIPELINE, RESOLUTION_TOOLS  # noqa: F401 (NAMES re-exported)
+from .read_pool import read_pool
 from .geo_tools import GeoTools, bound_resolution
 from recommendation.contracts.errors import RecommendationError, ErrorDetail
 
@@ -31,6 +34,37 @@ def compact_record(record):
     resolution = record.get("resolution") or {}
     return {**{k: record.get(k) for k in RECORD_KEYS},
             "resolution": {k: resolution.get(k) for k in ("status", "entity_id", "entity_kind", "method", "reason")}}
+
+
+@dataclass(frozen=True)
+class RankingArtifact:
+    """Code-managed result of rank_candidates for the CURRENT inputs (never authored by the model).
+
+    ``artifact_id`` is run-scoped ("<trace_id>/ranking/<digest>") and digests the pool reference,
+    the run's evidence, the criteria, behavior_context and the scoring version plus the resulting
+    order, so any change to an input yields a different artifact and the old ID is stale."""
+
+    artifact_id: str
+    ref: str  # result_ref of the rank_candidates call that produced it
+    pool_version: str
+    eligible: int
+    coverage: dict
+
+
+STATUSES = ("known", "missing", "ambiguous", "conflicting", "unsupported")
+
+
+def evidence_status(result, evidence, resolution=None):
+    """known / missing / ambiguous / conflicting / unsupported for one CriterionResult. Geographic
+    targets use the structured resolution: an ID and a name that point to different entities are
+    conflicting sources, several exact name matches are ambiguous."""
+    if result.outcome in ("pass", "fail"):
+        return "known"
+    if result.outcome == "unsupported":
+        return "unsupported"
+    if resolution is not None and resolution.status == "ambiguous":
+        return "conflicting" if resolution.method == "id+name" else "ambiguous"
+    return "missing"
 
 
 def _argument_error(exc):
@@ -80,6 +114,8 @@ class Dispatcher:
         self.seed_override = None
         self.scores = {}  # ScoreBreakdown of the selection + preview rows only (R10)
         self.scored = None  # ranking.scoring_v2.PoolScores of the latest rank stage
+        self.artifact = None  # RankingArtifact of the latest rank stage (code-managed handoff)
+        self.selection_artifact = None  # artifact_id the current selection was made from
         self.calls = 0
         self.resolution_calls = 0  # query/bind calls (controller.max_resolution_tool_calls)
         self.started = time.monotonic()
@@ -100,7 +136,7 @@ class Dispatcher:
     def completed_stages(self):
         done = []
         for stage, ok in zip(PIPELINE, (self.resolutions is not None, self.rows is not None,
-                                        self.geo_done, self.selected is not None)):
+                                        self.geo_done, self.artifact is not None)):
             if not ok:
                 break
             done.append(stage)
@@ -222,9 +258,11 @@ class Dispatcher:
                 ]
                 # Full-pool fused scoring (ranking/scoring_v2.py): numpy component arrays for
                 # every eligible pool listing; ScoreBreakdown objects only for the selection
-                # and the trace preview rows. ``scored`` keeps the components (stability
-                # trials, debug trace).
-                self.scored = score_pool(
+                # and the trace preview rows. ``scored`` keeps the components (debug trace,
+                # code-side selection). Cold-start detection and selection run after the agent
+                # loop (select_ranking), never inside this tool.
+                coverage = self.coverage(grouped, valid)
+                scored = score_pool(
                     valid,
                     self.request.requirements.criteria,
                     self.results,
@@ -232,24 +270,26 @@ class Dispatcher:
                     self.request.behavior_context,
                     self.config,
                 )
-                self.ranked = self.scored.ranked
+                if sorted(scored.ids) != sorted(r.listing_id for r in valid):
+                    raise RecommendationError(
+                        "RANKING_INCOMPLETE", "Ranking did not cover every eligible pool listing"
+                    )
+                # A new ranking supersedes any earlier code-side selection (it belonged to the old artifact).
+                self.selection = self.selected = self.selection_input = self.selection_artifact = None
+                self.scored = scored
+                self.ranked = scored.ranked
                 marks["scoring"] = (time.perf_counter() - stage_started) * 1000
-                # Cold-start diagnostics + select-v1 (ranking/selection.py) on the full-pool
-                # order; scoring always happens before any sampling.
-                self.selection = selection_v1.select(
-                    self.scored, self.request, self.config, self.pool_result.key,
-                    self.pool_result.version, seed_override=self.seed_override, marks=marks,
-                )
-                self.selected = list(self.selection.ids)
-                self.scores = {
-                    k: self.scored.breakdown(k)
-                    for k in dict.fromkeys(self.selected + self.ranked[: self.config.trace.preview_rows])
-                }
-                self.selection_input = self.selection.selection_input
-                data = {"algorithm_version": self.selection_input["algorithm_version"],
-                        "pool_size": len(self.ranked),
+                self.scores = {k: scored.breakdown(k) for k in self.ranked[: self.config.trace.preview_rows]}
+                self.artifact = self.make_artifact(f"{self.ref}/tools/{self.calls}", coverage)
+                data = {"ranking_artifact_id": self.artifact.artifact_id,
+                        "pool_version": self.pool_result.version,
+                        "pool_size": len(self.pool), "eligible": len(self.ranked),
+                        "evidence_coverage": coverage,
                         "scoring": self.scored.summary(self.config.trace.preview_rows),
-                        "selection": self.selection.record}
+                        "next": "Finish with {\"ranking_artifact_id\": \"%s\"} unless the inputs change; code "
+                                "then runs cold-start detection, selection and final validation." % self.artifact.artifact_id}
+            elif name == "read_pool":
+                data = read_pool(self, args)
             elif name == "bind_entity":
                 bound, search_no = self.tools.bind_entity(args)
                 self.bindings[args.criterion_id] = (bound.entity_id, search_no)
@@ -283,11 +323,14 @@ class Dispatcher:
         snap = self.identity()
         ref = f"{self.ref}/tools/{self.calls}"
         preview_rows = self.config.trace.preview_rows
-        preview_ids = (
+        # read_pool carries its own page: no duplicate ID lists or previews in its envelope.
+        lean = name == "read_pool"
+        preview_ids = [] if lean else (
             self.ranked
             if self.ranked is not None
             else [r.listing_id for r in self.pool]
         )[:preview_rows]
+        id_cap = 0 if lean else self.config.controller.model_result_candidates
         by_id = {r.listing_id: r for r in self.pool}
         result = ToolResult(
             call_id=call_id,
@@ -298,17 +341,15 @@ class Dispatcher:
             result_ref=ref,
             candidate_ids=[
                 r.listing_id
-                for r in self.pool[: self.config.controller.model_result_candidates]
+                for r in self.pool[:id_cap]
             ],
             candidate_count=len(self.pool),
             candidate_ids_truncated=len(self.pool)
             > self.config.controller.model_result_candidates,
             ranked_ids_truncated=len(self.ranked or [])
             > self.config.controller.model_result_candidates,
-            ranked_ids=(self.ranked or [])[
-                : self.config.controller.model_result_candidates
-            ],
-            selected_ids=list(self.selected or []),
+            ranked_ids=(self.ranked or [])[:id_cap],
+            ranking_artifact_id=self.artifact.artifact_id if self.artifact else None,
             completed_stages=self.completed_stages(),
             error=err,
             data=None if err else data,
@@ -338,13 +379,106 @@ class Dispatcher:
         # dispatcher state (pool rows, full-pool evidence/validation, per-listing provenance) is
         # never stored in a tool step. snapshot_ref resolves to this step record.
         stages = tool_stages(self, name, err, duration_ms, marks, ref) if name in slim.TOOL_STAGES else []
-        if (name == "rank_candidates" and err is None and self.config.trace.mode == "debug"):
-            self.trace["debug"] = slim.debug_rows(self.scored, self.selection, self.config, ref)
         self.trace["steps"].append(
             slim.tool_step(ref, name, arguments, result, duration_ms, self.config,
                            pipeline=name in slim.TOOL_STAGES, stages=stages)
         )
         return result
+
+    def coverage(self, grouped, valid):
+        """Evidence completeness of the rank inputs: every pool listing has one CriterionResult per
+        criterion (else RANKING_INCOMPLETE, never a silent gap), with status counts per criterion
+        (known / missing / ambiguous / unsupported). Missing hard evidence is never a pass: such a
+        listing is not eligible (rules.eligible)."""
+        criteria = self.request.requirements.criteria
+        wanted = [c.criterion_id for c in criteria]
+        per = {c.criterion_id: Counter() for c in criteria}
+        resolutions = self.resolutions or {}
+        for row in self.pool:
+            results = self.results.get(row.listing_id)
+            if results is None or [r.criterion_id for r in results] != wanted:
+                raise RecommendationError(
+                    "RANKING_INCOMPLETE", "A pool listing lacks a result for some criterion"
+                )
+            evidence = grouped.get(row.listing_id, [])
+            for r in results:
+                per[r.criterion_id][evidence_status(r, [e for e in evidence if e.criterion_id == r.criterion_id],
+                                                    resolutions.get(r.criterion_id))] += 1
+        return {
+            "pool": len(self.pool),
+            "eligible": len(valid),
+            "complete": True,
+            "criteria": [{"criterion_id": c.criterion_id, "strength": c.strength, "field": c.field,
+                          **{s: per[c.criterion_id][s] for s in STATUSES}}
+                         for c in criteria],
+            "data_version": self.pool_result.data_version,
+        }
+
+    def make_artifact(self, ref, coverage):
+        from ..ranking.scoring_v2 import scoring_identifier
+
+        identity = {
+            "pool": self.pool_result.reference(),
+            "evidence": sorted((e.criterion_id, e.listing_id, e.evidence_id, e.snapshot_hash) for e in self.evidence),
+            "criteria": [c.model_dump(mode="json") for c in self.request.requirements.criteria],
+            "behavior": self.request.behavior_context.model_dump(mode="json") if self.request.behavior_context else None,
+            "scoring": scoring_identifier(self.config),
+            "order": [[k, float(self.scored.fused.combined[self.scored.index[k]])] for k in self.scored.ranked],
+        }
+        return RankingArtifact(artifact_id=f"{self.ref}/ranking/{digest(identity)[:16]}", ref=ref,
+                               pool_version=self.pool_result.version, eligible=len(self.scored.ranked),
+                               coverage=coverage)
+
+    def select_ranking(self, artifact_id):
+        """Code-side cold-start detection and selection on the current ranking artifact (after the
+        agent loop; the model never selects). Records the cold_start_diagnostics, price_sampling and
+        final_selection stages (call = the artifact) and, in debug mode, the debug rows."""
+        if self.artifact is None or artifact_id != self.artifact.artifact_id:
+            raise RecommendationError(
+                "INVALID_SELECTION", "Selection requires the current ranking artifact"
+            )
+        self.check_deadline()
+        started = time.monotonic()
+        marks = {}
+        stages = ("cold_start_diagnostics", "price_sampling", "final_selection")
+        try:
+            self.selection = selection_v1.select(
+                self.scored, self.request, self.config, self.pool_result.key,
+                self.pool_result.version, seed_override=self.seed_override, marks=marks,
+            )
+        except Exception as exc:
+            self.selection = None
+            detail = (exc.detail if isinstance(exc, RecommendationError) else
+                      ErrorDetail(code="INVALID_SELECTION", message=f"Selection failed ({type(exc).__name__})"))
+            failed = next((s for s in stages if s not in marks), stages[-1])
+            for done in stages[:stages.index(failed)]:
+                slim.record(self.trace, done, "ok", marks[done], self.config, pool=self.pool_result,
+                            call=artifact_id, note="finished; details unavailable because a later sub-stage failed")
+            slim.record(self.trace, failed, "error", None, self.config, pool=self.pool_result,
+                        error=slim.error_of(detail), call=artifact_id)
+            raise RecommendationError(detail.code, detail.message, detail.retryable) from None
+        self.selected = list(self.selection.ids)
+        self.selection_artifact = artifact_id
+        for k in self.selected:
+            if k not in self.scores:
+                self.scores[k] = self.scored.breakdown(k)
+        self.selection_input = self.selection.selection_input
+        from ..tracing.stages import BUILDERS
+
+        for stage in stages:
+            fields = BUILDERS[stage](self)
+            status = fields.pop("status", "ok")
+            slim.record(self.trace, stage, status, marks.get(stage), self.config, call=artifact_id, **fields)
+        if self.config.trace.mode == "debug":
+            self.trace["debug"] = slim.debug_rows(self.scored, self.selection, self.config, artifact_id)
+        self.trace["steps"].append({
+            "kind": "selection", "snapshot_ref": artifact_id,  # resolve_reference(<artifact id>) -> this step
+            "ranking_artifact_id": artifact_id, "artifact_ref": self.artifact.ref,
+            "algorithm_version": self.selection_input["algorithm_version"], "mode": self.selection.summary.mode,
+            "selected_ids": list(self.selected), "record": self.selection.record,
+            "duration_ms": (time.monotonic() - started) * 1000,
+        })
+        return self.selected
 
     def discard_stages(self):
         """Discard build_pool and every later stage (bind_entity, resolve_entities, data change)."""
@@ -352,6 +486,14 @@ class Dispatcher:
         self.rows = None
         self.pool = []
         self.evidence = []
+        self.geo_records = []
+        self.geo_done = False
+        self.reset_results()
+
+    def discard_evidence(self):
+        """Discard soft geographic evidence and the ranking artifact (targeted re-retrieval repair):
+        get_geographic_evidence and rank_candidates must run again for the current pool."""
+        self.evidence = self.pool_result.hard_evidence(self.request, self.resolved) if self.pool_result else []
         self.geo_records = []
         self.geo_done = False
         self.reset_results()
@@ -403,6 +545,8 @@ class Dispatcher:
 
     def reset_results(self):
         self.results = {}
+        self.artifact = None
+        self.selection_artifact = None
         self.ranked = None
         self.selected = None
         self.selection_input = None
@@ -439,6 +583,7 @@ class Dispatcher:
             "validation": len(self.results),
             "scores": {k: s.model_dump() for k, s in self.scores.items()},
             "ranking": self.ranked,
+            "ranking_artifact": self.artifact.artifact_id if self.artifact else None,
             "selected": self.selected,
         }
 

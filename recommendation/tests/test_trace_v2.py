@@ -16,7 +16,7 @@ from fastapi.testclient import TestClient
 
 from recommendation.app import app
 
-from recommendation.agent.controller import LiveController, Proposal, ScriptedController
+from recommendation.agent.controller import Completion, LiveController, ScriptedController
 from recommendation.config import RecommendationConfig
 from recommendation.contracts.errors import RecommendationError
 from recommendation.ranking import exploration, selection
@@ -93,8 +93,8 @@ class RepeatedQueries(LiveController):
             ids = next(r for r in results if r["tool"] == "build_pool")["candidate_ids"]
             return {"content": "", "tool_calls": [
                 {"id": f"q{self.turn}", "name": "nearest_mrt", "args": {"context_ref": ref, "listing_ids": ids}}]}
-        selected = next(r for r in reversed(results) if r["tool"] == "rank_candidates")["selected_ids"]
-        return {"content": json.dumps({"listing_ids": selected}), "tool_calls": []}
+        selected = next(r for r in reversed(results) if r["tool"] == "rank_candidates")["ranking_artifact_id"]
+        return {"content": json.dumps({"ranking_artifact_id": selected}), "tool_calls": []}
 
 
 # --- stage records ------------------------------------------------------------------------------
@@ -122,7 +122,9 @@ def test_stage_records_cover_every_stage_with_counts_params_versions_and_bounded
         # Entity resolution runs before any pool exists; every later stage names its pool version.
         assert record["versions"].get("pool_version") == (
             None if name == "entity_resolution" else response.pool.pool_version)
-        assert record["call"].startswith(f"{trace['trace_id']}/tools/")
+        # Tool stages name their tool call; the code stages after the agent loop name the ranking artifact.
+        code_stage = name in ("cold_start_diagnostics", "price_sampling", "final_selection")
+        assert record["call"].startswith(f"{trace['trace_id']}/{'ranking' if code_stage else 'tools'}/")
     pool = stage(trace, "pool_build_or_load")
     assert pool["outputs"]["size"] == response.pool.size == 40 and pool["preview_total"] == 40
     assert pool["outputs"]["cache"] == "built" and pool["inputs"]["source_count"] == 40
@@ -131,11 +133,19 @@ def test_stage_records_cover_every_stage_with_counts_params_versions_and_bounded
     assert [r["listing_id"] for r in scoring["preview"]] == [f"L{k:03d}" for k in range(1, rows + 1)]
     assert scoring["preview_total"] == 40 > len(scoring["preview"])  # P6 review: the uncut row count
     cold = stage(trace, "cold_start_diagnostics")
-    assert cold["outputs"]["active"] is True and cold["outputs"]["stability_s"] == response.selection.cold_start.stability_s
-    assert cold["params"]["thresholds"] == {"c": 0.8, "b": 5, "s": 0.9}
+    detector = response.selection.cold_start
+    assert cold["outputs"]["active"] is True
+    assert cold["outputs"]["mean_pairwise_difference"] == detector.mean_pairwise_difference
+    assert cold["outputs"]["evaluated_count"] == detector.evaluated_count == 30
+    assert cold["params"] == {"enabled": True, "detector": "mean_pairwise_difference", "detector_version": "mpd-v1",
+                              "candidate_window": 30, "min_mean_pairwise_difference": detector.threshold,
+                              "request_cold_start": {"exited": False, "exited_pool_key": None},
+                              "request_cold_start_used": False}
     sampling = stage(trace, "price_sampling")
-    assert sampling["inputs"]["candidates"] == response.selection.exploration.candidate_count
-    assert sampling["outputs"]["drawn"] == 7 and len(sampling["preview"]) == len(response.selection.exploration.bins)
+    explored = response.selection.exploration
+    assert sampling["inputs"] == {"window": explored.window_size, "sampling_candidates": explored.sampling_candidates}
+    assert sampling["outputs"]["intermediate_sampled"] == 7 == sampling["outputs"]["returned_sampled"]
+    assert len(sampling["preview"]) == len(explored.bins) and sampling["params"]["exploration_window"] == 30
     final = stage(trace, "final_selection")
     assert final["outputs"]["mode"] == "cold_start_exploration" and final["params"]["seed"] == response.selection.seed
     assert [r["listing_id"] for r in final["preview"]] == [i.listing.listing_id for i in response.recommendations]
@@ -389,12 +399,12 @@ def test_debug_mode_adds_bounded_rows_with_contributions_tie_group_and_bins(tmp_
     assert debug["tie_group"]["total"] == tie.size == len(debug["tie_group"]["members"]) == 27
     assert {m["score"] for m in debug["tie_group"]["members"]} == {tie.max_score}
     explored = debug["exploration"]
-    assert explored["total"] == response.selection.exploration.candidate_count == len(explored["candidates"])
-    assert sum(c["drawn"] for c in explored["candidates"]) == 7
-    assert sum(c["stage_a"] for c in explored["candidates"]) == response.selection.exploration.sample_size
+    # select-v2: the exploration candidates are the window's non-leaders.
+    assert explored["total"] == response.selection.exploration.sampling_candidates == len(explored["candidates"]) == 27
+    assert sum(c["drawn"] for c in explored["candidates"]) == 7 == sum(c["returned"] for c in explored["candidates"])
     top = debug["top_scores"]["rows"]
     assert len(top) == 40 and top[0]["listing_id"] == "L001" and top[0]["contributions"]
-    assert debug["rows"] == 27 + 30 + 40 <= debug["max_rows"]
+    assert debug["rows"] == 27 + 27 + 40 <= debug["max_rows"]
     # Summary mode (default) adds no debug data.
     plain = synthetic_service(sub(tmp_path, "plain"), plan_rows(3, 30, 40))
     try:
@@ -425,15 +435,20 @@ def test_debug_rows_never_exceed_debug_max_rows_and_keep_every_kind_of_row(tmp_p
     assert top["total"] == 400 and top["included"] == len(top["rows"]) == config.trace.preview_rows
     assert top["rows"][0]["contributions"] and [r["score_rank"] for r in top["rows"]] == list(range(1, 11))
     assert tie["total"] == 27 and tie["included"] == len(tie["members"]) == 2
-    assert explored["total"] == 30 and explored["included"] == len(explored["candidates"]) == 8
+    assert explored["total"] == 27 and explored["included"] == len(explored["candidates"]) == 8
     drawn = [i.listing.listing_id for i in response.recommendations if i.selection_reason == "price_exploration_sample"]
     assert sorted(c["listing_id"] for c in explored["candidates"] if c["drawn"]) == sorted(drawn) and len(drawn) == 7
     for rows in (tie["members"], explored["candidates"], top["rows"]):
         assert [r["score_rank"] for r in rows] == sorted(r["score_rank"] for r in rows)  # score order kept
-    # The reviewer's case: a tie group (297) larger than debug_max_rows (200).
-    response, debug, _ = _debug_of(tmp_path, "big", plan_rows(3, 300, 400))
+    # The reviewer's case: a tie group (297) larger than debug_max_rows (200). Outside cold start the
+    # tie group is pool-wide (select-v2 limits it to the exploration window only in cold start).
+    response, debug, _ = _debug_of(tmp_path, "big", plan_rows(3, 300, 400), **{"cold_start.enabled": False})
     assert response.selection.tie_group.size == 297 and debug["rows"] == 200
     assert debug["top_scores"]["included"] >= 10 and debug["tie_group"]["included"] > 0
+    assert sum(m["drawn"] for m in debug["tie_group"]["members"]) == 7
+    # In cold start the window caps everything at rank 30, however large the score tie.
+    response, debug, _ = _debug_of(tmp_path, "bigcold", plan_rows(3, 300, 400))
+    assert response.selection.tie_group.size == 27 and response.selection.exploration.window_size == 30
     assert sum(c["drawn"] for c in debug["exploration"]["candidates"]) == 7
     # Near-tie sampling (no exploration): the drawn tie members come first.
     response, debug, _ = _debug_of(tmp_path, "nt", plan_rows(3, 30, 400),
@@ -480,7 +495,7 @@ def test_trace_never_stores_credentials(tmp_path, monkeypatch):
                     *({"id": f"p{i}", "name": n, "args": {"context_ref": ref}} for i, n in enumerate(PIPELINE))]}
             selected = next(json.loads(m["content"]) for m in reversed(messages)
                             if m["role"] == "tool" and json.loads(m["content"])["tool"] == "rank_candidates")
-            return {"content": json.dumps({"listing_ids": selected["selected_ids"]}), "tool_calls": [],
+            return {"content": json.dumps({"ranking_artifact_id": selected["ranking_artifact_id"]}), "tool_calls": [],
                     "usage": {"total_tokens": 11}}
 
     service = fixture_service(tmp_path, controller=Leaky())
@@ -557,12 +572,15 @@ def test_errors_locate_the_rank_sub_stage(tmp_path, monkeypatch, patch, expected
     assert response.status == "error"
     assert trace["error"]["stage"] == expected
     assert [s["stage"] for s in failed] == [expected]
-    # The rank call's earlier sub-stages finished (ok); no record pretends the later ones ran.
-    rank = [s for s in trace["stages"] if s.get("call") == failed[0]["call"]]
-    order = list(slim.TOOL_STAGES["rank_candidates"])
-    assert [s["stage"] for s in rank] == order[:order.index(expected) + 1]
-    assert all(s["status"] == "ok" and s["duration_ms"] >= 0 for s in rank[:-1])
-    assert rank[0]["outputs"]["scored"] == 40
+    # Code-side selection after the agent loop (call = the ranking artifact): its earlier sub-stages
+    # finished (ok); no record pretends the later ones ran. Scoring finished inside the rank tool.
+    assert failed[0]["call"] == next(s for s in trace["steps"] if s["kind"] == "tool"
+                                     and s["result"]["tool"] == "rank_candidates")["result"]["ranking_artifact_id"]
+    code = [s for s in trace["stages"] if s.get("call") == failed[0]["call"]]
+    order = ["cold_start_diagnostics", "price_sampling", "final_selection"]
+    assert [s["stage"] for s in code] == order[:order.index(expected) + 1]
+    assert all(s["status"] == "ok" and s["duration_ms"] >= 0 for s in code[:-1])
+    assert stage(trace, "scoring")["outputs"]["scored"] == 40 and stage(trace, "scoring")["status"] == "ok"
 
 
 def test_errors_locate_input_validation_final_gate_and_model(tmp_path):
@@ -576,18 +594,18 @@ def test_errors_locate_input_validation_final_gate_and_model(tmp_path):
     finally:
         service.close()
 
-    class WrongProposal(ScriptedController):
+    class WrongCompletion(ScriptedController):
         def propose(self, dispatcher, context, trace):
             super().propose(dispatcher, context, trace)
-            return Proposal(listing_ids=list(dispatcher.selected[:-1]))
+            return Completion(ranking_artifact_id=f"{dispatcher.ref}/ranking/invented")
 
-    service = fixture_service(tmp_path / "gate", controller=WrongProposal())
+    service = fixture_service(tmp_path / "gate", controller=WrongCompletion())
     try:
         wrong = service.recommend(body([BUDGET], "fg-1", "fg"))
         trace, failed = _failed(service, "fg")
-        assert wrong.error.code == "INVALID_PROPOSAL" and trace["error"]["stage"] == "final_gate"
+        assert wrong.error.code == "INVALID_SELECTION" and trace["error"]["stage"] == "final_gate"
         assert {s["stage"] for s in failed} == {"final_gate"}
-        assert len(failed) == service.config.controller.repairs + 1
+        assert len(failed) == 1 and trace["repairs"][0]["outcome"] == "unrepairable"  # never sent back
     finally:
         service.close()
 

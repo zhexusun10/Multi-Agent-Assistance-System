@@ -23,10 +23,10 @@ export function classify(results:Candidate['criterion_results'],criteria:Criteri
 }
 export class RecommendationGateway {
   constructor(private data:DataHttpAdapter,private save:(ctx:ToolContext,body:unknown)=>Promise<string>,private mode:string,private remoteUrl:string|undefined,private locations?:LocationService){}
-  // The cold-start state is only mapped into the native transport; remote and baseline keep
+  // The cold-start compat state is only mapped into the native transport; remote and baseline keep
   // sending the pure V1 request.
   async recommend(req:RecommendationRequest,ctx:ToolContext,coldStart:ColdStartInput=NOT_EXITED):Promise<RecommendationResponse>{
-    if(this.mode==='native')return callNative(req,ctx,this.remoteUrl||'http://127.0.0.1:8092',this.save,coldStart);
+    if(this.mode==='native')return callNative(req,ctx,this.remoteUrl||'http://127.0.0.1:8102',this.save,coldStart);
     if(this.mode==='remote'){
       if(!this.remoteUrl)throw Error('RECOMMENDATION_API_URL is required');
       // Logical retries use the exact persisted request body and ID.

@@ -14,6 +14,7 @@ from .models.candidate import Response
 from .context.manager import prepare
 from .tools.dispatcher import Dispatcher
 from .validation.gate import final_gate, replay_gate, DataChanged
+from .models.repair import report_of
 from .tracing.trace import digest
 from .tracing import slim
 from .config import RecommendationConfig
@@ -65,7 +66,7 @@ class RecommendationService:
         execution = Execution(
             trace_id=trace_id,
             trace_ref=f"sqlite:{trace_id}",
-            strategy="full-pool fused-v2 scoring + select-v1 selection",
+            strategy=f"full-pool fused-v2 scoring + {assembly.SELECTION_ALGORITHM} selection",
             data_mode=self.listing.mode,
             controller_mode=self.controller.mode,
             model_identifier=self.controller.model_identifier,
@@ -155,6 +156,17 @@ class RecommendationService:
                     "changes": ctx["changes"],
                     "previous_state_id": request.previous_state_id,
                     "capabilities": ["listing attributes", "straight_line distance"],
+                    # Agent inputs (spec section 3): immutable criteria are in request; scope and the
+                    # ranking-feature requirements the official scorer reads.
+                    "listing_scope": {"listing_type": "RENT", "source": self.listing.mode,
+                                      "pool": "every listing that passes all hard criteria (build_pool)"},
+                    "ranking_features": {"soft_criteria": [c.criterion_id for c in effective.requirements.criteria
+                                                           if c.strength == "soft"],
+                                         "behavior_similarity": list(scoring_v2.FEATURES),
+                                         "behavior_context": "application-supplied; cumulative browsing + saved "
+                                                             "timed viewing drafts (not confirmed appointments)"},
+                    "workflow": "agent tools -> ranking artifact -> code: cold-start detection, selection, "
+                                "final validation, persistence",
                     "unsupported": [
                         "commute",
                         "furnishing",
@@ -177,39 +189,7 @@ class RecommendationService:
                     config,
                     pools=PoolCache(self.store, config, parse=parse_rows),
                 )
-                rebuilt = False
-                for attempt in range(config.controller.repairs + 1):
-                    proposal = self.controller.propose(dispatcher, context, trace)
-                    gate = slim.Running(trace, "final_gate", config, inputs={
-                        "proposed": len(proposal.listing_ids), "attempt": attempt + 1})
-                    try:
-                        ids = final_gate(proposal, dispatcher, trace)
-                        gate.done(pool=dispatcher.pool_result, outputs={
-                            "selected": len(ids), "rows_read": trace["steps"][-1].get("rows_read")})
-                        break
-                    except RecommendationError as e:
-                        gate.failed(e.detail)
-                        # A changed data version rebuilds the pool through the cache ONCE. The
-                        # stale pool is discarded here, so no controller can re-propose from it:
-                        # only new resolve_entities + build_pool calls (a rebuild) can yield an acceptable proposal.
-                        if isinstance(e, DataChanged):
-                            if rebuilt:
-                                raise
-                            rebuilt = True
-                            dispatcher.invalidate_pool()
-                        gate_steps = [
-                            step
-                            for step in trace["steps"]
-                            if step["kind"] == "final_gate"
-                        ]
-                        if gate_steps and not gate_steps[-1].get("passed"):
-                            gate_steps[-1]["error"] = e.detail.model_dump()
-                        if (
-                            e.detail.code not in ("STALE_EVIDENCE", "INVALID_PROPOSAL")
-                            or attempt == config.controller.repairs
-                        ):
-                            raise
-                        context["repair"] = e.detail.model_dump()
+                ids = self.select_and_validate(dispatcher, context, trace, config)
                 assembling = slim.Running(trace, "response_assembly", config)
                 pool = assembly.pool_summary(effective, dispatcher)
                 pool_ref = {**dispatcher.pool_result.reference(), "persisted": dispatcher.pool_result.persisted}
@@ -331,6 +311,84 @@ class RecommendationService:
                 request.conversation_id, trace_id, request.request_id, slim.finalize(trace)
             )
         return response
+
+    def select_and_validate(self, dispatcher, context, trace, config):
+        """Agent -> code: verify the completion names the current ranking artifact, run cold-start
+        detection + selection (Dispatcher.select_ranking) and final validation outside the LLM loop.
+
+        A failure becomes a structured FailureReport. Code decides the recovery: it discards the
+        affected stages (a data change rebuilds the pool at most once), and only a failure repairable
+        by retrieval or recomputation goes back to the agent, at most controller.repairs times. A
+        repeated failure with no new evidence since the previous one stops the run
+        (REPAIR_NO_PROGRESS). Internal selection inconsistencies are never sent back."""
+        rebuilt = False
+        previous = None
+        reports = trace.setdefault("repairs", [])
+        for attempt in range(config.controller.repairs + 1):
+            try:
+                completion = self.controller.propose(dispatcher, context, trace)
+            except RecommendationError as e:
+                if reports and reports[-1]["outcome"] == "returned_to_agent":
+                    reports[-1]["outcome"] = f"agent_failed: {e.detail.code}"
+                raise
+            gate = None
+            gates_before = sum(step["kind"] == "final_gate" for step in trace["steps"])
+            try:
+                dispatcher.select_ranking(completion.ranking_artifact_id)
+                gate = slim.Running(trace, "final_gate", config, inputs={
+                    "ranking_artifact_id": completion.ranking_artifact_id, "attempt": attempt + 1})
+                ids = final_gate(dispatcher, trace)
+                gate.done(pool=dispatcher.pool_result, outputs={
+                    "selected": len(ids), "rows_read": trace["steps"][-1].get("rows_read")})
+                if reports:
+                    reports[-1]["outcome"] = "repaired"
+                return ids
+            except RecommendationError as e:
+                if gate is not None:
+                    gate.failed(e.detail)
+                elif not (trace["stages"] and trace["stages"][-1]["status"] == "error"
+                          and trace["stages"][-1].get("error", {}).get("code") == e.detail.code):
+                    # Failed before any selection stage ran (for example the completion names no current
+                    # artifact, or the run deadline passed): recorded as a gate error.
+                    slim.record(trace, "final_gate", "error", None, config, pool=dispatcher.pool_result,
+                                error=slim.error_of(e.detail), call=completion.ranking_artifact_id,
+                                note=("selection refused: not the current ranking artifact"
+                                      if e.detail.code == "INVALID_SELECTION" else "failed before selection"))
+                gate_steps = [step for step in trace["steps"] if step["kind"] == "final_gate"]
+                if len(gate_steps) > gates_before and not gate_steps[-1].get("passed"):
+                    gate_steps[-1]["error"] = e.detail.model_dump()  # this attempt's gate step only
+                evidence = digest(dispatcher.identity().get("evidence"))
+                report = report_of(e, {
+                    "ranking_artifact_id": completion.ranking_artifact_id,
+                    "pool_version": dispatcher.pool_result.version if dispatcher.pool_result else None,
+                    "selection": (dispatcher.selection_input or {}).get("algorithm_version"),
+                }, attempt + 1)
+                entry = {**report.model_dump(), "outcome": "failed"}
+                reports.append(entry)
+                if not report.repairable or attempt == config.controller.repairs:
+                    entry["outcome"] = "unrepairable" if not report.repairable else "exhausted"
+                    raise
+                if isinstance(e, DataChanged) and rebuilt:
+                    entry["outcome"] = "exhausted"  # the pool is rebuilt at most once per run
+                    raise
+                signature = (report.code, tuple(report.listing_ids), tuple(report.criterion_ids), evidence)
+                if signature == previous:
+                    entry["outcome"] = "no_progress"
+                    raise RecommendationError(
+                        "REPAIR_NO_PROGRESS", f"Repeated {report.code} without new evidence; stopped"
+                    ) from None
+                previous = signature
+                # Code-controlled invalidation before the agent continues.
+                if isinstance(e, DataChanged):
+                    rebuilt = True
+                    dispatcher.invalidate_pool()
+                elif "build_pool" in report.invalidated:
+                    dispatcher.invalidate_pool()
+                elif "get_geographic_evidence" in report.invalidated:
+                    dispatcher.discard_evidence()
+                dispatcher.selection = dispatcher.selected = dispatcher.selection_input = None
+                entry["outcome"] = "returned_to_agent"
+                context["repair"] = report.model_dump()
 
     def close(self):
         self.listing.close()

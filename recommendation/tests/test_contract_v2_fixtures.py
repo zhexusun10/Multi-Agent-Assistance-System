@@ -183,6 +183,23 @@ def test_ten_results_fixture_is_valid_and_reproduced(app_env):
     assert fresh["execution"]["selection_hash"] == stored["execution"]["selection_hash"]
 
 
+def test_cold_start_exploration_fixture_is_valid_and_reproduced(app_env):
+    """tests/fixtures/recommendation-v2/cold-start-exploration.json (TS oracle / explanation): mpd-v1 D = 0 on
+    an all-tied pool, price exploration; a fresh run reproduces the exact draws, bins and selection block."""
+    from recommendation.models.candidate import Response
+    from recommendation.schemas import validate_response
+    fixture = load("cold-start-exploration.json")
+    stored = fixture["envelope"]["response"]
+    validate_response(Response.model_validate(stored))
+    cold = stored["selection"]["cold_start"]
+    assert stored["selection"]["mode"] == "cold_start_exploration" and cold["active"] and cold["mean_pairwise_difference"] == 0
+    fresh = post(fixture["native_body"])["response"]
+    key = lambda r: [(i["listing"]["listing_id"], i["scores"]["combined_score"], i["selection_reason"]) for i in r["recommendations"]]
+    assert key(fresh) == key(stored)
+    assert fresh["selection"] == stored["selection"]  # seed, exploration bins / quotas, cold_start
+    assert fresh["execution"]["selection_hash"] == stored["execution"]["selection_hash"]
+
+
 def test_legacy_v1_head_starts_fresh_v2_chain(tmp_path):
     """A conversation that only has legacy contract-1.0 rows: a v2 request without a state
     reference starts at run_sequence 1; the legacy state id itself is not a v2 reference."""

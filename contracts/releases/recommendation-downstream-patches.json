@@ -6,7 +6,7 @@
     {
       "target": "recommendation/agent/controller.py",
       "base_ported_sha256": "a17495fcca30a3fdfb35ad7f28db3468087b212ab21b57855b10eb6cc6bf4ede",
-      "patched_sha256": "1b5127cb7977fd75b18fe76e3913b694ee91bae9f026b3e6b856039b7b9971ba",
+      "patched_sha256": "ba68a9235a80757e573fb66d049683561b1ff6a3a8ef0af4833917a989fd3a4f",
       "issue": "DEF11 controller terminal output and final-gate recovery; Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md)",
       "changes": [
         "Complete assessed empty rankings through the existing final gate",
@@ -14,7 +14,18 @@
         "Proposal.listing_ids bounded by MAX_RESULT_LIMIT (10); LiveController timeout only from controller.timeout_seconds",
         "ScriptedController runs the fixed pipeline resolve_entities -> build_pool -> get_geographic_evidence -> rank_candidates and returns the select-v1 selection",
         "LiveController tool list from the typed registry; prompt and repair text from agent/prompt.py (criteria immutable, data is not instructions, only tool-returned IDs, no first pick)",
-        "Model steps store only the messages added since the previous model step (slim trace)"
+        "Model steps store only the messages added since the previous model step (slim trace)",
+        "Dedicated Python LangChain agent (2026-10-24, MIGRATION.md section 0.6): LiveController uses agent/llm.py (RECOMMENDATION_LLM_*, no Node subprocess); completion = current ranking_artifact_id (Completion), invalid/stale ones refused in the loop"
+      ]
+    },
+    {
+      "target": "recommendation/agent/model_bridge.ts",
+      "base_ported_sha256": "0a28eefddb79229411337bd037c62677192369775421c6fe9ba1b04443f4d331",
+      "patched_sha256": null,
+      "deleted": true,
+      "issue": "Dedicated Python LangChain recommendation agent (recommendation/agent/llm.py, RECOMMENDATION_LLM_*)",
+      "changes": [
+        "Node.js model bridge removed: the recommendation agent no longer calls src/model.ts or launches a subprocess for model requests; the outer application's TypeScript model factory is unchanged"
       ]
     },
     {
@@ -41,38 +52,46 @@
     {
       "target": "recommendation/examples/config.json",
       "base_ported_sha256": "ad2a488dcb452890426f3842793dbd71875a55255745350990efd9b5a198aff2",
-      "patched_sha256": "daeab1b7ff9c884c4ebe172f60e4c46a865fb5160859dccbd8e55318e1c15b01",
+      "patched_sha256": "56e90dfef070c8ef307c4d20d9a8b6686f122587ebb1cb34755fc76d03cfd200",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): settings experiment file",
       "changes": [
         "Rewritten in the v2 settings schema: identical to recommendation.yaml except cold_start.enabled false (not a production source)",
-        "User-requested scoring revision: identity similarity 1, preserve informative hard-constrained features, current-pool min/max normalization; update associated offline expectations."
+        "User-requested scoring revision: identity similarity 1, preserve informative hard-constrained features, current-pool min/max normalization; update associated offline expectations.",
+        "Cold-start detector mpd-v1 (2026-10-24, MIGRATION.md section 0.5): C/B/S thresholds, reenter_on_pool_rebuild and stability removed; cold_start.detector {candidate_window 30, min_mean_pairwise_difference 0.01}",
+        "select-v2 cold-start selection (2026-10-24, MIGRATION.md section 0.7): price_sampling exploration_window 30 + intermediate_size 10 (target_sample_size removed)"
       ]
     },
     {
       "target": "recommendation/examples/contracts/clarification.json",
       "base_ported_sha256": "c25a275cef88371b9f71a6488e1620139817e0a55135d00dfe66be7bd248f633",
-      "patched_sha256": "d53b8454b87b2f86270016356b40cc59bf59f7ceeed3df9d1c1bca29ba0a775b",
+      "patched_sha256": "368292749a407653aea9614c20dd285722fe500bf1bbffedd3773b2d8a0c861e",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
       "changes": [
-        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
+        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates",
+        "Cold-start detector mpd-v1 (2026-10-24, MIGRATION.md section 0.5): regenerated (new selection_hash; mpd-v1 cold_start)",
+        "select-v2 cold-start selection (2026-10-24, MIGRATION.md section 0.7): regenerated (select-v2 identity)"
       ]
     },
     {
       "target": "recommendation/examples/contracts/error.json",
       "base_ported_sha256": "99d3a3a73be8047854bcf50ff6dcbdede0c833ab3797405f08b5d856146e3bc8",
-      "patched_sha256": "72db0310acfdf68795c8c6baf14b32ede2119cfb6c93d747194b575d2636872f",
+      "patched_sha256": "c29f0fefbf9400f96deeb08735f89a296e0c28506ce40d8a25f8095a1f78d72c",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
       "changes": [
-        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
+        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates",
+        "Cold-start detector mpd-v1 (2026-10-24, MIGRATION.md section 0.5): regenerated (new selection_hash; mpd-v1 cold_start)",
+        "select-v2 cold-start selection (2026-10-24, MIGRATION.md section 0.7): regenerated (select-v2 identity)"
       ]
     },
     {
       "target": "recommendation/examples/contracts/feedback-only-update.json",
       "base_ported_sha256": "4ab96301f0a571f49dc7c6a3da25493cc1b1046efbb32c01d6f77434d3d8062e",
-      "patched_sha256": "d2b9d6813b36d16216b8187a55a5d4746226907b0ddfe6e7266ae19b06803fcf",
+      "patched_sha256": "c79875921e53fd8f14ce359c9202a820b3be43939e5d282f8ab3ed16797c3348",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
       "changes": [
-        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
+        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates",
+        "Cold-start detector mpd-v1 (2026-10-24, MIGRATION.md section 0.5): regenerated (new selection_hash; mpd-v1 cold_start)",
+        "select-v2 cold-start selection (2026-10-24, MIGRATION.md section 0.7): regenerated (select-v2 identity)"
       ]
     },
     {
@@ -81,34 +100,42 @@
       "patched_sha256": "66ccb177739b958164c1fc5db19791ae2ed93ed04db04c7ec1e1eecd6d5c23bc",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
       "changes": [
-        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
+        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates",
+        "Cold-start detector mpd-v1 (2026-10-24, MIGRATION.md section 0.5): regenerated (new selection_hash; mpd-v1 cold_start)",
+        "select-v2 cold-start selection (2026-10-24, MIGRATION.md section 0.7): regenerated (select-v2 identity)"
       ]
     },
     {
       "target": "recommendation/examples/contracts/no-match.json",
       "base_ported_sha256": "7a9db3082026ea76d6d3ed454d7cfe18f9cae8739004adc5371c1355874af780",
-      "patched_sha256": "34d8dc98b574353d85353c290618d009f332539c36dc01585c12a2109ac2113d",
+      "patched_sha256": "9f27e7b347d45e638d1ac3338f9572f8881b314e09458c16ff233d2ce18d87df",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
       "changes": [
-        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
+        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates",
+        "Cold-start detector mpd-v1 (2026-10-24, MIGRATION.md section 0.5): regenerated (new selection_hash; mpd-v1 cold_start)",
+        "select-v2 cold-start selection (2026-10-24, MIGRATION.md section 0.7): regenerated (select-v2 identity)"
       ]
     },
     {
       "target": "recommendation/examples/contracts/preference-update.json",
       "base_ported_sha256": "470c7af9064ae6ba25a1ceceb3e701a49c977c7e3f919c5415151f441d94c0f8",
-      "patched_sha256": "cd86b1b51f97e4557d8feafb6c53fb22f49ceeaf5c77838f2165c255dfc48981",
+      "patched_sha256": "11e47eee89db59f93693930d872993c746a94770b5d357527c9e43609dcae18b",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
       "changes": [
-        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
+        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates",
+        "Cold-start detector mpd-v1 (2026-10-24, MIGRATION.md section 0.5): regenerated (new selection_hash; mpd-v1 cold_start)",
+        "select-v2 cold-start selection (2026-10-24, MIGRATION.md section 0.7): regenerated (select-v2 identity)"
       ]
     },
     {
       "target": "recommendation/examples/contracts/success.json",
       "base_ported_sha256": "017f056380151e5c7cd748506691a28747551479f9266179b72ac5767a8166df",
-      "patched_sha256": "54d83198b76f984ddf06dafaff80ec94b60164bebdc4783e87f758ae65253bac",
+      "patched_sha256": "e57848c2d9b4da7ad5d604a130794da3c841c756ab14c09cba05dadaefb9aaeb",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): contract example",
       "changes": [
-        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates"
+        "Regenerated example (python -m recommendation.examples.generate_contract_examples): main-contract request with behavior_context, result_limit up to 10, pool / selection / resolution summaries, fused-v2 scores, no unverified_candidates",
+        "Cold-start detector mpd-v1 (2026-10-24, MIGRATION.md section 0.5): regenerated (new selection_hash; mpd-v1 cold_start)",
+        "select-v2 cold-start selection (2026-10-24, MIGRATION.md section 0.7): regenerated (select-v2 identity)"
       ]
     },
     {
@@ -152,11 +179,12 @@
     {
       "target": "recommendation/models/tool_results.py",
       "base_ported_sha256": "7412d1557bafc3a4f77b26065896fb91376d0039a05fc3158f16237ca6d52947",
-      "patched_sha256": "ca1be199ec88a07535a81fc4c04a62235d5ce096657675b27cf29e1a9f706d45",
+      "patched_sha256": "9630c4ee6bd1f7991465aeec27380b832e1821fdf221fa08c2326861fd9c112d",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): tool results",
       "changes": [
         "Previews bounded by trace.preview_rows instead of 4; ScorePreview uses soft/behaviour names",
-        "ToolResult carries selected_ids, completed_stages and compact data"
+        "ToolResult carries selected_ids, completed_stages and compact data",
+        "Dedicated Python LangChain agent (2026-10-24, MIGRATION.md section 0.6): ToolResult.selected_ids replaced by ranking_artifact_id"
       ]
     },
     {
@@ -172,12 +200,15 @@
     {
       "target": "recommendation/README.md",
       "base_ported_sha256": "5f4d39f15ca3781ab4470f7fe905d3a3c91c8527b0fc007dd644c6c5dc17c3aa",
-      "patched_sha256": "3f1ae471457450906d17759445413c11476742f52886bb8d4c859dc95877677b",
+      "patched_sha256": "160b88f1b79fafdcab9ef0e93bf35da28603a028f0e1847e86ef021c4bbd5aae",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): documentation",
       "changes": [
         "Main behavior_context request, pool cache / data_version / final gate, fused-v2 scoring, select-v1 selection and cold start described",
         "Settings section: single YAML source with confirmed / existing-default / experiment-result labels (provisional = not yet calibrated, pending) and TUNING.md; terminal debugging commands",
-        "User-requested scoring revision: identity similarity 1, preserve informative hard-constrained features, current-pool min/max normalization; update associated offline expectations."
+        "User-requested scoring revision: identity similarity 1, preserve informative hard-constrained features, current-pool min/max normalization; update associated offline expectations.",
+        "Cold-start detector mpd-v1 (2026-10-24, MIGRATION.md section 0.5): cold start described as D < threshold over the top candidate_window scores, re-evaluated every round; exit fields compat-only",
+        "Dedicated Python LangChain agent (2026-10-24, MIGRATION.md section 0.6): Python LangChain agent, read_pool, ranking artifact handoff and structured repair described",
+        "select-v2 cold-start selection (2026-10-24, MIGRATION.md section 0.7): select-v2 window / intermediate / returned-prefix selection described"
       ]
     },
     {
@@ -203,10 +234,11 @@
     {
       "target": "recommendation/requirements.txt",
       "base_ported_sha256": "08ef6a1b3ea71b30004759d3bc7c81a461c89cfee781a30becfb99a6719042ae",
-      "patched_sha256": "e1cfa5a805edd14b42e77382d6009f2c4485f6cd7d2b653a2bec452c33267989",
+      "patched_sha256": "e9c1190b4e63af09c7c96394ebb34bbadc5f50ff3ad5ad1adec6c6531a6ff00c",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): dependencies",
       "changes": [
-        "PyYAML>=6,<7 (settings file) and numpy>=1.26,<3 (full-pool scoring)"
+        "PyYAML>=6,<7 (settings file) and numpy>=1.26,<3 (full-pool scoring)",
+        "Dedicated Python LangChain agent (2026-10-24, MIGRATION.md section 0.6): langchain>=1.4,<2 and langchain-openai>=1.7,<2"
       ]
     },
     {
@@ -221,12 +253,14 @@
     {
       "target": "recommendation/service.py",
       "base_ported_sha256": "33fa52ebd3c41f3f8f33b883f0b4f10d70392610999173c571351711bdd41122",
-      "patched_sha256": "fac4cf79f8422708c25230f8db0a23076a6f69b2f03481c4eaa7a4d1a7225626",
+      "patched_sha256": "2ab850ece9af2ed32df1a4f2584645c8e794d81e4fd12b9d04c243e5ab0b749b",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): service flow",
       "changes": [
         "Settings frozen per request; config_version / config_hash / selection_hash recorded; scoring_version fused-v2, selection_algorithm select-v1",
         "v2 flow: behaviour-input checks, pool summary, select-v1 selection, compact run snapshot (format 2, selection_input), no unverified list; web_detail / viewing-draft warnings",
-        "Slim trace stage records (input_validation ... final_gate, response_assembly) with error location; replay via the stored selection_input"
+        "Slim trace stage records (input_validation ... final_gate, response_assembly) with error location; replay via the stored selection_input",
+        "Dedicated Python LangChain agent (2026-10-24, MIGRATION.md section 0.6): select_and_validate: artifact check, code selection, final gate, code-controlled repair (FailureReport, invalidation, rebuild once, no-progress stop); agent inputs in the context",
+        "select-v2 cold-start selection (2026-10-24, MIGRATION.md section 0.7): Execution.strategy names the active selection algorithm"
       ]
     },
     {
@@ -242,41 +276,47 @@
     {
       "target": "recommendation/terminal/__main__.py",
       "base_ported_sha256": "14277288e3cd570844b36f7b8006837b3509e7ae017b95e3444d06ec7bb69cdc",
-      "patched_sha256": "67397c40803d962f487ee45d46e5a595315a2dfd97fcee715de0e009ae0316d4",
+      "patched_sha256": "c72e2c3e8162e6424235915372f4e81464ef56372f54883d0e86e20079740b1b",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): terminal",
       "changes": [
         "Requirements / behavior_context flow (main contract); recommend always mints a new request_id (except retrying a failed pending one)",
-        "Debug commands dispatched to terminal/debug.py; --config; staged cold_start / result_limit; response summary"
+        "Debug commands dispatched to terminal/debug.py; --config; staged cold_start / result_limit; response summary",
+        "Cold-start detector mpd-v1 (2026-10-24, MIGRATION.md section 0.5): summary prints the detector status (reason, D, threshold, window); stored legacy C/B/S responses shown as stored; exit hint removed",
+        "Dedicated Python LangChain agent (2026-10-24, MIGRATION.md section 0.6): check-connections reports RECOMMENDATION_LLM_* configuration"
       ]
     },
     {
       "target": "recommendation/terminal/acceptance.py",
       "base_ported_sha256": "afd0df82e3962b3f40db34e59f86073f63eb11c6a69ec24cc98a0a404531af78",
-      "patched_sha256": "e8397e47079c16c1644ace1ba7ca38c8d482ad0f112ac3f699a290acef62ca98",
+      "patched_sha256": "a750d89dc1622277535be6ca0fadd3b1db6a9f985784afd4526cb8afbbeb3bc8",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): acceptance companion",
       "changes": [
         "Ported to the merged request: behavior_context, the same snapshot resent under a new request ID (request-independent outputs compared), scoring summary",
-        "--config defaults to RECOMMENDATION_CONFIG"
+        "--config defaults to RECOMMENDATION_CONFIG",
+        "Cold-start detector mpd-v1 (2026-10-24, MIGRATION.md section 0.5): docstring: D is request-independent (no stability seed)",
+        "select-v2 cold-start selection (2026-10-24, MIGRATION.md section 0.7): request-independent exploration identity for select-v2 summaries"
       ]
     },
     {
       "target": "recommendation/tests/test_policy_controller.py",
       "base_ported_sha256": "516366637a44438cb510c1c99add5e0f5c361c2699ecf05c8d8d45f8d377d45d",
-      "patched_sha256": "e47017a0f15abd08a0e752d741ef6027f979c587ce92cdf8aa39126c8ba7f518",
+      "patched_sha256": "231a4e85a7391fb10007f275e4cae60d031ffc73554f5bf49b080d277d206d8c",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): tests",
       "changes": [
         "Assertions changed one at a time for intended v2 rule changes, intent kept (listed per phase in VALIDATION.md)",
-        "User-requested scoring revision: identity similarity 1, preserve informative hard-constrained features, current-pool min/max normalization; update associated offline expectations."
+        "User-requested scoring revision: identity similarity 1, preserve informative hard-constrained features, current-pool min/max normalization; update associated offline expectations.",
+        "Dedicated Python LangChain agent (2026-10-24, MIGRATION.md section 0.6): fake model finishes with the ranking_artifact_id"
       ]
     },
     {
       "target": "recommendation/tests/test_recommendation.py",
       "base_ported_sha256": "fb4b0df776232cd35a9b321d5918d927c43cd6d6877f1379dcd4f437ac5b5f0a",
-      "patched_sha256": "a111fd028770594a75bc23547f81f7b23e8b7b512a4268521ab00422eefabbf8",
+      "patched_sha256": "30fe3839ff80aa8a128f749c5664b1c18893e4c064498701901153f4b136c296",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): tests",
       "changes": [
         "Assertions changed one at a time for intended v2 rule changes, intent kept (listed per phase in VALIDATION.md)",
-        "User-requested scoring revision: identity similarity 1, preserve informative hard-constrained features, current-pool min/max normalization; update associated offline expectations."
+        "User-requested scoring revision: identity similarity 1, preserve informative hard-constrained features, current-pool min/max normalization; update associated offline expectations.",
+        "Dedicated Python LangChain agent (2026-10-24, MIGRATION.md section 0.6): invented completion -> INVALID_SELECTION"
       ]
     },
     {
@@ -291,22 +331,25 @@
     {
       "target": "recommendation/tools/dispatcher.py",
       "base_ported_sha256": "f5284475f19de65fa2e1d470f2f7645c17403c433415592860d368363fc69af8",
-      "patched_sha256": "5636942ef84a8c5b232189a9b01c4561856512598c187bb6fbf773f8d826d9b6",
+      "patched_sha256": "3c6194a8f18fe4901aa6c28b38b06cd3dd59531ac8a863243a84621625fe5b1a",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): tool dispatcher",
       "changes": [
         "Pipeline tools with stage dependencies and invalidation, typed per-tool arguments, resolution budgets and bind_entity application",
         "Pool built or reused through tools/pool_builder.py; full-pool fused-v2 scoring and select-v1 selection in rank_candidates",
-        "Slim tool steps (arguments + compact result) and compact identity digests instead of full pool snapshots"
+        "Slim tool steps (arguments + compact result) and compact identity digests instead of full pool snapshots",
+        "Dedicated Python LangChain agent (2026-10-24, MIGRATION.md section 0.6): rank_candidates yields a code-managed ranking artifact with evidence coverage; read_pool; select_ranking (cold start + selection after the loop); discard_evidence"
       ]
     },
     {
       "target": "recommendation/validation/gate.py",
       "base_ported_sha256": "d8a4ee4d1a0e20c8d1a64e8547329bf684844530e1625ae89895a6022302b2ad",
-      "patched_sha256": "a8f8fd970bcf0df27d89f8e80d9f96ec75b06a79a8b10a7d49ce7d6d19de3302",
+      "patched_sha256": "1bf3b9788b90d6d1a363737a6e2d0f3de2e9eb21266ba574b7f41039df439d05",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): gates",
       "changes": [
         "final_gate: returned IDs equal the code selection, data_version re-checked (STALE_EVIDENCE), selected rows re-read by ID and hard criteria re-evaluated, selection replays from its input",
-        "replay_gate: select-v1 recomputed from the stored selection_input; geographic provenance of returned listings recorded"
+        "replay_gate: select-v1 recomputed from the stored selection_input; geographic provenance of returned listings recorded",
+        "Dedicated Python LangChain agent (2026-10-24, MIGRATION.md section 0.6): final_gate(dispatcher, trace) validates the code selection of the current artifact; GateFailure with structured repair metadata",
+        "select-v2 cold-start selection (2026-10-24, MIGRATION.md section 0.7): head = current ranking prefix; window = top exploration_window; returned = intermediate prefix"
       ]
     },
     {
@@ -321,19 +364,22 @@
     {
       "target": "recommendation/contracts/README.md",
       "base_ported_sha256": "881182397f4045b67d12aa469b817becc46072e14841addf077eccbe3d89a823",
-      "patched_sha256": "906b9423a8fb25e8308d524ec65c2851a4d50025ba9c56f1a900786c120acc69",
+      "patched_sha256": "961547b922aad35db4ea57a76d27fa003a224dc3c7ac803d3d2ba66ff78bd8ee",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): documentation",
       "changes": [
-        "Interface description updated (main request + behavior_context + cold_start, response 2.0 summaries, no unverified list); links fixed"
+        "Interface description updated (main request + behavior_context + cold_start, response 2.0 summaries, no unverified list); links fixed",
+        "Cold-start detector mpd-v1 (2026-10-24, MIGRATION.md section 0.5): cold_start request field compat-only; selection.cold_start union (mpd-v1 or stored legacy C/B/S)",
+        "select-v2 cold-start selection (2026-10-24, MIGRATION.md section 0.7): selection.exploration union (select-v2 labelled counts / stored select-v1)"
       ]
     },
     {
       "target": "recommendation/contracts/request.py",
       "base_ported_sha256": "7abf36d1fad2a92d5e2e8d9abefb7806f1d8c4051d4cdaa3269963cc04f8d2c7",
-      "patched_sha256": "674f218a5cd6cb3701168f245a6e478debf0e549f14797979b63525eac75aa69",
+      "patched_sha256": "b2b52b9a75fc841be1410f577a7d5647870400cd006088df99d03bda88a28ab6",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): request contract",
       "changes": [
-        "Main request contract 1.0 (2.0 bodies rejected) with feedback events and behavior_context; result_limit None -> settings default, max 10; recommendation-owned cold_start input; event conversation and unique IDs checked"
+        "Main request contract 1.0 (2.0 bodies rejected) with feedback events and behavior_context; result_limit None -> settings default, max 10; recommendation-owned cold_start input; event conversation and unique IDs checked",
+        "Cold-start detector mpd-v1 (2026-10-24, MIGRATION.md section 0.5): ColdStartInput docstring: accepted for compatibility, ignored by the detector"
       ]
     },
     {
@@ -367,19 +413,22 @@
     {
       "target": "recommendation/contracts/schemas/request.schema.json",
       "base_ported_sha256": "6b17d14c209d8fe8f62e8937e4394c6611a24a1be51b965ab04ef9f0b9345036",
-      "patched_sha256": "27163e698935cd6b52bdaeea6ad8fef5aca7033a2bfefdc7bdaf0834738ea8ee",
+      "patched_sha256": "637e58627699b010d35fb48941efb3db3923b1449834ebc9639da14e9bc40cd3",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): generated schema",
       "changes": [
-        "Regenerated by python -m recommendation.schemas (main request 1.0 + behavior_context + cold_start, result_limit <= 10)"
+        "Regenerated by python -m recommendation.schemas (main request 1.0 + behavior_context + cold_start, result_limit <= 10)",
+        "Cold-start detector mpd-v1 (2026-10-24, MIGRATION.md section 0.5): ColdStartInput description"
       ]
     },
     {
       "target": "recommendation/contracts/schemas/response.schema.json",
       "base_ported_sha256": "a575ed3e057b5c355da2079f4aaedbec3ece14e85b146b15ed9396b2934e1e16",
-      "patched_sha256": "aaa7acd0772ab5f83e9b4d0bfadc27845eae044ad56b9109ea0dcdb45b5ddffe",
+      "patched_sha256": "cfa056eb4a0bc26586289170cead51d177df62ca771bcf33e08270410409b44d",
       "issue": "Recommendation v2 (request = main contract 1.0 + behavior_context + cold_start, response = native contract 2.0; spec evaluation/recommendation-exploration-2026-10-23, MIGRATION.md): generated schema",
       "changes": [
-        "Regenerated by python -m recommendation.schemas (response 2.0)"
+        "Regenerated by python -m recommendation.schemas (response 2.0)",
+        "Cold-start detector mpd-v1 (2026-10-24, MIGRATION.md section 0.5): selection.cold_start oneOf ColdStartDiagnostics (mpd-v1) / LegacyColdStartDiagnostics",
+        "select-v2 cold-start selection (2026-10-24, MIGRATION.md section 0.7): selection.exploration oneOf ExplorationV2 / Exploration"
       ]
     }
   ]

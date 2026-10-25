@@ -38,8 +38,9 @@ class ToolResult(Contract):
     candidate_ids_truncated: bool = False
     ranked_ids_truncated: bool = False
     ranked_ids: list[str] = Field(default_factory=list)
-    # The final selection of the latest rank_candidates (the proposal must equal it exactly).
-    selected_ids: list[str] = Field(default_factory=list)
+    # Code-managed ranking artifact of the latest rank_candidates for the current inputs (the agent
+    # finishes by naming it; selection happens in code after the agent loop).
+    ranking_artifact_id: str | None = None
     completed_stages: list[str] = Field(default_factory=list)
     # At most trace.preview_rows previews (settings); the full pool stays in pool_cache.
     previews: list[CandidatePreview] = Field(default_factory=list)

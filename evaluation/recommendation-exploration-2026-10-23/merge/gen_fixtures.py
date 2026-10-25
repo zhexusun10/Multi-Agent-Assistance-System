@@ -1,5 +1,8 @@
 """Generator for the shared Python/TS fixtures in tests/fixtures/recommendation-v2/ after the merge with
 main c7dc536 (request = main contract 1.0 + behavior_context + cold_start; response = recommendation 2.0).
+Regenerated 2026-10-24 for the mpd-v1 cold-start detector (new selection_hash; ten-results is now
+near_tie_sampling; cold-start-exploration.json added). response-cases.json and
+teammate-round-3.response.json are hand-maintained and not written here.
 
 The JSON files are the committed source; this script documents how they were produced. Fixture data,
 ScriptedController, temporary state (never data/.runtime). Listing IDs are the fixture's "fixture-NN";
@@ -205,14 +208,35 @@ ten_body = {"contract_version": "1.0", "request_id": "v2-ten", "conversation_id"
             "cold_start": dict(NOT_EXITED)}
 ten_envelope = json.loads(json.dumps(post(ten_body), default=str))
 assert len(ten_envelope["response"]["recommendations"]) == 10
+assert ten_envelope["response"]["selection"]["cold_start"]["active"] is False  # mpd-v1: D 0.327 >= 0.01
 ten = {"description": "Native /app/recommend envelope with exactly 10 recommendations (fixture data, scripted controller, "
                       "soft-only requirements, pool 12; request = main contract 1.0). Python: Response model + "
                       "validate_response, and a fresh run returns the same IDs/scores. TS: nativeResponseSchema + "
-                      "projectNative (ranks 1..10, V1 validateResponse with result_limit 10).",
+                      "projectNative (ranks 1..10, V1 validateResponse with result_limit 10). Cold start (mpd-v1) is "
+                      "inactive: D of the 12 scores (six 0.6, six 0) is about 0.327 >= 0.01, so the mode is "
+                      "near_tie_sampling.",
        "v1_request": {"contract_version": "1.0", "request_id": "v2-ten", "conversation_id": "v2-ten", "requirements_version": 0,
                       "requirements": {"listing_type": "RENT", "criteria": [c for c in V1_CRITERIA if c["strength"] == "soft"]},
                       "feedback": [], "result_limit": 10},
        "native_body": ten_body, "envelope": ten_envelope}
+
+# --- cold-start-exploration.json -----------------------------------------------------------------------
+V1_BUDGET = {"criterion_id": "budget", "field": "price", "operator": "lte", "value": 6000, "unit": "SGD/month",
+             "strength": "hard"}
+cold_body = {"contract_version": "1.0", "request_id": "v2-cold", "conversation_id": "v2-cold", "requirements_version": 1,
+             "requirements": {"listing_type": "RENT", "criteria": [{**V1_BUDGET, "weight": 1, "utility": "threshold"}]},
+             "feedback": [], "previous_state_id": None, "result_limit": 10, "cold_start": dict(NOT_EXITED)}
+cold_envelope = json.loads(json.dumps(post(cold_body), default=str))
+cold_selection = cold_envelope["response"]["selection"]
+assert cold_selection["mode"] == "cold_start_exploration" and cold_selection["cold_start"]["mean_pairwise_difference"] == 0
+cold_fixture = {
+    "description": "Native /app/recommend envelope in cold-start price exploration (fixture data, scripted controller, "
+                   "hard budget <= 6000 only, pool 12, no soft criterion and no behaviour: every combined score is 0, so "
+                   "the mpd-v1 D is 0 < 0.01 and cold start is active). TS: select-v1 oracle (exploration window) and "
+                   "the explanation of a price-exploration list.",
+    "v1_request": {"contract_version": "1.0", "request_id": "v2-cold", "conversation_id": "v2-cold", "requirements_version": 0,
+                   "requirements": {"listing_type": "RENT", "criteria": [V1_BUDGET]}, "feedback": [], "result_limit": 10},
+    "native_body": cold_body, "envelope": cold_envelope}
 
 # --- single-reference.json ------------------------------------------------------------------------------
 budget = {"listing_type": "RENT", "criteria": [
@@ -240,11 +264,11 @@ oracle_settings = {
 single = {"description": "Fixture data, scripted controller: round 2 of a hard-budget-only request whose behavior_context has "
                          "exactly one usable browsing reference (fixture-05, 90 s, interest_eligible); fixture-07 has 0 s and "
                          "fixture-08 is not interest_eligible. Checked by tests/select-v1-oracle.test.ts against the "
-                         "independent TS fused-v2 oracle (single-reference normalisation, self pair excluded, p05_p95 spread, "
+                         "independent TS fused-v2 oracle (single-reference normalisation, self pair included, minmax spread, "
                          "district fallback for fixture-12 without coordinates) and the select-v1 oracle.",
           "oracle_settings": oracle_settings, "native_body": single2, "response": json.loads(json.dumps(second, default=str))}
 
 for name, data in [("contract-cases.json", contract), ("flow.json", flow), ("ten-results.json", ten),
-                   ("single-reference.json", single)]:
+                   ("cold-start-exploration.json", cold_fixture), ("single-reference.json", single)]:
     (OUT / name).write_text(json.dumps(data, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
 print("ok", {r["name"]: [i["listing"]["listing_id"] for i in []] for r in rounds}, second["selection"]["mode"])

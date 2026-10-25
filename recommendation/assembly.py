@@ -2,7 +2,7 @@
 
 P3: the pool summary comes from the run's exploration pool (tools/pool_builder.py, built or
 reused through the pool cache). P4: resolution comes from the run's native entity-resolution
-stage (recommendation/geography/resolver.py). P5: selection, cold-start diagnostics and the
+stage (recommendation/geography/resolver.py). P5: selection, cold-start detector status (mpd-v1) and the
 per-item selection reasons come from the run's select-v1 selection (ranking/selection.py).
 """
 

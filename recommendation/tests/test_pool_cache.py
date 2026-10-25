@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from recommendation.agent.controller import Proposal, ScriptedController
+from recommendation.agent.controller import Completion, ScriptedController
 from recommendation.config import RecommendationConfig
 from recommendation.contracts.errors import RecommendationError
 from recommendation.contracts.request import RecommendationRequest
@@ -556,10 +556,11 @@ def test_memory_is_filled_only_after_commit(tmp_path):
     try:
         bad = body([BUDGET])
         service.controller = type("Broken", (ScriptedController,), {
-            "propose": lambda self, d, c, t: (ScriptedController.propose(self, d, c, t), Proposal(listing_ids=["nope"]))[1]
+            "propose": lambda self, d, c, t: (ScriptedController.propose(self, d, c, t),
+                                              Completion(ranking_artifact_id="nope"))[1]
         })()
         response = service.recommend(bad)
-        assert response.error.code == "INVALID_PROPOSAL"
+        assert response.error.code == "INVALID_SELECTION"  # not the current ranking artifact: unrepairable
         assert len(pool_cache_module.MEMORY) == 0
         cache = PoolCache(service.store, service.config)
         assert cache.retained_versions("p3") == [] and cache.index_entries("p3") == []
@@ -697,7 +698,8 @@ def test_data_change_discards_the_pool_for_a_controller_that_does_not_retrieve(t
     service.controller = Lazy()
     try:
         response = service.recommend(body([BUDGET, BEDROOMS]))
-        assert response.status == "error" and response.error.code == "INVALID_PROPOSAL"
+        # The stale completion names a discarded artifact: code refuses to select from it (unrepairable).
+        assert response.status == "error" and response.error.code == "INVALID_SELECTION"
         assert service.store.current("p3") is None
         gates = [s for s in service.store.trace("p3")["steps"] if s["kind"] == "final_gate"]
         assert gates[0]["error"]["code"] == "STALE_EVIDENCE" and not any(g["passed"] for g in gates)
@@ -706,16 +708,22 @@ def test_data_change_discards_the_pool_for_a_controller_that_does_not_retrieve(t
         service.close()
 
 
-def test_final_gate_requires_exact_selection_and_unchanged_selected_rows(tmp_path):
+def test_final_gate_requires_exact_selection_and_unchanged_selected_rows(tmp_path, monkeypatch):
+    from recommendation.tools.dispatcher import Dispatcher
+
+    original = Dispatcher.select_ranking
+
+    def reordered(self, artifact_id):
+        # A selection that no longer replays from its own selection_input (implementation error).
+        self.selected = list(reversed(original(self, artifact_id)))
+        return self.selected
+
+    monkeypatch.setattr(Dispatcher, "select_ranking", reordered)
     service = make(tmp_path)
     try:
-        class Reordered(ScriptedController):
-            def propose(self, dispatcher, context, trace):
-                proposal = super().propose(dispatcher, context, trace)
-                return Proposal(listing_ids=list(reversed(proposal.listing_ids)))
-
-        service.controller = Reordered()
-        assert service.recommend(body([BUDGET, BEDROOMS])).error.code == "INVALID_PROPOSAL"
+        response = service.recommend(body([BUDGET, BEDROOMS]))
+        assert response.error.code == "INVALID_SELECTION"
+        assert service.store.trace("p3")["repairs"][-1]["outcome"] == "unrepairable"
     finally:
         service.close()
 
@@ -805,7 +813,7 @@ def test_compact_snapshot_and_replay_gate(tmp_path):
         assert not keys(run_data) & {"rows", "evidence", "scores", "ranking", "validation", "pool_summary"}
         assert len(json.dumps(run_data)) < 8000
         selection = snapshot["selection_input"]
-        assert selection["algorithm_version"] == "select-v1" and selection["K"] == len(response.recommendations)
+        assert selection["algorithm_version"] == "select-v2" and selection["K"] == len(response.recommendations)
         assert [h[0] for h in selection["head"]] == [r.listing.listing_id for r in response.recommendations]
         replay_gate(response, snapshot)
         assert service.recommend(body([BUDGET, BEDROOMS, DISTRICT])) == response  # stored response

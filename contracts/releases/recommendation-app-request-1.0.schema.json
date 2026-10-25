@@ -109,7 +109,7 @@
     },
     "ColdStartInput": {
       "additionalProperties": false,
-      "description": "Cold-start exit state managed by the orchestrator (no native history).",
+      "description": "Former cold-start exit state; accepted for compatibility, ignored by the mpd-v1 detector.",
       "properties": {
         "exited": {
           "default": false,

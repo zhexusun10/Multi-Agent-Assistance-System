@@ -1,5 +1,5 @@
 {
- "description": "Native contract 2.0 response invariants. Base = ten-results.json envelope.response; each case applies ops in order (merge: shallow-merge an object at path; append: push value onto the list at path). Python: Response.model_validate (valid <-> accepted; error is a substring of the message). TS: nativeResponseSchema.safeParse (valid <-> success).",
+ "description": "Native contract 2.0 response invariants. Base = ten-results.json envelope.response; each case applies ops in order (merge: shallow-merge an object at path; append: push value onto the list at path). Python: Response.model_validate (valid <-> accepted; error is a substring of the message). TS: nativeResponseSchema.safeParse (valid <-> success). selection.cold_start is a union (2026-10-24): the base carries the mpd-v1 shape; legacy-* cases replace it with a complete stored C/B/S object (merge at ['selection']), which is accepted as stored and never reinterpreted as D.",
  "base": "ten-results.json#/envelope/response",
  "cases": [
   {
@@ -327,6 +327,317 @@
    ]
   },
   {
+   "name": "cold-start-active-must-follow-d",
+   "valid": false,
+   "error": "active must equal mean_pairwise_difference < threshold",
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "selection",
+      "cold_start"
+     ],
+     "value": {
+      "active": true
+     }
+    }
+   ]
+  },
+  {
+   "name": "cold-start-low-d-is-active",
+   "valid": true,
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "selection",
+      "cold_start"
+     ],
+     "value": {
+      "mean_pairwise_difference": 0.0,
+      "active": true,
+      "reason": "mean_difference_below_threshold"
+     }
+    }
+   ]
+  },
+  {
+   "name": "cold-start-d-equal-to-threshold-is-inactive",
+   "valid": true,
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "selection",
+      "cold_start"
+     ],
+     "value": {
+      "mean_pairwise_difference": 0.01,
+      "active": false
+     }
+    }
+   ]
+  },
+  {
+   "name": "cold-start-d-equal-to-threshold-cannot-be-active",
+   "valid": false,
+   "error": "active must equal mean_pairwise_difference < threshold",
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "selection",
+      "cold_start"
+     ],
+     "value": {
+      "mean_pairwise_difference": 0.01,
+      "active": true
+     }
+    }
+   ]
+  },
+  {
+   "name": "cold-start-evaluated-without-d",
+   "valid": false,
+   "error": "evaluated diagnostics require candidate_window, evaluated_count, mean_pairwise_difference and threshold",
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "selection",
+      "cold_start"
+     ],
+     "value": {
+      "mean_pairwise_difference": null
+     }
+    }
+   ]
+  },
+  {
+   "name": "cold-start-not-evaluated-reports-no-d",
+   "valid": false,
+   "error": "mean_pairwise_difference is reported only for evaluated diagnostics",
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "selection",
+      "cold_start"
+     ],
+     "value": {
+      "evaluated": false,
+      "reason": "small_pool"
+     }
+    }
+   ]
+  },
+  {
+   "name": "cold-start-not-evaluated",
+   "valid": true,
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "selection",
+      "cold_start"
+     ],
+     "value": {
+      "evaluated": false,
+      "active": false,
+      "reason": "small_pool",
+      "evaluated_count": null,
+      "mean_pairwise_difference": null
+     }
+    }
+   ]
+  },
+  {
+   "name": "cold-start-window-exceeded",
+   "valid": false,
+   "error": "evaluated_count cannot exceed candidate_window",
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "selection",
+      "cold_start"
+     ],
+     "value": {
+      "candidate_window": 10
+     }
+    }
+   ]
+  },
+  {
+   "name": "cold-start-unknown-detector",
+   "valid": false,
+   "error": "mean_pairwise_difference",
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "selection",
+      "cold_start"
+     ],
+     "value": {
+      "detector": "gini"
+     }
+    }
+   ]
+  },
+  {
+   "name": "cold-start-unknown-detector-version",
+   "valid": false,
+   "error": "mpd-v1",
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "selection",
+      "cold_start"
+     ],
+     "value": {
+      "detector_version": "mpd-v2"
+     }
+    }
+   ]
+  },
+  {
+   "name": "cold-start-mixed-legacy-and-mpd-keys",
+   "valid": false,
+   "error": "Extra inputs are not permitted",
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "selection",
+      "cold_start"
+     ],
+     "value": {
+      "coverage_c": 1.0
+     }
+    }
+   ]
+  },
+  {
+   "name": "legacy-cold-start-exit-claim-without-stability",
+   "valid": false,
+   "error": "exit_conditions_met requires evaluated diagnostics with stability_s",
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "selection"
+     ],
+     "value": {
+      "cold_start": {
+       "evaluated": true,
+       "active": false,
+       "reason": "exit_conditions_met",
+       "coverage_c": 1.0,
+       "boundary_group_b": 4,
+       "stability_s": null,
+       "thresholds": {
+        "c": 0.8,
+        "b": 5,
+        "s": 0.9
+       },
+       "exit_conditions_met": true,
+       "pool_key": "a404a99e609950f4faa7efbab3d43e1f88a8a07d3e94f0f04c7cc5ca6382e359"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "legacy-cold-start-exit-with-evaluated-diagnostics",
+   "valid": true,
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "selection"
+     ],
+     "value": {
+      "cold_start": {
+       "evaluated": true,
+       "active": false,
+       "reason": "exit_conditions_met",
+       "coverage_c": 1.0,
+       "boundary_group_b": 4,
+       "stability_s": 0.955,
+       "thresholds": {
+        "c": 0.8,
+        "b": 5,
+        "s": 0.9
+       },
+       "exit_conditions_met": true,
+       "pool_key": "a404a99e609950f4faa7efbab3d43e1f88a8a07d3e94f0f04c7cc5ca6382e359"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "legacy-cold-start-active-historical",
+   "valid": true,
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "selection"
+     ],
+     "value": {
+      "cold_start": {
+       "evaluated": true,
+       "active": true,
+       "reason": "b_above_max; s_below_min",
+       "coverage_c": 1.0,
+       "boundary_group_b": 6,
+       "stability_s": 0.87,
+       "thresholds": {
+        "c": 0.8,
+        "b": 5,
+        "s": 0.9
+       },
+       "exit_conditions_met": false,
+       "pool_key": "a404a99e609950f4faa7efbab3d43e1f88a8a07d3e94f0f04c7cc5ca6382e359"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "legacy-cold-start-active-without-evaluation",
+   "valid": false,
+   "error": "cold start cannot be active without evaluated diagnostics",
+   "ops": [
+    {
+     "op": "merge",
+     "path": [
+      "selection"
+     ],
+     "value": {
+      "cold_start": {
+       "evaluated": false,
+       "active": true,
+       "reason": "exit_conditions_met",
+       "coverage_c": null,
+       "boundary_group_b": null,
+       "stability_s": null,
+       "thresholds": {
+        "c": 0.8,
+        "b": 5,
+        "s": 0.9
+       },
+       "exit_conditions_met": false,
+       "pool_key": "a404a99e609950f4faa7efbab3d43e1f88a8a07d3e94f0f04c7cc5ca6382e359"
+      }
+     }
+    }
+   ]
+  },
+  {
    "name": "rank-above-contract-maximum",
    "valid": false,
    "error": "rank",
@@ -339,42 +650,6 @@
      ],
      "value": {
       "rank": 11
-     }
-    }
-   ]
-  },
-  {
-   "name": "cold-start-exit-claim-without-stability",
-   "valid": false,
-   "error": "exit_conditions_met requires evaluated diagnostics with stability_s",
-   "ops": [
-    {
-     "op": "merge",
-     "path": [
-      "selection",
-      "cold_start"
-     ],
-     "value": {
-      "exit_conditions_met": true,
-      "active": false,
-      "stability_s": null
-     }
-    }
-   ]
-  },
-  {
-   "name": "cold-start-exit-with-evaluated-diagnostics",
-   "valid": true,
-   "ops": [
-    {
-     "op": "merge",
-     "path": [
-      "selection",
-      "cold_start"
-     ],
-     "value": {
-      "exit_conditions_met": true,
-      "active": false
      }
     }
    ]

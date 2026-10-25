@@ -49,6 +49,9 @@ def fresh_memory():
     pool_cache_module.MEMORY.clear()
 
 
+# Pre-P7 epsilon / scaling values. Its cold_start block was migrated to the mpd-v1 detector
+# (2026-10-24, the loader rejects the C/B/S keys) with a deliberately high threshold 0.5, above the
+# transcript pool's D (1/3), so the transcript still exercises cold-start exploration.
 PRE_P7_SETTINGS = Path(__file__).with_name("fixtures") / "settings-pre-p7-provisional.json"
 
 
@@ -184,8 +187,13 @@ def test_terminal_transcript_covers_the_p6_flows(tmp_path, capsys):
         compared = (run("recommend"), t.response)[1]
         assert compared.execution.config_hash != first.execution.config_hash
         assert compared.selection.seed == first.selection.seed  # the fixed base seed
-        assert first.selection.mode == "cold_start_exploration" and compared.selection.mode == "near_tie_sampling"
-        assert set(ids(compared)) <= D05 and set(ids(first)) - D05  # exploration drew outside the tie group
+        # select-v2: cold start is active, but the 9-listing window is not larger than the intermediate size 10, so
+        # the whole window is kept in score order and its first result_limit (3) are returned.
+        assert first.selection.cold_start.active and first.selection.mode == "ranked"
+        assert ids(first) == list(t.run_dispatcher.scored.ranked[:3])
+        assert {i.selection_reason for i in first.recommendations} == {"ranked"}
+        assert first.selection.exploration.window_size == 9 and first.selection.exploration.intermediate_limit == 9
+        assert compared.selection.mode == "near_tie_sampling" and set(ids(compared)) <= D05
         # Weight comparison under the same fixed seed (plan: 可固定测试种子比较不同权重): the same
         # previous-round feedback is staged for both runs and only the fusion weights change, so
         # the component scores are identical and the combined scores, the order and the selection
@@ -440,7 +448,7 @@ def test_step_mode_enforces_dependencies_invalidates_on_input_change_and_is_neve
         assert "INTERMEDIATE" in run("show-selection") and "INTERMEDIATE" in run("show-scores")
         # Seed (or feedback) change -> only the rank stage and the gate.
         out = run("set-seed other")
-        assert "invalidated: rank_candidates, final_gate" in out
+        assert "invalidated: rank_candidates, select, final_gate" in out
         assert t.step.completed() == ["resolve_entities", "build_pool", "get_geographic_evidence"]
         # Soft non-geographic change -> rank only; the pool and geographic evidence are kept.
         run("run-until rank_candidates")
@@ -502,8 +510,8 @@ class FakeLive(LiveController):
         if self.turn == 1:
             return {"content": "", "tool_calls": [{"id": str(i), "name": n, "args": {"context_ref": ref}}
                                                   for i, n in enumerate(PIPELINE)]}
-        selected = json.loads(messages[-1]["content"])["selected_ids"]
-        return {"content": json.dumps({"listing_ids": selected}), "tool_calls": []}
+        selected = json.loads(messages[-1]["content"])["ranking_artifact_id"]
+        return {"content": json.dumps({"ranking_artifact_id": selected}), "tool_calls": []}
 
 
 def test_live_mode_prints_structured_progress_events(tmp_path, capsys, monkeypatch):
@@ -522,11 +530,12 @@ def test_live_mode_prints_structured_progress_events(tmp_path, capsys, monkeypat
         tools = [e for e in log if e.get("event") == "tool_end"]
         assert [e["tool"] for e in tools] == list(PIPELINE)
         assert all(e["status"] == "ok" and e["duration_ms"] >= 0 for e in tools)
-        assert tools[1]["pool"] == 9 and tools[-1]["ranked"] == 9 and tools[-1]["selected"] == 9
+        assert tools[1]["pool"] == 9 and tools[-1]["ranked"] == 9 and tools[-1]["artifact"] is True
         assert kinds[-3:] == ["model_end", "gate_start", "gate_end"] and log[-1]["status"] == "ok"
         assert "[progress] model: turn 1 start" in out and "[progress] model: turn 2 end" in out
         assert "final answer" in out and "[progress] gate: final_gate ok (selected=9, rows_read=9)" in out
-        assert "[progress] tool: rank_candidates end ok" in out and "pool=9, ranked=9, selected=9" in out
+        assert "[progress] tool: rank_candidates end ok" in out and "pool=9, ranked=9, artifact=True" in out
+        assert "selecting from ranking artifact" in out
     finally:
         run.close()
 
@@ -534,25 +543,35 @@ def test_live_mode_prints_structured_progress_events(tmp_path, capsys, monkeypat
 def test_live_progress_reports_a_failed_gate_before_the_repair(tmp_path, capsys, monkeypatch):
     import recommendation.terminal.__main__ as main
 
-    class WrongFirst(FakeLive):
+    class Repairing(FakeLive):
         def invoke(self, messages, tools, remaining):
-            if self.turn == 0:
+            last = messages[-1]
+            if self.turn == 0 or (last["role"] == "user" and '"repair"' in last["content"]):
+                self.turn = 0  # the structured failure report: run the pipeline again
                 return super().invoke(messages, tools, remaining)
             self.turn += 1
-            if self.turn == 2:  # not the recorded selection -> INVALID_PROPOSAL, then a repair turn
-                return {"content": json.dumps({"listing_ids": ["fixture-01"]}), "tool_calls": []}
             ranked = [json.loads(m["content"]) for m in messages if m.get("role") == "tool"][-1]
-            return {"content": json.dumps({"listing_ids": ranked["selected_ids"]}), "tool_calls": []}
+            return {"content": json.dumps({"ranking_artifact_id": ranked["ranking_artifact_id"]}), "tool_calls": []}
 
-    monkeypatch.setattr(main, "LiveController", WrongFirst)
+    monkeypatch.setattr(main, "LiveController", Repairing)
     run = Session(terminal(tmp_path, controller="live"), capsys)
     try:
+        service = run.t.ensure_service()
+        original, state = service.listing.lookup_versioned, {"calls": 0}
+
+        def change_once(ids):  # the data changes between ranking and final validation, once
+            state["calls"] += 1
+            if state["calls"] == 1:
+                service.listing.rows[0].title = "changed"
+            return original(ids)
+
+        service.listing.lookup_versioned = change_once
         run(f"requirements @{requirements(tmp_path, base_criteria())}")
         out = run("recommend")
         assert run.t.response.status == "success"
         gates = [e for e in run.t.events.log if e.get("event") == "gate_end"]
         assert [g["status"] for g in gates] == ["error", "ok"]
-        assert "gate: final_gate error INVALID_PROPOSAL" in out
+        assert "gate: final_gate error STALE_EVIDENCE" in out
     finally:
         run.close()
 
@@ -576,7 +595,8 @@ def test_show_trace_debug_flag_and_help(tmp_path, capsys):
         with pytest.raises(ValueError):
             t.command("show-trace --bogus")
         help_text = run("help")
-        assert "without soft criteria C = 0, so cold start cannot be exited without soft criteria" in help_text
+        assert "cold start (detector mpd-v1) is active while D, the mean pairwise difference of the top" in help_text
+        assert "re-evaluated every round and a staged cold_start exit is ignored" in help_text
         for command in debug.COMMANDS:
             assert command in help_text
         with pytest.raises(ValueError, match="No committed run"):
@@ -645,6 +665,19 @@ def test_inspection_recomputes_a_run_stored_before_trace_max_string_chars(tmp_pa
     del incomplete["selection"]["tie_max_score_span"]  # result-affecting keys are never filled in
     with pytest.raises(Exception, match="tie_max_score_span"):
         debug.stored_configuration(incomplete, RecommendationConfig.default())
+    # A snapshot from before the mpd-v1 detector holds the removed C/B/S keys: they are dropped and the
+    # current cold_start.detector is used (named as filled); everything else stays as stored.
+    legacy = json.loads(json.dumps(snapshot["configuration"]))
+    del legacy["cold_start"]["detector"]
+    legacy["cold_start"].update({"reenter_on_pool_rebuild": True, "min_evidence_coverage": 0.8,
+                                 "max_boundary_tie_group_size": 5, "min_top_k_stability": 0.9,
+                                 "stability": {"trials": 20, "weight_perturbation_fraction": 0.2}})
+    with pytest.raises(Exception, match="removed with the C/B/S cold-start detector"):
+        RecommendationConfig.from_data(legacy, "pre-mpd-v1 snapshot")
+    config, filled = debug.stored_configuration(legacy, RecommendationConfig.default())
+    assert filled == ["trace.max_string_chars", "cold_start.detector"]
+    assert config.cold_start.detector == RecommendationConfig.default().cold_start.detector
+    assert config.selection.tie_max_score_span == snapshot["configuration"]["selection"]["tie_max_score_span"]
 
 
 def test_export_show_trace_and_show_scores_use_the_runs_own_trace_after_a_replay(tmp_path, capsys):

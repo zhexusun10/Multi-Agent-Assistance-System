@@ -50,6 +50,18 @@ def scoring_summary(trace):
     return {k: v for k, v in scoring.items() if k != "duration_ms"}
 
 
+def _exploration_identity(explored):
+    """Request-independent part of an exploration summary (sampled members and remainder tie-breaks
+    may differ under new seeds): select-v2 window / band candidate counts, select-v1 R / A sizes."""
+    if explored is None:
+        return None
+    if hasattr(explored, "window_size"):
+        return (explored.window_size, explored.sampling_candidates, explored.intermediate_limit,
+                explored.intermediate_leaders, explored.final_leaders,
+                [(x.lower, x.upper, x.window_count, x.count) for x in explored.bins])
+    return (explored.candidate_count, explored.sample_size, [(x.lower, x.upper, x.count) for x in explored.bins])
+
+
 def resent_feedback_differences(first, second, first_scoring=None, second_scoring=None):
     """Request-independent outputs that differ between two responses to the SAME requirements and
     behavior_context snapshot sent under different request IDs (no accumulation, spec sections 3 and 8).
@@ -57,8 +69,8 @@ def resent_feedback_differences(first, second, first_scoring=None, second_scorin
     A new request_id gives new select-v1 seeds (R3), so near-tie and cold-start price exploration
     samples may legitimately differ. Compared instead: status, the pool, every listing's scores,
     score_rank and criterion results where it appears in both responses, the selection mode,
-    leaders (count and IDs), tie group, cold-start diagnostics (S uses the request-independent
-    stability seed), the exploration candidates and bin counts, the full ID order for seedless
+    leaders (count and IDs), tie group, cold-start diagnostics (D depends only on the scores, so it
+    is request-independent), the exploration candidates and bin counts, the full ID order for seedless
     modes (ranked / small_pool / empty), and the rank_candidates scoring summary (references and
     weights) when traces are given."""
     diffs = []
@@ -73,9 +85,7 @@ def resent_feedback_differences(first, second, first_scoring=None, second_scorin
         for name in ("mode", "result_limit", "leaders", "tie_group", "cold_start"):
             if getattr(a, name) != getattr(b, name):
                 diffs.append(f"selection.{name}")
-        explored = [None if s.exploration is None else (
-            s.exploration.candidate_count, s.exploration.sample_size,
-            [(x.lower, x.upper, x.count) for x in s.exploration.bins]) for s in (a, b)]
+        explored = [_exploration_identity(s.exploration) for s in (a, b)]
         if explored[0] != explored[1]:
             diffs.append("selection.exploration")
     ids = [[r.listing.listing_id for r in x.recommendations] for x in (first, second)]

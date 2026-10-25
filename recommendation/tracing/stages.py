@@ -112,10 +112,13 @@ def cold_start_diagnostics(d):
         "note": None if cold.evaluated else cold.reason,
         "pool": d.pool_result,
         "inputs": {"pool_size": len(d.ranked), "result_limit": d.request.result_limit},
-        "outputs": {k: v for k, v in cold.model_dump(mode="json").items() if k != "thresholds"},
-        "params": {"thresholds": cold.thresholds.model_dump(), "enabled": d.config.cold_start.enabled,
-                   "trials": record.get("trials"), "stability_seed": record.get("stability_seed"),
-                   "reenter_on_pool_rebuild": d.config.cold_start.reenter_on_pool_rebuild},
+        "outputs": {k: v for k, v in cold.model_dump(mode="json").items()
+                    if k not in ("detector", "detector_version", "candidate_window", "threshold")},
+        "params": {"enabled": d.config.cold_start.enabled, "detector": cold.detector,
+                   "detector_version": cold.detector_version, "candidate_window": cold.candidate_window,
+                   "min_mean_pairwise_difference": cold.threshold,
+                   "request_cold_start": record.get("request_cold_start"),
+                   "request_cold_start_used": record.get("request_cold_start_used")},
     }
 
 
@@ -123,8 +126,9 @@ def price_sampling(d):
     summary = d.selection.summary
     explored = summary.exploration
     sampling = d.config.cold_start.price_sampling
-    params = {"target_sample_size": sampling.target_sample_size, "quantile_bins": sampling.quantile_bins,
-              "bin_edges": d.selection_input["bin_edges"]}
+    params = {"exploration_window": sampling.exploration_window, "intermediate_size": sampling.intermediate_size,
+              "quantile_bins": sampling.quantile_bins, "bin_edges": d.selection_input["bin_edges"],
+              "bands_from": "exploration window prices (leaders included)"}
     if explored is None:
         return {"status": "skipped", "note": f"selection mode {summary.mode} (price sampling only in cold start)",
                 "pool": d.pool_result, "params": params}
@@ -132,9 +136,10 @@ def price_sampling(d):
     unknown = [b for b in bins if b["lower"] is None]
     return {
         "pool": d.pool_result,
-        "inputs": {"candidates": explored.candidate_count},
-        "outputs": {"stage_a_sample": explored.sample_size, "drawn": sum(b["sampled"] for b in bins),
-                    "bins": len(bins)},
+        "inputs": {"window": explored.window_size, "sampling_candidates": explored.sampling_candidates},
+        "outputs": {"intermediate": len(explored.intermediate_ids), "intermediate_leaders": explored.intermediate_leaders,
+                    "intermediate_sampled": explored.intermediate_sampled, "returned": len(explored.final_ids),
+                    "returned_sampled": explored.final_sampled, "bins": len(bins)},
         "params": params,
         "preview": bins,
         "unknown": {"unknown_price_candidates": unknown[0]["count"]} if unknown else {},

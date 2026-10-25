@@ -25,7 +25,7 @@ section wins.
 | `result_limit` | 1–10, `null` = `recommendation.default_result_limit` (10). The app adapter clamps to 10 (main clamped to 4) and the workflow asks for 10. |
 | `feedback` | main's list of `ViewingEvent` (`event_id`, `conversation_id`, `recommendation_request_id`, `listing_id`, `event_type` `listing_view_duration`, `source` `sample`/`web_detail`, `occurred_at`, `payload` = `ViewPayload` {`view_session_id`, `duration_seconds`}). **Validated, not scored** (conversation match, unique `event_id`): the md says the cumulative `behavior_context` already holds the same time, so adding the events would double count. Recorded in the profile as `feedback_events`. |
 | `behavior_context` | main's `BehaviorContext` {`version` "1.0", `as_of`, `listing_view_durations`, `book_viewing_listings`}, one summary per listing. **Scored natively** (section 0.2). Part of the request identity: a changed snapshot under the same request ID is a 409 / `IDEMPOTENCY_CONFLICT`. |
-| `cold_start` | `ColdStartInput` {`exited`, `exited_pool_key`} — recommendation-owned extension. The orchestrator stores it in `session_domain_state.recommendation_cold_start` (migration `migrations/007-recommendation-cold-start.sql`) and updates it only when an adopted native response has `selection.cold_start.evaluated && exit_conditions_met`. |
+| `cold_start` | `ColdStartInput` {`exited`, `exited_pool_key`} — recommendation-owned extension. The orchestrator stores it in `session_domain_state.recommendation_cold_start` (migration `migrations/007-recommendation-cold-start.sql`) and updates it only when an adopted native response has `selection.cold_start.evaluated && exit_conditions_met`. Since 2026-10-24 (section 0.5) no new exits are recorded and native ignores the field for the decision; it is still accepted. |
 
 `ListingViewDuration` = {`listing_id`, `duration_seconds` (session-cumulative, ≥ 0), `view_count`, `last_viewed_at`,
 `source_request_ids` (UUIDs), `interest_eligible`}. `BookViewingListing` = {`listing_id`, `action_id`, `source_request_id`,
@@ -45,7 +45,7 @@ native listing ID (1–128 chars) so fixture data mode works — a superset of e
   MANUAL_SENT/MANUAL_REPLIED/CONFIRMED). One entry per listing (duplicates are rejected by the contract), in pool only.
   It is a saved interest, not a confirmed appointment (`appointment_confirmed` is always false).
 - Self pairs stay excluded; out-of-pool references are ignored and counted; missing branches contribute 0.
-- The stability seed digests `behavior_context` (not `request_id`).
+- Until 2026-10-24 the stability seed digested `behavior_context` (not `request_id`); mpd-v1 runs no perturbation trials at runtime (section 0.5).
 
 ### 0.3 Removed / replaced by the merge
 
@@ -75,6 +75,82 @@ native listing ID (1–128 chars) so fixture data mode works — a superset of e
 - The shared fixtures (`tests/fixtures/recommendation-v2/*.json`) were regenerated in the main request shape by
   `evaluation/recommendation-exploration-2026-10-23/merge/gen_fixtures.py`.
 
+### 0.5 Cold-start detector mpd-v1 (2026-10-24; supersedes the cold-start parts of sections 0–5)
+
+- **Decision** (user): cold start measures score differentiation directly. D = 2/(n(n−1)) · Σ_{i<j}|s_i − s_j|
+  (Gini's mean difference) over the official combined scores of the overall top
+  `cold_start.detector.candidate_window` (30) eligible candidates in O, leaders included, all when fewer, no
+  per-list rescaling. Active when D < `cold_start.detector.min_mean_pairwise_difference` (0.01, a starting
+  value, not calibrated); D equal to it is inactive; exact float comparison. D is a practical score tolerance,
+  not a significance test, and does not show that the requirements are sufficient or the ranking correct.
+- **Short circuits kept**: disabled → `cold_start_disabled`; empty pool / pool ≤ result_limit → not evaluated
+  (`empty_pool` / `small_pool`); fewer than two scores → not evaluated (`insufficient_scores`). Evaluated reasons:
+  `mean_difference_below_threshold` / `mean_difference_at_or_above_threshold`.
+- **Request**: `cold_start` {`exited`, `exited_pool_key`} is still accepted (same validation) but never bypasses the
+  check; the trace records it with `request_cold_start_used: false`. `coldStartAfterAdoption` records no new exits;
+  `session_domain_state.recommendation_cold_start` (`007-recommendation-cold-start.sql`) and its rows are kept.
+- **Response** (contract_version stays 2.0): `selection.cold_start` is a union. New runs:
+  {`evaluated`, `active`, `reason`, `detector` "mean_pairwise_difference", `detector_version` "mpd-v1",
+  `candidate_window`, `evaluated_count`, `mean_pairwise_difference`, `threshold`, `pool_key`} (`detector` always
+  present). Stored responses keep the legacy {`coverage_c`, `boundary_group_b`, `stability_s`, `thresholds`,
+  `exit_conditions_met`} shape; both Python and the TS mirror accept it as stored and never reinterpret it as D.
+- **Settings**: removed `cold_start.reenter_on_pool_rebuild`, `min_evidence_coverage`, `max_boundary_tie_group_size`,
+  `min_top_k_stability`, `stability.*` (the loader rejects them by name); added `cold_start.detector.*` (required when
+  enabled). The weight-perturbation functions moved to `recommendation/analysis/stability.py` (calibration only).
+- **Unchanged**: select-v1 (tie group G, leaders, near-tie sampling, price bins, stage A/B sampling), seed formula,
+  ranking formulas, result limits, eligibility and `selection_input` (replay reads only `cold_start_active`, so stored
+  runs replay as recorded). `cold_start` is part of `selection_hash`, so new-request seeds and `scoring_version` change.
+
+### 0.6 Dedicated Python LangChain agent and ranking-artifact handoff (2026-10-24)
+
+- **Model client**: `recommendation/agent/llm.py` (langchain + langchain-openai, declared in
+  `recommendation/requirements.txt`), configured only by `RECOMMENDATION_LLM_*` (provider `openai`, model, API key,
+  optional base URL, temperature, output tokens, per-request timeout, SDK retries; see `.env.example`). Missing or
+  invalid configuration is `MODEL_NOT_CONFIGURED`; nothing falls back to `CHAT_MODEL` / `OPENAI_*`.
+  `RECOMMENDATION_LLM_API_KEY` is a credential (`app.CREDENTIAL_KEYS`, test isolation). `recommendation/agent/model_bridge.ts`
+  is deleted (a declared deletion in `contracts/releases/recommendation-downstream-patches.json`; the upstream checker
+  requires its absence) and `app_controller.py` (ApplicationLiveController) is removed; `src/model.ts` is unchanged.
+- **Completion**: the agent's final answer is `{"ranking_artifact_id": ...}` (`agent/controller.Completion`), never
+  listing IDs. `ToolResult.selected_ids` is replaced by `ranking_artifact_id`.
+- **Tools**: `rank_candidates` ranks only (hard recheck, evidence coverage, full-pool fused-v2 scores) and yields a
+  run-scoped ranking artifact; new `read_pool` (kind `inspect`) pages the current pool read-only.
+- **After the loop (code)**: artifact check, `Dispatcher.select_ranking` (mpd-v1 detection + select-v1; trace step
+  `selection`, stages `cold_start_diagnostics` / `price_sampling` / `final_selection` with `call` = artifact ID),
+  `final_gate(dispatcher, trace)`, persistence. Gate failures are `GateFailure` / `FailureReport`
+  (`recommendation/models/repair.py`): codes `STALE_EVIDENCE` (refresh / targeted retrieval), `HARD_CONSTRAINT_FAILED`
+  (refilter and rerank), `INVALID_SELECTION` (implementation error, never sent back), `REPAIR_NO_PROGRESS`; the run
+  trace keeps `repairs` with each outcome. `INVALID_PROPOSAL` is no longer produced.
+- **Trace changes** (layout name unchanged; older traces still read): rank_candidates records only the `scoring`
+  stage; `cold_start_diagnostics` / `price_sampling` / `final_selection` are code stages with `call` = the artifact ID
+  (resolvable: the new `selection` step has `snapshot_ref` = that ID); new top-level `agent` (protocol, non-secret
+  model settings) and `repairs` (one entry per failure with its outcome); debug rows are keyed on the artifact.
+  Model steps keep their message deltas.
+- **Error codes**: new `MODEL_NOT_CONFIGURED`, `INVALID_SELECTION`, `HARD_CONSTRAINT_FAILED`, `REPAIR_NO_PROGRESS`,
+  `RANKING_INCOMPLETE`; `INVALID_PROPOSAL` is no longer produced (src/domain/errors.ts maps them to user text).
+- **Configuration loading**: `RECOMMENDATION_LLM_*` keys load as one group (all from the caller when it set any,
+  else all from `.env`; empty values never overwrite), and the OpenAI client is built with every `OPENAI_*`
+  variable hidden, so the recommendation key never reaches the application's endpoint.
+- **Unchanged**: request/response contracts (Execution fields, selection summary), select-v1, scoring, eligibility,
+  idempotency and immutable replay, pool cache, step budgets (`controller.*`).
+
+### 0.7 select-v2 cold-start selection (2026-10-24)
+
+- **Algorithm** `select-v2` (`ranking/selection.select_v2`; `Execution.strategy` / `selection_algorithm` name it).
+  Outside cold start it is select-v1. In cold start: window W = overall top `cold_start.price_sampling.exploration_window`
+  (30) of O incl. leaders (never beyond); leaders by the tie rule around rank min(`intermediate_size` (10), |W|)
+  inside W; intermediate = leaders + a price-band sample of W's non-leaders, bands = 5 quantiles of W's prices (leaders
+  included; user change), quotas by largest remainder over each band's non-leader count; returned =
+  intermediate[:result_limit], never rebalanced. |W| <= intermediate_size keeps W in score order (`ranked`).
+- **Settings**: `cold_start.price_sampling.target_sample_size` replaced by `exploration_window` (30) and
+  `intermediate_size` (10; >= `recommendation.max_result_limit`, <= `exploration_window`); the loader rejects the old key.
+- **Contract (2.0, additive union)**: `selection.exploration` is `ExplorationV2` for new runs (window / intermediate /
+  final counts, bands with `window_count`, `count`, `quota`, `sampled`, `final_sampled`) or the stored select-v1
+  `Exploration`. `selection.leaders` counts the leaders among the RETURNED listings.
+- **Replay**: `selection_input` for select-v2 stores `exploration_window`, `intermediate_size`, the window as `head`,
+  the window's `bin_edges` and seeds `{base, tie, explore}`; `REPLAYERS` keeps `select-v1` (and ranked-prefix-v1), so
+  stored runs replay with their own algorithm and inputs. The final gate also checks that the head is the current
+  ranking prefix, the window is exactly the top `exploration_window`, and the returned IDs are the intermediate prefix.
+
 ## 1. Summary of breaking changes
 
 | Area | 1.0 | 2.0 |
@@ -99,7 +175,7 @@ native listing ID (1–128 chars) so fixture data mode works — a superset of e
 | `previous_state_id` | latest native state | unchanged (must match the conversation's v2 head, else `STALE_REFERENCE`) |
 | `result_limit` | int, default 4, max 4 | `int | null`, default `null` → config default 10, max 10 (`MAX_RESULT_LIMIT`, equal to `recommendation.max_result_limit`, cross-layer tested) |
 | `feedback` | `list[ViewingEvent]` (`event_id`, `conversation_id`, `recommendation_request_id`, `listing_id`, `event_type`, `source`, `occurred_at`, `payload{view_session_id, duration_seconds}`) | `FeedbackSnapshot` object (section 4); default `{previous_round: null, appointments: []}` |
-| `cold_start` | – | new `ColdStartInput {exited: bool = false, exited_pool_key: str | null}`; `exited_pool_key` is required exactly when `exited` is true. Managed by the orchestrator. |
+| `cold_start` | – | new `ColdStartInput {exited: bool = false, exited_pool_key: str | null}`; `exited_pool_key` is required exactly when `exited` is true. Managed by the orchestrator. Since 0.5: accepted for compatibility, ignored by the cold-start decision. |
 
 ## 3. Response, field by field
 
@@ -118,7 +194,7 @@ native listing ID (1–128 chars) so fixture data mode works — a superset of e
 | `evidence` | evidence of the pool | only evidence referenced by the returned items. One entry per **(evidence_id, criterion_id)**: R4 evidence IDs carry no criterion ID, so two criteria with the same canonical key (for example a hard and a soft distance to the same target) share an `evidence_id`, and each of them gets its own entry. An `evidence_id` can therefore appear more than once, each time with a different `criterion_id`. A reference in `criterion_results` always resolves to the entry carrying that result's `criterion_id`. Unreferenced evidence is rejected by the model validator. |
 | `resolution` | – | new: one `ResolutionResult` per geographic criterion: `criterion_id`, `field`, `original{destination_id, destination_name, category}`, `status` (resolved / ambiguous / unresolved / not_applicable), `entity_id`, `entity_kind` (lta_station / ura_area / ura_region / osm_place / category), `method`, `reason`, `candidates` (≤ `entity_resolution.max_candidates`) |
 | `pool` | – | new `PoolSummary`: `pool_key`, `pool_version`, `data_version`, `cache` (built / reused / bypassed), `size`, `source_count`, `excluded_hard_fail`, `excluded_hard_unknown`, `unknown_reasons` (≤ 10 keys + "other"). Invariant: `source_count = size + excluded_hard_fail + excluded_hard_unknown`. |
-| `selection` | – | new `SelectionSummary`: `mode` (ranked / near_tie_sampling / cold_start_exploration / small_pool / empty), `algorithm_version` (`select-v1`), `seed` (64 hex), `result_limit`, `leaders`, `tie_group{size, min_score, max_score, span, epsilon}`, `exploration{candidate_count, sample_size, bins[{lower, upper, count, sampled, quota}]}`, `cold_start{evaluated, active, reason, coverage_c, boundary_group_b, stability_s, thresholds{c, b, s}, exit_conditions_met, pool_key}` |
+| `selection` | – | new `SelectionSummary`: `mode` (ranked / near_tie_sampling / cold_start_exploration / small_pool / empty), `algorithm_version` (`select-v1`), `seed` (64 hex), `result_limit`, `leaders`, `tie_group{size, min_score, max_score, span, epsilon}`, `exploration{candidate_count, sample_size, bins[{lower, upper, count, sampled, quota}]}`, `cold_start` = mpd-v1 `{evaluated, active, reason, detector, detector_version, candidate_window, evaluated_count, mean_pairwise_difference, threshold, pool_key}` (section 0.5) or, in stored historical records only, the legacy `{evaluated, active, reason, coverage_c, boundary_group_b, stability_s, thresholds{c, b, s}, exit_conditions_met, pool_key}` |
 | `clarifications`, `relaxation_suggestions`, `warnings` | | unchanged (strings) |
 | `state` | `state_id`, `candidate_pool_ref`, `run_sequence`, `feedback_version`, `scope`, `truncated`, `source_count`, `prefilter_excluded`, `assessed_count` | `feedback_version` **removed** (no accumulated events); the rest unchanged |
 | `execution` | `trace_id`, `trace_ref`, `strategy`, `scoring_version` (`weighted-v1`), `model_identifier`, `model_calls`, `tool_calls`, `duration_ms`, `tokens`, `data_mode`, `controller_mode` | all kept; adds `selection_algorithm` (`select-v1`), `config_version`, `config_hash`, `selection_hash`; `scoring_version` is `fused-v2:<selection_hash[:12]>` |

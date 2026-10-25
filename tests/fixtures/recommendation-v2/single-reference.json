@@ -1,5 +1,5 @@
 {
- "description": "Fixture data, scripted controller: round 2 of a hard-budget-only request whose behavior_context has exactly one usable browsing reference (fixture-05, 90 s, interest_eligible); fixture-07 has 0 s and fixture-08 is not interest_eligible. Checked by tests/select-v1-oracle.test.ts against the independent TS fused-v2 oracle (single-reference normalisation, self pair excluded, p05_p95 spread, district fallback for fixture-12 without coordinates) and the select-v1 oracle.",
+ "description": "Fixture data, scripted controller: round 2 of a hard-budget-only request whose behavior_context has exactly one usable browsing reference (fixture-05, 90 s, interest_eligible); fixture-07 has 0 s and fixture-08 is not interest_eligible. Checked by tests/select-v1-oracle.test.ts against the independent TS fused-v2 oracle (single-reference normalisation, self pair included, minmax spread, district fallback for fixture-12 without coordinates) and the select-v1 oracle.",
  "oracle_settings": {
   "soft_weight": 0.6,
   "behavior_weight": 0.4,
@@ -36,7 +36,7 @@
    ]
   },
   "feedback": [],
-  "previous_state_id": "1a1aa8a3-6899-4af3-b3ec-d30c7b0cb11f",
+  "previous_state_id": "86d0a834-5d7e-4740-bfbf-bdd3417d0297",
   "result_limit": 10,
   "cold_start": {
    "exited": false,
@@ -150,8 +150,8 @@
     ],
     "trade_offs": [],
     "unknowns": [],
-    "selection_reason": "leader",
-    "selection_note": "Clear leader: score rank 1 of 12, ahead of the near-tie group at the result cutoff"
+    "selection_reason": "ranked",
+    "selection_note": "Score rank 1 of 12 eligible listings"
    },
    {
     "listing": {
@@ -264,8 +264,8 @@
     ],
     "trade_offs": [],
     "unknowns": [],
-    "selection_reason": "leader",
-    "selection_note": "Clear leader: score rank 2 of 12, ahead of the near-tie group at the result cutoff"
+    "selection_reason": "ranked",
+    "selection_note": "Score rank 2 of 12 eligible listings"
    },
    {
     "listing": {
@@ -378,8 +378,8 @@
     ],
     "trade_offs": [],
     "unknowns": [],
-    "selection_reason": "leader",
-    "selection_note": "Clear leader: score rank 3 of 12, ahead of the near-tie group at the result cutoff"
+    "selection_reason": "ranked",
+    "selection_note": "Score rank 3 of 12 eligible listings"
    },
    {
     "listing": {
@@ -492,8 +492,8 @@
     ],
     "trade_offs": [],
     "unknowns": [],
-    "selection_reason": "leader",
-    "selection_note": "Clear leader: score rank 4 of 12, ahead of the near-tie group at the result cutoff"
+    "selection_reason": "ranked",
+    "selection_note": "Score rank 4 of 12 eligible listings"
    },
    {
     "listing": {
@@ -606,8 +606,8 @@
     ],
     "trade_offs": [],
     "unknowns": [],
-    "selection_reason": "leader",
-    "selection_note": "Clear leader: score rank 5 of 12, ahead of the near-tie group at the result cutoff"
+    "selection_reason": "ranked",
+    "selection_note": "Score rank 5 of 12 eligible listings"
    },
    {
     "listing": {
@@ -720,8 +720,8 @@
     ],
     "trade_offs": [],
     "unknowns": [],
-    "selection_reason": "leader",
-    "selection_note": "Clear leader: score rank 6 of 12, ahead of the near-tie group at the result cutoff"
+    "selection_reason": "ranked",
+    "selection_note": "Score rank 6 of 12 eligible listings"
    },
    {
     "listing": {
@@ -834,8 +834,8 @@
     ],
     "trade_offs": [],
     "unknowns": [],
-    "selection_reason": "leader",
-    "selection_note": "Clear leader: score rank 7 of 12, ahead of the near-tie group at the result cutoff"
+    "selection_reason": "ranked",
+    "selection_note": "Score rank 7 of 12 eligible listings"
    },
    {
     "listing": {
@@ -948,8 +948,8 @@
     ],
     "trade_offs": [],
     "unknowns": [],
-    "selection_reason": "leader",
-    "selection_note": "Clear leader: score rank 8 of 12, ahead of the near-tie group at the result cutoff"
+    "selection_reason": "ranked",
+    "selection_note": "Score rank 8 of 12 eligible listings"
    },
    {
     "listing": {
@@ -1062,35 +1062,35 @@
     ],
     "trade_offs": [],
     "unknowns": [],
-    "selection_reason": "leader",
-    "selection_note": "Clear leader: score rank 9 of 12, ahead of the near-tie group at the result cutoff"
+    "selection_reason": "ranked",
+    "selection_note": "Score rank 9 of 12 eligible listings"
    },
    {
     "listing": {
-     "listing_id": "fixture-12",
+     "listing_id": "fixture-11",
      "listing_type": "RENT",
-     "title": "Synthetic rental 12",
-     "price": 3200.0,
-     "bedrooms": 3.0,
-     "floor_area_sqft": 1200.0,
-     "property_type": "hdb",
-     "district_code": "D21",
+     "title": "Synthetic rental 11",
+     "price": 5000.0,
+     "bedrooms": 2.0,
+     "floor_area_sqft": 1150.0,
+     "property_type": "condo",
+     "district_code": "D05",
      "postal_code": "012345",
-     "latitude": null,
+     "latitude": 1.322,
      "longitude": 103.8,
-     "url": "https://example.invalid/listings/12",
+     "url": "https://example.invalid/listings/11",
      "observed_at": "2026-10-18T00:00:00Z",
      "source": "synthetic-fixture",
      "normalization_warnings": []
     },
     "rank": 10,
-    "score_rank": 12,
+    "score_rank": 10,
     "scores": {
      "soft_score": null,
-     "behavior_score": 0.08978056426332288,
+     "behavior_score": 0.1913981191222571,
      "appointment_score": null,
-     "browsing_score": 0.2244514106583072,
-     "combined_score": 0.035912225705329155,
+     "browsing_score": 0.4784952978056427,
+     "combined_score": 0.07655924764890285,
      "soft_weight": 0.6,
      "behavior_weight": 0.4,
      "appointment_weight": 0.6,
@@ -1102,11 +1102,11 @@
        "feature": "price",
        "branch": "browsing",
        "reference": "fixture-05",
-       "raw_difference": 700.0,
+       "raw_difference": 2500.0,
        "scale": 2900.0,
-       "similarity": 0.7586206896551724,
+       "similarity": 0.13793103448275867,
        "weight": 0.2,
-       "contribution": 0.15172413793103448,
+       "contribution": 0.027586206896551738,
        "unknown": false,
        "method": "numeric_minmax"
       },
@@ -1116,9 +1116,9 @@
        "reference": "fixture-05",
        "raw_difference": null,
        "scale": null,
-       "similarity": 0.0,
+       "similarity": 1.0,
        "weight": 0.2,
-       "contribution": 0.0,
+       "contribution": 0.2,
        "unknown": false,
        "method": "exact"
       },
@@ -1126,11 +1126,11 @@
        "feature": "bedrooms",
        "branch": "browsing",
        "reference": "fixture-05",
-       "raw_difference": 1.0,
+       "raw_difference": 0.0,
        "scale": 1.0,
-       "similarity": 0.0,
+       "similarity": 1.0,
        "weight": 0.16,
-       "contribution": 0.0,
+       "contribution": 0.16,
        "unknown": false,
        "method": "numeric_minmax"
       },
@@ -1138,11 +1138,11 @@
        "feature": "floor_area_sqft",
        "branch": "browsing",
        "reference": "fixture-05",
-       "raw_difference": 350.0,
+       "raw_difference": 300.0,
        "scale": 550.0,
-       "similarity": 0.36363636363636365,
+       "similarity": 0.4545454545454546,
        "weight": 0.2,
-       "contribution": 0.07272727272727274,
+       "contribution": 0.09090909090909093,
        "unknown": false,
        "method": "numeric_minmax"
       },
@@ -1150,13 +1150,13 @@
        "feature": "geography",
        "branch": "browsing",
        "reference": "fixture-05",
-       "raw_difference": null,
-       "scale": null,
+       "raw_difference": 1334.3409628024092,
+       "scale": 1334.3409628024092,
        "similarity": 0.0,
        "weight": 0.24,
        "contribution": 0.0,
        "unknown": false,
-       "method": "district_fallback"
+       "method": "haversine_pool_minmax"
       }
      ],
      "suppressed_features": [],
@@ -1176,16 +1176,16 @@
     ],
     "trade_offs": [],
     "unknowns": [],
-    "selection_reason": "price_exploration_sample",
-    "selection_note": "Cold-start price exploration: drawn from the price bin [2980, 5000] among 3 candidates (score ranks 10-12); score rank 12"
+    "selection_reason": "ranked",
+    "selection_note": "Score rank 10 of 12 eligible listings"
    }
   ],
   "evidence": [],
   "resolution": [],
   "pool": {
-   "pool_key": "4d52375095d060254a59534b56277b7b607bc394315e0d66475c8de57c5e6564",
+   "pool_key": "89c8ffde7bfb8426477ba4663e0ec5e6b56cb006bc852e18c56e89a130d66147",
    "pool_version": "ce962c27790b4cc50cd6f664dff3207b16efc370ff1e1474fff5a1bb3e85addc",
-   "data_version": "24ddafa745523a348ebddc96a1e632214c8127f772d46ba69d15dc34497177b9",
+   "data_version": "05a6ea4d32726e1d669fb587634136fd569633120e3c7573b5b726219de83b38",
    "cache": "reused",
    "size": 12,
    "source_count": 12,
@@ -1194,9 +1194,9 @@
    "unknown_reasons": {}
   },
   "selection": {
-   "mode": "cold_start_exploration",
-   "algorithm_version": "select-v1",
-   "seed": "6a0c9abf90ea68847c6efe9283f7b3f42b98f7503c72bfe070cbaf372d5258df",
+   "mode": "ranked",
+   "algorithm_version": "select-v2",
+   "seed": "40a1b2bf4465c307edd51f657080709651266cae13bd3420eea91009558f28ca",
    "result_limit": 10,
    "leaders": 9,
    "tie_group": {
@@ -1206,61 +1206,18 @@
     "span": 0.0,
     "epsilon": 0.01
    },
-   "exploration": {
-    "candidate_count": 3,
-    "sample_size": 3,
-    "bins": [
-     {
-      "lower": 2100.0,
-      "upper": 2320.0,
-      "count": 0,
-      "sampled": 0,
-      "quota": 0
-     },
-     {
-      "lower": 2320.0,
-      "upper": 2540.0,
-      "count": 0,
-      "sampled": 0,
-      "quota": 0
-     },
-     {
-      "lower": 2540.0,
-      "upper": 2760.0,
-      "count": 0,
-      "sampled": 0,
-      "quota": 0
-     },
-     {
-      "lower": 2760.0,
-      "upper": 2980.0,
-      "count": 0,
-      "sampled": 0,
-      "quota": 0
-     },
-     {
-      "lower": 2980.0,
-      "upper": 5000.0,
-      "count": 3,
-      "sampled": 1,
-      "quota": 3
-     }
-    ]
-   },
+   "exploration": null,
    "cold_start": {
     "evaluated": true,
-    "active": true,
-    "reason": "no_soft_requirements",
-    "coverage_c": 0.0,
-    "boundary_group_b": 1,
-    "stability_s": 1.0,
-    "thresholds": {
-     "c": 0.8,
-     "b": 5,
-     "s": 0.9
-    },
-    "exit_conditions_met": false,
-    "pool_key": "4d52375095d060254a59534b56277b7b607bc394315e0d66475c8de57c5e6564"
+    "active": false,
+    "reason": "mean_difference_at_or_above_threshold",
+    "detector": "mean_pairwise_difference",
+    "detector_version": "mpd-v1",
+    "candidate_window": 30,
+    "evaluated_count": 12,
+    "mean_pairwise_difference": 0.03880637815684838,
+    "threshold": 0.01,
+    "pool_key": "89c8ffde7bfb8426477ba4663e0ec5e6b56cb006bc852e18c56e89a130d66147"
    }
   },
   "clarifications": [],
@@ -1271,8 +1228,8 @@
    "Posting time does not establish current availability."
   ],
   "state": {
-   "state_id": "c0a94d42-b09c-4bc8-935d-06cca8a2ef39",
-   "candidate_pool_ref": "b7719e2f-b449-4fbf-8c37-b72c914379e5/pool",
+   "state_id": "eb1450c3-c6ae-4d9a-9ff3-84e6c19f8940",
+   "candidate_pool_ref": "a0c14ece-25ba-4127-b560-1a4966bd054a/pool",
    "run_sequence": 2,
    "scope": "all RENT listings",
    "truncated": false,
@@ -1281,18 +1238,18 @@
    "assessed_count": 12
   },
   "execution": {
-   "trace_id": "b7719e2f-b449-4fbf-8c37-b72c914379e5",
-   "trace_ref": "sqlite:b7719e2f-b449-4fbf-8c37-b72c914379e5",
-   "strategy": "full-pool fused-v2 scoring + select-v1 selection",
-   "scoring_version": "fused-v2-pool-minmax:893a20fd28d5",
-   "selection_algorithm": "select-v1",
+   "trace_id": "a0c14ece-25ba-4127-b560-1a4966bd054a",
+   "trace_ref": "sqlite:a0c14ece-25ba-4127-b560-1a4966bd054a",
+   "strategy": "full-pool fused-v2 scoring + select-v2 selection",
+   "scoring_version": "fused-v2-pool-minmax:be6b2bd6073b",
+   "selection_algorithm": "select-v2",
    "config_version": 1,
-   "config_hash": "5302b6fa0d86a03c7fea41d61e8f6d5f32f7b0b29e12f8ced17b7613dbf7c10d",
-   "selection_hash": "893a20fd28d51f0e4e79c3b583f86fd39f1f4afb7a170b1dec11cbfb5e2f7897",
+   "config_hash": "c0cece65b91b5b13f1318da66c71e40f0d9d2e4b1636c160d3d284582dc917fb",
+   "selection_hash": "be6b2bd6073b187040093f7767f05124ec009a7e9fbd9139eb2f01518559a3e3",
    "model_identifier": null,
    "model_calls": 0,
    "tool_calls": 4,
-   "duration_ms": 6.968167028389871,
+   "duration_ms": 2.5567499978933483,
    "tokens": null,
    "data_mode": "fixture",
    "controller_mode": "scripted"

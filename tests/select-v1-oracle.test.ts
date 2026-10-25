@@ -5,8 +5,9 @@ import {selectV1Violations,scoreOrder,linearPercentile,singleBrowsingReferenceSc
 
 // The live tests (native-recommendation-live, native-geography-live, advanced-live) cannot run in the generic
 // gate. Their shared select-v1 oracle is checked here offline: it must accept the committed ten-results
-// envelope against an order O computed independently from recommendation/examples/listings.json, and reject
-// every way an exact-prefix or out-of-window answer can violate select-v1.
+// (near-tie sampling: mpd-v1 cold start inactive) and cold-start-exploration (D = 0, active) envelopes against
+// an order O computed independently from recommendation/examples/listings.json, and reject every way an
+// exact-prefix or out-of-window answer can violate select-v1.
 const read=async(path:string)=>JSON.parse(await readFile(path,'utf8'));
 
 async function fixture(){
@@ -18,25 +19,53 @@ async function fixture(){
   const scores=new Map<string,number>(listings.map((l:any)=>[l.listing_id,softWeight*Number(soft.value.includes(l.district_code))]));
   return {native,scores,order:scoreOrder(scores),limit:ten.native_body.result_limit as number};
 }
+async function explorationFixture(){
+  const cold=await read('tests/fixtures/recommendation-v2/cold-start-exploration.json'),listings=await read('recommendation/examples/listings.json');
+  const native=cold.envelope.response,budget=cold.native_body.requirements.criteria[0];
+  assert.equal(budget.strength,'hard');assert.equal(cold.native_body.requirements.criteria.length,1);
+  // Hard budget only, no feedback: every eligible listing scores 0 (all tied), so O is the pool in listing-ID order.
+  const pool=listings.filter((l:any)=>l.price!==null&&l.price<=budget.value);assert.equal(pool.length,native.pool.size);
+  const scores=new Map<string,number>(pool.map((l:any)=>[l.listing_id,0]));
+  return {native,scores,order:scoreOrder(scores),limit:cold.native_body.result_limit as number};
+}
 const clone=<T>(x:T):T=>JSON.parse(JSON.stringify(x));
 
-test('select-v1 oracle accepts the committed ten-results envelope against an independently computed O',async()=>{
+test('select-v1 oracle accepts the committed ten-results (near-tie) and cold-start-exploration envelopes against an independently computed O',async()=>{
   const {native,scores,order,limit}=await fixture();
-  assert.equal(native.selection.mode,'cold_start_exploration');
+  assert.equal(native.selection.mode,'near_tie_sampling');assert.equal(native.selection.cold_start.active,false);
   assert.deepEqual(selectV1Violations(native,order,limit,scores),[]);
+  const cold=await explorationFixture();
+  assert.equal(cold.native.selection.mode,'cold_start_exploration');assert.equal(cold.native.selection.cold_start.mean_pairwise_difference,0);
+  assert.deepEqual(selectV1Violations(cold.native,cold.order,cold.limit,cold.scores),[]);
 });
 
 test('select-v1 oracle rejects exact-prefix assumptions broken by the response: wrong leaders, out-of-window draws, bad ranks, duplicates',async()=>{
   const {native,scores,order,limit}=await fixture();
   const swapped=clone(native);[swapped.recommendations[0],swapped.recommendations[1]]=[swapped.recommendations[1],swapped.recommendations[0]];swapped.recommendations.forEach((c:any,i:number)=>c.rank=i+1);
   assert(selectV1Violations(swapped,order,limit,scores).some(v=>v.includes('leaders')||v.includes('O order')));
-  const outside=clone(native);outside.recommendations.at(-1).listing.listing_id='fixture-12';outside.recommendations.at(-1).score_rank=12;outside.selection.exploration.candidate_count=5;
-  assert(selectV1Violations(outside,order,limit,scores).some(v=>v.includes('drawn items must come from')));
+  const cold=await explorationFixture(),drawn=cold.native.recommendations.at(-1);
+  assert(drawn.score_rank>5);// the last displayed draw lies beyond a 5-candidate window
+  // select-v2 cold start: a window that is not min(30, |O|), or a returned list that is not the intermediate prefix.
+  const outside=clone(cold.native);outside.selection.exploration.window_size=5;
+  assert(selectV1Violations(outside,cold.order,cold.limit,cold.scores).some(v=>v.includes('window_size')));
+  const notPrefix=clone(cold.native);notPrefix.selection.exploration.intermediate_ids.reverse();
+  assert(selectV1Violations(notPrefix,cold.order,cold.limit,cold.scores).some(v=>v.includes('first K intermediate')||v.includes('O order')));
+  assert.deepEqual(selectV1Violations(cold.native,cold.order,cold.limit,cold.scores),[]);
+  assert.equal(cold.native.selection.algorithm_version,'select-v2');
+  const bad=(mutate:(n:any)=>void,needle:string)=>{const n=clone(cold.native);mutate(n);
+    assert(selectV1Violations(n,cold.order,cold.limit,cold.scores).some(v=>v.includes(needle)),needle);};
+  bad(n=>{n.selection.exploration.intermediate_ids[9]='fixture-99';},'O positions 1..');// beyond the window
+  bad(n=>{n.selection.exploration.intermediate_ids[9]=n.selection.exploration.intermediate_ids[8];},'duplicate intermediate');
+  bad(n=>{n.selection.exploration.intermediate_ids=n.selection.exploration.intermediate_ids.slice(0,9);},'intermediate must hold');
+  bad(n=>{n.recommendations[0].selection_reason='leader';},'reasons must be');
+  bad(n=>{n.selection.exploration.final_leaders=1;},'counts disagree');
+  // All tied (D = 0): no leader can precede the tie group around rank 10, so claiming one is caught by scores.
+  bad(n=>{n.selection.exploration.intermediate_leaders=1;n.selection.exploration.intermediate_sampled-=1;},'tie-group start');
   const rank=clone(native);rank.recommendations[3].score_rank=40;
   assert(selectV1Violations(rank,order,limit,scores).some(v=>v.includes('score_rank')));
   const dup=clone(native);dup.recommendations[9].listing.listing_id=dup.recommendations[8].listing.listing_id;
   assert(selectV1Violations(dup,order,limit,scores).some(v=>v.includes('duplicate')));
-  const reason=clone(native);reason.recommendations[7].selection_reason='tie_group_sample';
+  const reason=clone(native);reason.recommendations[7].selection_reason='price_exploration_sample';
   assert(selectV1Violations(reason,order,limit,scores).some(v=>v.includes('reasons')));
   const leaders=clone(native);leaders.selection.leaders=4;
   assert(selectV1Violations(leaders,order,limit,scores).some(v=>v.includes('tie-group start')||v.includes('reasons')));

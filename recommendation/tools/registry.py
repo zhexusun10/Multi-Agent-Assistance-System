@@ -8,6 +8,11 @@ Kinds:
 - ``query``: read-only geographic lookups (no effect on criteria, pool or ranking).
 - ``bind``: bind_entity, which changes a criterion's resolved entity and therefore pool_key: it
   discards build_pool / get_geographic_evidence / rank_candidates results.
+- ``inspect``: read_pool, a read-only paginated view of the current pool (never changes state, not
+  charged as a resolution call).
+
+rank_candidates produces a code-managed ranking artifact; the agent finishes by naming its ID.
+Cold-start detection, selection and final validation run in code after the agent loop.
 
 Budgets (settings ``controller``): every call counts against ``max_tool_calls`` (exhaustion ends
 the run, LOOP_EXHAUSTED); ``query`` and ``bind`` calls that actually run (not rejected for their
@@ -27,7 +32,7 @@ from . import arguments as a
 class ToolSpec:
     name: str
     arguments: type
-    kind: str  # pipeline | query | bind
+    kind: str  # pipeline | query | bind | inspect
     description: str
     requires: str | None = None  # stage that must be current before this tool runs
 
@@ -43,8 +48,13 @@ TOOLS = (
              "Measure soft geographic criteria over the current pool (straight-line). Requires build_pool.",
              requires="build_pool"),
     ToolSpec("rank_candidates", ToolArguments, "pipeline",
-             "Validate, score and select from the current pool with code. Returns selected_ids, the final "
-             "selection. Requires get_geographic_evidence.", requires="get_geographic_evidence"),
+             "Recheck hard criteria and score EVERY eligible listing of the current pool with the official code "
+             "(no selection). Returns ranking_artifact_id, evidence coverage and a scoring summary. Finish with "
+             "that ID. Requires get_geographic_evidence.", requires="get_geographic_evidence"),
+    ToolSpec("read_pool", a.ReadPoolArguments, "inspect",
+             "Read a bounded page of the current pool (pool_version from build_pool): listing facts, per-criterion "
+             "outcomes with evidence IDs and status, and missing ranking fields. Read-only and optional; ranking "
+             "always covers the whole pool. Requires build_pool.", requires="build_pool"),
     ToolSpec("search_places", a.SearchPlacesArguments, "query",
              "Look up catalog entities (LTA stations, URA areas/regions, OSM places) whose name or alias matches "
              "the query exactly after normalisation. Results are candidates, not facts."),

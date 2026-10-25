@@ -111,18 +111,21 @@ def check_connections(data_mode, controller):
         finally:
             if obj:
                 obj.close()
-    model = os.getenv("CHAT_MODEL", "openai:gpt-4.1-mini")
-    key = {
-        "openai": "OPENAI_API_KEY",
-        "anthropic": "ANTHROPIC_API_KEY",
-        "google-genai": "GOOGLE_API_KEY",
-    }.get(model.split(":")[0])
+    from ..agent import llm
+
+    try:
+        settings, problem = llm.LlmSettings.from_env(), None
+    except RecommendationError as e:
+        settings, problem = None, e.detail.message
     report["llm"] = {
         "mode": controller,
-        "model": model,
-        "configured": bool(key and os.getenv(key)),
+        "model": settings.identifier if settings else None,
+        "configured": settings is not None,
+        "settings": settings.public() if settings else None,
+        "problem": problem,
         "contacted": False,
-        "note": "Model execution is tested by recommend, not by configuration inspection.",
+        "note": "Recommendation agent model (RECOMMENDATION_LLM_*); execution is tested by recommend, not by "
+                "configuration inspection.",
     }
     return report
 
@@ -142,12 +145,16 @@ def response_summary(result):
     selection = result.selection
     if selection:
         cold = selection.cold_start
+        if getattr(cold, "detector", None) is None:  # stored legacy C/B/S diagnostics, shown as stored
+            detail = f"legacy C/B/S, exit_conditions_met={cold.exit_conditions_met}"
+        elif cold.evaluated:
+            detail = (f"reason={cold.reason}, D={cold.mean_pairwise_difference:.6g}, threshold={cold.threshold:g}, "
+                      f"window={cold.evaluated_count}/{cold.candidate_window}")
+        else:
+            detail = f"reason={cold.reason}"
         lines.append(f"  selection: mode={selection.mode} seed={selection.seed[:12]} leaders={selection.leaders} "
                      f"tie_group={selection.tie_group.size if selection.tie_group else 0} cold_start="
-                     f"{'active' if cold.active else 'inactive'} (exit_conditions_met={cold.exit_conditions_met})")
-        if cold.evaluated and cold.exit_conditions_met:
-            lines.append(f"  cold start exit conditions met: an orchestrator adopting this response sends cold_start "
-                         f"{{exited: true, exited_pool_key: {cold.pool_key[:12]}...}} next (stage it with load-request)")
+                     f"{'active' if cold.active else 'inactive'} ({detail})")
     for item in result.recommendations:
         lines.append(f"  #{item.rank} {item.listing.listing_id} score_rank={item.score_rank} "
                      f"combined={item.scores.combined_score:.4f} reason={item.selection_reason}")

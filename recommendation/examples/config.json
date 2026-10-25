@@ -59,17 +59,14 @@
   },
   "cold_start": {
     "enabled": false,
-    "reenter_on_pool_rebuild": true,
-    "min_evidence_coverage": 0.8,
-    "max_boundary_tie_group_size": 5,
-    "min_top_k_stability": 0.9,
     "price_sampling": {
-      "target_sample_size": 30,
+      "exploration_window": 30,
+      "intermediate_size": 10,
       "quantile_bins": 5
     },
-    "stability": {
-      "trials": 20,
-      "weight_perturbation_fraction": 0.2
+    "detector": {
+      "candidate_window": 30,
+      "min_mean_pairwise_difference": 0.01
     }
   },
   "selection": {

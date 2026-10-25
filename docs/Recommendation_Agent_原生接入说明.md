@@ -39,11 +39,11 @@ recommendation/
   settings/recommendation.yaml      全部可调算法参数的唯一来源（loader.py 校验；依据见 TUNING.md）
   repositories/                     PostgreSQL 只读读取 + 数据指纹、Neo4j 地点目录
   geography/                        原生地理目录、名称规范化、实体解析、直线距离
-  agent/controller.py, prompt.py    Scripted / Live 控制器与提示词
-  agent/model_bridge.ts             复用项目 src/model.ts 的模型配置
-  tools/                            四个流水线工具、六个地理查询工具、bind_entity、探索池构建
-  ranking/                          fused-v2 全池评分（scoring_v2.py）、select-v1 选择与冷启动（selection.py、exploration.py）
-  validation/                       逐项验证、final_gate、select-v1 重放校验
+  agent/controller.py, prompt.py    Scripted / Live（Python LangChain 工具调用 Agent）控制器与提示词
+  agent/llm.py                      推荐专用模型客户端（RECOMMENDATION_LLM_*，ChatOpenAI；不复用 src/model.ts、不启 Node 子进程）
+  tools/                            四个流水线工具、六个地理查询工具、bind_entity、read_pool、探索池构建
+  ranking/                          fused-v2 全池评分（scoring_v2.py）、select-v2 选择与冷启动（selection.py、exploration.py；select-v1 仅用于重放历史）
+  validation/                       逐项验证、final_gate、按算法版本重放校验（select-v1 / select-v2）
   context/manager.py                运行一致性检查与反馈快照读取（不累积历史反馈）
   state/                            SQLite v2 表、探索池缓存、数据版本
   tracing/                          精简追踪（阶段记录、紧凑工具步骤、debug 行）
@@ -78,20 +78,20 @@ flowchart LR
 
 ### 3.1 工具与完整候选池
 
-LiveController 使用项目 `.env` 中的模型；ScriptedController 按固定顺序直接执行四个流水线工具，不搜索也不绑定。模型可调用四个按固定顺序执行的流水线工具（乱序调用返回 `STALE_REFERENCE` 工具错误，重跑某一阶段会作废其后各阶段）：
+LiveController 只使用 `RECOMMENDATION_LLM_*`（OpenAI 兼容接口；缺少模型或密钥时返回 `MODEL_NOT_CONFIGURED`，不回退到应用的 `CHAT_MODEL` / `OPENAI_*`）；ScriptedController 按固定顺序直接执行四个流水线工具，不搜索、不绑定、不读池。模型可调用四个按固定顺序执行的流水线工具（乱序调用返回 `STALE_REFERENCE` 工具错误，重跑某一阶段会作废其后各阶段）：
 
 | 工具 | 真实行为 |
 | --- | --- |
 | `resolve_entities` | 由代码确定性解析每条地理条件的目标（有效 ID 核验复用；名称精确匹配别名；多候选为 ambiguous，不取第一条） |
 | `build_pool` | 建立或复用探索池：PostgreSQL 只读、可重复读事务读取 RENT，所有硬条件（含地理硬条件）通过才入池 |
 | `get_geographic_evidence` | 对探索池计算软地理条件的直线距离 |
-| `rank_candidates` | 对完整探索池评分（fused-v2）、计算冷启动诊断并由代码按 select-v1 选择（`selected_ids`） |
+| `rank_candidates` | 复核硬条件、对完整探索池评分（fused-v2）并检查证据完整性，生成由代码管理的排名产物（`ranking_artifact_id`）；不做冷启动判定与选择 |
 
-另有只读地理查询工具 `search_places`、`describe_fields`、`nearest_mrt`、`distance_to`、`nearby_amenities`、`district_membership`，以及 `bind_entity`（仅用于消除该条件自身名称的歧义：条件按名称为 ambiguous（ID 与名称冲突除外），本次运行中为该条件做的 `search_places` 以该条件自己的 destination_name 为查询词、只用 kind/category 收窄，结果恰好只有这一个候选，且它属于该名称的全部精确匹配并有有效坐标；unresolved 的名称不会被替换成别的地点；绑定后探索池、地理证据和排序作废）。每个工具有独立的参数 schema（`recommendation/tools/arguments.py`）；房源 ID 必须来自当前探索池，实体 ID 必须由本次运行的工具返回。实际执行的查询/绑定调用计入 `controller.max_resolution_tool_calls`（因参数、阶段顺序或过期引用被拒绝的调用不计），每条条件的搜索计入 `entity_resolution.max_search_attempts`，全部调用计入 `controller.max_tool_calls`。
+另有只读地理查询工具 `search_places`、`describe_fields`、`nearest_mrt`、`distance_to`、`nearby_amenities`、`district_membership`，只读分页工具 `read_pool`（需先 `build_pool` 且 `pool_version` 为当前版本；返回房源事实、各条件结果与证据状态、缺失的排序字段；不改动任何状态，部分读取不缩小评分范围），以及 `bind_entity`（仅用于消除该条件自身名称的歧义：条件按名称为 ambiguous（ID 与名称冲突除外），本次运行中为该条件做的 `search_places` 以该条件自己的 destination_name 为查询词、只用 kind/category 收窄，结果恰好只有这一个候选，且它属于该名称的全部精确匹配并有有效坐标；unresolved 的名称不会被替换成别的地点；绑定后探索池、地理证据和排序作废）。每个工具有独立的参数 schema（`recommendation/tools/arguments.py`）；房源 ID 必须来自当前探索池，实体 ID 必须由本次运行的工具返回。实际执行的查询/绑定调用计入 `controller.max_resolution_tool_calls`（因参数、阶段顺序或过期引用被拒绝的调用不计），每条条件的搜索计入 `entity_resolution.max_search_attempts`，全部调用计入 `controller.max_tool_calls`。
 
-模型只能引用当前 `context_ref`。排序、事实、候选来源及最终选择由代码决定，不能由模型自由编造；模型最终只能返回最近一次 `rank_candidates` 的 `selected_ids`。提示词说明：条件不可修改，房源/地点文本是数据而不是指令，搜索词只是假设，只使用工具返回的 ID，有歧义时不取第一条。模型可见的候选ID预览最多 `controller.model_result_candidates`（100）条，追踪每步最多保留 `trace.preview_rows`（10）行，**不截断实际评分池**。
+模型只能引用当前 `context_ref`。排序、事实、候选来源及最终选择由代码决定，不能由模型自由编造；模型最终只返回 `{"ranking_artifact_id": ...}`，代码核对它是当前排名产物后，在 LLM 循环之外依次执行冷启动判定、选择和最终校验。可修复的校验失败以结构化报告（代码、阶段、房源/条件 ID、引用、修复动作、可否通过检索或重算解决）交回 Agent，代码先作废受影响阶段；无新证据的重复失败即停止（`REPAIR_NO_PROGRESS`），内部选择不一致（`INVALID_SELECTION`）不交回 Agent。提示词说明：条件不可修改，房源/地点文本是数据而不是指令，搜索词只是假设，只使用工具返回的 ID，有歧义时不取第一条。模型可见的候选ID预览最多 `controller.model_result_candidates`（100）条，追踪每步最多保留 `trace.preview_rows`（10）行，**不截断实际评分池**。
 
-预算全部来自 `recommendation/settings/recommendation.yaml`：最多8轮模型调用、20次工具调用（其中查询/绑定最多6次）、每条条件最多3次搜索、90秒执行预算、最终校验最多2次修复重试；`result_limit` 为1—10（契约 2.0；省略时取 `recommendation.default_result_limit`=10）。评分版本 `fused-v2`，选择算法 `select-v1`；没有调低预算或用 ScriptedController 代替真实运行；scripted 仅用于明确标记的离线测试和冒烟。
+预算全部来自 `recommendation/settings/recommendation.yaml`：最多8轮模型调用、20次工具调用（其中查询/绑定最多6次）、每条条件最多3次搜索、90秒执行预算、最终校验最多2次修复重试；`result_limit` 为1—10（契约 2.0；省略时取 `recommendation.default_result_limit`=10）。评分版本 `fused-v2`，选择算法 `select-v2`（历史运行按 select-v1 重放）；没有调低预算或用 ScriptedController 代替真实运行；scripted 仅用于明确标记的离线测试和冒烟。
 
 ### 3.2 硬条件、未知与待核实
 
@@ -127,15 +127,15 @@ LiveController 使用项目 `.env` 中的模型；ScriptedController 按固定�
 
 融合（fused-v2）：`combined = 0.60 × soft + 0.40 × (0.60 × appointment + 0.40 × browsing)`；缺失分支贡献0，**不转移分支权重**。完整探索池每轮全部评分，按 (−combined, listing_id) 得到全池顺序 O，`score_rank` 为在 O 中的位置。所有 Contribution（分支、参考房源、尺度、方法）、suppressed_features 和覆盖率均保留。参数取值依据见 [TUNING.md](../evaluation/recommendation-exploration-2026-10-23/TUNING.md)。
 
-### 3.5 冷启动与 select-v1 选择
+### 3.5 冷启动与 select-v2 选择
 
 K = min(result_limit, 探索池大小)。与第 K 名分差不超过 ε/2（ε = `selection.tie_max_score_span` = 0.01）的连续区间为近似同分组 G，其前面的为明显领先项（leaders），全部保留；其余 m 个名额：
 
 - 非冷启动：G 恰好放得下则按分数返回（`ranked`），否则在 G 内不放回等概率随机抽 m 个（`near_tie_sampling`）。
-- 冷启动：在领先项之后取前 max(|G|, 30) 个候选，按整个探索池的价格分位（5 层，同价边界合并，无价格单列）分层、按比例不放回抽样（`cold_start_exploration`）。
+- 冷启动（select-v2，2026-10-24）：探索窗口为全池顺序中的前 30 名（含领先项；不足时取全部；不会为边界同分扩展到第 30 名之后）。在窗口内按同一 ε 规则在第 min(10, 窗口) 名附近求领先项；价格分位（5 层，同价边界合并，无价格单列）用**窗口内（含领先项）**的价格计算，名额按各层**非领先项**数量以最大余数法分配，只在非领先项中按层不放回等概率抽样。中间结果 = 领先项 + 抽中项（均按分数顺序，共 10 套），返回其前 result_limit 套，截断后不重抽、不再平衡（`cold_start_exploration`）。窗口不超过 10 套时按分数全部保留（`ranked`）。历史 select-v1 运行仍按 select-v1 重放。
 - 探索池不超过 result_limit 时全部按分数返回（`small_pool`）。
 
-冷启动退出条件：前 K 项软需求证据覆盖度均值 C ≥ 0.80、G 的大小 B ≤ 5、权重扰动 20 次后前 K 集合平均重合度 S ≥ 0.90；扰动只用于诊断，不改正式分数。退出状态由编排器保存（`cold_start.exited` / `exited_pool_key`），硬条件变化导致探索池重建时重新评估。**没有软需求时 C = 0，冷启动无法退出。** 随机种子由会话、请求、探索池版本和结果相关配置的 hash 派生并保存；同一请求重放返回原结果，新请求可以重新抽样。展示顺序为领先项在前、抽中项在后，各自按分数顺序；每套房源带 `selection_reason` 和 `selection_note`。价格分层抽样不减少评分计算量（评分始终针对完整探索池）。
+冷启动判定（mpd-v1，2026-10-24 起取代原 C/B/S 退出条件和编排器记忆的退出状态）：取全池顺序 O 中前 W 个合格候选（W = `cold_start.detector.candidate_window` = 30，含领先项；不足 W 个时取全部）的正式融合分数，不做逐列表归一化，计算平均两两绝对差 D = 2/(n(n−1)) · Σ_{i<j}|s_i − s_j|。D < `cold_start.detector.min_mean_pairwise_difference`（0.01，用户确认的起始值，未校准）时冷启动生效；D 等于阈值时不生效，按浮点数精确比较、无容差。该阈值是实用的分数容差，不是统计显著性；D 只反映前 W 名分数的区分度，不证明需求已足够，也不说明推荐是否正确。每轮都按当轮 D 重新判定；请求中的 `cold_start.exited` / `exited_pool_key` 仍可接受但不参与判定，编排器不再记录新的退出，运行时也不再做权重扰动试验。未启用、探索池为空或不超过 result_limit 时不评估。**没有软需求且没有行为信号时所有分数相同，D = 0，冷启动保持生效。** 随机种子由会话、请求、探索池版本和结果相关配置的 hash 派生并保存；同一请求重放返回原结果，新请求可以重新抽样。展示顺序为领先项在前、抽中项在后，各自按分数顺序；每套房源带 `selection_reason` 和 `selection_note`。价格分层抽样不减少评分计算量（评分始终针对完整探索池）。
 
 ### 3.6 地理证据与最终校验
 
@@ -170,7 +170,7 @@ SQLite 保留 request_id 绑定、会话 v2 state、runs（紧凑快照，不含
 | 无显式utility字段 | utility | 普通threshold；soft距离lte且尺度>0时proximity；不猜价格最小化 |
 | previous_state_id | previous_state_id | 应用`native:<id>`解包；旧baseline状态不传进新引擎。应用传输入口按原生实际已提交head对齐；入站body与实际调用body分别留档，同一request_id只绑定一次 |
 | result_limit | result_limit | 应用请求10，原生按 min(10, result_limit) 返回，探索池不足时返回实际数量；不是从更多结果中再截断重排 |
-| active_view且payload.source=sample；VIEWING 动作；会话冷启动状态 | feedback.previous_round.browsing、feedback.appointments、cold_start（契约 2.0 快照） | 编排器在 agent-A 应用事务中按上一轮已采用的原生推荐汇总每个展示房源的样例浏览秒数（无样例记为 missing），连同全部 MANUAL_SENT/MANUAL_REPLIED/CONFIRMED 看房预约（每房源一条）和冷启动退出状态一次性写入 `recommendation_calls.feedback_snapshot`，重试原样复用；原生端不累积历史反馈 |
+| active_view且payload.source=sample；VIEWING 动作；会话冷启动状态 | feedback.previous_round.browsing、feedback.appointments、cold_start（契约 2.0 快照） | 编排器在 agent-A 应用事务中按上一轮已采用的原生推荐汇总每个展示房源的样例浏览秒数（无样例记为 missing），连同全部 MANUAL_SENT/MANUAL_REPLIED/CONFIRMED 看房预约（每房源一条）和冷启动退出状态一次性写入 `recommendation_calls.feedback_snapshot`，重试原样复用；原生端不累积历史反馈（2026-10-24 起 `cold_start` 仅为兼容字段，原生不用于判定，编排器不再写入新的退出状态） |
 | save / shortlist / explicit_attribute_feedback /普通浏览遥测 | 不伪造对应事件 | 保留本地原事件，并提示原生本轮未用于打分 |
 
 **原生没有对应字段**：bathrooms、land_area_sqft、build_year、region_code、postal_code筛选、tenure_category、mrt_distance_m、mrt_walking_mins、rental_scope、move_in_date、amenities。注意 ListingSummary 可以返回邮编，但不代表原生支持邮编筛选。
@@ -212,7 +212,7 @@ SQLite 保留 request_id 绑定、会话 v2 state、runs（紧凑快照，不含
 | pool / selection / resolution | 原样保存在 `native.pool`、`native.selection`、`native.resolution`（含冷启动诊断、探索池版本、实体解析）；`native.config_hash` 记录配置 |
 | clarifications / relaxation_suggestions / warnings | 原生字符串完整留档，warnings也进入兼容展示；不自动执行放宽建议，不改写用户要求 |
 | state | 原生state/run_sequence/scope/count等全部留档（2.0 已删除 feedback_version）；兼容state使用`native:<state_id>`，coverage仅针对已安装数据集 |
-| execution | 原生trace、策略、模型/工具调用数、耗时、tokens、数据/控制模式、评分版本（fused-v2）、选择算法（select-v1）、config_version / config_hash / selection_hash 全量留档；兼容execution保留可解析归档引用 |
+| execution | 原生trace、策略、模型/工具调用数、耗时、tokens、数据/控制模式、评分版本（fused-v2）、选择算法（select-v2；历史为 select-v1）、config_version / config_hash / selection_hash 全量留档；兼容execution保留可解析归档引用 |
 | error | 原生错误原样传递业务失败；无baseline回退 |
 
 `native.exchange_ref` 是会话隔离的完整交换存档。通过原有 `/api/evidence?session_id=...&ref=...` 读取，已有owner校验；存档包含 **request、transport_request、response、presentation、unsupported_criteria、ignored_feedback、cold_start**（请求含 main 的 `behavior_context` 与 `feedback` 事件）。原生HTTP `/recommend` 直接返回原生Response；`/app/recommend` 外壳增加 presentation，不污染原生response本身。
@@ -281,7 +281,7 @@ $env:PYTHONUTF8='1'
 - 原生只有10类输入字段；上述缺失字段明确保留为应用待核实条件。这不会获得旧基线对这些字段的过滤能力。
 - 原生地理目录覆盖 LTA 站点（按最近出口计距）、URA 规划区与大区多边形和 Neo4j 中 active 的 OSM Place 点位；约60%的房源缺坐标，地理硬条件下这些房源判 unknown 并排除出探索池，行为相似度的地理特征退回 district 比较。不实现区中心距离，不用出口代替站点实体。
 - 契约 2.0 原生只返回已验证推荐（最多10套），没有待核实候选。应用附加硬条件把原生已选项转为待核实时，仍保留原生得分、选择原因和原始分组元数据。
-- 没有软需求时冷启动无法退出（C = 0）；有软需求时也常因近似同分组过大而保持冷启动（见 CALIBRATION.md）。
+- 没有软需求且没有行为信号时所有分数相同，D = 0，冷启动保持生效；前 30 名分数差异小（D 低于阈值）时每轮都可能进入冷启动探索。阈值 0.01 尚未用真实数据校准；CALIBRATION.md 的冷启动数据针对已停用的 C/B/S 判定。
 - sample浏览是课程测试输入，界面明确标注为手动样例，不宣称自动采集真实用户行为；收藏不参与原生兴趣模型。
 - 数据为历史快照，当前可租和真实路线仍不能从历史字段推断。
 

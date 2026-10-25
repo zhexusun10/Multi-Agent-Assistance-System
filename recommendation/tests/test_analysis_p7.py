@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-from recommendation.analysis import calibrate, simulate, stats
+from recommendation.analysis import calibrate, simulate, stability, stats
 from recommendation.analysis.live import Data
 from recommendation.config import ConfigError, RecommendationConfig
 from recommendation.settings.loader import SETTINGS_PATH, lookup
@@ -202,6 +202,54 @@ def test_runtime_modules_never_import_the_analysis_package():
             if any("analysis" in (n or "").split(".") for n in names):
                 offenders.append(str(path.relative_to(ROOT)))
     assert offenders == []
+
+
+# --- weight-perturbation stability (analysis only since mpd-v1; the epsilon derivation uses it) ---
+def _stability_pool(rows, criteria):
+    from recommendation.ranking.scoring_v2 import score_pool
+    from recommendation.validation.rules import evaluate
+    from .test_selection_v1 import make_request, settings
+
+    req = make_request(criteria)
+    config = settings()
+    results = {r.listing_id: evaluate(r, req.requirements.criteria, []) for r in rows}
+    return score_pool(rows, req.requirements.criteria, results, {}, req.behavior_context, config)
+
+
+def test_top_k_stability_reweights_components_and_is_reproducible(monkeypatch):
+    import numpy as np
+    from recommendation.ranking import scoring_v2
+    from .test_selection_v1 import PLAN, plan_rows
+
+    scored = _stability_pool(plan_rows(3, 30, 40), PLAN)
+    first = stability.top_k_stability(scored, 10, 20, stability.FRACTION, stability.generator(7))
+    # Trials only reweight the stored components: no PoolScores is built again.
+    monkeypatch.setattr(scoring_v2.PoolScores, "__init__", lambda *a, **k: pytest.fail("rescored"))
+    assert stability.top_k_stability(scored, 10, 20, stability.FRACTION, stability.generator(7)) == first
+    # u = 0 keeps every layer; any u renormalises every layer.
+    w = scored.weights
+    width = len(w.soft_criteria) + 4 + len(w.features)
+    same = stability.perturbed_weights(w, np.zeros(width))
+    assert np.allclose(same.soft_criteria, w.soft_criteria / w.soft_criteria.sum()) and same.soft == w.soft
+    moved = stability.perturbed_weights(w, np.full(width, 0.1) * np.arange(width))
+    assert math.isclose(moved.soft + moved.behavior, 1) and math.isclose(moved.appointment + moved.browsing, 1)
+    assert math.isclose(moved.soft_criteria.sum(), 1) and moved.soft != w.soft
+
+
+def test_top_k_stability_random_tie_break_never_fakes_stability():
+    # All tied: the official order is by listing ID, but each trial breaks ties at random, so
+    # S is about K / |pool| instead of 1.
+    from .test_selection_v1 import listing
+
+    scored = _stability_pool([listing(k) for k in range(1, 41)], ())
+    assert stability.top_k_stability(scored, 10, 20, stability.FRACTION, stability.generator(3)) < 0.5
+
+
+def test_historical_exit_test_keeps_the_superseded_thresholds():
+    assert stability.exit_conditions(stability.C_MIN, stability.B_MAX, stability.S_MIN)
+    assert not stability.exit_conditions(math.nextafter(stability.C_MIN, 0), stability.B_MAX, stability.S_MIN)
+    assert not stability.exit_conditions(stability.C_MIN, stability.B_MAX + 1, stability.S_MIN)
+    assert not stability.exit_conditions(1.0, 1, None)
 
 
 # --- trace.max_string_chars (former slim.TEXT_LIMIT) -------------------------------------------

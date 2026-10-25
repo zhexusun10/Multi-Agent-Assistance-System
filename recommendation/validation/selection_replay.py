@@ -27,6 +27,7 @@ class Replayed:
     ids: list
     reasons: dict | None = None
     mode: str | None = None
+    exploration: object | None = None  # select-v2 cold start: the recomputed ExplorationV2 summary
 
 
 def prefix_selection_input(ranked, scores, rows_by_id, result_limit):
@@ -66,7 +67,19 @@ def replay_select_v1(selection_input):
     return Replayed(outcome.ids, outcome.reasons, outcome.mode)
 
 
-REPLAYERS = {PREFIX_ALGORITHM: replay_prefix, "select-v1": replay_select_v1}
+def replay_select_v2(selection_input):
+    from ..ranking import selection
+
+    try:
+        outcome = selection.replay_v2(selection_input)
+        explored = selection.exploration_of(selection_input)
+    except (ValueError, KeyError, TypeError, IndexError) as exc:
+        raise _invalid(f"Stored select-v2 input cannot be replayed: {exc}") from None
+    return Replayed(outcome.ids, outcome.reasons, outcome.mode, explored)
+
+
+# Every stored run replays with the algorithm it was made with (select-v1 history stays select-v1).
+REPLAYERS = {PREFIX_ALGORITHM: replay_prefix, "select-v1": replay_select_v1, "select-v2": replay_select_v2}
 
 
 def replay_select(selection_input):

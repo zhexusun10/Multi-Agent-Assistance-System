@@ -47,7 +47,7 @@ test('10 results: the shared ten-results fixture parses with the strict mirror a
 });
 
 test('response cases: the strict mirror enforces the same 2.0 response invariants as the Python model',async()=>{
- const {cases}=await read(dir+'response-cases.json'),base=(await read(dir+'ten-results.json')).envelope.response;assert(cases.length>=14);
+ const {cases}=await read(dir+'response-cases.json'),base=(await read(dir+'ten-results.json')).envelope.response;assert(cases.length>=30);
  for(const c of cases){
   const body=structuredClone(base);
   for(const op of c.ops){let target:any=body;for(const key of op.path)target=target[key];if(op.op==='merge')Object.assign(target,structuredClone(op.value));else if(op.op==='append')target.push(structuredClone(op.value));else throw Error(op.op);}
@@ -82,14 +82,45 @@ test('flow rounds: nativeRequest(v1_request, cold_start) == native_body (version
  assert.deepEqual(flow.rounds[0].cold_start,NOT_EXITED);
 });
 
-test('cold-start exit is stored only when the adopted native response evaluated and met all exit conditions',()=>{
+test('cold-start exits are no longer recorded: the stored compat state is carried forward unchanged (mpd-v1)',()=>{
  const rec=(cold:any)=>({native:{contract:'2.0',pool:{pool_key:'pk-pool'},selection:{cold_start:cold}}}) as any;
- assert.equal(coldStartAfterAdoption(null,rec({evaluated:false,exit_conditions_met:false,pool_key:'pk'})),null);
- assert.equal(coldStartAfterAdoption(null,rec({evaluated:true,exit_conditions_met:false,pool_key:'pk'})),null);
- assert.deepEqual(coldStartAfterAdoption(null,rec({evaluated:true,exit_conditions_met:true,pool_key:'pk'})),{exited:true,exited_pool_key:'pk'});
- assert.deepEqual(coldStartAfterAdoption(null,rec({evaluated:true,exit_conditions_met:true,pool_key:null})),{exited:true,exited_pool_key:'pk-pool'});
- const kept={exited:true,exited_pool_key:'older'};assert.deepEqual(coldStartAfterAdoption(kept,rec({evaluated:true,exit_conditions_met:false,pool_key:'pk'})),kept);
- assert.deepEqual(coldStartAfterAdoption(kept,{native:{provider:'jiangshan-native'}} as any),kept);// legacy/baseline rounds never change it
+ const mpd=(active:boolean)=>({evaluated:true,active,reason:active?'mean_difference_below_threshold':'mean_difference_at_or_above_threshold',detector:'mean_pairwise_difference',detector_version:'mpd-v1',candidate_window:30,evaluated_count:30,mean_pairwise_difference:active?0.001:0.2,threshold:0.01,pool_key:'pk'});
+ const legacyExit={evaluated:true,active:false,exit_conditions_met:true,pool_key:'pk'};
+ const kept={exited:true,exited_pool_key:'older'};
+ for(const cold of [mpd(true),mpd(false),legacyExit,{evaluated:false,exit_conditions_met:false,pool_key:'pk'}]){
+  assert.equal(coldStartAfterAdoption(null,rec(cold)),null);// even a stored legacy exit_conditions_met response creates no exit
+  assert.equal(coldStartAfterAdoption(undefined,rec(cold)),null);
+  assert.equal(coldStartAfterAdoption(kept,rec(cold)),kept);// historical values are kept, never deleted
+ }
+ assert.equal(coldStartAfterAdoption(kept,{native:{provider:'jiangshan-native'}} as any),kept);
+});
+
+test('selection.exploration: a stored select-v1 summary parses as stored; select-v2 summaries carry labelled counts',async()=>{
+ const legacy=(await read(dir+'legacy-select-v1-cold-start.json')).response;
+ const v1=nativeResponseSchema.parse(legacy).selection!.exploration as any;
+ assert.equal(nativeResponseSchema.parse(legacy).selection!.algorithm_version,'select-v1');
+ assert('sample_size' in v1&&!('window_size' in v1));// never reinterpreted as select-v2
+ const v2=nativeResponseSchema.parse((await read(dir+'cold-start-exploration.json')).envelope.response).selection!.exploration as any;
+ assert.equal(v2.window_size,12);assert.deepEqual(v2.final_ids,v2.intermediate_ids.slice(0,v2.final_limit));
+ const mixed=structuredClone(legacy);mixed.selection.exploration.window_size=30;// a mixed v1/v2 object matches neither shape
+ assert.equal(nativeResponseSchema.safeParse(mixed).success,false);
+ const prefix=structuredClone((await read(dir+'cold-start-exploration.json')).envelope.response);prefix.selection.exploration.final_ids.reverse();
+ assert.equal(nativeResponseSchema.safeParse(prefix).success,false);
+});
+
+test('selection.cold_start: stored legacy C/B/S records parse as stored; regenerated fixtures carry mpd-v1',async()=>{
+ const legacy=JSON.parse((await readFile('tests/fixtures/recommendation-v2/teammate-round-3.response.json','utf8')).replace(/^\uFEFF/,''));
+ const cold=nativeResponseSchema.parse(legacy).selection!.cold_start as any;
+ assert.equal(cold.exit_conditions_met,true);assert(Math.abs(cold.stability_s-0.955)<1e-9);assert(!('mean_pairwise_difference' in cold));
+ for(const name of ['ten-results.json','cold-start-exploration.json']){
+  const c=nativeResponseSchema.parse((await read(dir+name)).envelope.response).selection!.cold_start as any;
+  assert.equal(c.detector,'mean_pairwise_difference');assert.equal(c.detector_version,'mpd-v1');assert(!('coverage_c' in c));
+  assert.equal(c.active,c.mean_pairwise_difference<c.threshold);
+ }
+ for(const file of ['success','clarification','no-match']){
+  const c=nativeResponseSchema.parse(await read(`recommendation/examples/contracts/${file}.json`)).selection!.cold_start as any;
+  assert.equal(c.detector,'mean_pairwise_difference');assert.equal(c.evaluated,false);assert.equal(c.mean_pairwise_difference,null);
+ }
 });
 
 test('feedback only accepts five displayed homes even when the native contract contains ten',()=>{

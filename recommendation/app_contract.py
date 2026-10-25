@@ -7,7 +7,7 @@ from .contracts.request import RecommendationRequest
 
 class ApplicationRecommendationRequest(RecommendationRequest):
     def native_request(self):
-        # behavior_context and cold_start are scored natively; nothing is stripped.
+        # behavior_context is scored natively; cold_start is passed through (accepted, unused by mpd-v1).
         return RecommendationRequest.model_validate(self.model_dump())
 
 

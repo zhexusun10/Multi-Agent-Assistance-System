@@ -6,8 +6,8 @@ numpy COMPONENT arrays and derives every score from them in ``PoolScores.combine
     soft utilities      util / known          (pool x soft criteria)
     pair similarities   sim / compared        (features x pool x references), self pairs have identity similarity 1
 
-so a caller can recombine the same components under other weights (cold-start stability
-trials, P5 part 2) without rescoring, and ScoreBreakdown / Contribution objects are built only
+so a caller can recombine the same components under other weights (the analysis-only stability
+trials, recommendation/analysis/stability.py) without rescoring, and ScoreBreakdown / Contribution objects are built only
 for the listings that are returned or previewed (``breakdown``).
 
 Rules (all parameters from recommendation/settings/recommendation.yaml, no code defaults):
@@ -150,7 +150,7 @@ def describe(settings):
 
 @dataclass(frozen=True)
 class Weights:
-    """Every weight layer combine() uses; stability trials pass perturbed copies (replace())."""
+    """Every weight layer combine() uses; analysis stability trials pass perturbed copies (replace())."""
 
     soft_criteria: np.ndarray  # raw criterion weights, normalised in combine()
     soft: float
@@ -446,7 +446,7 @@ class PoolScores:
         )
 
     def reweighted(self, **changes):
-        """Weights with some layers replaced (extension point for stability trials)."""
+        """Weights with some layers replaced (extension point for the analysis stability trials)."""
         return replace(self.weights, **changes)
 
     # --- per-item objects (returned items and trace previews only) -----------------------

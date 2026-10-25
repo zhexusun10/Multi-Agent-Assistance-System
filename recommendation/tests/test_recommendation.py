@@ -13,7 +13,7 @@ from recommendation.state.store import StateStore
 from recommendation.service import RecommendationService
 from recommendation.agent.controller import (
     ScriptedController,
-    Proposal,
+    Completion,
     LiveController,
 )
 from recommendation.ranking.ranker import pair_similarity
@@ -181,11 +181,12 @@ def test_invalid_proposal_and_outages(service):
     class Bad(ScriptedController):
         def propose(self, d, c, t):
             super().propose(d, c, t)
-            return Proposal(listing_ids=["invented"])
+            return Completion(ranking_artifact_id="invented")
 
     service.controller = Bad()
     result = service.recommend(req())
     assert result.status == "error" and not result.recommendations
+    assert result.error.code == "INVALID_SELECTION"  # code never selects from an artifact it did not make
     service.controller = ScriptedController()
 
     def fail():

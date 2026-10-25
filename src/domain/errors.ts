@@ -1,6 +1,7 @@
 /** Public errors never expose SDK payloads, Zod arrays or provider diagnostics. */
 export function recommendationFailureMessage(code:string){
   if(code==='MODEL_UNAVAILABLE')return "The search service is temporarily unreachable. Try again later; your requirements are saved.";
+  if(code==='MODEL_NOT_CONFIGURED')return "The search service's recommendation model is not configured. Contact the administrator; your requirements are saved.";
   if(code==='DATA_UNAVAILABLE')return "Listing details could not be read. Try again later; your requirements are saved.";
   return "The search could not be completed. Try again later; your requirements are saved.";
 }

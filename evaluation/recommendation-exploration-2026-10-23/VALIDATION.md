@@ -1542,3 +1542,86 @@ appointment status upgrade → re-saved viewing draft (`test_appointment_status_
 main's byte-preserved kernels → kernels change only through declared patches; main's behavior-transport test: native
 `/recommend` now accepts behavior_context (was 422) and the native request keeps it (was stripped); main's
 output-protocol tests use the v2 pipeline tools and an empty hard budget (native now resolves URA areas).
+
+## Cold-start detector mpd-v1 (2026-10-24)
+
+User decision: cold start measures score differentiation directly. D (Gini's mean difference) over the official
+combined scores of the overall top 30 eligible candidates; active when D < 0.01 (starting value, not calibrated).
+Replaces the C/B/S exit checks and the remembered exit. Details: MIGRATION.md section 0.5. D describes score spread
+only; nothing below shows that requirements are sufficient or that recommendations are correct.
+
+| Item | Proof | Outcome |
+|---|---|---|
+| D formula, equal scores (D = 0), order independence, fewer than two scores (no division) | `test_selection_v1.py::test_mean_pairwise_difference_is_ginis_mean_difference` | pass |
+| D equal to the threshold is inactive; nextafter above/below; threshold 0 never active | `::test_detector_threshold_equality_is_inactive_without_tolerance` | pass |
+| Window: overall top 30 incl. leaders; a 31st score never changes D; fewer than 30 uses all; narrow vs wide spread; configurable window | `::test_detector_window_is_the_overall_top_scores_including_leaders` | pass |
+| Short circuits: disabled, empty pool, pool ≤ result_limit (not evaluated, D null) | `::test_detector_short_circuits_are_not_evaluated`, `::test_plan_scenario_small_pool_returns_everything_in_score_order` | pass |
+| Input is the unmodified full-pool score order; no rescoring or reweighting at runtime | `::test_detector_input_is_the_unmodified_full_pool_score_order`, `::test_d_is_request_independent_and_never_rescores`, `::test_unresolved_data_is_not_treated_as_under_specification` | pass |
+| Remembered exit ignored (this or another pool_key); recorded as unused in the trace | `::test_inactive_cold_start_keeps_near_tie_sampling_and_remembered_exit_is_ignored`, `::test_service_round_trip_cold_start_follows_d_and_ignores_the_exit_input`, `test_trace_v2.py` cold_start_diagnostics params | pass |
+| Reactivation: a later round with low differentiation is active again (same pool_key, stale exit sent) | `::test_later_round_reactivates_when_its_differentiation_is_low` | pass |
+| Sampling unchanged for equivalent selection inputs: draws equal to the pre-change (HEAD 4d687e3) select_v1 for a fixed seed, active and inactive | `::test_sampling_is_unchanged_for_equivalent_selection_inputs` (golden draws computed with HEAD's select_v1 from the same selection_input) | pass |
+| Exact price-exploration draws reproduced from the committed fixture | `test_contract_v2_fixtures.py::test_cold_start_exploration_fixture_is_valid_and_reproduced`; mutation of the stage A/B stream fails it | pass |
+| Stored pre-mpd-v1 run (legacy C/B/S cold_start, removed settings keys) replays byte-for-byte through immutable replay + replay_gate | `::test_stored_legacy_cold_start_run_replays_as_stored`; routing every dict to the mpd-v1 model fails it | pass |
+| Legacy C/B/S shape accepted as stored, never read as D; mixed shapes rejected; mpd-v1 invariants (Python and TS agree) | `response-cases.json` (30 cases) in `test_contract_v2_fixtures.py::test_response_cases` and `tests/recommendation-v2-fixtures.test.ts`; teammate round-3 file in `tests/refinement-native-trigger.test.ts` | pass |
+| Settings: detector keys required when enabled, window 2..1000, threshold ≥ 0; removed C/B/S keys rejected by name; stored legacy configuration migrated only for `inspect-listing` | `test_settings.py`, `test_terminal_debug.py::...stored_configuration` | pass |
+| Orchestrator records no new exits; stored values carried forward; refinement trigger on mpd-v1 and stored legacy records | `tests/recommendation-v2-fixtures.test.ts`, `tests/refinement-native-trigger.test.ts` | pass |
+| Weight-perturbation analysis (epsilon basis) still reproducible, analysis-only | `test_analysis_p7.py::test_top_k_stability_*`, `::test_historical_exit_test_keeps_the_superseded_thresholds` | pass |
+| TUNING / YAML / OPEN_ITEMS agreement; downstream patches re-registered (no earlier `changes` line dropped) | `test_analysis_p7.py`, `test_delivery_p7.py`, `scripts/import-recommendation-upstream.py --check` (71 files, 39 declared) | pass |
+
+Gates: `pytest recommendation/tests -q` 498 passed; `pytest tests -q` 46 passed; `python -m recommendation.schemas
+--check` exit 0; `npm run -s typecheck` and `typecheck:recommendation` exit 0; `npm test` 330 passed, 0 failed,
+22 skipped (env-gated live tests). All offline: no model request was made.
+
+Not run (AGENTS.md cost rule): `tests/native-recommendation-live.test.ts` (assertions updated for mpd-v1, not
+executed), `scripts/check_refinement_real.ts`, live smokes, the real-browser refinement run, and any measurement of
+how often real pools fall below 0.01. Fixture notes: `ten-results.json` is now near_tie_sampling (D ≈ 0.327) and
+`single-reference.json` ranked (D ≈ 0.039); `cold-start-exploration.json` (D = 0) was added for exploration coverage.
+Their regenerated `pool_key` / `data_version` and the regenerated examples' `suppressed_features` were already stale
+at HEAD (a HEAD regeneration gives the same values), not caused by this change.
+
+## Dedicated Python LangChain agent and ranking-artifact handoff (2026-10-24)
+
+User plan (sections 1-7, 10-13): the recommendation agent is a recommendation-local Python LangChain tool-calling
+agent (RECOMMENDATION_LLM_*); the LLM coordinates tools before cold-start detection; detection, selection, final
+validation and persistence run in code after the loop. Details: MIGRATION.md section 0.6. All checks offline; no
+model request was made (fake LangChain chat models and scripted fakes only).
+
+| Item | Proof | Outcome |
+|---|---|---|
+| Configuration only from RECOMMENDATION_LLM_*; missing/invalid -> MODEL_NOT_CONFIGURED naming the variable; no fallback to CHAT_MODEL/OPENAI_* (also not via the SDKs' implicit OPENAI_BASE_URL/ORG/PROJECT); group loading; key never in repr/trace/response | `test_agent_langchain.py::test_settings_come_only_*`, `::test_invalid_settings_*`, `::test_the_client_never_reads_*`, `::test_model_settings_load_as_one_group_*`, `::test_settings_never_print_the_key_*`, `::test_live_agent_runs_through_python_langchain_*` | pass |
+| No Node subprocess; LangChain message/tool conversion, usage, per-attempt timeout, invalid tool calls reported and corrected, provider text never forwarded | `::test_live_agent_runs_through_python_langchain_with_no_subprocess`, `::test_invalid_tool_calls_*`, `::test_provider_failure_*`; model_bridge.ts a declared deletion (`test_delivery_p7.py`, upstream `--check`) | pass |
+| Completion = current ranking artifact; listing IDs, invented or stale artifacts refused in the loop; cannot finish before ranking; empty ranking completes without another model call | `tests/test_recommendation_output_protocol.py`, `test_geo_tools.py` (Inventor, Obedient), `test_fit_controller_regression.py` | pass |
+| Artifact code-managed, current, invalidated by stage reruns / bind; identical evidence -> identical scores and artifact digest; evidence coverage (known/missing/ambiguous/conflicting/unsupported) | `test_agent_langchain.py::test_ranking_artifact_*`, `::test_bind_entity_*`, `::test_scores_are_unchanged_*`, `::test_an_id_and_name_conflict_*` | pass |
+| read_pool: pagination/totals, fields, listing selection, schema page ceiling, lean envelope, stale / cross-run / out-of-pool rejection, no mutation, not a resolution call, partial reading keeps full-pool ranking, untrusted text, not_retrieved status, ranking fields | `test_agent_langchain.py::test_read_pool_*` (4 tests) | pass |
+| Code-side selection after the loop; re-rank discards an old selection; gate ties selection to the artifact; selection step resolvable | `::test_rerank_discards_*`, `::test_selection_step_resolves_*`, `test_trace_v2.py`, `test_selection_v1.py` | pass |
+| Repair: structured FailureReport; data change -> refresh (rebuild once); stale soft geo evidence -> targeted retrieval; stale hard geo evidence -> refilter + rerank; bounded; no-progress stop; failed repair turn recorded; internal inconsistency never sent back; no_match vs operational error | `::test_repairable_failure_*`, `::test_stale_geographic_evidence_*` (soft, hard), `::test_repairs_are_bounded`, `::test_repeated_failure_*`, `::test_a_failed_repair_turn_*`, `::test_internal_selection_*`, `::test_empty_ranking_*`, `::test_operational_errors_*` | pass |
+
+Gates: `pytest recommendation/tests tests -q` 580 passed; `python -m recommendation.schemas --check` exit 0; `npm run
+-s typecheck` and `typecheck:recommendation` exit 0; `npm test` 0 failed; upstream `--check` 71 files, 40 declared
+(one declared deletion). Not run: any real-model request (AGENTS.md cost rule); tool-calling quality with a real
+provider is unverified.
+
+## select-v2 cold-start selection (2026-10-24)
+
+User plan section 9 with the user's change (bands from the overall top-30 window's prices incl. leaders; quotas by
+non-leader band counts; sample only non-leaders). Details: MIGRATION.md section 0.7. All offline.
+
+| Item | Proof | Outcome |
+|---|---|---|
+| Never beyond overall rank 30, also with boundary ties past it; head = exactly the window | `test_selection_v2.py::test_never_draws_beyond_the_window_*`, `test_trace_v2.py` (bigcold) | pass |
+| Pools of 11-29; ten or fewer candidates kept in score order | `::test_pools_of_11_to_29_*`, `::test_ten_or_fewer_candidates_*`, terminal transcript (9-listing window) | pass |
+| Leaders in the intermediate total; final limits 1, 5, 10; ordering before truncation; no rebalancing | `::test_leaders_count_toward_*` (1/5/10), `test_selection_v1.py::test_exploration_window_intermediate_and_final_sizes` (7 scenarios x 25 seeds) | pass |
+| Bands from window prices incl. leaders (never the pool tail); repeated and missing prices; quotas = largest remainder over non-leader counts; only non-leaders sampled | `test_selection_v1.py::test_price_bands_come_from_the_window_*`, `test_selection_v2.py::test_bands_from_window_prices_*` | pass |
+| No duplicates; deterministic; replay from the stored select-v2 input; tampered inputs never silently reproduce | `::test_no_duplicates_*`, `::test_tampered_stored_window_*`, service round trip | pass |
+| Non-cold-start selection unchanged (equals select-v1 for equivalent inputs; HEAD 4d687e3 near-tie golden draws) | `::test_non_cold_start_selection_equals_select_v1`, `test_selection_v1.py::test_near_tie_sampling_is_unchanged_*` | pass |
+| Historical replay: a stored select-v1 input replays the pre-change cold-start golden draws; stored legacy runs replay byte-for-byte | `test_selection_v1.py::test_stored_select_v1_inputs_replay_*`, `::test_stored_legacy_cold_start_run_replays_as_stored` | pass |
+| Final validation rejects wrong final IDs, order, prefix, out-of-window listings and a wrong intermediate | `test_selection_v2.py::test_final_validation_rejects_*` (4 tampers) | pass |
+| Labelled diagnostics (window / intermediate / final; a window of <= 10 counted as `*_ranked`, never sampled) consistent in Python and TS | `::test_service_response_carries_labelled_*`, `::test_a_small_window_counts_*`; TS strict union, `select-v1-oracle.test.ts` (select-v2 cold rules incl. the leader boundary from the oracle's own scores and six negative cases) | pass |
+| Final gate and replay_gate compare the whole select-v2 summary (intermediate order, leaders, band counts) with the replay; band edges must be the window's price quantiles | `test_selection_v2.py::test_final_validation_compares_the_whole_summary_*` (6 tampers), `::test_a_stored_select_v2_response_with_an_altered_summary_*`, `::test_replay_rejects_band_edges_*` | pass |
+| Score order before truncation with prices unrelated to scores (limits 1/5/10) | `::test_intermediate_is_in_score_order_*` | pass |
+| Mutation check: band-ordered draws, pool-wide edges, window-count allocation, sampling leaders each fail the suite | source mutants run offline (each `1 failed`), file restored | pass |
+| Stored select-v1 cold-start summary parses and re-dumps as stored (Python), parses as select-v1 (TS); mixed shapes rejected | `::test_stored_select_v1_cold_start_response_*`, `tests/recommendation-v2-fixtures.test.ts` (frozen `legacy-select-v1-cold-start.json`) | pass |
+| Explanation text follows the returned listings (no price-tier claim when only leaders are returned) | `tests/explanation-native-v2.test.ts` | pass |
+
+Gates: `pytest recommendation/tests tests -q` 0 failed; `npm test` 0 failed; `npm run -s typecheck` exit 0; schema and
+upstream checks pass. Not run: live/paid tests.

@@ -3,6 +3,36 @@
 Items that are unverified, interim or waiting for a later phase. Each one is closed (with the
 command and result) in VALIDATION.md of the phase that resolves it.
 
+## select-v2 cold-start selection (2026-10-24)
+
+- Window 30, intermediate 10 and the band rule (bands from the window's prices incl. leaders, quotas by non-leader
+  counts) are user decisions; how often each band is represented in returned lists on real pools was not measured.
+  With result_limit below the number of leaders the returned list holds only leaders (no sampled listing), by design.
+- `recommendation/analysis/calibrate.py` exploration_grid still analyses select-v1 (historical P7 figures).
+
+## Dedicated Python LangChain agent (2026-10-24)
+
+- **Not run** (AGENTS.md cost rule): no real-model request was made. The live client is verified offline with a fake
+  LangChain chat model (message conversion, tool binding, usage, timeouts, error scrubbing); a real provider round
+  trip, its tool-calling quality and the DeepSeek `thinking` switch are unverified.
+- Structured repair has three repairable causes today (data change, stale/missing geographic evidence, a hard
+  failure on fresh data); "conflicting" evidence status is never produced (one source per criterion and listing).
+
+## Cold-start detector mpd-v1 (2026-10-24)
+
+- **Decision** (user): cold start is active when D, the mean pairwise difference of the top 30 official combined
+  scores, is below `cold_start.detector.min_mean_pairwise_difference` 0.01. 0.01 is a starting value, **not
+  calibrated**: how often real pools fall below it has not been measured offline or live (pending decision below).
+- The remembered exit no longer bypasses the check; the request field is still accepted; migration 007's column and
+  data are kept, with no new writes. Stored legacy C/B/S responses are accepted as stored.
+- New-request seeds change (cold_start is in `selection_hash`); stored runs replay unchanged from `selection_input`.
+- The cold-start figures in CALIBRATION.md §8, PERFORMANCE.md and `p7/*.json` describe the superseded C/B/S detector
+  and were not re-run. The real-browser refinement run of 2026-10-24 (docs) was made under C/B/S and was not re-run.
+- **Known effect**: while D stays below the threshold, a requirement card can be offered in later rounds until the
+  applicable questions run out (or the user dismisses cards for the session). D does not prove that the
+  requirements are sufficient or that the recommendations are correct.
+- **Not run** (AGENTS.md cost rule): paid model / live tests (`native-recommendation-live`, `check_refinement_real`).
+
 ## Merge with main c7dc536 (2026-10-23)
 
 - **Not run** (need the full app stack on this tree): main's browser/behaviour live scripts
@@ -37,7 +67,7 @@ Status of everything that is not a plain pass at delivery. VALIDATION.md "P7 par
 ### Unverified items
 
 - End-to-end app + native on contract 2.0 (8010 → 8092) with a real browser and a real orchestrator round trip: not run (above).
-- Ten settings are still `provisional` (not calibrated; spec R2 values): similarity feature weights, browsing `time_scale_seconds`, `weight_perturbation_fraction`, cache index / retention / memory bounds. They need real feedback or dwell data, so the P7 item "replace provisional values with calibrated ones" is **partial** (pending decision below); no user-satisfaction or relevance claim is made.
+- Nine settings are still `provisional` (not calibrated; spec R2 values): similarity feature weights, browsing `time_scale_seconds`, cache index / retention / memory bounds (the perturbation fraction stopped being a setting on 2026-10-24). They need real feedback or dwell data, so the P7 item "replace provisional values with calibrated ones" is **partial** (pending decision below); no user-satisfaction or relevance claim is made.
 - `bind_entity` with a real LLM: in the P7 smoke run L3 (soft target "Lee Kong Chian School of Business", 2 exact matches) the model called `search_places` but did not bind, so the soft criterion stayed `ambiguous` (contributes unknown; C below threshold), which the rules allow. Its first final answer came before the pipeline had run; the final gate rejected it and the bounded repair completed the run (6 tool calls, 7 model calls, 44,759 tokens). The bind path itself is verified with the offline fake model (P4, CALIBRATION.md section 10).
 - Replay under another CPython version: `selection_input.python_version` is recorded, not enforced (P5 note).
 
@@ -49,15 +79,15 @@ Status of everything that is not a plain pass at delivery. VALIDATION.md "P7 par
 | Explicit-station token rule follows TS (P4 review; the explicit-station rule) | Native uses the TS rule exactly (MRT/LRT/地铁站/地铁). Whether `station`, 站, 轻轨 and 捷运 should also mark an explicit station request needs a decision; if yes, change TS `isExplicitStation`, the Python port and `tests/fixtures/place-mention-rules.json` together. |
 | Deployment of contract 2.0 | 8092 and 8010 must be restarted on this tree together (MIGRATION.md section 11); not done without the user's OK. |
 | Incident rows in the live state DB | Test conversations `c1`, `v2-fixture`, `v2-other` written in P2 stay in `data/.runtime/recommendation/state.sqlite` (md5 unchanged since; never deleted). Removal is the user's decision. |
-| Cold start rarely ends | Product decision (see known effects). |
-| Uncalibrated `provisional` settings (P7 review; spec P7 rule and user decision 2) | These keys keep their spec R2 / section 2 values because no real feedback / dwell data exists to calibrate them: `ranking.similarity.feature_weights.price`, `ranking.similarity.feature_weights.property_type`, `ranking.similarity.feature_weights.bedrooms`, `ranking.similarity.feature_weights.floor_area_sqft`, `ranking.similarity.feature_weights.geography`, `ranking.browsing.time_scale_seconds`, `cold_start.stability.weight_perturbation_fraction`, `cache.max_entries_per_conversation`, `cache.pool_retention_per_conversation`, `cache.memory_max_entries`. User decision 2 ("price is a behaviour-similarity feature; its weight is calibrated") is therefore **not met yet** (price stays 0.20), and `selection.tie_max_score_span` 0.01 was derived under the uncalibrated f = 0.2 (re-run `python -m recommendation.analysis.calibrate --sections stability` when f changes). The user decides: (a) accept these values until real feedback exists (the P7 item then stays partial with this acceptance recorded), or (b) name a calibration target to fit them now (for example drive-share targets from CALIBRATION.md §5). `test_provisional_settings_are_listed_as_pending_decisions` keeps this list equal to the `provisional` rows of TUNING.md. |
+| Cold-start threshold (mpd-v1, 2026-10-24) | `cold_start.detector.min_mean_pairwise_difference` 0.01 is the user's starting value, not calibrated; how often D of the top 30 scores falls below it on real pools has not been measured. Adjust after real use. |
+| Uncalibrated `provisional` settings (P7 review; spec P7 rule and user decision 2) | These keys keep their spec R2 / section 2 values because no real feedback / dwell data exists to calibrate them: `ranking.similarity.feature_weights.price`, `ranking.similarity.feature_weights.property_type`, `ranking.similarity.feature_weights.bedrooms`, `ranking.similarity.feature_weights.floor_area_sqft`, `ranking.similarity.feature_weights.geography`, `ranking.browsing.time_scale_seconds`, `cache.max_entries_per_conversation`, `cache.pool_retention_per_conversation`, `cache.memory_max_entries`. User decision 2 ("price is a behaviour-similarity feature; its weight is calibrated") is therefore **not met yet** (price stays 0.20), and `selection.tie_max_score_span` 0.01 was derived under the uncalibrated f = 0.2 of `python -m recommendation.analysis.calibrate --sections stability` (an analysis value in `recommendation/analysis/stability.py` since 2026-10-24, no longer a setting; re-derive when it changes). The user decides: (a) accept these values until real feedback exists (the P7 item then stays partial with this acceptance recorded), or (b) name a calibration target to fit them now (for example drive-share targets from CALIBRATION.md §5). `test_provisional_settings_are_listed_as_pending_decisions` keeps this list equal to the `provisional` rows of TUNING.md. |
 | `controller.max_model_turns` 8 vs the measured sequential worst case 9 (P7 review) | CALIBRATION.md §10: two narrowable ambiguous criteria handled strictly one tool call per turn need 9 model turns; with parallel calls 6. 8 (existing-default) is kept; raising it (e.g. to 10, within the ceiling 16) changes config_hash (not selection_hash) and the regenerated examples. Only 9 of 3,260 catalog names are narrowable. |
 | Location of the evaluation driver (P7 review) | Spec P7 asks for exposure Gini "in an external evaluation script over simulated rounds, not in the subagent". `recommendation/analysis/simulate.py` (and the exposure / coverage statistics in `analysis/stats.py`) ship inside the `recommendation/` package but are never imported by the runtime (`test_runtime_modules_never_import_the_analysis_package`); the subagent keeps no exposure history. Keep (user accepts), or move the driver under `evaluation/recommendation-exploration-2026-10-23/` or `scripts/` keeping the import guard. |
 | Historical evidence manifest | `evaluation/acceptance-history/EVIDENCE_MANIFEST.json` (publication 2026-10-22) records `recommendation-downstream-patches.json` as byte-preserved at that publication; the file now declares this branch's patches. The historical record is not edited; a later publication should record the new disposition. |
 
 ### Known effects (documented, not defects)
 
-- No soft criteria → C = 0 → cold start **cannot be exited** (R9; terminal help, READMEs, 原生接入说明). With mixed soft criteria the exit held in 7 of 18 calibration cases; in the live smoke one feedback round met the exit conditions (scripted r2, `ranked`), the others stayed in cold start because B > 5.
+- Under the superseded C/B/S detector (P7), no soft criteria → C = 0 → cold start **cannot be exited** (R9); the exit held in 7 of 18 mixed-soft calibration cases and in one live-smoke round. Since mpd-v1 (2026-10-24) every evaluated round follows D of the top 30 scores: with no soft criteria and no behaviour signal every score is equal, so D = 0 and cold start stays active; while D stays below 0.01 a requirement card can be offered in later rounds until the applicable questions run out. D measures score spread only, not whether the requirements are sufficient.
 - Single-reference normalisation: with one usable browsing reference the browsing score is that pair's similarity whatever the duration (tested offline in `tests/select-v1-oracle.test.ts` against the committed `single-reference.json` fixture and live in `p7/live_oracle_check.ts`).
 - Coordinates cover about 40 % of RENT listings (60 % missing): geographic hard criteria exclude the rest as `excluded_hard_unknown` (counted, warned), soft distances contribute unknown, and behaviour geography falls back to district equality.
 - Live-mode trace growth: linear in model turns; about 35–57 KB per query call, bounded by `controller.max_tool_calls` × the capped per-call size (≈ 1.1 MB). Measured in the P7 smoke: 135–154 KB per live run (5–7 model steps), 72–89 KB per scripted run.

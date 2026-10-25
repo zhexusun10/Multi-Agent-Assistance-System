@@ -40,6 +40,7 @@ MAX_TOOL_CALLS_CEILING = 40
 TIMEOUT_SECONDS_CEILING = 600  # bound kept from the previous run limits
 REPAIRS_CEILING = 2  # bound kept from the previous run limits
 MODEL_RESULT_CANDIDATES_CEILING = 500  # bound kept from the previous run limits
+DETECTOR_WINDOW_CEILING = 1000  # mpd-v1 D is O(W^2) pairs per evaluated round (about 26 ms at 1000)
 
 # Result-affecting sections: their digest (selection_hash) seeds selection randomness.
 SELECTION_SECTIONS = ("recommendation", "ranking", "geography", "cold_start", "selection")
@@ -158,23 +159,24 @@ class Geography(Section):
 
 
 class PriceSampling(Section):
-    target_sample_size: Count | None
+    # select-v2: the overall top ``exploration_window`` of O (leaders included) is the exploration
+    # window; ``intermediate_size`` listings are selected from it before the result_limit prefix.
+    exploration_window: Count | None
+    intermediate_size: Count | None
     quantile_bins: Count | None
 
 
-class Stability(Section):
-    trials: Count | None
-    weight_perturbation_fraction: Annotated[float, Field(gt=0, lt=1)] | None
+class Detector(Section):
+    # mpd-v1 (ranking/selection.py): D over the first candidate_window scores of O; active when
+    # D < min_mean_pairwise_difference. A window below 2 would have no pair to compare.
+    candidate_window: Annotated[int, Field(ge=2, le=DETECTOR_WINDOW_CEILING)] | None
+    min_mean_pairwise_difference: NonNegative | None
 
 
 class ColdStart(Section):
     enabled: bool
-    reenter_on_pool_rebuild: bool
-    min_evidence_coverage: Unit
-    max_boundary_tie_group_size: Count
-    min_top_k_stability: Unit
     price_sampling: PriceSampling
-    stability: Stability
+    detector: Detector
 
 
 class Selection(Section):
@@ -233,10 +235,11 @@ REQUIRED_WHEN_REACHABLE = (
         lambda s: s.cold_start.enabled,
         "cold_start.enabled is true",
         (
-            "cold_start.price_sampling.target_sample_size",
+            "cold_start.price_sampling.exploration_window",
+            "cold_start.price_sampling.intermediate_size",
             "cold_start.price_sampling.quantile_bins",
-            "cold_start.stability.trials",
-            "cold_start.stability.weight_perturbation_fraction",
+            "cold_start.detector.candidate_window",
+            "cold_start.detector.min_mean_pairwise_difference",
         ),
     ),
     (lambda s: s.cache.enabled, "cache.enabled is true", ("cache.ttl_seconds",)),
@@ -333,10 +336,15 @@ class RecommendationSettings(Section):
         limits = self.recommendation
         if limits.default_result_limit > limits.max_result_limit:
             errors.append("recommendation.default_result_limit must not exceed recommendation.max_result_limit")
-        target = self.cold_start.price_sampling.target_sample_size
-        if target is not None and target < limits.max_result_limit:
+        sampling = self.cold_start.price_sampling
+        if sampling.intermediate_size is not None and sampling.intermediate_size < limits.max_result_limit:
             errors.append(
-                "cold_start.price_sampling.target_sample_size must be >= recommendation.max_result_limit"
+                "cold_start.price_sampling.intermediate_size must be >= recommendation.max_result_limit"
+            )
+        if (sampling.exploration_window is not None and sampling.intermediate_size is not None
+                and sampling.exploration_window < sampling.intermediate_size):
+            errors.append(
+                "cold_start.price_sampling.exploration_window must be >= cold_start.price_sampling.intermediate_size"
             )
         controller = self.controller
         if controller.model_result_candidates < limits.max_result_limit:
@@ -463,6 +471,17 @@ def merge_overrides(data, overrides, prefix=""):
             target[leaf] = value
 
 
+# Keys removed on 2026-10-24: the superseded C/B/S cold-start detector and remembered exit, and the
+# select-v1 stage-A sample size (select-v2 uses exploration_window + intermediate_size).
+DETECTOR_KEYS = ("cold_start.reenter_on_pool_rebuild", "cold_start.min_evidence_coverage",
+                 "cold_start.max_boundary_tie_group_size", "cold_start.min_top_k_stability", "cold_start.stability")
+REMOVED_KEYS = {
+    **{key: "removed with the C/B/S cold-start detector; see cold_start.detector" for key in DETECTOR_KEYS},
+    "cold_start.price_sampling.target_sample_size": "replaced by cold_start.price_sampling.exploration_window "
+                                                    "and intermediate_size (select-v2)",
+}
+
+
 def format_errors(error):
     messages = []
     for item in error.errors():
@@ -470,6 +489,8 @@ def format_errors(error):
         message = item["msg"]
         if item["type"] == "value_error":
             message = message.removeprefix("Value error, ")
+        elif item["type"] == "extra_forbidden" and key in REMOVED_KEYS:
+            message = f"unknown key ({REMOVED_KEYS[key]})"
         elif item["type"] == "extra_forbidden":
             message = "unknown key (not part of the settings schema)"
         elif item["type"] == "missing":

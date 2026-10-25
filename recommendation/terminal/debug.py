@@ -32,11 +32,12 @@ from pathlib import Path
 from recommendation.contracts.errors import RecommendationError
 from recommendation.contracts.request import RecommendationRequest
 from ..config import RecommendationConfig
-from ..settings.loader import lookup
+from ..settings.loader import REMOVED_KEYS, lookup
 from ..tools.registry import PIPELINE
 from ..tracing import slim
 
-STEP_STAGES = PIPELINE + ("final_gate",)
+# "select" is the code step after the agent loop: cold-start detection + selection on the ranking artifact.
+STEP_STAGES = PIPELINE + ("select", "final_gate")
 # Stage names accepted by step / run-until: tool names, trace stage names and short aliases.
 STAGE_ALIASES = {
     "resolve_entities": "resolve_entities", "entity_resolution": "resolve_entities", "resolve": "resolve_entities",
@@ -44,8 +45,8 @@ STAGE_ALIASES = {
     "get_geographic_evidence": "get_geographic_evidence", "geographic_evidence": "get_geographic_evidence",
     "geo": "get_geographic_evidence",
     "rank_candidates": "rank_candidates", "rank": "rank_candidates", "scoring": "rank_candidates",
-    "cold_start_diagnostics": "rank_candidates", "price_sampling": "rank_candidates",
-    "final_selection": "rank_candidates", "selection": "rank_candidates",
+    "select": "select", "cold_start_diagnostics": "select", "price_sampling": "select",
+    "final_selection": "select", "selection": "select",
     "final_gate": "final_gate", "gate": "final_gate",
 }
 # Settings sections whose change invalidates step stages from (index into STEP_STAGES).
@@ -83,10 +84,12 @@ Inspection (latest run's retained data, or the step session):
 Step mode (--controller scripted only):
   step [stage]                           run the next stage (or exactly <stage>; dependencies enforced)
   run-until <stage>                      run stages up to <stage>: resolve_entities, build_pool,
-                                         get_geographic_evidence, rank_candidates, final_gate
+                                         get_geographic_evidence, rank_candidates, select (code: cold start +
+                                         selection on the ranking artifact), final_gate
   step reset                             discard the step session
-Notes: cold start is exited only when C (soft evidence coverage of the top K), B and S meet their
-thresholds; without soft criteria C = 0, so cold start cannot be exited without soft criteria.
+Notes: cold start (detector mpd-v1) is active while D, the mean pairwise difference of the top
+cold_start.detector.candidate_window scores, is below cold_start.detector.min_mean_pairwise_difference;
+it is re-evaluated every round and a staged cold_start exit is ignored. D measures score spread only.
 Live mode prints progress events (tool start/end with counts and duration, model turns, gate)."""
 
 
@@ -105,7 +108,7 @@ class Events:
 
 def _counts(result):
     return {"pool": result.candidate_count, "ranked": result.verified_count,
-            "selected": len(result.selected_ids), "evidence": result.evidence_count}
+            "artifact": result.ranking_artifact_id is not None, "evidence": result.evidence_count}
 
 
 class ObservedController:
@@ -198,10 +201,12 @@ class ObservedController:
                 }
             self._observe_calls(dispatcher)
         self.report_gates(trace.get("stages"))  # a failed gate before a repair attempt
-        proposal = self.inner.propose(dispatcher, context, trace)
-        self.events.emit("gate", f"checking proposal of {len(proposal.listing_ids)} listing(s)",
-                         event="gate_start", proposed=len(proposal.listing_ids))
-        return proposal
+        completion = self.inner.propose(dispatcher, context, trace)
+        self.events.emit("gate", f"selecting from ranking artifact {completion.ranking_artifact_id} "
+                         f"({dispatcher.artifact.eligible if dispatcher.artifact else 0} ranked), then final_gate",
+                         event="gate_start", ranking_artifact_id=completion.ranking_artifact_id,
+                         ranked=dispatcher.artifact.eligible if dispatcher.artifact else 0)
+        return completion
 
 
 # --- step mode ----------------------------------------------------------------------------------
@@ -303,7 +308,11 @@ class StepSession:
 
     def completed(self):
         done = list(self.dispatcher.completed_stages())
-        return done + (["final_gate"] if self.gate_passed and len(done) == len(PIPELINE) else [])
+        if len(done) == len(PIPELINE) and self.dispatcher.selection is not None:
+            done.append("select")
+            if self.gate_passed:
+                done.append("final_gate")
+        return done
 
     def next_stage(self):
         return next((s for s in STEP_STAGES if s not in self.completed()), None)
@@ -345,7 +354,6 @@ class StepSession:
 
     def step(self, stage=None):
         """Run ``stage`` (default: the next one); returns (stage, new stage records)."""
-        from ..agent.controller import Proposal
         from ..validation.gate import final_gate
 
         d = self.dispatcher
@@ -354,16 +362,23 @@ class StepSession:
             return None, []
         d.started = time.monotonic()  # step mode: the controller time budget applies per step
         first = len(self.trace["stages"])
-        if stage == "final_gate":
-            if d.selected is None:
+        if stage == "select":
+            if d.artifact is None:
                 raise RecommendationError(
                     "STALE_REFERENCE",
                     f"Call rank_candidates for the current inputs first (pipeline order: {' -> '.join(STEP_STAGES)})")
+            d.select_ranking(d.artifact.artifact_id)
+            self.gate_passed = False
+        elif stage == "final_gate":
+            if d.selected is None or d.selection is None:
+                raise RecommendationError(
+                    "STALE_REFERENCE",
+                    f"Run select for the current ranking artifact first (pipeline order: {' -> '.join(STEP_STAGES)})")
             gate = slim.Running(self.trace, "final_gate", d.config, inputs={"proposed": len(d.selected)},
                                 params={"mode": "step dry run (rolled back)"})
             try:
                 with rolled_back(self.store):
-                    final_gate(Proposal(listing_ids=list(d.selected)), d, self.trace)
+                    final_gate(d, self.trace)
             except RecommendationError as e:
                 gate.failed(e.detail)
                 raise
@@ -714,7 +729,7 @@ def show_cold_start(t, arg):
     print(f"source: {label}")
     if d is not None:
         if d.selection is None:
-            raise ValueError("Cold-start diagnostics do not exist in this view yet (run rank_candidates first)")
+            raise ValueError("Cold-start diagnostics do not exist in this view yet (run select first)")
         cold = d.selection.summary.cold_start.model_dump(mode="json")
         record = {k: v for k, v in d.selection.record["cold_start"].items() if k not in cold}
     elif response.selection is not None:
@@ -722,8 +737,13 @@ def show_cold_start(t, arg):
     else:
         raise ValueError("This response has no selection summary")
     _print({"cold_start": cold, "details": record})
-    print("Cold start is active when enabled, the pool exceeds result_limit and the exit conditions "
-          "(C >= c, B <= b, S >= s) are not met; without soft criteria C = 0, so cold start cannot be exited.")
+    if "detector" not in cold:
+        print("Stored legacy C/B/S cold-start diagnostics (superseded detector), shown as stored; they are not "
+              "reinterpreted as D.")
+        return
+    print("Cold start is active when enabled, the pool exceeds result_limit and D (mean pairwise difference of the "
+          "top candidate_window scores) is below the threshold; D equal to the threshold is inactive. D measures "
+          "score spread only, not whether the requirements are sufficient.")
 
 
 def show_selection(t, arg):
@@ -731,7 +751,7 @@ def show_selection(t, arg):
     print(f"source: {label}")
     if d is not None:
         if d.selection is None:
-            raise ValueError("No selection in this view yet (run rank_candidates first)")
+            raise ValueError("No selection in this view yet (run select first)")
         summary = d.selection.summary.model_dump(mode="json")
         items = [{"rank": n, "listing_id": k, "score_rank": d.scored.score_rank[k],
                   "selection_reason": d.selection.reasons[k], "selection_note": d.selection.notes.get(k)}
@@ -786,8 +806,11 @@ def stored_configuration(data, current):
 
     A trace-only key added after the run was stored (P7: trace.max_string_chars) is absent from
     older snapshots. Trace keys never affect results (they are outside selection_hash), so the
-    missing ones are taken from the current settings and named in the output; every other key
-    must be present and valid exactly as stored."""
+    missing ones are taken from the current settings and named in the output. A snapshot from
+    before the mpd-v1 cold-start detector (2026-10-24) holds the removed C/B/S keys: they are
+    dropped and cold_start.detector is taken from the current settings (named as filled), so the
+    recompute's cold-start status follows the current detector. Every other key must be present
+    and valid exactly as stored."""
     data = json.loads(json.dumps(data))
     filled = []
     if isinstance(data.get("trace"), dict):
@@ -795,6 +818,22 @@ def stored_configuration(data, current):
             if key not in data["trace"]:
                 data["trace"][key] = value
                 filled.append(f"trace.{key}")
+    cold = data.get("cold_start")
+    if isinstance(cold, dict) and "detector" not in cold:
+        legacy = [k for k in cold if f"cold_start.{k}" in REMOVED_KEYS]
+        if legacy:
+            for key in legacy:
+                del cold[key]
+            cold["detector"] = current.to_data()["cold_start"]["detector"]
+            filled.append("cold_start.detector")
+    sampling = cold.get("price_sampling") if isinstance(cold, dict) else None
+    if isinstance(sampling, dict) and "target_sample_size" in sampling:
+        # select-v1 stage-A size (before 2026-10-24): replaced by the select-v2 window keys.
+        del sampling["target_sample_size"]
+        current_sampling = current.to_data()["cold_start"]["price_sampling"]
+        sampling["exploration_window"] = current_sampling["exploration_window"]
+        sampling["intermediate_size"] = current_sampling["intermediate_size"]
+        filled.append("cold_start.price_sampling")
     source = "stored run configuration" + (f" + current {', '.join(filled)}" if filled else "")
     return RecommendationConfig.from_data(data, source), filled
 
@@ -810,11 +849,19 @@ def inspect_listing(t, arg):
         cached = t.store.cached(t.conversation, response.request_id)
         request = RecommendationRequest.model_validate(cached[2]["request"])
         config, filled = stored_configuration(cached[2]["configuration"], t.config)
-        if filled:
-            print(f"Note: the stored configuration predates {', '.join(filled)} (trace-only, never result-"
+        trace_filled = [k for k in filled if k.startswith("trace.")]
+        if trace_filled:
+            print(f"Note: the stored configuration predates {', '.join(trace_filled)} (trace-only, never result-"
                   "affecting); the current value is used for this recompute.")
+        if "cold_start.detector" in filled:
+            print("Note: the stored configuration uses the superseded C/B/S cold-start keys; they are dropped and the "
+                  "current cold_start.detector is used, so this recompute's cold-start status and selection follow "
+                  "the current detector, not the original run.")
+        if "cold_start.price_sampling" in filled:
+            print("Note: the stored configuration predates select-v2; the current exploration window settings are "
+                  "used, so this recompute's selection follows select-v2, not the original run.")
         session = StepSession(t, request, config, None, validate=False, label="recompute")
-        session.run_until("rank_candidates")
+        session.run_until("select")
         d, recomputed = session.dispatcher, True
         label = (f"RECOMPUTED from the current data for run {response.request_id} (its stored request and "
                  "configuration; not data retained from the original run)")

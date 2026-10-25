@@ -124,7 +124,12 @@ export function makeExplanationBundle(req:Requirements,rec:RecommendationRespons
   const source=(archive as any)?.request?.feedback as {source?:string}[]|undefined;
   const sampleOnly=source?.length&&source.every(x=>x.source==='sample');
   const v2=rec.native?.contract==='2.0',selection=v2?rec.native?.selection:undefined;
-  const exploratory=selection?.mode==='cold_start_exploration'||selection?.mode==='near_tie_sampling';
+  // Describe the DISPLAYED listings: native returns up to ten and the first five are shown, so a sampled
+  // list whose visible prefix holds only leaders is plain score order.
+  const shownReason=(reason:string)=>rows.some(r=>rec.native?.selection_reasons?.[r.listing.listing_id]?.selection_reason===reason);
+  const explored=selection?.mode==='cold_start_exploration'&&shownReason('price_exploration_sample');
+  const tieSampled=selection?.mode==='near_tie_sampling'&&shownReason('tie_group_sample');
+  const exploratory=explored||tieSampled;
   const appointment=scores.some(s=>'appointment_score' in s&&s.appointment_score!==null&&s.appointment_weight>0);
   const browsing=scores.some(s=>'browsing_score' in s&&s.browsing_score!==null&&s.browsing_weight>0);
   const behaviorSource=v2?[...(browsing?["previous viewing activity"]:[]),...(appointment?["saved viewing intentions"]:[])].join(" and ")||"existing behaviour signals":sampleOnly?"viewing samples supplied for this round":"previous viewing activity";
@@ -141,8 +146,8 @@ export function makeExplanationBundle(req:Requirements,rec:RecommendationRespons
   if(!active.size&&!behavior.size&&rows.length)rankText+="Current data cannot reliably distinguish suitability from the user’s preferences. The order is for browsing; say this once without separately repeating that rent is not a ranking cause.";
   const rankedRows=rows.filter(r=>rec.native?.scores[r.listing.listing_id]);
   if(rankedRows.length>1&&rankedRows.every(r=>Math.abs(r.score-rankedRows[0].score)<1e-12))rankText+=exploratory?"Current match scores do not distinguish the homes; earlier display does not mean clearly better.":"The displayed scored homes are not distinguished by their ranking evidence. A stable order is retained, not proof the first is better.";
-  if(selection?.mode==='near_tie_sampling')rankText+="Homes with very close matches are sampled. Display position does not establish superiority over later homes.";
-  if(selection?.mode==='cold_start_exploration')rankText+="To help compare price levels, some strong matches are retained and supplementary homes are drawn from price strata. Display order is not pure score rank or a guarantee the first is best. A saved viewing draft is an interest signal, not a booking.";
+  if(tieSampled)rankText+="Homes with very close matches are sampled. Display position does not establish superiority over later homes.";
+  if(explored)rankText+="To help compare price levels, some strong matches are retained and supplementary homes are drawn from price strata. Display order is not pure score rank or a guarantee the first is best. A saved viewing draft is an interest signal, not a booking.";
   const unscored=(rec.native?.unscored_listing_ids||[]).filter(id=>rows.some(r=>r.listing.listing_id===id));
   if(rankedIds.length)rankText+="The selected-ranking comparison includes only: "+ranked.map(r=>r.listing.title).join(", ")+".";
   if(pending.length)rankText+="Supplementary displayed homes are outside this ranking. They may still have known school/supermarket distances for comparison, without satisfying every hard requirement or participating in ranking. A shorter supplementary distance does not invalidate the selected ranking.";

@@ -163,11 +163,9 @@ class RecoveringModel(LiveController):
                     )
                 ],
             }
-        # Prefix up to the run's effective result_limit (context request; None -> settings default).
-        limit = json.loads(messages[1]["content"])["request"]["result_limit"]
-        ranked = json.loads(messages[-1]["content"])["ranked_ids"][:limit]
+        artifact = json.loads(messages[-1]["content"])["ranking_artifact_id"]
         return {
-            "content": [{"type": "text", "text": json.dumps({"listing_ids": ranked})}],
+            "content": [{"type": "text", "text": json.dumps({"ranking_artifact_id": artifact})}],
             "tool_calls": [],
             "usage": {"total_tokens": 17},
         }

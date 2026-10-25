@@ -5,8 +5,10 @@ Single parameter source: `recommendation/settings/recommendation.yaml` (loader
 line carries the same source label as the table below (`recommendation/tests/test_analysis_p7.py`
 checks that the two agree and that the table holds every key at its committed value).
 
-Committed identity after P7: `config_hash` `e46e754a9c6e6eafd4e2522f7bee4f26de37f956de50d3be6be173549710b2c8`,
-`selection_hash` `90e724bb160ae68524bd5d9b899959716d46f509627096c5696c7ec66d5a18a7`.
+Committed identity after the mpd-v1 cold-start detector change (2026-10-24): `config_hash`
+`d3ee67b179391ebd0a832d1da09e5cef84058de8ad1c4195979e602f2c3c632a`, `selection_hash`
+`d56688f2810985eb5adc7691c550debe84ca52b29bc1afca16c9161b051f9d15`. After P7 they were `e46e754a9c6e…` /
+`90e724bb160a…`; CALIBRATION.md, PERFORMANCE.md and the `p7/` JSON were recorded under those.
 
 Source labels:
 
@@ -35,6 +37,16 @@ labels became `experiment-result` (kept) where a P7 measurement supports the val
 keys that need real feedback: the five similarity feature weights, `ranking.browsing.time_scale_seconds`,
 `cold_start.stability.weight_perturbation_fraction` and the three cache bounds. `selection.tie_max_score_span`
 is an experiment result derived under the provisional f = 0.2; it must be re-derived whenever f changes.
+
+What changed on 2026-10-24 (user decision, mpd-v1 cold-start detector): the C/B/S exit thresholds,
+`cold_start.reenter_on_pool_rebuild` and `cold_start.stability.*` were removed (the loader rejects them), and
+`cold_start.detector.candidate_window` (30) and `cold_start.detector.min_mean_pairwise_difference` (0.01, a
+starting value, not calibrated) were added. f = 0.2 is no longer a setting: it lives in
+`recommendation/analysis/stability.py` as the value epsilon was derived under, so the provisional keys are now
+nine. Re-derive epsilon if that analysis value changes.
+
+Also 2026-10-24 (user plan, select-v2): `cold_start.price_sampling.target_sample_size` (30, select-v1 stage-A size)
+was replaced by `exploration_window` (30, overall top incl. leaders) and `intermediate_size` (10).
 
 Changing values: use `RECOMMENDATION_CONFIG` / `--config` or the terminal `set-config` for
 experiments (both record their config_hash). A change to a result-affecting section changes
@@ -76,15 +88,12 @@ replays its stored response. Re-run the analyses after any change to scoring or 
 | `ranking.similarity.min_comparison_coverage` | `0.5` | experiment-result | Kept. At 0.4–0.5 at most 0.7 % of pairs are unavailable in any pool. At 0.7, 80–90 % become unavailable in 5 of 9 pools because floor_area_sqft is missing. 0.5 is the largest value that keeps pairs comparable when one of two remaining features is missing (§4) |
 | `geography.station_distance_method` | `"nearest_exit"` | confirmed | R1c |
 | `cold_start.enabled` | `true` | confirmed | plan Step 7 |
-| `cold_start.reenter_on_pool_rebuild` | `true` | confirmed | decision 4 |
-| `cold_start.min_evidence_coverage` | `0.8` | confirmed | C threshold |
-| `cold_start.max_boundary_tie_group_size` | `5` | confirmed | B threshold |
-| `cold_start.min_top_k_stability` | `0.9` | confirmed | S threshold |
-| `cold_start.price_sampling.target_sample_size` | `30` | confirmed | Initial experimental value, not a statistical guarantee. §7 compared 10/20/30/40/60: mean score loss vs the deterministic top 10 grows with the target (mixed soft sets: 0.2–0.35 % at 10, 0.8–1.1 % at 30, 1.3–2.0 % at 60), and a larger target spreads the draw over more of R |
+| `cold_start.price_sampling.exploration_window` | `30` | confirmed | User plan 2026-10-24 (select-v2): the overall top 30 eligible candidates in score order, leaders included (all when fewer), never extended for boundary ties; price bands come from these prices. Replaces select-v1 `target_sample_size` 30 (§7: mean score loss vs the deterministic top 10 grew with that target, 0.8–1.1 % at 30 for mixed soft sets; P7 figure for select-v1) |
+| `cold_start.price_sampling.intermediate_size` | `10` | confirmed | User plan 2026-10-24 (select-v2): leaders + price-band sample fill an intermediate selection of 10 (min with the window), whose first result_limit are returned; independent of the caller's result_limit |
 | `cold_start.price_sampling.quantile_bins` | `5` | experiment-result | Kept. Duplicate edges merge 5 bins into 4.8 on average (98.6 % of rows share a price). In tied pools ≥ 97 % of non-empty R bins get a displayed listing up to 6 bins, against 85–96 % at 10 bins. More bins widen the displayed price span only slightly (0.63 → 0.66) (§7) |
-| `cold_start.stability.trials` | `20` | experiment-result | Kept. Across 30 seeds per trial count, std(S) at 20 trials is 0.009–0.021 and the exit decision agrees with a 1000-trial reference in 100 % of cases (93 % at 5 trials). Cost ≤ 8–11 ms per trial on the 21,431-listing pool (§8) |
-| `cold_start.stability.weight_perturbation_fraction` | `0.2` | provisional | Not calibrated (R2 value). What counts as a "reasonable perturbation" is a design choice. The data shows little sensitivity: median S over the 18 mixed-soft cases is 1.0 / 0.995 / 0.975 / 0.955 at f = 0.05 / 0.1 / 0.2 / 0.3, and S ≥ 0.9 in 18 / 18 / 18 / 17 cases. The epsilon basis (below) depends on this value |
-| `selection.tie_max_score_span` | `0.01` | experiment-result | Changed from 0.02 (§8). Under the configured perturbation (f = 0.2), how often two cutoff-window scores swap order depends on their gap: 16.5 % at gap ≤ 0.0025, 4.2 % at (0.0025, 0.005], 1.0 % at (0.005, 0.01], 0.2 % at (0.01, 0.02]. G holds the scores within epsilon/2 of s_K, so 0.01 groups exactly the gaps that are not reliably ordered (≤ 0.005). At 0.02, B ≤ 5 holds in only 2 of 18 mixed-soft cases (7 of 18 at 0.01), so cold start almost never ends |
+| `cold_start.detector.candidate_window` | `30` | confirmed | User decision 2026-10-24: D is computed over the overall top 30 eligible candidates in score order (leaders included; all when fewer). Its own setting, independent of the exploration settings (`price_sampling.*`) |
+| `cold_start.detector.min_mean_pairwise_difference` | `0.01` | confirmed | User decision 2026-10-24 ("change to 0.01 as the threshold"): a starting value, not calibrated. Active when D < 0.01; D equal to it is inactive. A practical score tolerance, not a significance test; D describes score spread only, not whether the requirements are sufficient. How often real pools fall below it has not been measured |
+| `selection.tie_max_score_span` | `0.01` | experiment-result | Changed from 0.02 (§8). Under the calibration perturbation f = 0.2 (`recommendation/analysis/stability.py`; no longer a runtime setting), how often two cutoff-window scores swap order depends on their gap: 16.5 % at gap ≤ 0.0025, 4.2 % at (0.0025, 0.005], 1.0 % at (0.005, 0.01], 0.2 % at (0.01, 0.02]. G holds the scores within epsilon/2 of s_K, so 0.01 groups exactly the gaps that are not reliably ordered (≤ 0.005). At 0.02, B ≤ 5 holds in only 2 of 18 mixed-soft cases (7 of 18 at 0.01), so cold start almost never ended under the superseded C/B/S detector (P7 figures) |
 | `selection.random_policy` | `"uniform_without_replacement"` | confirmed | plan |
 | `selection.seed_namespace` | `"recommendation-selection-v1"` | confirmed | R3 |
 | `cache.enabled` | `true` | confirmed | plan Step 4 |

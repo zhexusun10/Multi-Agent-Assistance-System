@@ -142,6 +142,7 @@ export class WorkflowService{
     // Reserve native results once; only the first batch is initially public.
     const request=recommendationRequestSchema.parse({contract_version:'1.0',request_id:requestId,conversation_id:s.session_id,requirements_version:s.requirements_version,requirements:s.requirements,feedback,behavior_context,...(previous?{previous_state_id:previous}:{}),result_limit:RECOMMENDATION_RESERVOIR_LIMIT});
     await tx.query('INSERT INTO recommendation_calls(id,session_id,operation_id,request,feedback_cutoff,interest_context) VALUES($1,$2,$3,$4,$5,$6)',[requestId,s.session_id,operationId,JSON.stringify(request),cutoff,JSON.stringify(interest)]);
+    // The stored cold-start compat state (ignored natively since mpd-v1) is read once here and queued with B's body, so retries resend the identical native body.
     s.latest_request_id=requestId;
     return this.store.queue(tx,s,operationId,'b',{request,cold_start:s.recommendation_cold_start??NOT_EXITED,interpretation_notes:notes},'recommend');
   }
