@@ -31,7 +31,7 @@ test('semantic audit returns an invented rental scope to the model, while arithm
  const draft=await extractRequirements(q,empty,mock);assert.equal(draft.extraction?.attempts,2);assert.equal(draft.clarifications.length,0);assert(Math.abs(Number(draft.upsert.find(c=>c.field==='floor_area_sqft')?.value)-861.1128333368)<.00001);assert(!draft.upsert.some(c=>c.field==='rental_scope'));assert(draft.upsert.some(c=>c.field==='amenities'&&c.value==='no_live_in_landlord'));
 });
 test('missing data, absent capability and unconnected routes have distinct user-readable reasons',()=>{
- const privateBath=criterion('amenities','eq','private_bathroom');assert(unknownReason(privateBath).includes('数据未收录'));assert(unknownReason(criterion('commute_time','lte',30,'min')).includes('路线工具未接入'));assert(unknownReason(criterion('floor_area_sqft','gte',80,'sqft')).includes('记录值缺失'));assert(!criterionText(privateBath).includes('amenities'));assert(!criterionText(privateBath).includes('等于'));
+ const privateBath=criterion('amenities','eq','private_bathroom');assert((unknownReason(privateBath)).toLowerCase().includes("data unavailable"));assert((unknownReason(criterion('commute_time','lte',30,'min'))).toLowerCase().includes("route tools are not connected"));assert((unknownReason(criterion('floor_area_sqft','gte',80,'sqft'))).toLowerCase().includes("recorded value is missing"));assert(!criterionText(privateBath).includes('amenities'));assert(!(criterionText(privateBath)).toLowerCase().includes("equals"));
  const r={criterion_id:privateBath.criterion_id,status:'unknown' as const,observed_value:null,evidence_ids:['e']};assert.equal(classify([r],[privateBath]),'unverified');
 });
 test('canceling one amenity preserves other amenities and bathroom counts',()=>{

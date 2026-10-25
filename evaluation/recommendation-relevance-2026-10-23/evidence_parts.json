@@ -1,0 +1,45 @@
+{
+  "original_archive_name": "Group42_Offline_Recommendation_Evaluation_K10_2026-10-23.zip",
+  "original_archive_bytes": 128892483,
+  "original_archive_sha256": "c987a84e6d0f8b8065a4861cd333ff89e3bc173a8c3dd375c8141f62abf5e397",
+  "original_archive_members": 220,
+  "part_size_bytes": 20971520,
+  "parts": [
+    {
+      "name": "Group42_Offline_Evidence_Rev3.zip.part001",
+      "bytes": 20971520,
+      "sha256": "dbc9cd517ee24ec7474b09df26b4ea39b52681a7cf25948ea1c29b72f3a98101"
+    },
+    {
+      "name": "Group42_Offline_Evidence_Rev3.zip.part002",
+      "bytes": 20971520,
+      "sha256": "993461ec3fd2bc6e418a8d7ec7f63e79095a02150fcc704db7915d32f6afcb9d"
+    },
+    {
+      "name": "Group42_Offline_Evidence_Rev3.zip.part003",
+      "bytes": 20971520,
+      "sha256": "9db5ca68aab9097c7289f77e5ac84b376d72b1f0c272b5f8eb18e22d7f097009"
+    },
+    {
+      "name": "Group42_Offline_Evidence_Rev3.zip.part004",
+      "bytes": 20971520,
+      "sha256": "4469851034c2311fb9913203552c206a0b7277c4bace60324fd7809f02c1fdf0"
+    },
+    {
+      "name": "Group42_Offline_Evidence_Rev3.zip.part005",
+      "bytes": 20971520,
+      "sha256": "558f18d2804b4184d0e957b8ad5b6f838f6307cf3244bba0ba81eb6d754548b8"
+    },
+    {
+      "name": "Group42_Offline_Evidence_Rev3.zip.part006",
+      "bytes": 20971520,
+      "sha256": "14f72ee8d8a3a2e3e67102f4d65b9e955f0ff72eeb69ec800c49d4bd2cf5648a"
+    },
+    {
+      "name": "Group42_Offline_Evidence_Rev3.zip.part007",
+      "bytes": 3063363,
+      "sha256": "35f762aad309be9105f2f6021e258df4faa97d3841010ba0e3bd3733e1e734b2"
+    }
+  ],
+  "reconstruction": "Concatenate the ordered parts byte-for-byte, then verify the original SHA256. restore_evidence.py performs both checks."
+}

@@ -20,9 +20,9 @@ test('the actual NUS update separates ranking eligibility from known distance an
   assert.equal(extra.ranking_status,'not_ranked');assert(!b.ranking.ranked_listing_ids.includes(extra.listing_id));
   assert(b.requirements.some(r=>r.results.some(x=>x.listing_id===extra.listing_id&&typeof x.observed_value==='number'&&x.unit==='m')));
   assert(b.ranking.filter_only_criteria.includes('monthly-rent'));assert(!b.ranking.active_criteria.includes('monthly-rent'));
-  const school=b.requirements.find(r=>r.label.includes('新加坡国立大学'))!;assert.equal(school.comparison_only,true);assert(!school.label.includes('1000'));
+  const school=b.requirements.find(r=>r.label.includes('National University of Singapore'))!;assert.equal(school.comparison_only,true);assert(!school.label.includes('1000'));
   const comparison=b.facts.find(f=>f.ref==='compare-ranking:1:2')!;
-  assert.match(comparison.text,/新加坡国立大学.*此项更有利于第2套/);assert.match(comparison.text,/超市.*此项更有利于第1套/);
+  assert.match(comparison.text,/National University of Singapore.*favours home No. 2/);assert.match(comparison.text,/Supermarket.*favours home No. 1/);
   assert(!b.facts.some(f=>f.ref.startsWith('compare-ranking:')&&f.listing_ids.includes(extra.listing_id)));
   const missing=b.facts.find(f=>f.ref==='coverage:missing')!;
   assert(missing.derived_from?.includes('condition:'+extra.listing_id+':minimum-bedrooms'));

@@ -44,8 +44,8 @@ test('group positions and calculated unit rents preserve recommendation order; b
  assert(!bundle.facts.some(f=>f.ref.startsWith('unit-rent:')));
  const low=bundle.facts.find(f=>f.ref==='cohort:84000003:rent_per_sqft')!;
  assert.equal(low.numbers[0],2.4);assert(low.derived_from?.includes('area:84000003'));assert(low.derived_from?.includes('price:84000003'));
- assert.match(low.text,/最低.*单看空间和月租更划算/);
- assert.match(bundle.facts.find(f=>f.ref==='cohort:84000004:rent_per_sqft')!.text,/最高.*同样的面积.*月租相对高/);
+ assert.match(low.text,/lowest.*space and rent alone.*better value/i);
+ assert.match(bundle.facts.find(f=>f.ref==='cohort:84000004:rent_per_sqft')!.text,/highest.*same area costs relatively more/i);
  assert(!bundle.facts.some(f=>f.ref==='cohort:84000001:rent_per_sqft'));
  const packed=explanationModelInput(bundle);
  assert(!packed.input.facts.some((f:any)=>packed.toInternal.get(f.ref)?.startsWith('advantage:')));
@@ -78,18 +78,18 @@ test('zero or missing area never yields a ratio and incomplete comparisons retai
  const b=addDecisionSupport(makeExplanationBundle(req,rec,'介绍'),req,rec,enrichment);
  assert(!b.facts.some(f=>f.ref==='cohort:84000001:rent_per_sqft'));
  const low=b.facts.find(f=>f.ref==='cohort:84000003:rent_per_sqft')!;
- assert.equal(low.cohort?.complete,false);assert.equal(low.cohort?.known_count,4);assert.match(low.text,/有每平方英尺月租资料的4套/);
+ assert.equal(low.cohort?.complete,false);assert.equal(low.cohort?.known_count,4);assert.match(low.text,/4 homes with .* data/i);
 });
 
 test('unit rent prose requires its own comparative evidence, its practical meaning and correct units',()=>{
  const {req,rec,enrichment}=fixture(),b=addDecisionSupport(makeExplanationBundle(req,rec,'介绍'),req,rec,enrichment),good=guideResponse(req,rec,'介绍');
  good.paragraphs[4].text+='每平方英尺月租约5.2新币，是这几套中最高的，同样面积要付更多月租，单看空间和月租不太划算。';
  good.paragraphs[4].support_refs.push('cohort:84000004:rent_per_sqft');validateExplanation(good,b);
- const bare=structuredClone(good);bare.paragraphs[4].text='第4套 Home D：月租2,600新币，面积500平方英尺，每平方英尺月租约5.2新币，仅供参考。';assert.throws(()=>validateExplanation(bare,b),/单位面积月租必须/);
- const noMeaning=structuredClone(good);noMeaning.paragraphs[4].text='第4套 Home D：月租2,600新币，面积500平方英尺，每平方英尺月租约5.2新币，是本轮最高的。';assert.throws(()=>validateExplanation(noMeaning,b),/用户能理解的取舍/);
- const ungrounded=structuredClone(good);ungrounded.paragraphs[4].support_refs=ungrounded.paragraphs[4].support_refs.filter(r=>!r.endsWith(':rent_per_sqft'));assert.throws(()=>validateExplanation(ungrounded,b),/单位面积月租只在/);
- const wrongUnit=structuredClone(good);wrongUnit.paragraphs[4].text=wrongUnit.paragraphs[4].text.replace('5.2新币','5.2元/米');assert.throws(()=>validateExplanation(wrongUnit,b),/单位为新币/);
- const wrongSubject=structuredClone(good);wrongSubject.paragraphs[1].text+='每平方英尺月租约5.2新币，是这几套中最高的，同样面积要付更多月租。';wrongSubject.paragraphs[1].support_refs.push('cohort:84000004:rent_per_sqft');assert.throws(()=>validateExplanation(wrongSubject,b),/单位面积月租只在/);
+ const bare=structuredClone(good);bare.paragraphs[4].text='第4套 Home D：月租2,600新币，面积500平方英尺，每平方英尺月租约5.2新币，仅供参考。';assert.throws(()=>validateExplanation(bare,b),/unit rent.*high\/low position/i);
+ const noMeaning=structuredClone(good);noMeaning.paragraphs[4].text='第4套 Home D：月租2,600新币，面积500平方英尺，每平方英尺月租约5.2新币，是本轮最高的。';assert.throws(()=>validateExplanation(noMeaning,b),/area-and-rent trade-off/);
+ const ungrounded=structuredClone(good);ungrounded.paragraphs[4].support_refs=ungrounded.paragraphs[4].support_refs.filter(r=>!r.endsWith(':rent_per_sqft'));assert.throws(()=>validateExplanation(ungrounded,b),/Mention unit rent only/);
+ const wrongUnit=structuredClone(good);wrongUnit.paragraphs[4].text=wrongUnit.paragraphs[4].text.replace('5.2新币','5.2元/米');assert.throws(()=>validateExplanation(wrongUnit,b),/SGD\/sq ft\/month/);
+ const wrongSubject=structuredClone(good);wrongSubject.paragraphs[1].text+='每平方英尺月租约5.2新币，是这几套中最高的，同样面积要付更多月租。';wrongSubject.paragraphs[1].support_refs.push('cohort:84000004:rent_per_sqft');assert.throws(()=>validateExplanation(wrongSubject,b),/Mention unit rent only/);
 });
 test('known price and area are required for a broad guide, while a focused answer can address only the asked feature',()=>{
  const {req,rec}=fixture(),bundle=addDecisionSupport(makeExplanationBundle(req,rec,'介绍'),req,rec),good=guideResponse(req,rec,'介绍');

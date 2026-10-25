@@ -1,25 +1,27 @@
 /** EchoMind _TEMPLATES shape: exactly three examples per intent; first feeds LLM few-shot. */
 export const INTENT_TEMPLATES={
-  search:['我想找一套适合我的出租房','帮我筛选一些房源','Find a home to rent'],
-  property_search:['我要租金文泰附近预算2500新币的房子','找新加坡国立大学五公里内有独立卫浴的单间','Find a condo near NUS under SGD 2000 per month'],
-  requirement_update:['预算改为2000，其他条件不变','不要独立卫浴这个条件了，重新推荐','Change my budget to 2500 and search again'],
-  knowledge:['我想了解一些租房常识','请解释一下租房规则','Explain Singapore rental rules'],
-  rental_knowledge:['新加坡HDB最短可以租多久','公寓租约的印花税怎么算，押金一般怎么约定','What are the minimum rental periods for HDB and private homes?'],
-  explanation:['请解释推荐结果','我想知道选择这些房子的理由','Explain the recommendations'],
-  recommendation_explanation:['为什么推荐第一套而不是第二套','帮我比较前两套的优缺点和待核实项','Why did you recommend the first property?'],
-  followup:['我想继续跟进这套房子','请根据之前的沟通处理后续事项','Help me follow up on this property'],
-  contact_salesperson:['帮我问第一套的经纪人押金能不能少一点','我想咨询Gold Coast Condo，帮我生成联系草稿','Draft a message to the salesperson about listing 23583402'],
-  arrange_viewing:['我想看第一套，帮我约明天下午看房','请为房源23583402起草看房询问','Arrange a viewing for the first recommended property'],
-  recommendation_summary:['把当前推荐的房源整理成总结文档','生成前两套房源的对比报告','Generate a document summarising the recommendations'],
-  conversation_summary:['把今天我和经纪人的对话生成总结文档','整理今天的会话和跟进记录','Summarise today’s conversation and salesperson replies'],
-  followup_status:['第一套的消息发送了吗','经纪人联系了吗，回复了吗','Has my message to the salesperson been sent?'],
-  other:['今天天气怎么样','帮我写一个和租房无关的程序','Tell me a joke unrelated to housing'],
+  search:["I want to find a rental home that suits me","Help me shortlist some homes",'Find a home to rent'],
+  property_search:["I want to rent near Clementi with a monthly budget of SGD 2500","Find a room with a private bathroom within five kilometres of NUS",'Find a condo near NUS under SGD 2000 per month'],
+  requirement_update:["Change the budget to 2000 and keep the other requirements","Remove the private-bathroom requirement and recommend again",'Change my budget to 2500 and search again'],
+  recommendation_more:["Show me five more homes","These are not suitable; please keep recommending","Recommend some more with the same requirements"],
+  knowledge:["I would like some general rental advice","Explain the rental rules",'Explain Singapore rental rules'],
+  rental_knowledge:["What is the minimum HDB rental period in Singapore?","How is stamp duty calculated for a condo lease, and how are deposits usually agreed?",'What are the minimum rental periods for HDB and private homes?'],
+  explanation:["Explain the recommendations","I would like to know why these homes were selected",'Explain the recommendations'],
+  recommendation_explanation:["Why recommend the first home rather than the second?","Compare the first two homes’ advantages, trade-offs and items to confirm",'Why did you recommend the first property?'],
+  followup:["I would like to follow up on this home","Help with the next steps based on our earlier conversation",'Help me follow up on this property'],
+  contact_salesperson:["Draft an enquiry asking the first home’s agent whether the deposit can be reduced","I am interested in Gold Coast Condo; prepare an enquiry draft",'Draft a message to the salesperson about listing 23583402'],
+  arrange_viewing:["I would like to view the first home; help arrange tomorrow afternoon","Draft a viewing enquiry for listing 23583402",'Arrange a viewing for the first recommended property'],
+  recommendation_summary:["Generate a summary document of the current recommended homes","Generate a comparison report for the first two homes",'Generate a document summarising the recommendations'],
+  conversation_summary:["Summarise today’s conversation with the agent in a document","Summarise today’s conversations and follow-up records",'Summarise today’s conversation and salesperson replies'],
+  followup_status:["Has the message about the first home been sent?","Has the agent been contacted, and have they replied?",'Has my message to the salesperson been sent?'],
+  other:["What is the weather like today?","Write a program unrelated to renting",'Tell me a joke unrelated to housing'],
 } as const;
 export type IntentCategory=keyof typeof INTENT_TEMPLATES;
-export const INTENT_GROUPS:Record<IntentCategory,string>={search:'search',property_search:'search',requirement_update:'search',knowledge:'knowledge',rental_knowledge:'knowledge',explanation:'explanation',recommendation_explanation:'explanation',followup:'followup',contact_salesperson:'followup',arrange_viewing:'followup',recommendation_summary:'followup',conversation_summary:'followup',followup_status:'followup',other:'other'};
+export const INTENT_GROUPS:Record<IntentCategory,string>={search:'search',property_search:'search',requirement_update:'search',recommendation_more:'more',knowledge:'knowledge',rental_knowledge:'knowledge',explanation:'explanation',recommendation_explanation:'explanation',followup:'followup',contact_salesperson:'followup',arrange_viewing:'followup',recommendation_summary:'followup',conversation_summary:'followup',followup_status:'followup',other:'other'};
 export const GENERIC_INTENTS=new Set<IntentCategory>(['search','knowledge','explanation','followup']);
 export const SPECIFIC_INTENTS=new Set<IntentCategory>(['property_search','requirement_update','rental_knowledge','recommendation_explanation','contact_salesperson','arrange_viewing','recommendation_summary','conversation_summary','followup_status']);
 export const SPECIFIC_PATTERNS:Partial<Record<IntentCategory,string[]>>={
+  recommendation_more:['show me more','five more','more homes','more properties','keep recommending','another batch','more options'],
   contact_salesperson:['经纪人','联系草稿','联系核实草稿','联系核实','咨询草稿','salesperson','draft a message'],
   arrange_viewing:['看房询问','约看房','预约看房','我想看第一套','我要看这套','我想看这套','viewing'],
   conversation_summary:['当天会话','今天的会话','今天的对话','经纪人的对话','会话总结','跟进总结','daily summary'],

@@ -18,3 +18,7 @@ data/exports/export_properties_properties_sale.csv
 *.pyc
 .DS_Store
 /tmp_*/
+
+# Office lock files and superseded report drafts stay local.
+~$*
+docs/reports/individual-contribution-20261024/

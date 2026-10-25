@@ -242,7 +242,7 @@ export function createMaster(
   const masterGraph = new StateGraph(MasterState)
     .addNode("master", async (state, config) => {
       if(persistence.domain){
-        if(state.input.kind==='runtime') return {assignments:null,routeCall:null,answerMessage:new AIMessage('阶段处理已完成，业务结果已写入会话。'),alreadyProcessed:false,alreadySteered:false};
+        if(state.input.kind==='runtime') return {assignments:null,routeCall:null,answerMessage:new AIMessage("This stage is complete and its result is saved to the conversation."),alreadyProcessed:false,alreadySteered:false};
         const plan=await persistence.domain.plan(state.input.query,String(config.configurable?.thread_id),state.input.requestId,state.input.sourceRequestId);
         if(plan.assignments.length) config.writer?.({type:'dispatch',assignments:plan.assignments} satisfies GraphEvent);
         return {assignments:plan.assignments.length?plan.assignments:null,routeCall:null,answerMessage:new AIMessage(plan.answer)};
@@ -413,7 +413,7 @@ export function createMaster(
   }
 
   function taskEvent(task: AgentTask): WorkerEvent {
-    if(persistence.domain){return task.status==='failed'?{type:'agent_error',agent:task.agent,prompt:'',detail:'阶段执行失败，请查看业务错误说明。'}:{type:'agent_result',result:{agent:task.agent,prompt:'',output:JSON.stringify({status:'completed'})}};}
+    if(persistence.domain){return task.status==='failed'?{type:'agent_error',agent:task.agent,prompt:'',detail:"This stage failed. Check the business-error description."}:{type:'agent_result',result:{agent:task.agent,prompt:'',output:JSON.stringify({status:'completed'})}};}
     if (task.status === "failed") {
       return { type: "agent_error", agent: task.agent, prompt: task.prompt, detail: task.error ?? "Agent failed" };
     }

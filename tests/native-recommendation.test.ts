@@ -37,10 +37,10 @@ test('native 2.0 output preserves order, fused scores, selection reasons, pool/s
  assert.equal(rec.native!.contract,'2.0');assert.deepEqual(rec.native!.pool,native.pool);assert.deepEqual(rec.native!.selection,native.selection);assert.deepEqual(rec.native!.resolution,native.resolution);assert.equal(rec.native!.config_hash,native.execution.config_hash);assert.deepEqual(rec.native!.unscored_listing_ids,[]);
  assert.equal(rec.state.state_id,`native:${native.state.state_id}`);assert.equal(rec.execution.score_semantics,'native_soft_behavior_weighted_fit_not_probability');
  assert(!rec.warnings.some(w=>w.code==='NATIVE_GEOGRAPHY_GAP'));
- assert(rec.warnings.find(w=>w.code==='JIANGSHAN_NATIVE')!.message.includes('最多10套'));
- assert(rec.evidence.every(e=>e.source_ref===rec.native!.exchange_ref));const explanation=buildExplanation(f.req.requirements,rec,'synthetic','解释第一套为什么推荐');assert.deepEqual(explanation.verified[0].native_scores,rec.native!.scores[rec.recommendations[0].listing.listing_id]);assert(!explanation.summary.includes('原生融合匹配分'));
+ assert((rec.warnings.find(w=>w.code==='JIANGSHAN_NATIVE')!.message).toLowerCase().includes("up to 10 homes"));
+ assert(rec.evidence.every(e=>e.source_ref===rec.native!.exchange_ref));const explanation=buildExplanation(f.req.requirements,rec,'synthetic','解释第一套为什么推荐');assert.deepEqual(explanation.verified[0].native_scores,rec.native!.scores[rec.recommendations[0].listing.listing_id]);assert(!(explanation.summary).toLowerCase().includes("native combined match score"));
  // The per-listing score meaning (2.0 soft/behaviour + selection reason) stays available to the Explanation Agent.
- const meaning=String((explanation.verified[0] as any).score_meaning);assert(meaning.includes('原生融合匹配分')&&meaning.includes('软需求匹配')&&meaning.includes('选择原因'));
+ const meaning=String((explanation.verified[0] as any).score_meaning);assert((meaning).toLowerCase().includes("native combined match score")&&(meaning).toLowerCase().includes("soft-preference match")&&(meaning).toLowerCase().includes("selection reason"));
 });
 test('LTA:/URA: place targets go to native as destination IDs and no longer raise NATIVE_GEOGRAPHY_GAP (native LTA/URA catalog, P4)',async()=>{
  for(const place_id of ['LTA:MRT:CLEMENTI','URA:AREA:CLEMENTI','URA:REGION:WEST']){

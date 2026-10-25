@@ -17,10 +17,10 @@ export function singaporeLocal(now=new Date()){
 }
 export function selectedValue(date,hour,minute,withTime){return validDate(date)?date+(withTime?`T${pad(hour)}:${pad(minute)}`:''):'';}
 export function valueError(value,min='',max=''){
-  if(!validDate(value?.slice(0,10))||value.length>10&&!/^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d$/.test(value))return '请先选择有效日期和时间。';
+  if(!validDate(value?.slice(0,10))||value.length>10&&!/^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d$/.test(value))return "Choose a valid date and time first.";
   const display=s=>s.replace('T',' ').replaceAll('-','/');
-  if(min&&value<min)return `请选择不早于 ${display(min)} 的${value.length>10?'时间':'日期'}。`;
-  if(max&&value>max)return `请选择不晚于 ${display(max)} 的${value.length>10?'时间':'日期'}。`;
+  if(min&&value<min)return `Choose a date or time on or after ${display(min)} ${value.length>10?"time":"date"}.`;
+  if(max&&value>max)return `Choose a date or time on or before ${display(max)} ${value.length>10?"time":"date"}.`;
   return '';
 }
 const node=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;};
@@ -36,9 +36,9 @@ export class DateTimePicker{
   }
   attach(input){
     if(input.dataset.customPicker)return;
-    input.dataset.customPicker='true';const label=input.getAttribute('aria-label')||input.closest('label')?.childNodes[0]?.textContent?.trim()||'日期时间';
+    input.dataset.customPicker='true';const label=input.getAttribute('aria-label')||input.closest('label')?.childNodes[0]?.textContent?.trim()||"date and time";
     const wrapper=node('span','date-time-field');input.before(wrapper);wrapper.append(input);
-    const trigger=button('▦',e=>{e.preventDefault();e.stopPropagation();this.open(input);},'date-time-trigger');trigger.setAttribute('aria-label','选择'+label);trigger.setAttribute('aria-haspopup','dialog');trigger.setAttribute('aria-expanded','false');wrapper.append(trigger);
+    const trigger=button('▦',e=>{e.preventDefault();e.stopPropagation();this.open(input);},'date-time-trigger');trigger.setAttribute('aria-label',"Choose "+label);trigger.setAttribute('aria-haspopup','dialog');trigger.setAttribute('aria-expanded','false');wrapper.append(trigger);
     input.setAttribute('aria-haspopup','dialog');input.setAttribute('aria-expanded','false');
     input.addEventListener('pointerdown',e=>{e.preventDefault();this.open(input);});
     input.addEventListener('click',e=>{e.preventDefault();if(this.active?.input!==input)this.open(input);});
@@ -49,30 +49,30 @@ export class DateTimePicker{
     if(this.active?.input===input)return;
     this.close(false);const now=singaporeLocal(),value=input.value,today=now.slice(0,10),date=validDate(value.slice(0,10))?value.slice(0,10):null;
     this.active={input,...input._dateTimePicker,withTime:input.type==='datetime-local',today,date,hour:Number(value.slice(11,13)||now.slice(11,13)),minute:Number(value.slice(14,16)||now.slice(14,16)),month:(date||today).slice(0,7)};
-    const a=this.active,panel=this.panel=node('div','date-time-popover');panel.id='date-time-popover-'+(++sequence);panel.setAttribute('role','dialog');panel.setAttribute('aria-label','选择'+a.label);panel.tabIndex=-1;
+    const a=this.active,panel=this.panel=node('div','date-time-popover');panel.id='date-time-popover-'+(++sequence);panel.setAttribute('role','dialog');panel.setAttribute('aria-label',"Choose "+a.label);panel.tabIndex=-1;
     a.input.setAttribute('aria-expanded','true');a.trigger.setAttribute('aria-expanded','true');a.input.setAttribute('aria-controls',panel.id);a.trigger.setAttribute('aria-controls',panel.id);
-    panel.append(node('h3','date-time-title','选择'+a.label),node('p','date-time-hint','新加坡时间 · 小圆点表示今天，深绿色表示当前选择'));
+    panel.append(node('h3','date-time-title',"Choose "+a.label),node('p','date-time-hint',"Singapore time · A dot marks today; dark green marks your selection"));
     this.navigation=node('div','date-time-navigation');this.grid=node('div','date-time-grid');this.grid.setAttribute('role','grid');
     panel.append(this.navigation,this.grid);this.renderMonth();
-    if(a.withTime){const controls=node('div','date-time-clock');for(const [key,label,max] of [['hour','小时',24],['minute','分钟',60]]){const field=node('label','',label),select=node('select');select.setAttribute('aria-label',label);for(let i=0;i<max;i++)select.append(new Option(pad(i),String(i)));select.value=String(a[key]);select.onchange=()=>{a[key]=Number(select.value);this.updateStatus();};field.append(select);controls.append(field);}panel.append(controls);}
+    if(a.withTime){const controls=node('div','date-time-clock');for(const [key,label,max] of [['hour',"Hour",24],['minute',"Minute",60]]){const field=node('label','',label),select=node('select');select.setAttribute('aria-label',label);for(let i=0;i<max;i++)select.append(new Option(pad(i),String(i)));select.value=String(a[key]);select.onchange=()=>{a[key]=Number(select.value);this.updateStatus();};field.append(select);controls.append(field);}panel.append(controls);}
     this.selection=node('p','date-time-selection');this.selection.setAttribute('aria-live','polite');this.error=node('p','date-time-error');this.error.setAttribute('role','alert');
-    const footer=node('div','date-time-footer');this.confirm=button('确认保存',()=>this.commit(),'date-time-confirm');footer.append(button('清除',()=>{this.apply('');},'date-time-clear'),this.confirm);panel.append(this.selection,this.error,footer);
+    const footer=node('div','date-time-footer');this.confirm=button("Confirm",()=>this.commit(),'date-time-confirm');footer.append(button("Clear",()=>{this.apply('');},'date-time-clear'),this.confirm);panel.append(this.selection,this.error,footer);
     panel.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='SELECT')e.preventDefault();if(e.key==='Tab')this.trapFocus(e);});
     (input.closest('dialog')||document.body).append(panel);this.updateStatus();this.position();
     const focus=this.grid.querySelector(`[data-date="${date||today}"]:not(:disabled)`)||this.grid.querySelector('button:not(:disabled)');(focus||panel).focus({preventScroll:true});
   }
   renderMonth(focusDate){
     const a=this.active;if(!a)return;const [year,month]=a.month.split('-').map(Number);this.navigation.replaceChildren();
-    const previous=button('‹',()=>this.navigate(-1),'date-time-month-step');previous.setAttribute('aria-label','上个月');
-    const next=button('›',()=>this.navigate(1),'date-time-month-step');next.setAttribute('aria-label','下个月');
-    const ys=node('select'),ms=node('select');ys.setAttribute('aria-label','年份');ms.setAttribute('aria-label','月份');
-    for(let y=Math.max(1,year-5);y<=Math.min(9999,year+5);y++)ys.append(new Option(`${y}年`,String(y)));for(let m=1;m<=12;m++)ms.append(new Option(`${m}月`,String(m)));ys.value=String(year);ms.value=String(month);
+    const previous=button('‹',()=>this.navigate(-1),'date-time-month-step');previous.setAttribute('aria-label',"Previous month");
+    const next=button('›',()=>this.navigate(1),'date-time-month-step');next.setAttribute('aria-label',"Next month");
+    const ys=node('select'),ms=node('select');ys.setAttribute('aria-label',"Year");ms.setAttribute('aria-label',"Month");
+    for(let y=Math.max(1,year-5);y<=Math.min(9999,year+5);y++)ys.append(new Option(String(y),String(y)));for(let m=1;m<=12;m++)ms.append(new Option(new Intl.DateTimeFormat('en-SG',{month:'long'}).format(new Date(Date.UTC(2020,m-1,15))),String(m)));ys.value=String(year);ms.value=String(month);
     const change=()=>{a.month=`${pad(ys.value).padStart(4,'0')}-${pad(ms.value)}`;this.renderMonth();this.position();};ys.onchange=change;ms.onchange=change;this.navigation.append(previous,ys,ms,next);
-    this.grid.replaceChildren();this.grid.setAttribute('aria-label',`${year}年${month}月`);
-    for(const name of ['一','二','三','四','五','六','日']){const day=node('span','date-time-weekday',name);day.setAttribute('role','columnheader');this.grid.append(day);}
+    this.grid.replaceChildren();this.grid.setAttribute('aria-label',new Intl.DateTimeFormat('en-SG',{month:'long',year:'numeric'}).format(new Date(Date.UTC(year,month-1,15))));
+    for(const name of ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]){const day=node('span','date-time-weekday',name);day.setAttribute('role','columnheader');this.grid.append(day);}
     for(const cell of monthCells(a.month)){
       const day=button(String(Number(cell.date.slice(8))),()=>{a.date=cell.date;a.month=cell.date.slice(0,7);this.renderMonth(cell.date);this.updateStatus();},'date-time-day');
-      day.dataset.date=cell.date;day.setAttribute('role','gridcell');day.setAttribute('aria-label',cell.date.replace(/^(\d+)-(\d+)-(\d+)$/,'$1年$2月$3日'));day.setAttribute('aria-selected',String(cell.date===a.date));
+      day.dataset.date=cell.date;day.setAttribute('role','gridcell');day.setAttribute('aria-label',cell.date.replace(/^(\d+)-(\d+)-(\d+)$/,"$1-$2-$3"));day.setAttribute('aria-selected',String(cell.date===a.date));
       day.classList.toggle('is-selected',cell.date===a.date);day.classList.toggle('other-month',!cell.in_month);if(cell.date===a.today){day.classList.add('is-today');day.setAttribute('aria-current','date');}
       day.disabled=!!(a.input.min&&cell.date<a.input.min.slice(0,10)||a.input.max&&cell.date>a.input.max.slice(0,10));
       day.tabIndex=cell.date===(a.date||a.today)?0:-1;day.onkeydown=e=>this.dayKey(e,cell.date);this.grid.append(day);
@@ -81,7 +81,7 @@ export class DateTimePicker{
   }
   navigate(delta){const a=this.active,[year,m]=a.month.split('-').map(Number),d=new Date(`${a.month}-01T12:00:00Z`);d.setUTCMonth(m-1+delta);if(d.getUTCFullYear()<1||d.getUTCFullYear()>9999)return;a.month=d.toISOString().slice(0,7);this.renderMonth();}
   dayKey(e,date){const shifts={ArrowLeft:-1,ArrowRight:1,ArrowUp:-7,ArrowDown:7};if(Object.hasOwn(shifts,e.key)){e.preventDefault();const next=shiftDate(date,shifts[e.key]),a=this.active;if(a.input.min&&next<a.input.min.slice(0,10)||a.input.max&&next>a.input.max.slice(0,10))return;a.month=next.slice(0,7);this.renderMonth(next);}else if(e.key==='PageUp'||e.key==='PageDown'){e.preventDefault();this.navigate(e.key==='PageUp'?-1:1);this.grid.querySelector('button:not(:disabled)')?.focus();}}
-  updateStatus(){if(!this.selection)return;const a=this.active,value=selectedValue(a.date,a.hour,a.minute,a.withTime);this.selection.textContent=value?'待确认：'+value.replace('T',' ').replaceAll('-','/'):'请选择日期，再点击“确认保存”。';this.error.textContent='';this.confirm.disabled=!value;}
+  updateStatus(){if(!this.selection)return;const a=this.active,value=selectedValue(a.date,a.hour,a.minute,a.withTime);this.selection.textContent=value?"To confirm: "+value.replace('T',' ').replaceAll('-','/'):"Choose a date, then select Confirm.";this.error.textContent='';this.confirm.disabled=!value;}
   commit(){const a=this.active,value=selectedValue(a.date,a.hour,a.minute,a.withTime),error=valueError(value,a.input.min,a.input.max);if(error){this.error.textContent=error;return;}this.apply(value);}
   apply(value){const input=this.active.input;input.value=value;input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}));this.close();}
   trapFocus(e){const nodes=[...this.panel.querySelectorAll('button:not(:disabled),select')],first=nodes[0],last=nodes.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}}

@@ -1,27 +1,27 @@
 ---
 id: handover-disputes
-title: 看房交接、押金争议与小额索偿范围
+title: Viewings, handover records, deposit disputes and small claims
 scope: policy_guidance
-revision: '2026-10-20.1'
+revision: 2026-10-20.1
 checked_at: '2026-10-20'
 review_after: '2027-01-20'
 sources:
-  - title: Singapore Courts Cases Eligible for a Small Claim
-    url: https://www.judiciary.gov.sg/civil/cases-eligible-small-claim
+- title: Singapore Courts Cases Eligible for a Small Claim
+  url: https://www.judiciary.gov.sg/civil/cases-eligible-small-claim
 ---
-# 看房、交接与争议资料
+# Viewings, handover and dispute records
 
-## 看房时整理可观察事实
-以下为本项目整理的检查建议：对照照片查看房间是否一致，确认实际可使用面积、窗户通风、空调运行、家具状态、门锁、用水和卫生间使用方式。独立卫浴需要问是否仅由该房间住户使用，不能只数卫生间个数。噪声、采光、网络体验和通勤都与实地情况有关，地图直线距离不能替代亲身查看或真实路线查询。
+## Observe the home during a viewing
+Project checklist: compare the room with its photos, usable area, ventilation, air conditioning, furniture condition, locks, water and bathroom arrangements. For a private bathroom, ask whether only that room’s occupants use it; counting bathrooms is insufficient. Noise, daylight, internet experience and commuting depend on actual conditions. Straight-line map distance cannot replace an in-person inspection or actual route enquiry.
 
-## 入住和退租留存相同维度的记录
-本项目建议在双方允许的前提下拍摄带日期的房屋状态照片，逐项核对家具清单、既有损坏、钥匙数量、读表和交接日期。需要维修时保存具体问题、联系时间和答复。退租时再对照同一清单，避免只剩双方对“当时是什么样”的记忆。该清单是资料管理建议，不代表任何一方一定承担维修费用。
+## Keep comparable move-in and move-out records
+With both parties’ permission, take dated condition photos and check the furniture inventory, existing damage, keys, meter readings and handover date. Retain repair issues, contact dates and replies. Compare the same checklist at move-out rather than relying on memories of the earlier condition. This is record-management advice, not a determination of who pays for repairs.
 
-## 押金被扣时先取得依据
-本项目建议先索取具体扣款项目、相关条款和单据，并整理已签租约、交接清单、照片、支付记录及书面沟通。可以先提出明确、可回应的书面请求。不要只凭一句“房东扣钱了”就认定扣款必然违法，也不要承诺一定追回押金；事实、租约和适用程序仍需核对。
+## Obtain the basis for deposit deductions
+Project advice: request specific deductions, relevant clauses and receipts. Organise the signed lease, handover checklist, photos, payment records and written communication. Make a clear written request that the other party can answer. A report that the landlord deducted money alone does not prove illegality, and the system cannot promise recovery; facts, contract and procedure need checking.
 
-## 小额索偿审裁庭 SCT 的范围
-新加坡法院说明，住宅租赁协议期限不超过两年的相关争议可能属于 Small Claims Tribunals 的受理类别。一般金额上限为20,000新币，双方签署同意备忘录时可到30,000新币；还须符合起诉事由发生后两年内提交等条件，被申请人须可在新加坡送达。两年的租约期限和两年的提交时限是不同条件，不能混为一谈。
+## Scope of the Small Claims Tribunals
+The curated Singapore Courts material states that disputes relating to residential tenancy agreements not exceeding two years may fall within the Small Claims Tribunals’ categories. The general claim limit is S$20,000, rising to S$30,000 with both parties’ signed memorandum of consent. Other conditions apply, including filing within two years of the cause of action and a respondent who can be served in Singapore. The two-year tenancy limit and two-year filing limit are separate conditions.
 
-## 先评估，不能保证受理与结果
-法院提供 CJTS 的 pre-filing assessment 供初步判断，但评估不是最终裁定。本系统能帮助按时间线整理事实、问题和文件清单，不能保证某案符合受理条件、一定获赔或适合任何具体法律主张。工业、商业租赁及其他不在类别内的情形不应被套用为住宅租约。需要实际行动时打开法院官方页面核对完整条件。
+## Preliminary assessment is not guaranteed acceptance or outcome
+The Courts provide a CJTS pre-filing assessment, not a final determination. This system helps organise timelines, questions and documents without guaranteeing eligibility, compensation or a particular legal claim. Do not apply residential-tenancy rules to industrial/commercial leases or other excluded cases. Check the full official conditions before taking action.

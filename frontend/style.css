@@ -115,3 +115,32 @@ select{font:inherit;border:1px solid #dce4d4;border-radius:7px;background:#fcfdf
 .refinement-fields>label:only-child{grid-column:1/-1}
 .session-row{display:flex;align-items:center;position:relative;border-radius:10px;margin:3px 0}.session-row.selected{background:#e6eddf}.session-row .session-select{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;background:transparent;border:0;margin:0;padding:12px}.session-row .session-toggle{flex:0 0 30px;padding:8px 4px;background:transparent;border:0;margin:0}.session-menu{position:absolute;top:100%;right:0;z-index:30;padding:5px;background:white;border:1px solid #e2e7dd;border-radius:9px;box-shadow:0 5px 16px #24362c20}.session-menu[hidden]{display:none}.session-menu .session-delete{margin:0;white-space:nowrap;color:#b72b2b;background:#fff3f1;border:0;padding:9px 16px}.session-menu .session-delete:hover{background:#ffe3df}
 #session-list .session-row{flex-wrap:wrap}#session-list .session-select{display:block;width:auto;flex:1;padding:12px 10px;color:#d4e1d6}#session-list .session-row.selected .session-select{color:#183e38}#session-list .session-toggle{width:28px;flex:0 0 28px;padding:8px 0;text-align:center;overflow:visible;text-overflow:clip}#session-list .session-row.selected .session-toggle{color:#183e38}#session-list .session-menu{position:static;margin:0 5px 5px auto;flex:0 0 auto}#session-list .session-delete{width:auto;color:#b72b2b;background:#fff3f1;padding:9px 16px}#session-list .session-delete:hover{background:#ffe3df}
+
+/* English layout: allow longer labels without changing controls or interaction. */
+html[lang="en-SG"] {font-family:Inter,"Segoe UI",system-ui,sans-serif}
+html[lang="en-SG"] .brand{letter-spacing:0;font-size:20px;white-space:nowrap;gap:8px}
+html[lang="en-SG"] .brand-name{display:flex;flex-direction:column;align-items:flex-start;gap:3px;line-height:1.15}
+html[lang="en-SG"] .brand-name small{font-size:9px;padding:2px 4px}
+html[lang="en-SG"] .brandmark{flex:none}
+html[lang="en-SG"] .side-caption{letter-spacing:.2px;line-height:1.65}
+html[lang="en-SG"] .side-heading{letter-spacing:1px}
+html[lang="en-SG"] h1{letter-spacing:-.6px;line-height:1.2;text-wrap:balance}
+html[lang="en-SG"] .connection,html[lang="en-SG"] .stage{flex:none}
+html[lang="en-SG"] .tabs{gap:8px 18px;flex-wrap:wrap}
+html[lang="en-SG"] .tabs button{line-height:1.4;padding-bottom:12px}
+html[lang="en-SG"] .listing-actions{gap:8px;flex-wrap:wrap}
+html[lang="en-SG"] .listing-actions button,html[lang="en-SG"] .listing-actions a{min-height:40px;line-height:1.4}
+html[lang="en-SG"] .match-chip,html[lang="en-SG"] .criterion{line-height:1.55;overflow-wrap:break-word;word-break:normal}
+html[lang="en-SG"] .composer-bottom{gap:10px;align-items:center}
+html[lang="en-SG"] .composer-bottom>span{white-space:normal;line-height:1.5}
+html[lang="en-SG"] .refinement-choices{display:flex;flex-wrap:wrap;gap:7px}
+html[lang="en-SG"] .refinement-choices button{line-height:1.4;white-space:normal}
+html[lang="en-SG"] .refinement-navigation{gap:8px;align-items:stretch}
+html[lang="en-SG"] .refinement-navigation button{min-height:42px;line-height:1.4;white-space:normal}
+html[lang="en-SG"] .refinement-navigation .refinement-primary{flex:1;text-wrap:balance}
+html[lang="en-SG"] .property-facts dd{overflow-wrap:anywhere}
+@media(min-width:1200px){html[lang="en-SG"] .sidebar{width:210px}html[lang="en-SG"] .panes{grid-template-columns:350px minmax(0,1fr)}}
+@media(min-width:851px) and (max-width:1199px){html[lang="en-SG"] .sidebar{width:175px}html[lang="en-SG"] .panes{grid-template-columns:300px minmax(0,1fr);gap:18px}}
+@media(max-width:850px){html[lang="en-SG"] h1{font-size:24px}html[lang="en-SG"] .topbar{align-items:flex-start}html[lang="en-SG"] .workspace{padding:20px 14px}html[lang="en-SG"] .tabs{gap:8px 14px}html[lang="en-SG"] .section-head h2{font-size:17px}}
+
+@media(min-width:851px) and (max-width:1199px){html[lang="en-SG"] .brand{font-size:17px;gap:6px}html[lang="en-SG"] .brandmark{width:32px;height:36px;font-size:28px}}

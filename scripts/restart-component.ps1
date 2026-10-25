@@ -1,10 +1,11 @@
 param([Parameter(Mandatory)][ValidateSet('graph','retrieval','recommendation','web','data-api')][string]$Name)
 $ErrorActionPreference='Stop'
 $projectRoot=Split-Path -Parent $PSScriptRoot
+foreach($line in Get-Content -LiteralPath (Join-Path $projectRoot '.env')){if($line -match '^([A-Z_]+)=(.*)$'){[Environment]::SetEnvironmentVariable($matches[1],$matches[2],'Process')}}
 $recordPath=Join-Path $projectRoot 'data\.runtime\app-processes.json'
 $record=Get-Content -LiteralPath $recordPath -Raw | ConvertFrom-Json
 $entry=$record.processes | Where-Object name -eq $Name
-$port=@{graph=3001;retrieval=8091;recommendation=8092;web=8010;'data-api'=8089}[$Name]
+$port=@{graph=3011;retrieval=8101;recommendation=8102;web=8020;'data-api'=8099}[$Name]
 if($entry){
   $process=Get-Process -Id $entry.id -ErrorAction SilentlyContinue
   if($process){

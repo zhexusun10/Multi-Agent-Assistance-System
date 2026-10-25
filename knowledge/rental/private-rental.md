@@ -1,29 +1,29 @@
 ---
 id: private-rental
-title: 私人住宅租赁与最短租期
+title: Private residential rentals and minimum rental periods
 scope: policy_guidance
-revision: '2026-10-20.1'
+revision: 2026-10-20.1
 checked_at: '2026-10-20'
 review_after: '2027-01-20'
 sources:
-  - title: URA Renting Property
-    url: https://www.ura.gov.sg/guidelines/property-and-business-owners/property/renting-property/
-  - title: URA Short-Term Accommodation
-    url: https://www.ura.gov.sg/guidelines/property-and-business-owners/property/short-term-accommodation/
+- title: URA Renting Property
+  url: https://www.ura.gov.sg/guidelines/property-and-business-owners/property/renting-property/
+- title: URA Short-Term Accommodation
+  url: https://www.ura.gov.sg/guidelines/property-and-business-owners/property/short-term-accommodation/
 ---
-# 私人住宅租赁与最短租期
+# Private residential rentals and minimum rental periods
 
-## 私人住宅的最低租期
-根据 URA 的私人住宅出租规则，普通私人住宅每次出租至少连续三个月。Condominium、公寓及其他普通私人住宅不能因为房东同意，就改成按天或按周出租。私人住宅租一个月、周末住宿、短期旅游住宿，都不能直接套用普通住宅的租赁方式。三个月是规则下限，不意味着每套房东都愿意签三个月；实际可接受的最短租期还要询问房东并写入租约。
+## Minimum rental period for private homes
+Under the curated URA guidance, ordinary private homes must be rented for at least three consecutive months per tenancy. Landlord agreement does not allow condominiums, apartments and other ordinary private homes to become daily or weekly rentals. A one-month rental, weekend stay or tourist stay cannot simply use ordinary residential tenancy arrangements. Three months is the regulatory minimum, not a guarantee every landlord accepts that duration. Ask for the actual minimum and record it in the agreement.
 
-## 不同住房类别不能混用规则
-HDB 组屋与私人住宅适用不同要求；不能把公寓的三个月规则用于组屋。酒店和经批准的服务式公寓属于另一类用途，不能仅凭广告中出现 serviced、co-living 或 studio 字样，就认定具有相应批准用途。需要短住时，应先确认实际批准用途，再查对应规定；本资料不根据营销名称判断某个经营者是否合法。
+## Do not mix housing-category rules
+HDB and private homes have different requirements; the private-home three-month rule does not apply to HDB. Hotels and approved serviced apartments have another approved use. Advertising terms such as serviced, co-living or studio do not establish that approval. For short stays, first confirm the approved use, then check its rules. This material does not decide an operator’s legality from marketing names.
 
-## 本项目的询问清单
-以下是项目整理的操作建议：先问清整套出租还是只租一个房间，入住和退租日期分别是哪一天，能否续租，提前解约如何处理。把“至少三个月”和“我希望住六个月”分开记录，前者是类别规则，后者是个人需求。若经纪人只回答“可以商量”，租期仍应记为尚未确认，而不是自动通过用户的六个月要求。
+## The project’s enquiry checklist
+Project advice: clarify whole unit versus room, move-in and move-out dates, renewal and early termination. Keep a category’s minimum three months separate from a user’s preferred six months. If an agent says only that terms are negotiable, the lease remains unconfirmed rather than automatically satisfying a six-month requirement.
 
-## 房源记录的证据边界
-项目中的 property_type 是历史挂牌字段，不是对批准用途的官方认证。楼名、照片、面积、床位数也不能证明允许短租。推荐可以展示历史价格与类型，但不能据此保证当前合法可租、当前空置或房东已同意某个租期。看房之前可把这些问题放入自然语言咨询草稿；收到回复后保留原文，再根据明确答复更新沟通记录。
+## Limits of listing evidence
+property_type is a historical listing field, not official certification of approved use. Building names, photos, area and bed counts do not prove short-term rentals are permitted. Recommendations may show historical prices and types, but cannot guarantee legal current rental, vacancy or an agreed lease. Put these questions into a natural enquiry before viewing, retain original replies and update communication records only from explicit answers.
 
-## 比较候选房源时的使用方法
-用户希望只租两个月时，应先说明普通私人住宅的最低期限，再询问是否接受更长租期或需要查找其他住宿类别。不要把不符合明确租期的房源包装成完全满足。对于没有租期字段的历史房源，可以提供待核实候选并清楚说明缺失项。实际签约前再次打开 URA 来源页面确认最新要求，不能把本次资料审核日期当作未来永远有效的保证。
+## Comparing homes
+For a user wanting only two months, explain the ordinary private-home minimum first, then ask whether a longer lease or another accommodation category is acceptable. Do not describe a home conflicting with an explicit lease requirement as a full match. Historical homes missing lease data may be displayed with clear confirmation needs. Before signing, reopen the URA source for current requirements; the review date does not guarantee perpetual validity.

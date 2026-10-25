@@ -29,10 +29,10 @@ export function normalizeNearby(rows:z.infer<typeof contextSchema>['relationship
     const p=r.target.properties,e=r.evidence,category=text(p.category)||(r.target.label==='MRT'?'MRT':r.target.label),distance=number(e.distance_m);
     // Named public amenities, not hundreds of individual campus rooms/buildings.
     if(category==='CampusBuilding'||distance===null||seen.has(r.target.entity_id))return [];
-    const name=text(p.name_local)||text(p.name)||text(p.station_name)||text(p.name_en);if(!name)return [];seen.add(r.target.entity_id);
+    const name=text(p.name_en)||text(p.name)||text(p.station_name)||text(p.name_local);if(!name)return [];seen.add(r.target.entity_id);
     const metric=r.type==='NEAR_MRT'?'platform_reported':'straight_line';
     let source_url:string|null=null;try{const u=new URL(String(p.source_url||''));if(u.protocol==='https:'&&(u.hostname==='www.openstreetmap.org'||u.hostname==='openstreetmap.org'))source_url=u.href;}catch{}
-    return [{id:r.target.entity_id,name,category,distance_m:distance,metric,walking_mins:r.type==='NEAR_MRT'?number(e.walking_mins):null,source_url,source:r.type==='NEAR_MRT'?'PropertyGuru 挂牌标注':'OpenStreetMap / Neo4j',computed_at:text(e.computed_at),radius_m:number(e.radius_m),route_verified:false}];
+    return [{id:r.target.entity_id,name,category,distance_m:distance,metric,walking_mins:r.type==='NEAR_MRT'?number(e.walking_mins):null,source_url,source:r.type==='NEAR_MRT'?"PropertyGuru listing information":'OpenStreetMap / Neo4j',computed_at:text(e.computed_at),radius_m:number(e.radius_m),route_verified:false}];
   }).sort((a,b)=>a.distance_m-b.distance_m||a.id.localeCompare(b.id));
 }
 export type ListingPresentation=Awaited<ReturnType<ListingPresentationService['load']>>;
@@ -54,18 +54,18 @@ export class ListingPresentationService{
       this.data.request(`/api/v1/listings/${id}/context`).then(x=>contextSchema.parse(x)),
     ]);
     const [detail,images,context]=results,warnings:string[]=[];
-    if(detail.status==='rejected')warnings.push('房源详情暂时读取失败，可稍后重试。');
-    if(images.status==='rejected')warnings.push('照片目录暂时读取失败，不代表没有照片。');
-    if(context.status==='rejected')warnings.push('周边地点暂时读取失败，不代表附近没有设施。');
+    if(detail.status==='rejected')warnings.push("Listing details could not be loaded. Try again later.");
+    if(images.status==='rejected')warnings.push("The photo catalogue could not be loaded; this does not mean no photos exist.");
+    if(context.status==='rejected')warnings.push("Nearby places could not be loaded; this does not mean no amenities exist.");
     const details=detail.status==='fulfilled'?normalizeListingDetails(detail.value.item.properties):null;
     const photos=images.status==='fulfilled'?normalizePhotos(images.value.items):[];
     const nearby=context.status==='fulfilled'?normalizeNearby(context.value.relationships):[];
     return {listing_id:id,dataset:this.dataset,details,photos,nearby,warnings,
       sections:{details:detail.status==='fulfilled'?'available':'unavailable',photos:images.status==='fulfilled'?'available':'unavailable',nearby:context.status==='fulfilled'?'available':'unavailable'},
       photos_has_more:images.status==='fulfilled'&&images.value.has_more,
-      sources:{details:'PostgreSQL 历史房源记录',photos:'PropertyGuru 已收录照片链接',nearby:'Neo4j / OpenStreetMap 与挂牌交通标注'},
-      unknown_facilities:'家具配置、独立卫浴使用权、空调、做饭及宠物政策等未收录在当前结构化数据中，需向经纪人询问；照片和公寓类型不能证明这些设施已提供。',
-      nearby_note:'这里只展示已收录的周边地点，不代表完整覆盖。OSM 距离为直线距离；挂牌交通标注单独注明，均未验证实际路线。',
+      sources:{details:"PostgreSQL historical listing record",photos:"PropertyGuru recorded photo link",nearby:"Neo4j / OpenStreetMap and property-reported transport"},
+      unknown_facilities:"Current structured data does not establish furnishing, private bathroom use, air conditioning, cooking or pet policies. Ask the agent; photos and property type do not prove these facilities are included.",
+      nearby_note:"Only recorded nearby places are shown, without complete coverage. OSM uses straight-line distances; property-reported transport is identified separately. Actual routes are unverified.",
     };
   }
 }

@@ -8,7 +8,7 @@ const multiTurnBase:Requirements={listing_type:'RENT',criteria:[
   {criterion_id:'monthly-rent',field:'price',operator:'lte',value:2400,unit:'SGD/month',strength:'hard'},
   {criterion_id:'place_proximity:URA:AREA:CLEMENTI',field:'place_proximity',operator:'lte',value:4000,unit:'m',strength:'hard',target:{place_id:'URA:AREA:CLEMENTI',name:'CLEMENTI'},distance_type:'straight_line',distance_preference:'bounded'},
   {criterion_id:'place_proximity:URA:AREA:CLEMENTI-preference',field:'place_proximity',operator:'lte',value:1000,unit:'m',strength:'soft',weight:1,target:{place_id:'URA:AREA:CLEMENTI',name:'CLEMENTI'},distance_type:'straight_line',distance_preference:'nearer'},
-  {criterion_id:'place_proximity:PublicTransport-preference',field:'place_proximity',operator:'lte',value:800,unit:'m',strength:'soft',weight:1,target:{category:'PublicTransport',name:'最近的MRT或公交站'},distance_type:'straight_line',distance_preference:'bounded'},
+  {criterion_id:'place_proximity:PublicTransport-preference',field:'place_proximity',operator:'lte',value:800,unit:'m',strength:'soft',weight:1,target:{category:'PublicTransport',name:"Nearest MRT or bus stop"},distance_type:'straight_line',distance_preference:'bounded'},
 ]};
 export function attribute(field:string,operator:ModelIntake['upsert'][number]['operator'],value:ModelIntake['upsert'][number]['value'],quote:string,options:Partial<ModelIntake['upsert'][number]>={}):ModelIntake['upsert'][number]{
   const units:Record<string,ModelIntake['upsert'][number]['unit']>={price:'SGD/month',bedrooms:'count',bathrooms:'count',floor_area_sqft:'sqft',land_area_sqft:'sqft',build_year:'year',lease_months:'month',commute_time:'min',mrt_distance_m:'m',mrt_walking_mins:'min'};
@@ -18,66 +18,2008 @@ export function location(name:string|null,categories:ModelIntake['locations'][nu
 export function output(query:string,patch:Partial<ModelIntake>={}):ModelIntake{return {schema_version:'2.0',supported:true,upsert:[],locations:[],removals:[],clarifications:[],coverage:[{quote:query,disposition:'extracted'}],...patch};}
 const ex=(id:string,query:string,patch:Partial<ModelIntake>,base=empty):IntakeExample=>({id,query,base,output:output(query,patch)});
 export const INTAKE_EXAMPLES:IntakeExample[]=[
-  ex('short-replace-neighbourhood','那改为：帮我找荷兰村附近的房子',{
-    locations:[location('荷兰村',[],'帮我找荷兰村附近的房子')],
-    removals:[{field:'place_proximity',criterion_id:'place_proximity:LTA:MRT:CHINATOWN-preference',quote:'那改为：帮我找荷兰村附近的房子'}],
-  },{listing_type:'RENT',criteria:[
-    {criterion_id:'minimum-bedrooms',field:'bedrooms',operator:'eq',value:1,unit:'count',strength:'hard'},
-    {criterion_id:'monthly-rent',field:'price',operator:'lte',value:3000,unit:'SGD/month',strength:'hard'},
-    {criterion_id:'place_proximity:LTA:MRT:CHINATOWN-preference',field:'place_proximity',operator:'lte',value:1000,unit:'m',strength:'soft',weight:1,target:{place_id:'LTA:MRT:CHINATOWN',name:'CHINATOWN MRT STATION'},distance_type:'straight_line',distance_preference:'nearer'},
-    {criterion_id:'transport-preference',field:'place_proximity',operator:'lte',value:800,unit:'m',strength:'soft',weight:1,target:{category:'PublicTransport',name:'最近的MRT或公交站'},distance_type:'straight_line',distance_preference:'bounded'},
-  ]}),
-  ex('chinese-neighbourhood','帮我找牛车水附近的房子，预算3000新币每月，卧室数量1间',{
-    upsert:[attribute('price','lte',3000,'预算3000新币每月'),attribute('bedrooms','eq',1,'卧室数量1间')],
-    locations:[location('牛车水',[],'帮我找牛车水附近的房子')],
-  }),
-  ex('rent-ceiling','每个月最多付两千新币，别再贵了。',{upsert:[attribute('price','lte',2000,'每个月最多付两千新币')]}),
-  ex('rent-interval','希望租金在1800到2400新币之间。',{upsert:[attribute('price','between',[1800,2400],'租金在1800到2400新币之间')]}),
-  ex('rent-soft','3000新币是上限，如果能低于2500就更好了。',{upsert:[attribute('price','lte',3000,'3000新币是上限'),attribute('price','lte',2500,'如果能低于2500就更好了',{strength:'soft'})]}),
-  ex('exact-layout','我要一室一卫，1B1B就行。',{upsert:[attribute('bedrooms','eq',1,'一室一卫'),attribute('bathrooms','eq',1,'一室一卫')]}),
-  ex('bedroom-minimum','两间卧室起，三个也行，卫生间最少两个。',{upsert:[attribute('bedrooms','gte',2,'两间卧室起'),attribute('bathrooms','gte',2,'卫生间最少两个')]}),
-  ex('ambiguous-bedroom','给我找个两房的。',{clarifications:[{quote:'两房',question:'你需要至少两间卧室，还是恰好两间？'}],coverage:[{quote:'给我找个两房的。',disposition:'clarification'}]}),
-  ex('hdb-model','找HDB的3-room flat。',{upsert:[attribute('property_type','eq','HDB Flat','HDB')],clarifications:[{quote:'3-room flat',question:'HDB的3-room型号不等于三间卧室，你需要几间卧室？'}]}),
-  ex('area-original-unit','屋子不要小于四十五平方米，别超过70平方米。',{upsert:[attribute('floor_area_sqft','between',[45,70],'不要小于四十五平方米，别超过70平方米',{unit:'sqm'})]}),
-  ex('area-imperial','500sqft是底线，能到700sqft会更好。',{upsert:[attribute('floor_area_sqft','gte',500,'500sqft是底线'),attribute('floor_area_sqft','gte',700,'能到700sqft会更好',{strength:'soft'})]}),
-  ex('private-bath','不想跟其他人共用洗澡和上厕所的地方。',{upsert:[attribute('amenities','eq','private_bathroom','不想跟其他人共用洗澡和上厕所的地方')]}),
-  ex('bath-count-is-not-private','一个卫生间就够，独卫不强求。',{upsert:[attribute('bathrooms','eq',1,'一个卫生间就够')],removals:[{field:'amenities',criterion_id:'amenities:private_bathroom',quote:'独卫不强求'}]}, {listing_type:'RENT',criteria:[{criterion_id:'amenities:private_bathroom',field:'amenities',operator:'eq',value:'private_bathroom',strength:'hard'}]}),
-  ex('room-no-landlord','找普通房，能做饭，不跟屋主一起住。',{upsert:[attribute('rental_scope','eq','room','普通房'),attribute('amenities','eq','common_room','普通房'),attribute('amenities','eq','cooking_allowed','能做饭'),attribute('amenities','eq','no_live_in_landlord','不跟屋主一起住')]}),
-  ex('amenity-preferences','空调必须有，能养猫就更好，泳池有没有都无所谓。',{upsert:[attribute('amenities','eq','air_conditioning','空调必须有'),attribute('amenities','eq','pet_policy','能养猫就更好',{strength:'soft'})]}),
-  ex('furniture-lease','家具要配齐，租期至少半年，明年1月10日以前入住。',{upsert:[attribute('furnishing','eq','fully_furnished','家具要配齐'),attribute('lease_months','gte',6,'租期至少半年'),attribute('move_in_date','lte','2027-01-10','明年1月10日以前入住')]}),
-  ex('property-district','只看D05或D21的公寓Condominium，CCR不是必须的，只是偏好。',{upsert:[attribute('district','in',['D05','D21'],'只看D05或D21'),attribute('property_type','eq','Condominium','公寓Condominium'),attribute('region_code','eq','CCR','CCR不是必须的，只是偏好',{strength:'soft'})]}),
-  ex('building-land','地至少1000平方英尺，房子2000年以后建，邮编是059817。',{upsert:[attribute('land_area_sqft','gte',1000,'地至少1000平方英尺'),attribute('build_year','gte',2000,'房子2000年以后建'),attribute('postal_code','eq','059817','邮编是059817')]}),
-  ex('university-geo','预算2000，南洋理工大学五公里之内；房子周围一公里内，最好有地铁或者巴士站。',{upsert:[attribute('price','lte',2000,'预算2000')],locations:[location('南洋理工大学',[],'南洋理工大学五公里之内',{operator:'lte',value:5,unit:'km',strength:'hard'}),location(null,['MRTStation','BusStop'],'房子周围一公里内，最好有地铁或者巴士站',{operator:'lte',value:1,unit:'km'})]}),
-  ex('transport-and','地铁站和公交站都得在800米内。',{locations:[location(null,['MRTStation','BusStop'],'地铁站和公交站都得在800米内',{relation:'all_of',operator:'lte',value:800,unit:'m',strength:'hard'})]}),
-  ex('bus-only','巴士站不要超过500米，近一点更方便。',{locations:[location(null,['BusStop'],'巴士站不要超过500米',{operator:'lte',value:500,unit:'m',strength:'hard'})]}),
-  ex('near-no-radius','房子在金文泰附近就好，超市也尽量近些。',{locations:[location('金文泰',[],'房子在金文泰附近就好'),location(null,['Supermarket'],'超市也尽量近些')]}),
-  ex('named-station','离Clementi MRT最多一公里，按步行距离算。',{locations:[location('Clementi MRT',[],'离Clementi MRT最多一公里，按步行距离算',{operator:'lte',value:1,unit:'km',strength:'hard',distance_type:'walking',explicit_station:true})]}),
-  ex('distance-interval','离NUS别太近也别太远，一到三公里之间。',{locations:[location('NUS',[],'离NUS别太近也别太远，一到三公里之间',{operator:'between',value:[1,3],unit:'km',strength:'hard'})]}),
-  ex('route-not-proximity','公共交通去NUS不要超过30分钟；到地铁站按挂牌标注，步行不超过8分钟。',{upsert:[attribute('commute_time','lte',30,'公共交通去NUS不要超过30分钟',{target_name:'NUS',transport_mode:'transit'}),attribute('mrt_walking_mins','lte',8,'到地铁站按挂牌标注，步行不超过8分钟')]}),
-  ex('reported-distance','平台写的最近MRT距离不超过600米，不是让我直线算。',{upsert:[attribute('mrt_distance_m','lte',600,'平台写的最近MRT距离不超过600米')]}),
-  ex('plain-mrt-distance','住宅与最近MRT的距离上限是650米。',{locations:[location(null,['MRTStation'],'住宅与最近MRT的距离上限是650米',{operator:'lte',value:650,unit:'m',strength:'hard'})]}),
-  ex('change-single','预算提到2600，独卫改成最好有，其他保留。',{upsert:[attribute('price','lte',2600,'预算提到2600'),attribute('amenities','eq','private_bathroom','独卫改成最好有',{strength:'soft'})],removals:[{field:'amenities',criterion_id:'amenities:private_bathroom',quote:'独卫改成最好有'}]}, {listing_type:'RENT',criteria:[{criterion_id:'monthly-rent',field:'price',operator:'lte',value:2000,unit:'SGD/month',strength:'hard'},{criterion_id:'amenities:private_bathroom',field:'amenities',operator:'eq',value:'private_bathroom',strength:'hard'},{criterion_id:'minimum-bedrooms',field:'bedrooms',operator:'gte',value:2,unit:'count',strength:'hard'}]}),
-  ex('remove-only','不用独卫了，但猫还是要能养。',{upsert:[attribute('amenities','eq','pet_policy','猫还是要能养')],removals:[{field:'amenities',criterion_id:'amenities:private_bathroom',quote:'不用独卫了'}]}, {listing_type:'RENT',criteria:[{criterion_id:'amenities:private_bathroom',field:'amenities',operator:'eq',value:'private_bathroom',strength:'hard'},{criterion_id:'amenities:pet_policy',field:'amenities',operator:'eq',value:'pet_policy',strength:'hard'}]}),
-  ex('transport-mode-update','刚才说的30分钟，是坐公共交通，不是开车。',{upsert:[attribute('commute_time','lte',30,'刚才说的30分钟，是坐公共交通，不是开车',{target_name:'NUS',transport_mode:'transit'})]}, {listing_type:'RENT',criteria:[{criterion_id:'commute_time',field:'commute_time',operator:'lte',value:30,unit:'min',strength:'hard',target:{name:'NUS'},transport_mode:'unspecified'}]}),
-  ex('refresh-has-change','重新推荐一下，最好周边700米内有公园。',{locations:[location(null,['Park'],'最好周边700米内有公园',{operator:'lte',value:700,unit:'m'})]}),
-  ex('restate-geographic-update','那我修改要求，租金还是2400新币以内，金文泰附近4公里内，最好800米内有MRT或公交站。',{
-    upsert:[attribute('price','lte',2400,'租金还是2400新币以内')],
-    locations:[location('金文泰',[],'金文泰附近4公里内',{operator:'lte',value:4,unit:'km',strength:'hard'}),location(null,['MRTStation','BusStop'],'最好800米内有MRT或公交站',{operator:'lte',value:800,unit:'m'})],
-    // Same targets/strengths update in place after resolution. Unmentioned layout stays.
-  },multiTurnBase),
-  ex('cancel-layout-only','卧室和卫生间数量不限制了，金文泰4公里、2400预算和交通偏好都照旧。',{
-    removals:[{field:'bedrooms',criterion_id:'minimum-bedrooms',quote:'卧室和卫生间数量不限制了'},{field:'bathrooms',criterion_id:'bathrooms',quote:'卧室和卫生间数量不限制了'}],
-    coverage:[{quote:'卧室和卫生间数量不限制了',disposition:'removed'},{quote:'金文泰4公里、2400预算和交通偏好都照旧',disposition:'context'}],
-  },multiTurnBase),
-  ex('replace-location-only','不找金文泰了，改成裕廊东3公里以内，其他不变。',{
-    removals:[{field:'place_proximity',criterion_id:'place_proximity:URA:AREA:CLEMENTI',quote:'不找金文泰了'},{field:'place_proximity',criterion_id:'place_proximity:URA:AREA:CLEMENTI-preference',quote:'不找金文泰了'}],
-    locations:[location('裕廊东',[],'改成裕廊东3公里以内',{operator:'lte',value:3,unit:'km',strength:'hard'})],
-  },multiTurnBase),
-  ex('unsupported-buy','我要买一套房。',{supported:false,clarifications:[{quote:'买一套房',question:'目前支持住宅租赁，是否改为找租房？'}],coverage:[{quote:'我要买一套房。',disposition:'clarification'}]}),
-  ex('availability','现在必须还租得到，别给我已经租出去的。',{upsert:[attribute('current_availability','eq',true,'现在必须还租得到')]}),
-  ex('market-region','市场分区选OCR，不限具体邮区。',{upsert:[attribute('region_code','eq','OCR','市场分区选OCR')]}),
-  ex('market-region-restrict-only','市场分区我只看RCR，其他分区都不要。',{upsert:[attribute('region_code','eq','RCR','市场分区我只看RCR')],coverage:[{quote:'市场分区我只看RCR，其他分区都不要',disposition:'extracted'}]}),
-  ex('two-digit-district','新加坡邮区只选08或19，其他邮区先不看。',{upsert:[attribute('district','in',['D08','D19'],'新加坡邮区只选08或19')]}),
+  {
+    "id": "short-replace-neighbourhood",
+    "query": "Instead, find me a home near Holland Village.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": [
+        {
+          "criterion_id": "minimum-bedrooms",
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 1,
+          "unit": "count",
+          "strength": "hard"
+        },
+        {
+          "criterion_id": "monthly-rent",
+          "field": "price",
+          "operator": "lte",
+          "value": 3000,
+          "unit": "SGD/month",
+          "strength": "hard"
+        },
+        {
+          "criterion_id": "place_proximity:LTA:MRT:CHINATOWN-preference",
+          "field": "place_proximity",
+          "operator": "lte",
+          "value": 1000,
+          "unit": "m",
+          "strength": "soft",
+          "weight": 1,
+          "target": {
+            "place_id": "LTA:MRT:CHINATOWN",
+            "name": "CHINATOWN MRT STATION"
+          },
+          "distance_type": "straight_line",
+          "distance_preference": "nearer"
+        },
+        {
+          "criterion_id": "transport-preference",
+          "field": "place_proximity",
+          "operator": "lte",
+          "value": 800,
+          "unit": "m",
+          "strength": "soft",
+          "weight": 1,
+          "target": {
+            "category": "PublicTransport",
+            "name": "Nearest MRT or bus stop"
+          },
+          "distance_type": "straight_line",
+          "distance_preference": "bounded"
+        }
+      ]
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [],
+      "locations": [
+        {
+          "name": "Holland Village",
+          "categories": [],
+          "relation": "any_of",
+          "operator": "near",
+          "value": null,
+          "unit": null,
+          "strength": "soft",
+          "weight": null,
+          "distance_type": "straight_line",
+          "explicit_station": false,
+          "prefer_closer": true,
+          "quote": "Instead, find me a home near Holland Village."
+        }
+      ],
+      "removals": [
+        {
+          "field": "place_proximity",
+          "criterion_id": "place_proximity:LTA:MRT:CHINATOWN-preference",
+          "quote": "Instead, find me a home near Holland Village."
+        }
+      ],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "Instead, find me a home near Holland Village.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "chinese-neighbourhood",
+    "query": "Find me a home near Chinatown for SGD 3000 per month with exactly one bedroom.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 3000,
+          "unit": "SGD/month",
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "Find me a home near Chinatown for SGD 3000 per month with exactly one bedroom."
+        },
+        {
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 1,
+          "unit": "count",
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "Find me a home near Chinatown for SGD 3000 per month with exactly one bedroom."
+        }
+      ],
+      "locations": [
+        {
+          "name": "Chinatown",
+          "categories": [],
+          "relation": "any_of",
+          "operator": "near",
+          "value": null,
+          "unit": null,
+          "strength": "soft",
+          "weight": null,
+          "distance_type": "straight_line",
+          "explicit_station": false,
+          "prefer_closer": true,
+          "quote": "Find me a home near Chinatown for SGD 3000 per month with exactly one bedroom."
+        }
+      ],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "Find me a home near Chinatown for SGD 3000 per month with exactly one bedroom.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "rent-ceiling",
+    "query": "I can pay at most two thousand Singapore dollars each month, no more.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2000,
+          "unit": "SGD/month",
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "I can pay at most two thousand Singapore dollars each month, no more."
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "I can pay at most two thousand Singapore dollars each month, no more.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "rent-interval",
+    "query": "I would prefer monthly rent between SGD 1800 and 2400.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "price",
+          "operator": "between",
+          "value": [
+            1800,
+            2400
+          ],
+          "unit": "SGD/month",
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "I would prefer monthly rent between SGD 1800 and 2400."
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "I would prefer monthly rent between SGD 1800 and 2400.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "rent-soft",
+    "query": "SGD 3000 is the maximum; below 2500 would be even better.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 3000,
+          "unit": "SGD/month",
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "SGD 3000 is the maximum; below 2500 would be even better."
+        },
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2500,
+          "unit": "SGD/month",
+          "strength": "soft",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "SGD 3000 is the maximum; below 2500 would be even better."
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "SGD 3000 is the maximum; below 2500 would be even better.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "exact-layout",
+    "query": "I want one bedroom and one bathroom, just 1B1B.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 1,
+          "unit": "count",
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "I want one bedroom and one bathroom, just 1B1B."
+        },
+        {
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 1,
+          "unit": "count",
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "I want one bedroom and one bathroom, just 1B1B."
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "I want one bedroom and one bathroom, just 1B1B.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "bedroom-minimum",
+    "query": "At least two bedrooms, three is fine too, and at least two bathrooms.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "bedrooms",
+          "operator": "gte",
+          "value": 2,
+          "unit": "count",
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "At least two bedrooms, three is fine too, and at least two bathrooms."
+        },
+        {
+          "field": "bathrooms",
+          "operator": "gte",
+          "value": 2,
+          "unit": "count",
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "At least two bedrooms, three is fine too, and at least two bathrooms."
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "At least two bedrooms, three is fine too, and at least two bathrooms.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ambiguous-bedroom",
+    "query": "Find me a two-room place.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [],
+      "locations": [],
+      "removals": [],
+      "clarifications": [
+        {
+          "quote": "Find me a two-room place.",
+          "question": "Do you need at least two bedrooms or exactly two?"
+        }
+      ],
+      "coverage": [
+        {
+          "quote": "Find me a two-room place.",
+          "disposition": "clarification"
+        }
+      ]
+    }
+  },
+  {
+    "id": "hdb-model",
+    "query": "Find an HDB 3-room flat.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "property_type",
+          "operator": "eq",
+          "value": "HDB Flat",
+          "unit": null,
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "HDB"
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [
+        {
+          "quote": "3-room flat",
+          "question": "An HDB 3-room model does not mean three bedrooms. How many bedrooms do you need?"
+        }
+      ],
+      "coverage": [
+        {
+          "quote": "Find an HDB 3-room flat.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "area-original-unit",
+    "query": "The home must be at least forty-five square metres and no more than 70 square metres.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "floor_area_sqft",
+          "operator": "between",
+          "value": [
+            45,
+            70
+          ],
+          "unit": "sqm",
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "The home must be at least forty-five square metres and no more than 70 square metres."
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "The home must be at least forty-five square metres and no more than 70 square metres.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "area-imperial",
+    "query": "500 sqft is the minimum; 700 sqft would be preferable.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "floor_area_sqft",
+          "operator": "gte",
+          "value": 500,
+          "unit": "sqft",
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "500 sqft is the minimum; 700 sqft would be preferable."
+        },
+        {
+          "field": "floor_area_sqft",
+          "operator": "gte",
+          "value": 700,
+          "unit": "sqft",
+          "strength": "soft",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "500 sqft is the minimum; 700 sqft would be preferable."
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "500 sqft is the minimum; 700 sqft would be preferable.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "private-bath",
+    "query": "I do not want to share bathing and toilet facilities with other people.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "private_bathroom",
+          "unit": null,
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "I do not want to share bathing and toilet facilities with other people."
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "I do not want to share bathing and toilet facilities with other people.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "bath-count-is-not-private",
+    "query": "One bathroom is enough; a private bathroom is not required.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": [
+        {
+          "criterion_id": "amenities:private_bathroom",
+          "field": "amenities",
+          "operator": "eq",
+          "value": "private_bathroom",
+          "strength": "hard"
+        }
+      ]
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 1,
+          "unit": "count",
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "One bathroom is enough; a private bathroom is not required."
+        }
+      ],
+      "locations": [],
+      "removals": [
+        {
+          "field": "amenities",
+          "criterion_id": "amenities:private_bathroom",
+          "quote": "One bathroom is enough; a private bathroom is not required."
+        }
+      ],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "One bathroom is enough; a private bathroom is not required.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "room-no-landlord",
+    "query": "Find a common room where cooking is allowed, without a live-in landlord.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "rental_scope",
+          "operator": "eq",
+          "value": "room",
+          "unit": null,
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "Find a common room where cooking is allowed, without a live-in landlord."
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "common_room",
+          "unit": null,
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "Find a common room where cooking is allowed, without a live-in landlord."
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "cooking_allowed",
+          "unit": null,
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "Find a common room where cooking is allowed, without a live-in landlord."
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "no_live_in_landlord",
+          "unit": null,
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "Find a common room where cooking is allowed, without a live-in landlord."
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "Find a common room where cooking is allowed, without a live-in landlord.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "amenity-preferences",
+    "query": "Air conditioning is mandatory, being allowed a cat would be better, and I do not mind whether there is a pool.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "air_conditioning",
+          "unit": null,
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "Air conditioning is mandatory, being allowed a cat would be better, and I do not mind whether there is a pool."
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "pet_policy",
+          "unit": null,
+          "strength": "soft",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "Air conditioning is mandatory, being allowed a cat would be better, and I do not mind whether there is a pool."
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "Air conditioning is mandatory, being allowed a cat would be better, and I do not mind whether there is a pool.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "furniture-lease",
+    "query": "It must be fully furnished, the lease at least half a year, and move-in before 10 January next year.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "furnishing",
+          "operator": "eq",
+          "value": "fully_furnished",
+          "unit": null,
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "It must be fully furnished, the lease at least half a year, and move-in before 10 January next year."
+        },
+        {
+          "field": "lease_months",
+          "operator": "gte",
+          "value": 6,
+          "unit": "month",
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "It must be fully furnished, the lease at least half a year, and move-in before 10 January next year."
+        },
+        {
+          "field": "move_in_date",
+          "operator": "lte",
+          "value": "2027-01-10",
+          "unit": null,
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "It must be fully furnished, the lease at least half a year, and move-in before 10 January next year."
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "It must be fully furnished, the lease at least half a year, and move-in before 10 January next year.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "property-district",
+    "query": "Only Condominium homes in D05 or D21; CCR is a preference, not mandatory.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "district",
+          "operator": "in",
+          "value": [
+            "D05",
+            "D21"
+          ],
+          "unit": null,
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "Only Condominium homes in D05 or D21; CCR is a preference, not mandatory."
+        },
+        {
+          "field": "property_type",
+          "operator": "eq",
+          "value": "Condominium",
+          "unit": null,
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "Only Condominium homes in D05 or D21; CCR is a preference, not mandatory."
+        },
+        {
+          "field": "region_code",
+          "operator": "eq",
+          "value": "CCR",
+          "unit": null,
+          "strength": "soft",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "Only Condominium homes in D05 or D21; CCR is a preference, not mandatory."
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "Only Condominium homes in D05 or D21; CCR is a preference, not mandatory.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "building-land",
+    "query": "At least 1000 square feet of land, built from 2000 onwards, with postal code 059817.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "land_area_sqft",
+          "operator": "gte",
+          "value": 1000,
+          "unit": "sqft",
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "At least 1000 square feet of land, built from 2000 onwards, with postal code 059817."
+        },
+        {
+          "field": "build_year",
+          "operator": "gte",
+          "value": 2000,
+          "unit": "year",
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "At least 1000 square feet of land, built from 2000 onwards, with postal code 059817."
+        },
+        {
+          "field": "postal_code",
+          "operator": "eq",
+          "value": "059817",
+          "unit": null,
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "At least 1000 square feet of land, built from 2000 onwards, with postal code 059817."
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "At least 1000 square feet of land, built from 2000 onwards, with postal code 059817.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "university-geo",
+    "query": "Budget 2000, within five kilometres of NTU; ideally an MRT station or bus stop within one kilometre of the home.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2000,
+          "unit": "SGD/month",
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "Budget 2000, within five kilometres of NTU; ideally an MRT station or bus stop within one kilometre of the home."
+        }
+      ],
+      "locations": [
+        {
+          "name": "Nanyang Technological University",
+          "categories": [],
+          "relation": "any_of",
+          "operator": "lte",
+          "value": 5,
+          "unit": "km",
+          "strength": "hard",
+          "weight": null,
+          "distance_type": "straight_line",
+          "explicit_station": false,
+          "prefer_closer": true,
+          "quote": "Budget 2000, within five kilometres of NTU; ideally an MRT station or bus stop within one kilometre of the home."
+        },
+        {
+          "name": null,
+          "categories": [
+            "MRTStation",
+            "BusStop"
+          ],
+          "relation": "any_of",
+          "operator": "lte",
+          "value": 1,
+          "unit": "km",
+          "strength": "soft",
+          "weight": null,
+          "distance_type": "straight_line",
+          "explicit_station": false,
+          "prefer_closer": false,
+          "quote": "Budget 2000, within five kilometres of NTU; ideally an MRT station or bus stop within one kilometre of the home."
+        }
+      ],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "Budget 2000, within five kilometres of NTU; ideally an MRT station or bus stop within one kilometre of the home.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "transport-and",
+    "query": "Both an MRT station and a bus stop must be within 800 metres.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [],
+      "locations": [
+        {
+          "name": null,
+          "categories": [
+            "MRTStation",
+            "BusStop"
+          ],
+          "relation": "all_of",
+          "operator": "lte",
+          "value": 800,
+          "unit": "m",
+          "strength": "hard",
+          "weight": null,
+          "distance_type": "straight_line",
+          "explicit_station": false,
+          "prefer_closer": false,
+          "quote": "Both an MRT station and a bus stop must be within 800 metres."
+        }
+      ],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "Both an MRT station and a bus stop must be within 800 metres.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "bus-only",
+    "query": "A bus stop must be no more than 500 metres away; closer would be more convenient.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [],
+      "locations": [
+        {
+          "name": null,
+          "categories": [
+            "BusStop"
+          ],
+          "relation": "any_of",
+          "operator": "lte",
+          "value": 500,
+          "unit": "m",
+          "strength": "hard",
+          "weight": null,
+          "distance_type": "straight_line",
+          "explicit_station": false,
+          "prefer_closer": false,
+          "quote": "A bus stop must be no more than 500 metres away; closer would be more convenient."
+        }
+      ],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "A bus stop must be no more than 500 metres away; closer would be more convenient.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "near-no-radius",
+    "query": "Somewhere near Clementi is fine, and preferably close to a supermarket too.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [],
+      "locations": [
+        {
+          "name": "Clementi",
+          "categories": [],
+          "relation": "any_of",
+          "operator": "near",
+          "value": null,
+          "unit": null,
+          "strength": "soft",
+          "weight": null,
+          "distance_type": "straight_line",
+          "explicit_station": false,
+          "prefer_closer": true,
+          "quote": "Somewhere near Clementi is fine, and preferably close to a supermarket too."
+        },
+        {
+          "name": null,
+          "categories": [
+            "Supermarket"
+          ],
+          "relation": "any_of",
+          "operator": "near",
+          "value": null,
+          "unit": null,
+          "strength": "soft",
+          "weight": null,
+          "distance_type": "straight_line",
+          "explicit_station": false,
+          "prefer_closer": false,
+          "quote": "Somewhere near Clementi is fine, and preferably close to a supermarket too."
+        }
+      ],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "Somewhere near Clementi is fine, and preferably close to a supermarket too.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "named-station",
+    "query": "No more than one kilometre from Clementi MRT, measured by walking distance.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [],
+      "locations": [
+        {
+          "name": "Clementi MRT",
+          "categories": [],
+          "relation": "any_of",
+          "operator": "lte",
+          "value": 1,
+          "unit": "km",
+          "strength": "hard",
+          "weight": null,
+          "distance_type": "walking",
+          "explicit_station": true,
+          "prefer_closer": true,
+          "quote": "No more than one kilometre from Clementi MRT, measured by walking distance."
+        }
+      ],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "No more than one kilometre from Clementi MRT, measured by walking distance.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "distance-interval",
+    "query": "Not too close to NUS or too far away: between one and three kilometres.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [],
+      "locations": [
+        {
+          "name": "NUS",
+          "categories": [],
+          "relation": "any_of",
+          "operator": "between",
+          "value": [
+            1,
+            3
+          ],
+          "unit": "km",
+          "strength": "hard",
+          "weight": null,
+          "distance_type": "straight_line",
+          "explicit_station": false,
+          "prefer_closer": false,
+          "quote": "Not too close to NUS or too far away: between one and three kilometres."
+        }
+      ],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "Not too close to NUS or too far away: between one and three kilometres.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "route-not-proximity",
+    "query": "No more than 30 minutes to NUS by public transport; the listing-reported walk to MRT must be at most 8 minutes.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "commute_time",
+          "operator": "lte",
+          "value": 30,
+          "unit": "min",
+          "strength": "hard",
+          "weight": null,
+          "target_name": "NUS",
+          "transport_mode": "transit",
+          "quote": "No more than 30 minutes to NUS by public transport; the listing-reported walk to MRT must be at most 8 minutes."
+        },
+        {
+          "field": "mrt_walking_mins",
+          "operator": "lte",
+          "value": 8,
+          "unit": "min",
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "No more than 30 minutes to NUS by public transport; the listing-reported walk to MRT must be at most 8 minutes."
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "No more than 30 minutes to NUS by public transport; the listing-reported walk to MRT must be at most 8 minutes.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "reported-distance",
+    "query": "The platform-reported nearest-MRT distance must be no more than 600 metres, not a straight-line calculation.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "mrt_distance_m",
+          "operator": "lte",
+          "value": 600,
+          "unit": "m",
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "The platform-reported nearest-MRT distance must be no more than 600 metres, not a straight-line calculation."
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "The platform-reported nearest-MRT distance must be no more than 600 metres, not a straight-line calculation.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "plain-mrt-distance",
+    "query": "The maximum distance between the home and the nearest MRT station is 650 metres.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [],
+      "locations": [
+        {
+          "name": null,
+          "categories": [
+            "MRTStation"
+          ],
+          "relation": "any_of",
+          "operator": "lte",
+          "value": 650,
+          "unit": "m",
+          "strength": "hard",
+          "weight": null,
+          "distance_type": "straight_line",
+          "explicit_station": false,
+          "prefer_closer": false,
+          "quote": "The maximum distance between the home and the nearest MRT station is 650 metres."
+        }
+      ],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "The maximum distance between the home and the nearest MRT station is 650 metres.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "change-single",
+    "query": "Raise the budget to 2600, make the private bathroom nice to have, and keep everything else.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": [
+        {
+          "criterion_id": "monthly-rent",
+          "field": "price",
+          "operator": "lte",
+          "value": 2000,
+          "unit": "SGD/month",
+          "strength": "hard"
+        },
+        {
+          "criterion_id": "amenities:private_bathroom",
+          "field": "amenities",
+          "operator": "eq",
+          "value": "private_bathroom",
+          "strength": "hard"
+        },
+        {
+          "criterion_id": "minimum-bedrooms",
+          "field": "bedrooms",
+          "operator": "gte",
+          "value": 2,
+          "unit": "count",
+          "strength": "hard"
+        }
+      ]
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2600,
+          "unit": "SGD/month",
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "Raise the budget to 2600, make the private bathroom nice to have, and keep everything else."
+        },
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "private_bathroom",
+          "unit": null,
+          "strength": "soft",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "Raise the budget to 2600, make the private bathroom nice to have, and keep everything else."
+        }
+      ],
+      "locations": [],
+      "removals": [
+        {
+          "field": "amenities",
+          "criterion_id": "amenities:private_bathroom",
+          "quote": "Raise the budget to 2600, make the private bathroom nice to have, and keep everything else."
+        }
+      ],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "Raise the budget to 2600, make the private bathroom nice to have, and keep everything else.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "remove-only",
+    "query": "I no longer require a private bathroom, but keeping a cat must still be allowed.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": [
+        {
+          "criterion_id": "amenities:private_bathroom",
+          "field": "amenities",
+          "operator": "eq",
+          "value": "private_bathroom",
+          "strength": "hard"
+        },
+        {
+          "criterion_id": "amenities:pet_policy",
+          "field": "amenities",
+          "operator": "eq",
+          "value": "pet_policy",
+          "strength": "hard"
+        }
+      ]
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "amenities",
+          "operator": "eq",
+          "value": "pet_policy",
+          "unit": null,
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "I no longer require a private bathroom, but keeping a cat must still be allowed."
+        }
+      ],
+      "locations": [],
+      "removals": [
+        {
+          "field": "amenities",
+          "criterion_id": "amenities:private_bathroom",
+          "quote": "I no longer require a private bathroom, but keeping a cat must still be allowed."
+        }
+      ],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "I no longer require a private bathroom, but keeping a cat must still be allowed.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "transport-mode-update",
+    "query": "The 30 minutes I mentioned is by public transport, not driving.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": [
+        {
+          "criterion_id": "commute_time",
+          "field": "commute_time",
+          "operator": "lte",
+          "value": 30,
+          "unit": "min",
+          "strength": "hard",
+          "target": {
+            "name": "NUS"
+          },
+          "transport_mode": "unspecified"
+        }
+      ]
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "commute_time",
+          "operator": "lte",
+          "value": 30,
+          "unit": "min",
+          "strength": "hard",
+          "weight": null,
+          "target_name": "NUS",
+          "transport_mode": "transit",
+          "quote": "The 30 minutes I mentioned is by public transport, not driving."
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "The 30 minutes I mentioned is by public transport, not driving.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "refresh-has-change",
+    "query": "Recommend again, preferably with a park within 700 metres.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [],
+      "locations": [
+        {
+          "name": null,
+          "categories": [
+            "Park"
+          ],
+          "relation": "any_of",
+          "operator": "lte",
+          "value": 700,
+          "unit": "m",
+          "strength": "soft",
+          "weight": null,
+          "distance_type": "straight_line",
+          "explicit_station": false,
+          "prefer_closer": false,
+          "quote": "Recommend again, preferably with a park within 700 metres."
+        }
+      ],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "Recommend again, preferably with a park within 700 metres.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "restate-geographic-update",
+    "query": "Let me update the requirements: rent still at most SGD 2400, within 4 km of Clementi, and preferably an MRT or bus stop within 800 metres.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": [
+        {
+          "criterion_id": "minimum-bedrooms",
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 1,
+          "unit": "count",
+          "strength": "hard"
+        },
+        {
+          "criterion_id": "bathrooms",
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 1,
+          "unit": "count",
+          "strength": "hard"
+        },
+        {
+          "criterion_id": "monthly-rent",
+          "field": "price",
+          "operator": "lte",
+          "value": 2400,
+          "unit": "SGD/month",
+          "strength": "hard"
+        },
+        {
+          "criterion_id": "place_proximity:URA:AREA:CLEMENTI",
+          "field": "place_proximity",
+          "operator": "lte",
+          "value": 4000,
+          "unit": "m",
+          "strength": "hard",
+          "target": {
+            "place_id": "URA:AREA:CLEMENTI",
+            "name": "CLEMENTI"
+          },
+          "distance_type": "straight_line",
+          "distance_preference": "bounded"
+        },
+        {
+          "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+          "field": "place_proximity",
+          "operator": "lte",
+          "value": 1000,
+          "unit": "m",
+          "strength": "soft",
+          "weight": 1,
+          "target": {
+            "place_id": "URA:AREA:CLEMENTI",
+            "name": "CLEMENTI"
+          },
+          "distance_type": "straight_line",
+          "distance_preference": "nearer"
+        },
+        {
+          "criterion_id": "place_proximity:PublicTransport-preference",
+          "field": "place_proximity",
+          "operator": "lte",
+          "value": 800,
+          "unit": "m",
+          "strength": "soft",
+          "weight": 1,
+          "target": {
+            "category": "PublicTransport",
+            "name": "Nearest MRT or bus stop"
+          },
+          "distance_type": "straight_line",
+          "distance_preference": "bounded"
+        }
+      ]
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "price",
+          "operator": "lte",
+          "value": 2400,
+          "unit": "SGD/month",
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "Let me update the requirements: rent still at most SGD 2400, within 4 km of Clementi, and preferably an MRT or bus stop within 800 metres."
+        }
+      ],
+      "locations": [
+        {
+          "name": "Clementi",
+          "categories": [],
+          "relation": "any_of",
+          "operator": "lte",
+          "value": 4,
+          "unit": "km",
+          "strength": "hard",
+          "weight": null,
+          "distance_type": "straight_line",
+          "explicit_station": false,
+          "prefer_closer": true,
+          "quote": "Let me update the requirements: rent still at most SGD 2400, within 4 km of Clementi, and preferably an MRT or bus stop within 800 metres."
+        },
+        {
+          "name": null,
+          "categories": [
+            "MRTStation",
+            "BusStop"
+          ],
+          "relation": "any_of",
+          "operator": "lte",
+          "value": 800,
+          "unit": "m",
+          "strength": "soft",
+          "weight": null,
+          "distance_type": "straight_line",
+          "explicit_station": false,
+          "prefer_closer": false,
+          "quote": "Let me update the requirements: rent still at most SGD 2400, within 4 km of Clementi, and preferably an MRT or bus stop within 800 metres."
+        }
+      ],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "Let me update the requirements: rent still at most SGD 2400, within 4 km of Clementi, and preferably an MRT or bus stop within 800 metres.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "cancel-layout-only",
+    "query": "No bedroom or bathroom count limits now; keep Clementi within 4 km, the 2400 budget and transport preferences.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": [
+        {
+          "criterion_id": "minimum-bedrooms",
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 1,
+          "unit": "count",
+          "strength": "hard"
+        },
+        {
+          "criterion_id": "bathrooms",
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 1,
+          "unit": "count",
+          "strength": "hard"
+        },
+        {
+          "criterion_id": "monthly-rent",
+          "field": "price",
+          "operator": "lte",
+          "value": 2400,
+          "unit": "SGD/month",
+          "strength": "hard"
+        },
+        {
+          "criterion_id": "place_proximity:URA:AREA:CLEMENTI",
+          "field": "place_proximity",
+          "operator": "lte",
+          "value": 4000,
+          "unit": "m",
+          "strength": "hard",
+          "target": {
+            "place_id": "URA:AREA:CLEMENTI",
+            "name": "CLEMENTI"
+          },
+          "distance_type": "straight_line",
+          "distance_preference": "bounded"
+        },
+        {
+          "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+          "field": "place_proximity",
+          "operator": "lte",
+          "value": 1000,
+          "unit": "m",
+          "strength": "soft",
+          "weight": 1,
+          "target": {
+            "place_id": "URA:AREA:CLEMENTI",
+            "name": "CLEMENTI"
+          },
+          "distance_type": "straight_line",
+          "distance_preference": "nearer"
+        },
+        {
+          "criterion_id": "place_proximity:PublicTransport-preference",
+          "field": "place_proximity",
+          "operator": "lte",
+          "value": 800,
+          "unit": "m",
+          "strength": "soft",
+          "weight": 1,
+          "target": {
+            "category": "PublicTransport",
+            "name": "Nearest MRT or bus stop"
+          },
+          "distance_type": "straight_line",
+          "distance_preference": "bounded"
+        }
+      ]
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [],
+      "locations": [],
+      "removals": [
+        {
+          "field": "bedrooms",
+          "criterion_id": "minimum-bedrooms",
+          "quote": "No bedroom or bathroom count limits now; keep Clementi within 4 km, the 2400 budget and transport preferences."
+        },
+        {
+          "field": "bathrooms",
+          "criterion_id": "bathrooms",
+          "quote": "No bedroom or bathroom count limits now; keep Clementi within 4 km, the 2400 budget and transport preferences."
+        }
+      ],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "No bedroom or bathroom count limits now; keep Clementi within 4 km, the 2400 budget and transport preferences.",
+          "disposition": "removed"
+        },
+        {
+          "quote": "No bedroom or bathroom count limits now; keep Clementi within 4 km, the 2400 budget and transport preferences.",
+          "disposition": "context"
+        }
+      ]
+    }
+  },
+  {
+    "id": "replace-location-only",
+    "query": "Not Clementi anymore; change to within 3 km of Jurong East and keep everything else.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": [
+        {
+          "criterion_id": "minimum-bedrooms",
+          "field": "bedrooms",
+          "operator": "eq",
+          "value": 1,
+          "unit": "count",
+          "strength": "hard"
+        },
+        {
+          "criterion_id": "bathrooms",
+          "field": "bathrooms",
+          "operator": "eq",
+          "value": 1,
+          "unit": "count",
+          "strength": "hard"
+        },
+        {
+          "criterion_id": "monthly-rent",
+          "field": "price",
+          "operator": "lte",
+          "value": 2400,
+          "unit": "SGD/month",
+          "strength": "hard"
+        },
+        {
+          "criterion_id": "place_proximity:URA:AREA:CLEMENTI",
+          "field": "place_proximity",
+          "operator": "lte",
+          "value": 4000,
+          "unit": "m",
+          "strength": "hard",
+          "target": {
+            "place_id": "URA:AREA:CLEMENTI",
+            "name": "CLEMENTI"
+          },
+          "distance_type": "straight_line",
+          "distance_preference": "bounded"
+        },
+        {
+          "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+          "field": "place_proximity",
+          "operator": "lte",
+          "value": 1000,
+          "unit": "m",
+          "strength": "soft",
+          "weight": 1,
+          "target": {
+            "place_id": "URA:AREA:CLEMENTI",
+            "name": "CLEMENTI"
+          },
+          "distance_type": "straight_line",
+          "distance_preference": "nearer"
+        },
+        {
+          "criterion_id": "place_proximity:PublicTransport-preference",
+          "field": "place_proximity",
+          "operator": "lte",
+          "value": 800,
+          "unit": "m",
+          "strength": "soft",
+          "weight": 1,
+          "target": {
+            "category": "PublicTransport",
+            "name": "Nearest MRT or bus stop"
+          },
+          "distance_type": "straight_line",
+          "distance_preference": "bounded"
+        }
+      ]
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [],
+      "locations": [
+        {
+          "name": "Jurong East",
+          "categories": [],
+          "relation": "any_of",
+          "operator": "lte",
+          "value": 3,
+          "unit": "km",
+          "strength": "hard",
+          "weight": null,
+          "distance_type": "straight_line",
+          "explicit_station": false,
+          "prefer_closer": true,
+          "quote": "Not Clementi anymore; change to within 3 km of Jurong East and keep everything else."
+        }
+      ],
+      "removals": [
+        {
+          "field": "place_proximity",
+          "criterion_id": "place_proximity:URA:AREA:CLEMENTI",
+          "quote": "Not Clementi anymore; change to within 3 km of Jurong East and keep everything else."
+        },
+        {
+          "field": "place_proximity",
+          "criterion_id": "place_proximity:URA:AREA:CLEMENTI-preference",
+          "quote": "Not Clementi anymore; change to within 3 km of Jurong East and keep everything else."
+        }
+      ],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "Not Clementi anymore; change to within 3 km of Jurong East and keep everything else.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "unsupported-buy",
+    "query": "I want to buy a home.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": false,
+      "upsert": [],
+      "locations": [],
+      "removals": [],
+      "clarifications": [
+        {
+          "quote": "I want to buy a home.",
+          "question": "This system supports residential rentals. Would you like to look for a rental instead?"
+        }
+      ],
+      "coverage": [
+        {
+          "quote": "I want to buy a home.",
+          "disposition": "clarification"
+        }
+      ]
+    }
+  },
+  {
+    "id": "availability",
+    "query": "It must still be available now; do not give me homes already rented out.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "current_availability",
+          "operator": "eq",
+          "value": true,
+          "unit": null,
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "It must still be available now; do not give me homes already rented out."
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "It must still be available now; do not give me homes already rented out.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "market-region",
+    "query": "Choose the OCR market region, without limiting the district.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "region_code",
+          "operator": "eq",
+          "value": "OCR",
+          "unit": null,
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "Choose the OCR market region, without limiting the district."
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "Choose the OCR market region, without limiting the district.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "market-region-restrict-only",
+    "query": "Only the RCR market region, no other market regions.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "region_code",
+          "operator": "eq",
+          "value": "RCR",
+          "unit": null,
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "Only the RCR market region, no other market regions."
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "Only the RCR market region, no other market regions.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  },
+  {
+    "id": "two-digit-district",
+    "query": "Only Singapore districts 08 or 19; ignore other districts for now.",
+    "base": {
+      "listing_type": "RENT",
+      "criteria": []
+    },
+    "output": {
+      "schema_version": "2.0",
+      "supported": true,
+      "upsert": [
+        {
+          "field": "district",
+          "operator": "in",
+          "value": [
+            "D08",
+            "D19"
+          ],
+          "unit": null,
+          "strength": "hard",
+          "weight": null,
+          "target_name": null,
+          "transport_mode": null,
+          "quote": "Only Singapore districts 08 or 19; ignore other districts for now."
+        }
+      ],
+      "locations": [],
+      "removals": [],
+      "clarifications": [],
+      "coverage": [
+        {
+          "quote": "Only Singapore districts 08 or 19; ignore other districts for now.",
+          "disposition": "extracted"
+        }
+      ]
+    }
+  }
 ];
 // Example retrieval only; these tokens never create or override a user criterion.
 function tokens(text:string){const ts=[...text.toLowerCase().matchAll(/[a-z]+|\d+/g)].map(x=>x[0]);for(const m of text.matchAll(/[\u4e00-\u9fff]+/g)){const chars=[...m[0]];ts.push(...chars);for(let i=0;i<chars.length-1;i++)ts.push(chars[i]+chars[i+1]);}return ts;}

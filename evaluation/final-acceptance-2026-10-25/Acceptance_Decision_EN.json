@@ -1,0 +1,46 @@
+{
+  "status": "COMPLETED",
+  "decision": "ACCEPTED FOR THE AGREED FINAL PROJECT SCOPE",
+  "edition": "Final acceptance revision 3",
+  "decision_date": "2026-10-25",
+  "scope_authority": "Project requester confirmed the revised final acceptance scope in this conversation on 25 October 2026.",
+  "assessment_method": "Recorded live recommendation evidence, deterministic metric verification, native-code identity review and eight current-main offline compatibility tests.",
+  "accepted_scope": [
+    "Dataset-supported structured recommendation behavior across 40 registered scenarios and their expected native statuses.",
+    "Frozen relevance judgments and Precision, judged-pool Recall and NDCG at K=1-10 for the recorded results.",
+    "Stored mandatory-condition and source-field consistency checks, sparse inventories, no-match controls and registered state updates.",
+    "Compatibility of the current saved-result display expansion, supported by eight local tests and 27 unchanged native ranking/contract/validation files."
+  ],
+  "scope_changes": [
+    "The 60 difficult/complex cases are retained as a separate non-blocking stress study, outside the final acceptance gate.",
+    "External participant UAT, independent human relevance scoring and separate human signatures are not required under the revised protocol.",
+    "The previously frozen grades are adopted unchanged as the final reference labels for this submission."
+  ],
+  "retained_limitations": [
+    "The source snapshot cannot verify every real-user criterion, current availability or whole-unit occupancy.",
+    "Recorded timeouts, semantic/schema validation, contract, provider and explanation failures remain technical observations; they are not all relabeled as dataset limitations or passes.",
+    "Pool Recall is not full-corpus Recall; the two cohorts use different recorded labeling methods.",
+    "No new full live end-to-end run, human study or empirical satisfaction claim is made by this acceptance decision.",
+    "Legacy sessions without a reserved tail may refresh from saved requirements. New returned identities in that branch need not equal a historical saved list."
+  ],
+  "complex_history": {
+    "cases": 60,
+    "authored_messages": 116,
+    "final_operations_completed": 39,
+    "final_operations_failed": 21,
+    "current_acceptance_gate": false
+  },
+  "recorded_live_commit": "4d687e3b27e016f622dd487909fc99f56096265c",
+  "reviewed_current_main": "35304d0f4d7781383690594884a77adf1af238cc",
+  "raw_results_changed": false,
+  "grades_changed": false,
+  "metrics_changed": false,
+  "new_paid_model_calls": 0,
+  "github_publication_of_this_revision": {
+    "branch": "codex/final-acceptance-completed-2026-10-25",
+    "path": "evaluation/final-acceptance-2026-10-25",
+    "target_branch": "main",
+    "integration_method": "Pull request; branch publication does not assert a merge.",
+    "prior_evidence_publication": "PRs 2, 3 and 5 merged; all historical raw evidence retained."
+  }
+}

@@ -40,8 +40,8 @@ test('isolated PostgreSQL card lifecycle preserves requirements, resumes A/B/C, 
     const queued=await workflow.refinement.submit(session,plan.id,input);assert.equal(queued.status,'queued');
     assert.deepEqual(await workflow.refinement.submit(session,plan.id,input),queued);
     assert.equal(Number((await pool.query("SELECT count(*) FROM domain_operations WHERE kind='search'")).rows[0].count),2);
-    await assert.rejects(()=>workflow.refinement.submit(session,plan.id,{...input,submission_id:randomUUID()}),/已经提交/);
-    await assert.rejects(()=>workflow.refinement.submit(awaitDummySession(),plan.id,input),/会话不存在|不存在/);
+    await assert.rejects(()=>workflow.refinement.submit(session,plan.id,{...input,submission_id:randomUUID()}),/already been submitted/);
+    await assert.rejects(()=>workflow.refinement.submit(awaitDummySession(),plan.id,input),/not found|does not exist/i);
     let calls=0;const all=[...f.recommendation.recommendations,...f.recommendation.unverified_candidates];
     workflow.recommender.recommend=async(req:RecommendationRequest)=>{
       assert.deepEqual(req.behavior_context?.listing_view_durations,[]);assert.deepEqual(req.behavior_context?.book_viewing_listings,[]);
@@ -79,9 +79,9 @@ test('isolated PostgreSQL card lifecycle preserves requirements, resumes A/B/C, 
     assert.equal(after.refinement_plans.length,1);assert.equal(after.refinement_plans[0].status,'SUBMITTED');assert(after.messages.at(-1)!.text.includes('更新推荐'));
     assert.equal((await pool.query('SELECT status FROM domain_operations WHERE id=$1',[queued.operation_id])).rows[0].status,'completed');
     // Ownership and stale version checks use independent session rows in this schema.
-    const other=await store.create('other-owner');await assert.rejects(()=>workflow.refinement.submit(other,plan.id,input),/不存在/);
+    const other=await store.create('other-owner');await assert.rejects(()=>workflow.refinement.submit(other,plan.id,input),/not found/);
     await pool.query("UPDATE requirement_refinement_plans SET status='OPEN',submission_id=NULL WHERE id=$1",[plan.id]);
-    await assert.rejects(()=>workflow.refinement.submit(session,plan.id,{...input,submission_id:randomUUID()}),/条件已更新/);
+    await assert.rejects(()=>workflow.refinement.submit(session,plan.id,{...input,submission_id:randomUUID()}),/requirements have changed/i);
     await pool.query("UPDATE requirement_refinement_plans SET status='SUBMITTED' WHERE id=$1",[plan.id]);
     async function fresh(){
       const sid=await store.create('isolated-other-card-owner'),op=randomUUID(),src=randomUUID(),recommendation={...f.recommendation,request_id:src,conversation_id:sid};

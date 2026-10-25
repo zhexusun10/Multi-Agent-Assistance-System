@@ -19,7 +19,7 @@ export class SessionSync {
 }
 
 export async function* readSse(response,{onActivity=()=>{}}={}){
-  if(!response.ok){let error;try{error=await response.json();}catch{error={detail:'连接失败'};}throw Error(error.detail||'连接失败');}
+  if(!response.ok){let error;try{error=await response.json();}catch{error={detail:"Connection failed"};}throw Error(error.detail||"Connection failed");}
   const reader=response.body.getReader(),decoder=new TextDecoder();let buffer='';
   try{while(true){
     const {done,value}=await reader.read();if(done)break;onActivity();

@@ -31,19 +31,19 @@
       "closer"
     ],
     "cold_start": {
+      "evaluated": true,
       "active": true,
       "reason": "no_soft_requirements; b_above_max; s_below_min",
-      "pool_key": "4295a178022ada2cae49baac6118f588b16ca106648922fe077121496ceafdcd",
-      "evaluated": true,
       "coverage_c": 0,
+      "boundary_group_b": 239,
+      "stability_s": 0.030000000000000006,
       "thresholds": {
-        "b": 5,
         "c": 0.8,
+        "b": 5,
         "s": 0.9
       },
-      "stability_s": 0.02,
-      "boundary_group_b": 239,
-      "exit_conditions_met": false
+      "exit_conditions_met": false,
+      "pool_key": "4295a178022ada2cae49baac6118f588b16ca106648922fe077121496ceafdcd"
     },
     "explanation_mode": "evidence_recovery"
   },
@@ -51,32 +51,32 @@
     "pool": 5,
     "displayed": 5,
     "cold_start": {
+      "evaluated": false,
       "active": false,
       "reason": "small_pool",
-      "pool_key": "5c0a162892520d98b181d6e52ed6abe0fabaf0ba4f0f7764dd930ac816c3cce5",
-      "evaluated": false,
       "coverage_c": null,
+      "boundary_group_b": null,
+      "stability_s": null,
       "thresholds": {
-        "b": 5,
         "c": 0.8,
+        "b": 5,
         "s": 0.9
       },
-      "stability_s": null,
-      "boundary_group_b": null,
-      "exit_conditions_met": false
+      "exit_conditions_met": false,
+      "pool_key": "5c0a162892520d98b181d6e52ed6abe0fabaf0ba4f0f7764dd930ac816c3cce5"
     },
     "explanation_generation": {
       "mode": "evidence_recovery",
       "purpose": "listing_decision_support",
       "version": "3.1",
-      "diagnostic_ref": "7033ed97-95aa-44b6-8854-afa405d40fa1",
+      "diagnostic_ref": "78503257-7257-447d-b36b-85679700a767",
       "semantic_audit": "not_run",
       "enrichment_refs": [
-        "c993aa45-5ab2-47cb-8103-a5f66bde3c7c",
-        "0816b9b0-690f-464f-8b52-a17f65554295",
-        "7e8654f0-d78b-41ff-8afe-968c3f0daa20",
-        "1ada6405-5005-433c-9e73-42a48450ebc6",
-        "4baf708e-a102-43e5-b5c8-5959ff39933b"
+        "ab01e1cf-1524-486b-9e78-e2ddeef17c62",
+        "179fd957-74ed-4740-896e-bd585241e9e5",
+        "33f8b39c-3e8b-46ec-b1e5-46ef944398ee",
+        "0b37a496-035b-4ed2-8ef4-9d34a39a7632",
+        "edb6e411-49ef-41f0-87a4-f412de2d6800"
       ],
       "deterministic_validation": "passed"
     }

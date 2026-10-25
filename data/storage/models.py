@@ -14,7 +14,7 @@ class Property(Base):
 
     listing_id = Column(BigInteger, primary_key=True, comment="PropertyGuru listing ID")
     listing_type = Column(String(20), nullable=False, index=True, comment="SALE or RENT")
-    transaction_category = Column(String(50), nullable=True, index=True, comment="买房/出售 或 租房/出租")
+    transaction_category = Column(String(50), nullable=True, index=True, comment="Sale or rental category (original source label)")
     title = Column(String(255), nullable=True, comment="Project or listing title")
     property_type = Column(String(100), nullable=True, index=True, comment="Condo, HDB, Landed, etc.")
     project_id = Column(BigInteger, nullable=True, index=True, comment="Project / Condo ID")

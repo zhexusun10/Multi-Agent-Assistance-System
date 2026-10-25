@@ -13,7 +13,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 ROOT = Path(__file__).resolve().parents[1]
-INTENT_COLLECTION='estate_intents_'+MODEL_ID
+INTENT_COLLECTION='estate_intents_'+(os.getenv('RETRIEVAL_NAMESPACE','')+'_' if os.getenv('RETRIEVAL_NAMESPACE') else '')+MODEL_ID
 
 def templates():
     return json.loads((ROOT / 'data/.runtime/intent-templates.json').read_text(encoding='utf-8'))

@@ -33,7 +33,7 @@ test('independent amenities coexist and a private bathroom is not inferred from 
 });
 test('public agent failure does not expose raw Zod or SDK diagnostics',()=>{
   const failure=describeAgentFailure('a','[{"code":"custom","message":"Expected unit m","path":["upsert",0]}]');
-  assert.equal(failure.code,'REQUIREMENT_STAGE_FAILED');assert(!failure.message.includes('Expected unit'));assert(!failure.message.includes('upsert'));assert(failure.message.includes('尚未进入房源推荐'));
+  assert.equal(failure.code,'REQUIREMENT_STAGE_FAILED');assert(!failure.message.includes('Expected unit'));assert(!failure.message.includes('upsert'));assert((failure.message).toLowerCase().includes("no recommendation search has started"));
 });
 test('model proposes semantic requirements; null soft weight is normalized but invalid weights fail',async()=>{
   const query='最好超市直线距离800米以内';
@@ -133,5 +133,5 @@ test('authoritative response validator rejects wrong facts, stale IDs, unknown h
   validateResponse(raw,request);
   const changes:((r:any)=>void)[]=[r=>r.request_id='obsolete',r=>r.recommendations[0].criterion_results.pop(),r=>r.recommendations[0].rank=2,r=>r.recommendations.push(structuredClone(r.recommendations[0])),r=>r.state.counts.excluded=5,r=>r.recommendations[0].listing.price=9000,r=>r.recommendations[0].score_breakdown[0].contribution=.9,r=>r.recommendations[0].explanation_evidence.strengths[0].evidence_ids=['missing'],r=>{r.evidence[0].value=null;r.recommendations[0].criterion_results[0].observed_value=null;},r=>{r.evidence[0].value=4000;r.recommendations[0].criterion_results[0].observed_value=4000;r.recommendations[0].listing.price=4000;}];
   for(const change of changes){const copy=structuredClone(raw);change(copy);assert.throws(()=>validateResponse(copy,request));}
-  const summary=renderSummary(request.requirements,raw,'fixture-only');assert(summary.html.includes('fixture-only'));assert(summary.markdown.includes('当前可租'));
+  const summary=renderSummary(request.requirements,raw,'fixture-only');assert(summary.html.includes('fixture-only'));assert((summary.markdown).toLowerCase().includes("current availability"));
 });

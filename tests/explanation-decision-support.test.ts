@@ -33,9 +33,9 @@ function prose(f=setup()){
  return output;
 }
 test('new role, prompt, reviewer and examples allow useful unrequested facts without confusing them with ranking',()=>{
- assert.match(EXPLANATION_ROLE_CONTRACT.identity,/选房顾问/);
- assert.match(explanationSystemPrompt('skill'),/用户未要求|用户未主动|未要求/);
- assert.match(EXPLANATION_AUDIT_PROMPT,/不能因价格只用于硬筛选就禁止讲低价优势/);
+ assert.match(EXPLANATION_ROLE_CONTRACT.identity,/home-selection adviser/i);
+ assert.match(explanationSystemPrompt('skill'),/did not explicitly request|Unrequested|unrequested/);
+ assert.match(EXPLANATION_AUDIT_PROMPT,/Lower-rent advantages are allowed even when price is only a hard filter/);
 });
 test('per-home profiles include additional bathroom/area/transport/shops while keeping all source objects immutable',()=>{
  const f=setup(),before=structuredClone({req:f.req,rec:f.rec,enrichment:f.enrichment});
@@ -43,15 +43,15 @@ test('per-home profiles include additional bathroom/area/transport/shops while k
  assert.deepEqual({req:f.req,rec:f.rec,enrichment:f.enrichment},before);
  assert.deepEqual(again.decision_support!.target_listing_ids,['83000001','83000002']);
  assert(again.decision_support!.profiles.every(p=>p.additional_refs.includes(`profile:${p.listing_id}:bathrooms`)));
- assert.match(again.facts.find(f=>f.ref==='profile:83000001:nearby:MRT')!.text,/资料里写的距离约350米/);
- assert.match(again.facts.find(f=>f.ref==='profile:83000002:nearby:Supermarket')!.text,/直线约200米/);
+ assert.match(again.facts.find(f=>f.ref==='profile:83000001:nearby:MRT')!.text,/distance of approximately 350 m/i);
+ assert.match(again.facts.find(f=>f.ref==='profile:83000002:nearby:Supermarket')!.text,/straight-line distance: 200 m/);
  assert(!JSON.stringify(again).includes('步行5分钟'));
  validateExplanation(prose(f),again);
 });
 test('a cheaper rent remains a selection advantage even when hard budget is not a ranking factor',()=>{
  const {bundle}=setup();assert(bundle.ranking.filter_only_criteria.includes('rent'));assert(!bundle.ranking.active_criteria.includes('rent'));
  const advantage=bundle.facts.find(f=>f.ref==='advantage:83000002:price')!;
- assert.match(advantage.text,/每月少300新币/);assert.match(advantage.text,/不等于.*实际排名原因/);
+ assert.match(advantage.text,/less per month by 300/i);assert.match(advantage.text,/not.*actual ranking cause/);
  validateExplanation(prose(),bundle);
 });
 
@@ -70,7 +70,7 @@ test('additional known bathroom data does not upgrade an unsupported/unknown nat
  const b=addDecisionSupport(makeExplanationBundle(req,rec,'介绍'),req,rec,extra);
  assert.deepEqual(rec,before);assert(b.requirements.find(r=>r.criterion_ids.includes('bathroom-count'))!.results.every(r=>r.status==='unknown'));
  const p=b.decision_support!.profiles[0];assert(p.caution_refs.includes('condition:83000001:bathroom-count'));
- assert.match(b.facts.find(f=>f.ref==='profile:83000001:bathrooms')!.text,/数量不证明独立/);
+ assert.match(b.facts.find(f=>f.ref==='profile:83000001:bathrooms')!.text,/Counts do not establish exclusive/i);
 });
 test('guide coverage rejects omitted homes, old recap-only responses, missing new information, wrong IDs or positions',()=>{
  const f=setup(),good=prose(f);validateExplanation(good,f.bundle);

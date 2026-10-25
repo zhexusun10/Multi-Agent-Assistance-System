@@ -5,7 +5,7 @@ export const explanationOutputSchema=z.object({
   focus_listing_ids:z.array(z.string()).max(10),
   // Keep the public wire version compatible; listing_id binds each new guide
   // paragraph to its candidate, while old persisted narratives remain readable.
-  paragraphs:z.array(z.object({text:z.string().min(1).max(600),support_refs:z.array(z.string()).min(1).max(30),listing_id:z.string().nullable().optional()}).strict()).min(1).max(12),
+  paragraphs:z.array(z.object({text:z.string().min(1).max(1000),support_refs:z.array(z.string()).min(1).max(30),listing_id:z.string().nullable().optional()}).strict()).min(1).max(12),
 }).strict();
 export const explanationAuditSchema=z.object({valid:z.boolean(),issues:z.array(z.object({code:z.enum(['grounding','ranking','coverage','focus','style']),detail:z.string().max(600)}).strict()).max(12)}).strict();
 export type ExplanationOutput=z.infer<typeof explanationOutputSchema>;
@@ -18,6 +18,7 @@ export type ExplanationBundle={
   required_refs:string[];
   ranking:{mode:string;active_criteria:string[];behavior_features:string[];ranked_listing_ids:string[];filter_only_criteria:string[];unscored_listing_ids:string[]};
   decision_support?:{
+    continuation?:{previous_count:number;listing_ids:string[]};
     mode:'guide'|'focused';target_listing_ids:string[];explain_order:boolean;
     profiles:{listing_id:string;position:number;title:string;known_refs:string[];extra_refs:string[];additional_refs:string[];highlight_refs:string[];caution_refs:string[];core_refs?:string[]}[];
   };

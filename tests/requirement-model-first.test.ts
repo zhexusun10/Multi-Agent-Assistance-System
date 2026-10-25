@@ -51,7 +51,7 @@ test('a short location replacement removes the prior destination while retaining
  const example=INTAKE_EXAMPLES.find(e=>e.id==='short-replace-neighbourhood')!;
  assert(selectIntakeExamples(example.query).some(e=>e.id===example.id));
  const draft=await extractRequirements(example.query,example.base,mock([example.output]));
- const intent=draft.location_intents![0];assert.equal(intent.name,'荷兰村');assert.equal(intent.explicit_station,false);
+ const intent=draft.location_intents![0];assert.equal(intent.name,'Holland Village');assert.equal(intent.explicit_station,false);
  // The directory, rather than the model, supplies this real neighbourhood ID.
  draft.upsert.push(criterion('place_proximity','lte',1000,'m',true,{target:{place_id:'OSM:node:8777049478',name:'Holland Village'},distance_type:'straight_line',distance_preference:'nearer'}));
  const next=mergeRequirements(example.base,draft);

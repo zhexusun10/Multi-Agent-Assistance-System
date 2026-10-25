@@ -34,44 +34,44 @@ with sync_playwright() as p:
     for index, question in enumerate(questions):
         expect(card.get_by_text(f'{index+1} / {len(questions)}', exact=True)).to_be_visible()
         if question['kind'] == 'bedrooms':
-            card.get_by_role('button', name='设置条件', exact=True).click()
-            card.get_by_label('数量要求').select_option('eq')
-            card.get_by_label('卧室数量').fill('1')
-            card.get_by_label('重要程度').select_option('hard')
+            card.get_by_role('button', name='Set a requirement', exact=True).click()
+            card.get_by_label('Number requirement').select_option('eq')
+            card.get_by_label('Number of bedrooms').fill('1')
+            card.get_by_label('Importance').select_option('hard')
         elif question['kind'] == 'ideal_rent':
-            card.get_by_role('button', name='目前预算即可', exact=True).click()
+            card.get_by_role('button', name='Keep my current budget', exact=True).click()
         elif question['kind'] == 'closer':
-            card.get_by_role('button', name='更近优先', exact=True).click()
+            card.get_by_role('button', name='Prefer closer', exact=True).click()
         else:
             # Native exploration can select a different sample with different
             # useful questions; do not force a specific property type into it.
-            card.get_by_role('button', name='暂未想好', exact=True).click()
+            card.get_by_role('button', name='Not sure yet', exact=True).click()
         if index < len(questions)-1:
-            card.get_by_role('button', name='下一项 →').click()
-    expect(card.locator('.refinement-summary')).to_contain_text('保留原预算上限 2,500 新币')
+            card.get_by_role('button', name='Next →').click()
+    expect(card.locator('.refinement-summary')).to_contain_text('Keep the existing budget limit of 2,500 SGD')
     assert not posts
     assert page.locator('.listing-card').evaluate_all('(nodes)=>nodes.map(n=>n.dataset.listingId)') == before_ids
     # A real refresh must restore the saved form without changing results.
     page.reload()
     settled()
-    expect(card.get_by_role('button', name={'ideal_rent': '目前预算即可', 'closer': '更近优先'}.get(questions[-1]['kind'], '暂未想好'), exact=True)).to_have_attribute('aria-pressed', 'true')
+    expect(card.get_by_role('button', name={'ideal_rent': 'Keep my current budget', 'closer': 'Prefer closer'}.get(questions[-1]['kind'], 'Not sure yet'), exact=True)).to_have_attribute('aria-pressed', 'true')
     card.scroll_into_view_if_needed()
     page.screenshot(path=str(identity_path.parent/'before-submit.png'))
-    card.get_by_role('button', name='补充好了，重新推荐', exact=True).click()
-    expect(card.get_by_text('已记录您的选择', exact=True)).to_be_visible(timeout=150000)
-    expect(page.locator('#agent-stage')).to_have_text('本轮已更新', timeout=150000)
+    card.get_by_role('button', name='Apply choices and recommend again', exact=True).click()
+    expect(card.get_by_text('Your choices have been saved', exact=True)).to_be_visible(timeout=150000)
+    expect(page.locator('#agent-stage')).to_have_text('Up to date', timeout=150000)
     expect(page.locator('.listing-card')).to_have_count(5)
     assert page.locator('.listing-card').evaluate_all('(nodes)=>nodes.map(n=>n.dataset.listingId)') != before_ids
     expect(card).to_have_count(1)
     assert not card.locator('input,select,button').count()
-    expect(card.locator('.refinement-summary')).to_contain_text('保留原预算上限 2,500 新币')
+    expect(card.locator('.refinement-summary')).to_contain_text('Keep the existing budget limit of 2,500 SGD')
     assert len(posts) == 1, posts
-    assert not page.locator('#messages').get_by_text('本轮未完成', exact=False).count()
+    assert not page.locator('#messages').get_by_text('this round’s 未完成', exact=False).count()
     page.screenshot(path=str(identity_path.parent/'after-submit.png'))
     # Historical submitted card survives another real state load, no new card.
     page.reload()
     settled()
-    expect(card.get_by_text('已记录您的选择', exact=True)).to_be_visible()
+    expect(card.get_by_text('Your choices have been saved', exact=True)).to_be_visible()
     expect(card).to_have_count(1)
     expect(page.locator('.listing-card')).to_have_count(5)
     assert not errors, errors

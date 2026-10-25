@@ -82,7 +82,7 @@ try{
   const requirements:Requirements={listing_type:'RENT',criteria:[criterion('price','lte',3000,'SGD/month'),criterion('bedrooms','eq',1,'count'),criterion('place_proximity','lte',1000,'m',true,{target:{place_id:e.entity_id,name:String(e.properties.name)},distance_type:'straight_line',distance_preference:'nearer'})]};
   const req=recommendationRequestSchema.parse({contract_version:'1.0',conversation_id:randomUUID(),request_id:randomUUID(),requirements_version:1,result_limit:4,requirements});
   const ctx={...context,sessionId:req.conversation_id,agent:'b' as const};
-  const rec=await callNative(req,ctx,process.env.RECOMMENDATION_API_URL||'http://127.0.0.1:8092',save);
+  const rec=await callNative(req,ctx,process.env.RECOMMENDATION_API_URL||'http://127.0.0.1:8102',save);
   assert.equal(rec.native?.status,'success');assert.equal(rec.recommendations.length,4);
   const distances=rec.recommendations.map(row=>{
    const observation=row.criterion_results.find(r=>r.criterion_id.startsWith('place_proximity'))!;

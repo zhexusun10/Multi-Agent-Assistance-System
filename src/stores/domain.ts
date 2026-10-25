@@ -19,11 +19,11 @@ export class DomainStore{
   async setup(){for(const name of ['001-business.sql','002-followup.sql','003-manual-followup.sql','004-browser-interest.sql','005-requirement-refinement.sql','006-session-behavior-context.sql','007-recommendation-cold-start.sql'])await this.pool.query(await readFile(new URL('../../migrations/'+name,import.meta.url),'utf8'));await this.pool.query("INSERT INTO conversation_log(id,session_id,role,body,at) SELECT md5(s.session_id||m::text),s.session_id,m->>'role',m->>'text',(m->>'at')::timestamptz FROM session_domain_state s CROSS JOIN LATERAL jsonb_array_elements(s.messages) m ON CONFLICT DO NOTHING");}
   async transaction<T>(work:(tx:PoolClient)=>Promise<T>):Promise<T>{const tx=await this.pool.connect();try{await tx.query('BEGIN');const result=await work(tx);await tx.query('COMMIT');return result;}catch(e){await tx.query('ROLLBACK');throw e;}finally{tx.release();}}
   async create(owner:string){const id=randomUUID();await this.pool.query('INSERT INTO session_domain_state(session_id,owner_hash) VALUES($1,$2)',[id,hash(owner)]);return id;}
-  async assertOwner(sessionId:string,owner:string){const r=await this.pool.query('SELECT owner_hash,deleted_at FROM session_domain_state WHERE session_id=$1',[sessionId]);if(!r.rows[0]||r.rows[0].owner_hash!==hash(owner))throw new BusinessError('SESSION_FORBIDDEN','无法访问该会话',403);if(r.rows[0].deleted_at)throw new BusinessError('SESSION_DELETED','该对话已删除',410);}
-  async lock(tx:PoolClient,id:string):Promise<DomainState>{const r=await tx.query('SELECT * FROM session_domain_state WHERE session_id=$1 FOR UPDATE',[id]);if(!r.rows[0])throw new BusinessError('SESSION_NOT_FOUND','会话不存在',404);if(r.rows[0].deleted_at)throw new BusinessError('SESSION_DELETED','该对话已删除',410);return r.rows[0];}
+  async assertOwner(sessionId:string,owner:string){const r=await this.pool.query('SELECT owner_hash,deleted_at FROM session_domain_state WHERE session_id=$1',[sessionId]);if(!r.rows[0]||r.rows[0].owner_hash!==hash(owner))throw new BusinessError('SESSION_FORBIDDEN',"You cannot access this conversation",403);if(r.rows[0].deleted_at)throw new BusinessError('SESSION_DELETED',"This conversation has been deleted",410);}
+  async lock(tx:PoolClient,id:string):Promise<DomainState>{const r=await tx.query('SELECT * FROM session_domain_state WHERE session_id=$1 FOR UPDATE',[id]);if(!r.rows[0])throw new BusinessError('SESSION_NOT_FOUND',"Conversation not found",404);if(r.rows[0].deleted_at)throw new BusinessError('SESSION_DELETED',"This conversation has been deleted",410);return r.rows[0];}
   async deleteSession(id:string,owner:string){return this.transaction(async tx=>{
     const row=(await tx.query('SELECT owner_hash,deleted_at FROM session_domain_state WHERE session_id=$1 FOR UPDATE',[id])).rows[0];
-    if(!row||row.owner_hash!==hash(owner))throw new BusinessError('SESSION_FORBIDDEN','无法访问该会话',403);
+    if(!row||row.owner_hash!==hash(owner))throw new BusinessError('SESSION_FORBIDDEN',"You cannot access this conversation",403);
     if(row.deleted_at)return {status:'deleted',session_id:id};
     await tx.query('UPDATE session_domain_state SET deleted_at=clock_timestamp(),active_operation_id=NULL,revision=revision+1 WHERE session_id=$1',[id]);
     await tx.query("UPDATE domain_operations SET status='superseded' WHERE session_id=$1 AND status='queued'",[id]);
@@ -36,8 +36,8 @@ export class DomainStore{
   async state(id:string){return this.transaction(async tx=>{
     await tx.query('SET TRANSACTION ISOLATION LEVEL REPEATABLE READ');
     const result=await tx.query('SELECT * FROM session_domain_state WHERE session_id=$1',[id]);
-    if(!result.rows[0])throw new BusinessError('SESSION_NOT_FOUND','会话不存在',404);
-    if(result.rows[0].deleted_at)throw new BusinessError('SESSION_DELETED','该对话已删除',410);
+    if(!result.rows[0])throw new BusinessError('SESSION_NOT_FOUND',"Conversation not found",404);
+    if(result.rows[0].deleted_at)throw new BusinessError('SESSION_DELETED',"This conversation has been deleted",410);
     const s=result.rows[0] as DomainState;
     const cur=await tx.query('SELECT last_event_id FROM session_event_counters WHERE session_id=$1',[id]);
     const actions=await tx.query('SELECT body FROM workflow_actions WHERE session_id=$1 ORDER BY updated_at',[id]);
@@ -49,13 +49,18 @@ export class DomainStore{
     const refinements=await tx.query('SELECT * FROM requirement_refinement_plans WHERE session_id=$1 ORDER BY created_at',[id]);
     const {owner_hash,...safe}=s;
     const plans=refinements.rows.map(publicRefinement),corrected=new Map(refinements.rows.filter(r=>r.status==='SUBMITTED').map(r=>[refinementSubmissionText(r.answer_summary||[]),refinementSubmissionText(plans.find(p=>p.id===r.id)!.answer_summary)]));
+    for(const row of refinements.rows.filter(r=>r.status==='SUBMITTED')){
+      // Historical application-generated Chinese card submissions are recognised verbatim.
+      const oldText='我补充了找房需求：\n'+(row.answer_summary||[]).join('\n')+'\n请按更新后的需求重新推荐。';
+      corrected.set(oldText,refinementSubmissionText(plans.find(p=>p.id===row.id)!.answer_summary));
+    }
     const messages=s.messages.map(m=>m.role==='user'&&corrected.has(m.text)?{...m,text:corrected.get(m.text)!}:m);
     return {...safe,messages,recommendation:recommendationForDisplay(s.recommendation),presentation_version:PRESENTATION_VERSION,refinement_plans:plans,recommendation_operation_id:recOp,last_event_id:Number(cur.rows[0]?.last_event_id||0),pending_operations:pending.rows,actions:actions.rows.map(x=>x.body),artifacts:artifacts.rows};
   });}
   async saveState(tx:PoolClient,s:DomainState){s.revision++;await tx.query("INSERT INTO conversation_log(id,session_id,role,body,at) SELECT md5($1||m::text),$1,m->>'role',m->>'text',(m->>'at')::timestamptz FROM jsonb_array_elements($2::jsonb) m ON CONFLICT DO NOTHING",[s.session_id,JSON.stringify(s.messages)]);await tx.query(`UPDATE session_domain_state SET requirements_version=$2,requirements=$3,active_operation_id=$4,latest_request_id=$5,recommendation=$6,explanation=$7,pending=$8,revision=$9,messages=$10,recommendation_cold_start=$11 WHERE session_id=$1`,[s.session_id,s.requirements_version,JSON.stringify(s.requirements),s.active_operation_id,s.latest_request_id,JSON.stringify(s.recommendation),JSON.stringify(s.explanation),JSON.stringify(s.pending),s.revision,JSON.stringify(s.messages.slice(-200)),s.recommendation_cold_start==null?null:JSON.stringify(s.recommendation_cold_start)]);}
   async payload(tx:PoolClient,sessionId:string,operationId:string,body:unknown){const ref=randomUUID();await tx.query('INSERT INTO domain_payloads(ref,session_id,operation_id,body,sha256) VALUES($1,$2,$3,$4,$5)',[ref,sessionId,operationId,JSON.stringify(body),hash(body)]);return ref;}
   async savePayload(sessionId:string,operationId:string,body:unknown){return this.transaction(tx=>this.payload(tx,sessionId,operationId,body));}
-  async loadPayload(ref:string,sessionId:string){const r=await this.pool.query('SELECT body FROM domain_payloads WHERE ref=$1 AND session_id=$2',[ref,sessionId]);if(!r.rows[0])throw new BusinessError('EVIDENCE_NOT_FOUND','证据不可访问',404);return r.rows[0].body;}
+  async loadPayload(ref:string,sessionId:string){const r=await this.pool.query('SELECT body FROM domain_payloads WHERE ref=$1 AND session_id=$2',[ref,sessionId]);if(!r.rows[0])throw new BusinessError('EVIDENCE_NOT_FOUND',"Evidence is inaccessible",404);return r.rows[0].body;}
   async queue(tx:PoolClient,s:DomainState,op:string,agent:TaskEnvelope['agent'],body:unknown,step:string):Promise<Assignment[]>{
     const ref=await this.payload(tx,s.session_id,op,body);const env:TaskEnvelope={schema_version:'1.1',agent,operation_id:op,requirements_version:s.requirements_version,input_ref:ref,input_hash:hash(body)};
     const assignment={agent,prompt:JSON.stringify(env)};const tasks=await this.tasks.enqueueInTx(tx,s.session_id,[assignment],{stepKey:`${op}:${step}`,metadata:env});
@@ -65,7 +70,7 @@ export class DomainStore{
   async verifyTask(serialized:string,sessionId:string,taskId:string,agent:string){
     const env=JSON.parse(serialized) as TaskEnvelope;
     const r=await this.pool.query('SELECT metadata,status,agent,session_id,prompt FROM agent_tasks WHERE id=$1',[taskId]);const row=r.rows[0];
-    if(!row||row.session_id!==sessionId||row.agent!==agent||row.status!=='running'||row.prompt!==serialized||hash(row.metadata)!==hash(env)||env.agent!==agent||env.schema_version!=='1.1')throw new BusinessError('TASK_IDENTITY_INVALID','任务身份校验失败');
+    if(!row||row.session_id!==sessionId||row.agent!==agent||row.status!=='running'||row.prompt!==serialized||hash(row.metadata)!==hash(env)||env.agent!==agent||env.schema_version!=='1.1')throw new BusinessError('TASK_IDENTITY_INVALID',"Task identity validation failed");
     const body=await this.loadPayload(env.input_ref,sessionId);if(hash(body)!==env.input_hash)throw Error('TASK_INPUT_HASH_MISMATCH');return {env,body};
   }
   async event(tx:PoolClient,sessionId:string,event:MasterEvent,key:string){await this.events.appendInTx(tx,sessionId,event,key);}

@@ -1,10 +1,14 @@
-SDK规范 - https://docs.langchain.com/mcp
-架构设计规范 - README.md
+SDK guidance: https://docs.langchain.com/mcp
+Architecture guidance: README.md
 
-## 模型测试费用约束（用户明确要求，2026-10-22）
+## Model-test cost limits (explicit user requirement, 2026-10-22)
 
-- 用户要求控制API测试消耗，禁止为局部修复自动扩成全量模型回归。此前剩余的19条付费回归不再自动续跑。
-- 默认先做本地单元测试、已保存结果的离线校验和代码检查；这些验证不得调用付费模型。
-- 确有必要时只选当前故障的1条代表样本，默认最多3次模型请求，串行执行；计入生成、语义复核、评分及纠错。测试关闭SDK自动重试。
-- 不默认追加独立LLM评分，不重复运行已通过的真实流程/浏览器问法。调用前说明范围，达到调用上限立即停止；余额不足立即停止，不试探性重试。
-- 扩大样本或调用预算必须以用户新给出的明确要求为依据；保留正式产品的Agent逻辑，不为节约测试费用擅自删除生产校验。
+- Control API spending. A local change must not automatically expand into a full paid-model regression suite. Do not resume the earlier 19 outstanding paid cases automatically.
+- Prefer local unit tests, saved-result offline checks and code review; these checks must not call paid models.
+- Only when necessary, choose one representative case for the current issue, with at most three model requests in total, serially. Count generation, semantic review, evaluation and repair. Disable SDK automatic retries.
+- Do not append a separate LLM evaluator by default or repeat previously passed live/browser cases. State the scope before invoking a paid model. Stop at the limit, and stop immediately on insufficient balance without probing retries.
+- Additional cases or spending require a new explicit user instruction. Retain production agent logic; do not remove production validation to reduce test cost.
+
+## English-edition workspace boundary (explicit user requirement, 2026-10-24)
+
+Work only in this English project. The sibling Multi-Agent-Assistance-System is the preserved Chinese edition; do not overwrite its source or configuration. Keep English ports, session databases, runtime process records and retrieval collections separate. Listing data may be read from the existing shared snapshot. Do not push this branch over GitHub main unless the user explicitly requests that publication.

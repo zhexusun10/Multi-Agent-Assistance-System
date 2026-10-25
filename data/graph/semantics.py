@@ -102,7 +102,7 @@ def distance_label(distance, minutes):
         parts.append(f"{distance:g} m")
     if minutes is not None:
         parts.append(f"{minutes:g} min")
-    return "平台 " + " / ".join(parts) if parts else "平台距离未知"
+    return "Listing information: " + " / ".join(parts) if parts else "Listing distance unavailable"
 
 
 LISTING_FIELDS = (

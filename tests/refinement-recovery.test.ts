@@ -20,16 +20,16 @@ test('the exact submitted 500-1500 sqft plus keep-budget choices preserve SGD300
  const base={...f.requirements,criteria:f.requirements.criteria.filter((c:any)=>c.field!=='floor_area_sqft')};
  const c=compileRefinement(f.plan.body.questions,{submission_id:randomUUID(),answers:f.plan.answers},base);
  assert.deepEqual(c.requirements,f.requirements);assert.equal(c.draft.upsert.length,1);
- assert.match(c.summary[1],/保留原预算上限 3,000 新币/);assert(!c.summary[1].includes('不限'));
+ assert.match(c.summary[1],/Keep the existing budget limit of 3,000 SGD/i);assert(!(c.summary[1]).toLowerCase().includes("no preference"));
  const publicPlan=publicRefinement({...f.plan,id:'plan',status:'SUBMITTED'});
- assert.deepEqual(publicPlan.answer_summary,c.summary);assert(refinementSubmissionText(c.summary).includes('不新增理想月租偏好'));
+ assert.deepEqual(publicPlan.answer_summary,[f.plan.answer_summary[0],c.summary[1]]);assert((refinementSubmissionText(c.summary)).toLowerCase().includes("no additional preferred-rent condition"));
 });
 
 test('the reported result replays offline into five grounded introductions with no changes to requirements or ranking',()=>{
  const before=JSON.stringify(f),bundle=make(),out=recoverExplanation(bundle,f.requirements,f.recommendation);
  assert.equal(out.focus_listing_ids.length,5);validateExplanation(out,bundle);
- assert(out.paragraphs.some(p=>p.text.includes('800平方英尺')));
- assert(out.paragraphs.some(p=>p.text.includes('CLEMENTI')&&p.text.includes('还缺少资料')));
+ assert(out.paragraphs.some(p=>(p.text).toLowerCase().includes("800 sq ft")));
+ assert(out.paragraphs.some(p=>/Clementi/i.test(p.text)&&(p.text).toLowerCase().includes("lack sufficient data")));
  assert(!out.paragraphs.some(p=>/本轮未完成|JSON|分数|权重|原生|候选池/.test(p.text)));
  assert.equal(JSON.stringify(f),before);
 });
@@ -38,7 +38,7 @@ test('other-four and listing-four references are scoped counts, never permission
  const b=make(),good=recoverExplanation(b,f.requirements,f.recommendation),p=good.paragraphs.find(p=>p.listing_id==='20114703')!;
  p.support_refs.push('cohort:20114703:floor_area_sqft','cohort:20114703:price');
  p.text+='比其他4套的房源面积都大；月租和第4套相同。';validateExplanation(good,b);
- const wrongCount=structuredClone(good);wrongCount.paragraphs[5].text=p.text.replace('其他4套','其他8套');assert.throws(()=>validateExplanation(wrongCount,b),/比较的其他房源数量/);
+ const wrongCount=structuredClone(good);wrongCount.paragraphs[5].text=p.text.replace('其他4套','其他8套');assert.throws(()=>validateExplanation(wrongCount,b),/number of compared other homes/i);
  const wrongBeds=structuredClone(good);wrongBeds.paragraphs[5].text+='有4间卧室。';assert.throws(()=>validateExplanation(wrongBeds,b),/GROUNDING/);
  const wrongTime=structuredClone(good);wrongTime.paragraphs[5].text+='步行4分钟到地铁站。';assert.throws(()=>validateExplanation(wrongTime,b),/GROUNDING/);
 });
@@ -58,6 +58,6 @@ test('public state repairs old budget captions and caps old nine-home snapshots 
  const tx={async query(sql:string){return {rows:sql.includes('FROM session_domain_state')?[original]:sql.includes('FROM requirement_refinement_plans')?[plan]:sql.includes('FROM recommendation_calls')?[{operation_id:'op'}]:[],rowCount:0};},release(){}};
  const store=new DomainStore({connect:async()=>tx} as any,null as any,null as any),before=JSON.stringify(original),view=await store.state('session');
  assert.equal(view.recommendation!.recommendations.length+view.recommendation!.unverified_candidates.length,5);
- assert.match(view.messages[0].text,/保留原预算上限 3,000 新币/);assert(!view.messages[0].text.includes('不限'));
+ assert.match(view.messages[0].text,/Keep the existing budget limit of 3,000 SGD/i);assert(!(view.messages[0].text).toLowerCase().includes("no preference"));
  assert.equal(JSON.stringify(original),before);assert.equal(recommendationForDisplay(f.recommendation)!.unverified_candidates.length,0);
 });

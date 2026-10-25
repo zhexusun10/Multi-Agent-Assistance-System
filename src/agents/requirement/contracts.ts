@@ -16,7 +16,7 @@ const scalar=z.union([z.number().finite().nonnegative(),z.string(),z.boolean()])
 const value=z.union([scalar,z.array(z.number().finite().nonnegative()).min(1).max(2),z.array(z.string()).min(1).max(28)]);
 const quote=z.string().min(1).max(4000);
 // Every property is required (nullable when inapplicable), for strict tool JSON Schema.
-const attribute=z.object({field:z.enum(INTAKE_FIELDS).describe('普通地铁/公交/具名地点距离放locations；只有用户明确要求挂牌或平台标注信息时才允许mrt_distance_m和mrt_walking_mins'),operator:z.enum(['eq','in','gte','lte','between']),value,
+const attribute=z.object({field:z.enum(INTAKE_FIELDS).describe("Ordinary MRT/bus/named-place distances belong in locations. mrt_distance_m and mrt_walking_mins require an explicit request for listing/platform-reported information."),operator:z.enum(['eq','in','gte','lte','between']),value,
   unit:z.enum(INTAKE_UNITS).nullable(),strength:z.enum(['hard','soft']),weight:z.number().positive().finite().nullable(),
   target_name:z.string().min(1).nullable(),transport_mode:z.enum(['transit','walking','driving','unspecified']).nullable(),quote}).strict();
 const location=z.object({name:z.string().min(1).max(150).nullable(),categories:z.array(z.enum(PLACE_CATEGORIES)).max(4),
