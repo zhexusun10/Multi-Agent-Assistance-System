@@ -1,4 +1,4 @@
-# NestFinder SG — Multi-Agent Rental Workspace (English edition)
+# NestFinder SG — Multi-Agent Rental Workspace
 
 An independent English-language copy of the Singapore rental assistant. Search and revise rental requirements through conversation, compare the recommended homes, inspect full property details, refine preferences through cards, prepare agent enquiries and viewing proposals, analyse replies, and export summaries.
 
